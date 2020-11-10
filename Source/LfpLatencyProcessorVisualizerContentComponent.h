@@ -102,13 +102,14 @@ private:
 
 	float stimulusVoltageMin;
 
+	float trackSpike_DecreaseRate;
+	float trackSpike_IncreaseRate;
+
     //==============================================================================
     ScopedPointer<Slider> imageThresholdSlider;
     ScopedPointer<Slider> searchBoxSlider;
-    ScopedPointer<TextEditor> ROIspikeLocation;
-    ScopedPointer<TextEditor> ROIspikeValue;
+
     
-    ScopedPointer<Slider> conductionDistanceSlider;
     
     ScopedPointer<TextEditor> detectionThresholdText;
     
@@ -127,9 +128,9 @@ private:
     
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
     
-    ScopedPointer<Label> msLabel;
-    ScopedPointer<Label> cmLabel;
-    ScopedPointer<Label> mpersLabel;
+    ScopedPointer<Label> ROISpikeLatency_label;
+
+    ScopedPointer<Label> ROISpikeMagnitude_label;
     //ScopedPointer<GroupComponent> detectionControlGroup;
 
 	// Stimulus control
@@ -139,10 +140,43 @@ private:
 	ScopedPointer<TextEditor> stimulusVoltage_text;
 	ScopedPointer<TextEditor> stimulusVoltageMin_text;
 
+	ScopedPointer<Label> stimulusVoltageMax_label;
+	ScopedPointer<Label> stimulusVoltage_label;
+	ScopedPointer<Label> stimulusVoltageMin_label;
+
 	ScopedPointer<ppController> ppControllerComponent;
 
-    
+	ScopedPointer<TextEditor> textBox1;
+	ScopedPointer<TextEditor> textBox2;
 
+
+	ScopedPointer<Label> triggerChannelComboBox_label;
+	ScopedPointer<Label> dataChannelComboBox_label;
+
+	ScopedPointer<ComboBox> triggerChannelComboBox;
+	ScopedPointer<ComboBox> dataChannelComboBox;
+
+	ScopedPointer<Slider> Trigger_threshold; //TODO
+
+	ScopedPointer<ToggleButton> trackSpike_button;
+	ScopedPointer<ToggleButton> trackThreshold_button;
+
+	ScopedPointer<TextEditor> ROISpikeLatency;
+	ScopedPointer<TextEditor> ROISpikeMagnitude;
+
+	ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
+	ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
+
+	ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
+	ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
+
+	ScopedPointer<Label> trackSpike_IncreaseRate_label;
+	ScopedPointer<Label> trackSpike_DecreaseRate_label;
+
+	ScopedPointer<Slider> trigger_threshold_Slider;
+	ScopedPointer<Label> trigger_threshold_label;
+
+	//DEBUG
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessorVisualizerContentComponent)

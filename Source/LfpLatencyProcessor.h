@@ -149,6 +149,8 @@ public:
     float* getdataCacheRow(int track);
     
     void changeParameter(int parameterID, int value);
+
+	int getParameterInt(int parameterID);
     
     void pushLatencyData(int latency);
     
@@ -163,10 +165,21 @@ public:
     
     int fifoIndex;
 
+	//debug
+	float getParameterFloat(int parameterID);
+
+
 private:
 
+	//debug
+	float lastReceivedDACPulse;
+
+	int dataChannel_idx;
+	int triggerChannel_idx;
+
+	int triggerChannel_threshold;
+
 	void timerCallback(int timerID) override;
-    
     
     float dataCache[DATA_CACHE_SIZE_TRACKS*DATA_CACHE_SIZE_SAMPLES];
     
@@ -176,17 +189,17 @@ private:
     
     int currentSample;
     
-
     
     int samplesPerSubsampleWindow;
-    
-   
+
     
     int currentTrack;
     
     int peakThreshold;
 
     int samplesAfterStimulusStart;
+
+	float stimulus_threshold;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessor);

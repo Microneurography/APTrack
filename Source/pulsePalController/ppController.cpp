@@ -207,7 +207,7 @@ void ppController::paint(Graphics& g)
 {
 	g.setColour(Colours::darkslategrey);
 	//g.fillEllipse(getLocalBounds().toFloat());
-	g.drawRoundedRectangle(0, 0, 400, 200, 5, 2);
+	g.drawRoundedRectangle(0, 0, 300, 250, 5, 2);
 }
 
 void ppController::resized()
@@ -217,7 +217,7 @@ void ppController::resized()
 
 	fileName_label->setBounds(40, 5, 150, 20);
 
-	flashingComponentDemo->setBounds(200, 5, 30, 20);
+	//flashingComponentDemo->setBounds(200, 5, 30, 20);
 
 	protocolStepNumber_label->setBounds(5, 25, 200, 20);
 
@@ -228,7 +228,7 @@ void ppController::resized()
 	protocolComment_label->setBounds(5, 125, 90, 20);
 	protocolTimeLeft_label->setBounds(5, 150, 200, 20);
 
-	stimulusVoltageSlider->setBounds(250, 5, 55, 200);
+	//stimulusVoltageSlider->setBounds(250, 5, 55, 200);
 
 
 }
