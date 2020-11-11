@@ -320,6 +320,7 @@ float* LfpLatencyProcessor::getdataCacheRow(int track)
     return rowPtr;
 }
 
+// would need to allow for two of these, on the same track?
 int LfpLatencyProcessor::getLatencyData(int track)
 {
     int data = spikeLocation[(((currentTrack - track) % DATA_CACHE_SIZE_TRACKS)+DATA_CACHE_SIZE_TRACKS)% DATA_CACHE_SIZE_TRACKS];
@@ -337,6 +338,7 @@ float* LfpLatencyProcessor::getdataCache()
     return dataCache;
 }
 
+// Could call this with (2,2) and maybe would allow double tracking?
 void LfpLatencyProcessor::changeParameter(int parameterID, int value)
 {
     if (parameterID == 1)
