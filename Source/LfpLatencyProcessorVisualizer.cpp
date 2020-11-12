@@ -310,45 +310,6 @@ void LfpLatencyProcessorVisualizer::updateSpectrogram()
 void LfpLatencyProcessorVisualizer::processTrack()
 {
 
-
-	/**
-		if (samplesAfterStimulus > content.startingSample)
-		{
-			auto sample = dataToPrint[ii];
-
-			//If current sample is larger than previously stored peak, store sample as new peak
-			if (sample > lastWindowPeak)
-			{
-				lastWindowPeak = sample;
-			}
-
-			//Increment window sample counter
-			++windowSampleCount;
-
-			//If window is full, push window's peak into fifo
-			if (windowSampleCount >= content.subsamplesPerWindow)//76
-			
-							if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-							{
-								//Detected peak
-								content.spectrogramImage.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::yellowgreen);
-							}
-							else if (lastWindowPeak > content.highImageThreshold)
-							{
-								//Excessive peak
-								content.spectrogramImage.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::red);
-							}
-							else
-							{
-								//grayscale
-								content.spectrogramImage.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-							}
-						}
-
-						**/
-
-
-
 	// Get latency track data of previous row
 	float* lastRowData = processor->getdataCacheRow(1);
 
