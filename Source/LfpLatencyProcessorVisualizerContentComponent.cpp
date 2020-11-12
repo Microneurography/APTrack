@@ -231,7 +231,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_DecreaseRate_Text->setText("-"+String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 
 	addAndMakeVisible(trackSpike_IncreaseRate_label = new Label("trackSpike_IncreaseRate_label"));
-	trackSpike_IncreaseRate_label->setText("Stim. decrease rate", dontSendNotification);
+	trackSpike_IncreaseRate_label->setText("Stim. increase rate", dontSendNotification);
 
 	addAndMakeVisible(trackSpike_DecreaseRate_label = new Label("trackSpike_DecreaseRate_label"));
 	trackSpike_DecreaseRate_label->setText("Stim. decrease rate", dontSendNotification);
