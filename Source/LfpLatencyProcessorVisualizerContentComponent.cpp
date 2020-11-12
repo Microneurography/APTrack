@@ -125,6 +125,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     subsamplesPerWindowSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     subsamplesPerWindowSlider->addListener (this);
     
+	// This should make a label?
+	addAndMakeVisible(new Label("Component name?", "Label text")); 
 
     addAndMakeVisible (startingSampleSlider = new Slider ("startingSampleSlider"));
     startingSampleSlider->setRange (0, 30000, 1);
@@ -132,7 +134,11 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     startingSampleSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     startingSampleSlider->addListener (this);
     
-
+    addAndMakeVisible (conductionDistanceSlider = new Slider ("conductionDistanceSlider"));
+    conductionDistanceSlider->setRange (0, 2000, 1);
+    conductionDistanceSlider->setSliderStyle (Slider::Rotary);
+    conductionDistanceSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
+    conductionDistanceSlider->addListener (this);
     
     addAndMakeVisible (searchBoxWidthSlider = new Slider ("searchBoxWidthSlider"));
     searchBoxWidthSlider->setRange (1, 30, 1);
