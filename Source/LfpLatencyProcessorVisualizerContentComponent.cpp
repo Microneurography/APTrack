@@ -125,6 +125,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     subsamplesPerWindowSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     subsamplesPerWindowSlider->addListener (this);
     
+
     addAndMakeVisible (startingSampleSlider = new Slider ("startingSampleSlider"));
     startingSampleSlider->setRange (0, 30000, 1);
     startingSampleSlider->setSliderStyle (Slider::Rotary);
