@@ -1,6 +1,4 @@
-# Xcode
-#
-# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+## Xcode
 
 ## Build generated
 DerivedData/
@@ -21,3 +19,8 @@ xcuserdata/
 *.xccheckout
 *.xcscmblueprint
 en.lproj/
+
+
+## Visual Studio 2019
+#cache/options directory
+.vs/
