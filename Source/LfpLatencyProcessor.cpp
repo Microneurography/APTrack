@@ -192,7 +192,7 @@ void LfpLatencyProcessor::process (AudioSampleBuffer& buffer)
 				//lastReceivedDACPulse=test_pulses;
 
                 //Print to console
-                std::cout << "Peak with amplitude: " << data_pulses << std::endl;
+                //std::cout << "Peak with amplitude: " << data_pulses << std::endl;
 
                 //Set flags
                 eventReceived = true;
