@@ -332,12 +332,19 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
     //Note, drawImage handles rescaling!
     //[/UserPrePaint]
     
-
-    if (spikeDetected) {
-        g.setColour(Colours::green);
-    } else {
-        g.setColour(Colours::red);
-    }
+	if (trackSpike_button->getToggleState() == true)
+	{
+		if (spikeDetected) {
+			g.setColour(Colours::green);
+		}
+		else {
+			g.setColour(Colours::red);
+		}
+	}
+	else
+	{
+		g.setColour(Colours::lightyellow);
+	}
     
     g.drawRoundedRectangle(300-8, 300-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 
