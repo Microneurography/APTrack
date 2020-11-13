@@ -238,7 +238,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	//Debug
 	addAndMakeVisible(trigger_threshold_Slider = new Slider("trigger_threshold_Slider"));
-	trigger_threshold_Slider->setRange(0.1f, 10.0f, 0);
+	trigger_threshold_Slider->setRange(0.1f, 150.0f, 0);
 	trigger_threshold_Slider->setSliderStyle(Slider::Rotary);
 	trigger_threshold_Slider->setTextBoxStyle(Slider::TextBoxRight, false, 80, 20);
 	trigger_threshold_Slider->addListener(this);
