@@ -145,8 +145,7 @@ void ppController::setStimulusVoltage(float newVoltage)
 
 void ppController::timerCallback(int timerID)
 {
-	// TODO: Cleanup code
-	if (timerID == 1)
+	if (timerID == 1) // Protocol step timer
 	{
 		//Stop old Timer
 		stopTimer(1);
@@ -197,14 +196,14 @@ void ppController::timerCallback(int timerID)
 		{
 			// If no more to draw then stop timer
 			stopTimer(0);
-		}
+			AlertWindow::showMessageBoxAsync(juce::AlertWindow::AlertIconType::InfoIcon, "Protocol info", "Protocol complete");
 
-		//
+		}
 
 		//Repaint
 		repaint();
 	}
-	else if (timerID == 0)
+	else if (timerID == 0) //UI refresh timer
 	{
 		// Calculate time left
 		secondsLeft = RelativeTime::milliseconds(endingTime - Time::getMillisecondCounter());
@@ -286,7 +285,6 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 
 	
 	protocolStepNumber = 0;
-
 
 	// Start UI refresh timer
 	startTimer(0, 500);
