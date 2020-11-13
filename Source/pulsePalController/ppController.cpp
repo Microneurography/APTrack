@@ -51,25 +51,6 @@ ppController::ppController()
 
 	//ulsePal.triggerChannel(1);
 	pulsePal.triggerChannels(1, 1, 0, 0);
-	
-	/**
-	float customVoltages1[2] = { 5,5 };
-	float customPulseTimes1[2] = { 0};
-
-	pulsePal.sendCustomPulseTrain(1, 1, customPulseTimes1, customVoltages1);
-	pulsePal.setCustomTrainID(2, 2);
-	pulsePal.setCustomTrainTarget(2, 0);
-	pulsePal.setCustomTrainLoop(2, 0);
-	//Configure to fire on trigger channel 1 (from ardu pulse delay simulator)
-	pulsePal.setTrigger1Link(1, 0);
-	pulsePal.setTrigger1Link(2, 1);
-	pulsePal.setTrigger1Link(3, 0);
-	pulsePal.setTrigger1Link(4, 0);
-	//Set trigger mode to normal
-	pulsePal.setTriggerMode(2, 0);
-	**/
-
-
 	protocolStepNumber = -1;
 
 	//Get last opened file path 
@@ -192,15 +173,6 @@ void ppController::setStimulusVoltage(float newVoltage)
 	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
 	pulsePal.syncAllParams();
 
-	//pulsePal.currentOutputParams[3].phase1Voltage = stimulusVoltage;
-	//pulsePal.syncAllParams();
-
-	/**
-	float customVoltages2[2] = { stimulusVoltage };
-	float customPulseTimes2[2] = { 0 };
-	pulsePal.sendCustomPulseTrain(2, 1, customPulseTimes2, customVoltages2);
-	pulsePal.setCustomTrainID(2, 2);
-	**/
 }
 
 void ppController::timerCallback(int timerID)
@@ -220,16 +192,11 @@ void ppController::timerCallback(int timerID)
 			protocolStepNumber++;
 
 			// Update Labels
-			//protocolStepNumber_label->setText(String(protocolStepNumber + 1));
 			protocolStepNumber_label->setText(String(protocolStepNumber + 1) + "/" + String(elementCount)
 				+ " at " + String(protocolData[protocolStepNumber].rate) + " Hz, "
 				+ String(protocolData[protocolStepNumber].voltage) + " V");
 
-
-
-
 			protocolRate_label->setText(String(protocolData[protocolStepNumber].rate));
-
 
 			protocolVoltage_label->setText(String(protocolData[protocolStepNumber].voltage));
 			protocolComment_label->setText(protocolData[protocolStepNumber].comment);
@@ -313,8 +280,6 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	fileToRead.readLines(protocolData_raw);
 
 
-	//csvData.clear();
-
 	//TODO: Check if header matches what was expected
 
 	/*
@@ -343,7 +308,6 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 
 		tempData = StringArray::fromTokens(protocolData_raw[ii], ",", "\"");
 
-
 		tempObj.duration = tempData[0].getFloatValue();
 		tempObj.voltage = tempData[1].getFloatValue();
 		tempObj.comment = tempData[3];
@@ -352,9 +316,7 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 		protocolData.push_back(tempObj);
 	}
 
-	//Display info prompt 
-	//AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon,"Stimulation protocol","File Loaded!");
-
+	
 	protocolStepNumber = 0;
 
 
@@ -381,7 +343,6 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 
 	protocolRate_label->setText(String(protocolData[protocolStepNumber].rate));
 	protocolDuration_label->setText(String(protocolData[protocolStepNumber].duration));
-
 
 	protocolVoltage_label->setText(String(protocolData[protocolStepNumber].voltage));
 	protocolComment_label->setText(protocolData[protocolStepNumber].comment);
