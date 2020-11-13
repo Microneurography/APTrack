@@ -173,7 +173,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     addAndMakeVisible(ROISpikeMagnitude_label = new Label("ROISpikeMagnitude_label"));
     ROISpikeMagnitude_label->setText ("ROI peak latency", dontSendNotification);
    
-	
+
 	addAndMakeVisible(textBox2 = new TextEditor("selectedDataChanText"));
 	textBox2->setText("Data");
 
