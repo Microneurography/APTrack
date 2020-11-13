@@ -11,32 +11,6 @@ struct protocolDataElement {
 };
 
 
-class blinkingButton : public Component,
-	public MultiTimer
-{
-public:
-
-	blinkingButton();
-
-	~blinkingButton();
-
-	void startFlashing(float rate);
-
-	void stopFlashing();
-
-	void paint(Graphics& g) override;
-
-private:
-	float flashAlpha = 0.0f;
-
-	int pulsePeriod;
-	int zapPeriod;
-
-	Colour colour{ Colours::red };
-
-	void timerCallback(int timerID) override;
-};
-
 class ppController : public Component,
 	public ButtonListener,
 	public MultiTimer,
@@ -77,8 +51,6 @@ private:
 	ScopedPointer<UtilityButton> getFileButton;
 
 	ScopedPointer<TextEditor> fileName_label;
-
-	ScopedPointer<blinkingButton> flashingComponentDemo;
 
 	std::vector<protocolDataElement> protocolData;
 

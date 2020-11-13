@@ -7,73 +7,6 @@
 
 */
 
-blinkingButton::blinkingButton()
-{
-}
-
-blinkingButton::~blinkingButton()
-{
-}
-
-void blinkingButton::startFlashing(float rate)
-{
-
-
-	// Stimulus period
-	// Hz to ms
-	pulsePeriod = static_cast<int>(1000.0f / rate);
-
-	// Zap period. either 1/10th of pulsePeriod or 0.1s; whatever is smaller. 
-	zapPeriod = juce::jmin(pulsePeriod/10,50);
-
-	// flash frst pulse
-	flashAlpha = 1.0f;
-
-	//Start pulse timer
-	startTimer(0, pulsePeriod);
-
-	startTimer(1, zapPeriod);
-
-	repaint();
-}
-
-void blinkingButton::stopFlashing()
-{
-	flashAlpha = 0.0f;
-	stopTimer(0);
-	repaint();
-}
-
-void blinkingButton::paint(Graphics& g)
-{
-	g.setColour(Colours::darkslategrey.overlaidWith(Colours::lightgreen.withAlpha(flashAlpha)));
-	g.fillEllipse(getLocalBounds().toFloat());
-
-	// TODO: Write Text "Zap"
-}
-
-void blinkingButton::timerCallback(int timerID)
-{
-	//Short term trigger (makes dark)
-	if (timerID == 1)
-	{
-		// Light down
-		flashAlpha = 0.0f;
-		// Stop this timer
-		stopTimer(1);
-	}
-	//Long term trigger (makes high)
-	else if (timerID == 0)
-	{
-		// Ligth up 
-		flashAlpha = 1.0f;
-
-		//Start timer
-		startTimer(1, zapPeriod);
-	}
-	repaint();
-}
-
 
 /*
 	Pulse Pal controller
@@ -151,8 +84,6 @@ ppController::ppController()
 	addAndMakeVisible(fileName_label = new TextEditor("file label",0));
 	fileName_label->setReadOnly(true);
 	fileName_label->setText("No file selected", dontSendNotification);
-
-	addAndMakeVisible(flashingComponentDemo = new blinkingButton());
 
 	addAndMakeVisible(protocolStepNumber_label = new TextEditor("protocol_step_number", 0));
 	protocolStepNumber_label->setReadOnly(true);
@@ -280,9 +211,6 @@ void ppController::timerCallback(int timerID)
 		//Stop old Timer
 		stopTimer(1);
 
-		// Stop flashing
-		flashingComponentDemo->stopFlashing();
-
 		//PulsePal Specific
 		pulsePal.abortPulseTrains();
 
@@ -313,8 +241,6 @@ void ppController::timerCallback(int timerID)
 			endingTime = Time::getMillisecondCounter() + static_cast<int>(protocolData[protocolStepNumber].duration * 1000.0f);
 			protocolDuration_label->setText(String(protocolData[protocolStepNumber].duration));
 
-			//Send new command to "flasher"
-			flashingComponentDemo->startFlashing(protocolData[protocolStepNumber].rate);
 
 			//PulsePalSpecific
 
@@ -439,10 +365,6 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	// Start Protocol Timer
 	startTimer(1,static_cast<int>(1000.0f * protocolData[protocolStepNumber].duration));
 
-
-
-	//Send command to "flasher"
-	flashingComponentDemo->startFlashing(protocolData[protocolStepNumber].rate);
 
 	//PulsePalSpecific
 	// Get pulse period in s
