@@ -270,6 +270,12 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	//Get number of elements in string
 	elementCount = protocolData_raw.size();
 
+	// clear old protocol data, stop old timers
+	protocolData.clear();
+	stopTimer(0); // UI timer
+	stopTimer(1); // protocol timer
+
+	// store new protocol
 	for (int ii = 0; ii < elementCount; ii++) {
 
 		StringArray tempData;
@@ -279,6 +285,7 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 
 		tempObj.duration = tempData[0].getFloatValue();
 		tempObj.voltage = tempData[1].getFloatValue();
+		tempObj.rate = tempData[2].getFloatValue();
 		tempObj.comment = tempData[3];
 
 
