@@ -232,6 +232,8 @@ void ppController::buttonClicked(Button* buttonThatWasClicked)
 
 		if (chooseProtocolFile.browseForFileToOpen()) {
 			loadFile(chooseProtocolFile.getResult().getFullPathName());
+
+			std::cout << "Stim file path: " << chooseProtocolFile.getResult().getFullPathName() << std::endl;
 		}
 	}
 }
