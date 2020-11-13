@@ -13,8 +13,7 @@ struct protocolDataElement {
 
 class ppController : public Component,
 	public ButtonListener,
-	public MultiTimer,
-	public SliderListener
+	public MultiTimer
 {
 public:
 
@@ -23,8 +22,6 @@ public:
 	~ppController();
 
 	void buttonClicked(Button* buttonThatWasClicked) override;
-
-	void sliderValueChanged(Slider* sliderThatWasMoved) override;
 
 	void paint(Graphics& g) override;
 
@@ -45,8 +42,6 @@ private:
 	ScopedPointer<TextEditor> protocolTimeLeft_label;
 	ScopedPointer<TextEditor> protocolVoltage_label;
 	ScopedPointer<TextEditor> protocolComment_label;
-
-	ScopedPointer<Slider> stimulusVoltageSlider;
 
 	ScopedPointer<UtilityButton> getFileButton;
 
@@ -75,4 +70,7 @@ private:
 	// PulsePal Specific
 	PulsePal pulsePal;
 	uint32_t pulsePalVersion;
+
+	void sendProtocolStepToPulsePal(protocolDataElement protocol);
+
 };

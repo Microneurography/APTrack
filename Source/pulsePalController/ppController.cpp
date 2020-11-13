@@ -137,6 +137,9 @@ void ppController::setStimulusVoltage(float newVoltage)
 	//TODO: Check bounds
 	stimulusVoltage = newVoltage;
 
+	//Update channel voltages
+	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
+
 	pulsePal.currentOutputParams[1].phase1Voltage = stimulusVoltage;
 	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
 	pulsePal.syncAllParams();
@@ -171,25 +174,13 @@ void ppController::timerCallback(int timerID)
 			// Start next timer
 			startTimer(1,static_cast<int>(1000.0f * protocolData[protocolStepNumber].duration));
 
+			//send to pulse pal
+			sendProtocolStepToPulsePal(protocolData[protocolStepNumber]);
+
 			//Set new end Time time
 			endingTime = Time::getMillisecondCounter() + static_cast<int>(protocolData[protocolStepNumber].duration * 1000.0f);
 			protocolDuration_label->setText(String(protocolData[protocolStepNumber].duration));
 
-
-			//PulsePalSpecific
-
-			// Get pulse period in s
-			float pulsePeriod = (1.0f / protocolData[protocolStepNumber].rate);
-
-			//Send to pulsePal
-			//pulsePal.setPulseTrainDuration(1, protocolData[protocolStepNumber].duration); //Max 3600s->1h
-			//pulsePal.setInterPulseInterval(1,pulsePeriod);
-
-			pulsePal.abortPulseTrains();
-			pulsePal.currentOutputParams[1].pulseTrainDuration = protocolData[protocolStepNumber].duration;
-			pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod;
-			pulsePal.syncAllParams();
-			pulsePal.triggerChannel(1); //trigger
 
 		}
 		else
@@ -301,15 +292,8 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	// Start Protocol Timer
 	startTimer(1,static_cast<int>(1000.0f * protocolData[protocolStepNumber].duration));
 
-
-	//PulsePalSpecific
-	// Get pulse period in s
-	float pulsePeriod = (1.0f / protocolData[protocolStepNumber].rate);
-
-	//Send to pulsePal
-	pulsePal.setPulseTrainDuration(1, protocolData[protocolStepNumber].duration); //Max 3600s->1h
-	pulsePal.setInterPulseInterval(1, pulsePeriod);
-	pulsePal.triggerChannel(1); //trigger
+	// send to pulse pal
+	sendProtocolStepToPulsePal(protocolData[protocolStepNumber]);
 
 	// Update labels
 	protocolStepNumber_label->setText(String(protocolStepNumber + 1)+"/"+String(elementCount)
@@ -325,6 +309,31 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	// Handle time left
 	// End time is current time plus duration in ms
 	endingTime = Time::getMillisecondCounter() + static_cast<int>(protocolData[protocolStepNumber].duration * 1000.0f);
+}
+
+void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataStep)
+{
+	if (protocolDataStep.rate == 0) 
+	{
+		// if rate is 0 the treat as pause and abort pulse trains
+		pulsePal.abortPulseTrains();
+	}
+	else 
+	{
+		// if rate is nonzero then calculate pulse period and send to pulsepal
+		float pulsePeriod = (1.0f / protocolDataStep.rate);
+
+		pulsePal.abortPulseTrains();
+		pulsePal.currentOutputParams[1].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod; // in sec
+		pulsePal.currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal.currentOutputParams[2].interPulseInterval = pulsePeriod; // in sec
+
+		pulsePal.syncAllParams();
+
+		pulsePal.triggerChannels(1, 1, 0, 0);
+	}
+
 }
 
 String ppController::formatTimeLeftToString(RelativeTime step_secondsRemaining, float step_duration) 
