@@ -20,38 +20,32 @@ ppController::ppController()
 	pulsePal.updateDisplay("GUI Connected", "Click for Menu");
 	pulsePalVersion = pulsePal.getFirmwareVersion();
 
-	stimulusVoltage = 0.15f;
-
 	param_mAperVolts = 1.0f; // 50mA/5V=10mA/V
 
-	//Send pulses to channel 1
-	pulsePal.setBiphasic(1, 0);
-	pulsePal.setPhase1Voltage(1, 5);
-	pulsePal.setRestingVoltage(1, 0);
-	pulsePal.setPhase1Duration(1, 0.0005f); //0.5ms as per Obreja
-
-	//Send TTL to chan 2
-	pulsePal.setBiphasic(2, 0);
-	pulsePal.setPhase1Voltage(2, 5);
-	pulsePal.setRestingVoltage(2, 0);
-	pulsePal.setPhase1Duration(2, 0.0005f);
-
-	pulsePal.setContinuousLoop(1, 1);
-	pulsePal.setContinuousLoop(2, 1);
 
 	pulsePal.abortPulseTrains();
+
+	pulsePal.currentOutputParams[1].isBiphasic = 0;
+	pulsePal.currentOutputParams[1].phase1Voltage = 5.0f;
+	pulsePal.currentOutputParams[1].restingVoltage = 0.0f;
+	pulsePal.currentOutputParams[1].phase1Duration = 0.005f;
 	pulsePal.currentOutputParams[1].pulseTrainDuration = 1000.0f;
 	pulsePal.currentOutputParams[1].interPulseInterval = 2.0f;
+	pulsePal.currentOutputParams[1].phase1Voltage = 0.0f;
 
+	pulsePal.currentOutputParams[2].isBiphasic = 0;
+	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
+	pulsePal.currentOutputParams[2].restingVoltage = 0.0f;
+	pulsePal.currentOutputParams[2].phase1Duration = 0.005f;
 	pulsePal.currentOutputParams[2].pulseTrainDuration = 1000.0f;
 	pulsePal.currentOutputParams[2].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
+	pulsePal.currentOutputParams[2].phase1Voltage = 0.0f;
 
 	pulsePal.syncAllParams();
 
-	//ulsePal.triggerChannel(1);
-	pulsePal.triggerChannels(1, 1, 0, 0);
 	protocolStepNumber = -1;
+	stimulusVoltage = 0.0f;
+
 
 	//Get last opened file path 
 	lastFilePath = CoreServices::getDefaultUserSaveDirectory();
