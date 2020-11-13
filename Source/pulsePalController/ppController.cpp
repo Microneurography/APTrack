@@ -92,15 +92,7 @@ ppController::ppController()
 	protocolTimeLeft_label->setReadOnly(true);
 	protocolTimeLeft_label->setText("-");
 
-	addAndMakeVisible(stimulusVoltageSlider = new Slider("Stimulus Voltage"));
-	stimulusVoltageSlider->setRange(0.0f, 5.0f, 0.01f);
-	stimulusVoltageSlider->setSliderStyle(Slider::LinearVertical);
-	stimulusVoltageSlider->setTextBoxStyle(Slider::TextBoxAbove, true, 80, 20);
-	stimulusVoltageSlider->addListener(this);
 
-	stimulusVoltage = 5.0f;
-	stimulusVoltageSlider->setValue(stimulusVoltage);
-	
 
 }
 
@@ -145,24 +137,6 @@ void ppController::resized()
 
 }
 
-void ppController::sliderValueChanged(Slider* sliderThatWasMoved)
-{
-	if (sliderThatWasMoved == stimulusVoltageSlider)
-	{
-		stimulusVoltage = sliderThatWasMoved->getValue();
-
-		pulsePal.setPhase1Voltage(3, stimulusVoltage);
-		//pulsePal.currentOutputParams[3].phase1Voltage = stimulusVoltage;
-		//pulsePal.syncAllParams();
-
-		/**
-		float customVoltages2[2] = { stimulusVoltage };
-		float customPulseTimes2[2] = { 0 };
-		pulsePal.sendCustomPulseTrain(2, 1, customPulseTimes2, customVoltages2);
-		pulsePal.setCustomTrainID(2, 2);
-		**/
-	}
-}
 
 void ppController::setStimulusVoltage(float newVoltage)
 {
