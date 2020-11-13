@@ -346,7 +346,6 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 
 		tempObj.duration = tempData[0].getFloatValue();
 		tempObj.voltage = tempData[1].getFloatValue();
-		tempObj.rate = 0.5f;//tempData[2].getFloatValue();
 		tempObj.comment = tempData[3];
 
 
