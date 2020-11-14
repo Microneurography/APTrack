@@ -39,10 +39,11 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	// HACK
 	stimulusVoltage = 3.0f;
-
 	stimulusVoltageMax = 5.0f;
-
 	stimulusVoltageMin = 0.5f;
+
+	trackSpike_IncreaseRate = 0.01;
+	trackSpike_DecreaseRate = 0.01;
 
 
     //[/Constructor_pre]
@@ -68,7 +69,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
 
     addAndMakeVisible (imageThresholdSlider = new Slider ("imageThreshold"));
-    imageThresholdSlider->setRange (0, 90, 0);
+    imageThresholdSlider->setRange (0, 100, 0);
     imageThresholdSlider->setSliderStyle (Slider::ThreeValueVertical);
     imageThresholdSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     imageThresholdSlider->addListener (this);
@@ -85,13 +86,24 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageSlider->addListener(this);
 
 	addAndMakeVisible(stimulusVoltageMin_text = new TextEditor("Stimulus Min"));
-	stimulusVoltageMin_text->setText(String(stimulusVoltageMin));
+	stimulusVoltageMin_text->setText(String(stimulusVoltageMin) + " V");
 
 	addAndMakeVisible(stimulusVoltageMax_text = new TextEditor("Stimulus Max"));
-	stimulusVoltageMax_text->setText(String(stimulusVoltageMax));
+	stimulusVoltageMax_text->setText(String(stimulusVoltageMax) + " V");
 
 	addAndMakeVisible(stimulusVoltage_text = new TextEditor("Stimulus now"));
-	stimulusVoltage_text->setText(String(stimulusVoltage));
+	stimulusVoltage_text->setText(String(stimulusVoltage) + " V");
+
+
+	addAndMakeVisible(stimulusVoltageMax_label = new Label("stimulusVoltageMax_label"));
+	stimulusVoltageMax_label->setText("max stimulus", dontSendNotification);
+
+	addAndMakeVisible(stimulusVoltage_label = new Label("stimulusVoltage_label"));
+	stimulusVoltage_label->setText("current stimulus", dontSendNotification);
+
+	addAndMakeVisible(stimulusVoltageMin_label = new Label("stimulusVoltageMin_label"));
+	stimulusVoltageMin_label->setText("min stimulus", dontSendNotification);
+
 	//
 
     
@@ -101,22 +113,22 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     searchBoxSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     searchBoxSlider->addListener (this);
     
-    addAndMakeVisible(ROIspikeLocation = new TextEditor("SearchBoxLocationLatency"));
-    ROIspikeLocation->setText(String(searchBoxLocation));
+    addAndMakeVisible(ROISpikeLatency = new TextEditor("SearchBoxLocationLatency"));
+    ROISpikeLatency->setText(String(searchBoxLocation));
     
     
-    addAndMakeVisible(ROIspikeValue = new TextEditor("SearchBoxLocationSpeed"));
-    ROIspikeValue->setText("NaN");
+    addAndMakeVisible(ROISpikeMagnitude = new TextEditor("SearchBoxLocationSpeed"));
+    ROISpikeMagnitude->setText("NaN");
     
     
     addAndMakeVisible(lowImageThresholdText = new TextEditor("lowImageThreshold"));
-	lowImageThresholdText->setText(String(lowImageThreshold));
+	lowImageThresholdText->setText(String(lowImageThreshold) + " uV");
     
     addAndMakeVisible(highImageThresholdText = new TextEditor("highImageThreshold"));
-	highImageThresholdText->setText(String(highImageThreshold));
+	highImageThresholdText->setText(String(highImageThreshold) + " uV");
     
     addAndMakeVisible(detectionThresholdText = new TextEditor("spikeDetectionThresholdText"));
-    detectionThresholdText->setText(String(detectionThreshold));
+    detectionThresholdText->setText(String(detectionThreshold)+" uV");
     
     //buffer/window = ssp
     
@@ -135,24 +147,19 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     startingSampleSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     startingSampleSlider->addListener (this);
     
-    addAndMakeVisible (conductionDistanceSlider = new Slider ("conductionDistanceSlider"));
-    conductionDistanceSlider->setRange (0, 2000, 1);
-    conductionDistanceSlider->setSliderStyle (Slider::Rotary);
-    conductionDistanceSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
-    conductionDistanceSlider->addListener (this);
-    
+
     
     addAndMakeVisible (searchBoxWidthSlider = new Slider ("searchBoxWidthSlider"));
     searchBoxWidthSlider->setRange (1, 30, 1);
     searchBoxWidthSlider->setSliderStyle (Slider::Rotary);
-    searchBoxWidthSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
+    searchBoxWidthSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     searchBoxWidthSlider->addListener (this);
     
     addAndMakeVisible(colorStyleComboBox = new ComboBox("Color style selector"));
     colorStyleComboBox->setEditableText(false);
     colorStyleComboBox->setJustificationType(Justification::centredLeft);
     colorStyleComboBox->setTextWhenNothingSelected(TRANS("WHOT"));
-    colorStyleComboBox->addItem("WHOTTT", 1);
+    colorStyleComboBox->addItem("WHOT", 1);
     colorStyleComboBox->addItem("BHOT", 2);
     colorStyleComboBox->addItem("WHOT,PLAIN", 3);
     colorStyleComboBox->addItem("BHOT,PLAIN", 4);
@@ -160,31 +167,100 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton("Extended scale?"));
     extendedColorScaleToggleButton->addListener(this);
     
-    addAndMakeVisible(msLabel = new Label("ms_label"));
-    msLabel->setText ("ms", dontSendNotification);
-    
-    addAndMakeVisible(msLabel = new Label("ms_label"));
-    msLabel->setText ("ms", dontSendNotification);
-    
-    addAndMakeVisible(cmLabel = new Label("cm_label"));
-    cmLabel->setText ("cm", dontSendNotification);
-    
-    addAndMakeVisible(mpersLabel = new Label("mpers_label"));
-    mpersLabel->setText ("m/s", dontSendNotification);
+    addAndMakeVisible(ROISpikeLatency_label = new Label("ROISpikeLatency_label"));
+    ROISpikeLatency_label->setText ("ROI peak mag", dontSendNotification);
+ 
+    addAndMakeVisible(ROISpikeMagnitude_label = new Label("ROISpikeMagnitude_label"));
+    ROISpikeMagnitude_label->setText ("ROI peak latency", dontSendNotification);
    
-    
-    
-    
-    
+
+	addAndMakeVisible(textBox2 = new TextEditor("selectedDataChanText"));
+	textBox2->setText("Data");
+
+	addAndMakeVisible(textBox1 = new TextEditor("selectedTriggerChanText"));
+	textBox1->setText("Trigger");
+
+
+	addAndMakeVisible(triggerChannelComboBox = new ComboBox("Trigger Channel"));
+	triggerChannelComboBox->setEditableText(false);
+	triggerChannelComboBox->setJustificationType(Justification::centredLeft);
+	triggerChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
+	triggerChannelComboBox->addSectionHeading("Trigger");
+
+	addAndMakeVisible(dataChannelComboBox = new ComboBox("Data Channel"));
+	dataChannelComboBox->setEditableText(false);
+	dataChannelComboBox->setJustificationType(Justification::centredLeft);
+	dataChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
+	dataChannelComboBox->addSectionHeading("Data");
+
+	addAndMakeVisible(triggerChannelComboBox_label = new Label("triggerChannelComboBox_label"));
+	triggerChannelComboBox_label->setText("Trigger CH", dontSendNotification);
+
+	addAndMakeVisible(dataChannelComboBox_label = new Label("dataChannelComboBox_label"));
+	dataChannelComboBox_label->setText("Display CH", dontSendNotification);
+
+
+	addAndMakeVisible(trackSpike_button = new ToggleButton("Track spike"));
+	trackSpike_button->addListener(this);
+	trackSpike_button->setToggleState(false, sendNotification);
+
+
+	addAndMakeVisible(trackThreshold_button = new ToggleButton("Track threshold"));
+	trackThreshold_button->addListener(this);
+	trackThreshold_button->setToggleState(false, sendNotification);
+	trackThreshold_button->setEnabled(trackSpike_button->getToggleState());
+
+	addAndMakeVisible(trackSpike_IncreaseRate_Slider = new Slider("searchBoxWidthSlider"));
+	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
+	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
+	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
+	trackSpike_IncreaseRate_Slider->addListener(this);
+	trackSpike_IncreaseRate_Slider->setValue(0.01f);
+
+	addAndMakeVisible(trackSpike_DecreaseRate_Slider = new Slider("searchBoxWidthSlider"));
+	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
+	trackSpike_DecreaseRate_Slider->setSliderStyle(Slider::Rotary);
+	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
+	trackSpike_DecreaseRate_Slider->addListener(this);
+	trackSpike_DecreaseRate_Slider->setValue(0.01f);
+
+	addAndMakeVisible(trackSpike_IncreaseRate_Text = new TextEditor("trackSpike_IncreaseRate_Text"));
+	trackSpike_IncreaseRate_Text->setText("+"+String(trackSpike_IncreaseRate_Slider->getValue(),0) + " V");
+
+	addAndMakeVisible(trackSpike_DecreaseRate_Text = new TextEditor("trackSpike_DecreaseRate_Text"));
+	trackSpike_DecreaseRate_Text->setText("-"+String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
+
+	addAndMakeVisible(trackSpike_IncreaseRate_label = new Label("trackSpike_IncreaseRate_label"));
+	trackSpike_IncreaseRate_label->setText("Stim increase rate", dontSendNotification);
+
+	addAndMakeVisible(trackSpike_DecreaseRate_label = new Label("trackSpike_DecreaseRate_label"));
+	trackSpike_DecreaseRate_label->setText("Stim decrease rate", dontSendNotification);
+
+	//Debug
+	addAndMakeVisible(trigger_threshold_Slider = new Slider("trigger_threshold_Slider"));
+	trigger_threshold_Slider->setRange(0.1f, 150.0f, 0);
+	trigger_threshold_Slider->setSliderStyle(Slider::Rotary);
+	trigger_threshold_Slider->setTextBoxStyle(Slider::TextBoxRight, false, 80, 20);
+	trigger_threshold_Slider->addListener(this);
+	trigger_threshold_Slider->setValue(2.5f);
+
+	addAndMakeVisible(trigger_threshold_label = new Label("trigger_threshold_label"));
+	trigger_threshold_label->setText("Trigger threshold (V)", dontSendNotification);
+
+
     
     //[UserPreSize]
 
-    //set default minVal
-    imageThresholdSlider->setMinValue(1.0f);
-    //set default maxVal
-    imageThresholdSlider->setMaxValue(10.0f);
-    searchBoxSlider->setValue(10.0f);
-    imageThresholdSlider->setValue(5.0f);
+    imageThresholdSlider->setMinValue(0.0f);
+    imageThresholdSlider->setMaxValue(90.0f);
+    imageThresholdSlider->setValue(50.0f);
+
+	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
+	stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
+	stimulusVoltageSlider->setValue(stimulusVoltage);
+
+	searchBoxSlider->setValue(10.0f);
+
     subsamplesPerWindowSlider->setValue(1);
     startingSampleSlider->setValue(0);
     
@@ -217,6 +293,30 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
     colorControlGroup = nullptr;
 	stimulusVoltageSlider = nullptr;
 
+	textBox1 = nullptr;
+	textBox2 = nullptr;
+
+	triggerChannelComboBox = nullptr;
+	dataChannelComboBox = nullptr;
+
+	triggerChannelComboBox_label = nullptr;
+	dataChannelComboBox_label = nullptr;
+
+	trackThreshold_button = nullptr;
+	trackSpike_button = nullptr;
+
+	trackSpike_IncreaseRate_Slider = nullptr;
+	trackSpike_DecreaseRate_Slider = nullptr;
+
+	trackSpike_IncreaseRate_Text = nullptr;
+	trackSpike_DecreaseRate_Text = nullptr;
+
+	trackSpike_IncreaseRate_label = nullptr;
+	trackSpike_DecreaseRate_label = nullptr;
+
+	trigger_threshold_Slider = nullptr;
+	trigger_threshold_label = nullptr;
+
 
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
@@ -232,12 +332,19 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
     //Note, drawImage handles rescaling!
     //[/UserPrePaint]
     
-
-    if (spikeDetected) {
-        g.setColour(Colours::green);
-    } else {
-        g.setColour(Colours::red);
-    }
+	if (trackSpike_button->getToggleState() == true)
+	{
+		if (spikeDetected) {
+			g.setColour(Colours::green);
+		}
+		else {
+			g.setColour(Colours::red);
+		}
+	}
+	else
+	{
+		g.setColour(Colours::lightyellow);
+	}
     
     g.drawRoundedRectangle(300-8, 300-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 
@@ -272,26 +379,57 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     
     colorControlGroup->setBounds(344, 0, 248, 304);
     
-    extendedColorScaleToggleButton->setBounds(500, 24, 80, 24);
+    extendedColorScaleToggleButton->setBounds(500, 24, 70, 24);
     
     searchBoxWidthSlider->setBounds(500, 54, 50, 50);
-    
-    ROIspikeLocation->setBounds(360, 336, 72, 24);
-    msLabel->setBounds(432, 336, 72, 24);
-    
-    ROIspikeValue->setBounds(360, 360, 72, 24);
-    mpersLabel->setBounds(432, 360, 72, 24);
-    
-    conductionDistanceSlider->setBounds(360, 456, 159, 64);
+
+
+
 
 	// Stimulus
-	ppControllerComponent->setBounds(600, 400, 402, 350);
+	ppControllerComponent->setBounds(600, 300, 402, 350);
 
 	stimulusVoltageSlider->setBounds(600, 0, 55, 264);
 
 	stimulusVoltageMin_text->setBounds(664, 72, 55, 24);
 	stimulusVoltage_text->setBounds(664, 48, 55, 24);
 	stimulusVoltageMax_text->setBounds(664, 24, 55, 24);
+
+	stimulusVoltageMin_label->setBounds(720, 72, 120, 24);
+	stimulusVoltage_label->setBounds(720, 48, 120, 24);
+	stimulusVoltageMax_label->setBounds(720, 24, 120, 24);
+
+	// channel control
+	//textBox1->setBounds(10, 320, 72, 24);
+	//textBox2->setBounds(10, 350, 72, 24);
+
+	triggerChannelComboBox_label->setBounds(30, 320, 72, 24);
+	dataChannelComboBox_label->setBounds(30, 350, 72, 24);
+
+	triggerChannelComboBox->setBounds(120, 320, 72, 24);
+	dataChannelComboBox->setBounds(120, 350, 72, 24);
+
+	ROISpikeMagnitude->setBounds(360, 336, 72, 24);
+	ROISpikeMagnitude_label->setBounds(432, 360, 120, 24);
+
+	ROISpikeLatency->setBounds(360, 360, 72, 24);
+	ROISpikeLatency_label->setBounds(432, 336, 120, 24);
+
+	trackSpike_button->setBounds(360, 394, 120, 24);
+	trackThreshold_button->setBounds(360, 428, 120, 24);
+
+	trackSpike_IncreaseRate_Slider->setBounds(690, 106, 159, 64);
+	trackSpike_DecreaseRate_Slider->setBounds(690, 180, 159, 64);
+
+	trackSpike_IncreaseRate_Text->setBounds(660, 106, 72, 24);
+	trackSpike_DecreaseRate_Text->setBounds(660, 180, 72, 24);
+
+	trackSpike_IncreaseRate_label->setBounds(810, 106, 120, 24);
+	trackSpike_DecreaseRate_label->setBounds(810, 180, 120, 24);
+
+	// Threshold trigger control
+	trigger_threshold_Slider->setBounds(30, 400, 159, 64);
+	trigger_threshold_label->setBounds(30, 380, 120, 24);
 	
     //[UserResized]
     //[/UserResized]
@@ -326,17 +464,17 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
         //Lower value
         lowImageThreshold = sliderThatWasMoved->getMinValue();
         std::cout << "Slider lower: " << lowImageThreshold << std::endl;
-        lowImageThresholdText->setText(String(lowImageThreshold));
+        lowImageThresholdText->setText(String(lowImageThreshold,1)+" uV");
 
         //Upper value
         highImageThreshold = sliderThatWasMoved->getMaxValue();
         std::cout << "Slider upper: " << highImageThreshold << std::endl;
-        highImageThresholdText->setText(String(highImageThreshold));
+        highImageThresholdText->setText(String(highImageThreshold,1) + " uV");
         
         //mid value
         detectionThreshold = sliderThatWasMoved->getValue();
         std::cout << "DetectionThehold" << detectionThreshold << std::endl;
-        detectionThresholdText->setText(String(detectionThreshold));
+        detectionThresholdText->setText(String(detectionThreshold,1) + " uV");
 
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
         //[/UserSliderCode_imageThresholdSlider]
@@ -354,31 +492,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
         //auto subsamplesPerWindowOld = subsamplesPerWindow;
         subsamplesPerWindow = sliderThatWasMoved->getValue();
         std::cout << "subsamplesPerWindow" << searchBoxLocation << std::endl;
-        
-     /*
-        searchBoxWidthSlider->setValue(std::round(searchBoxWidth*subsamplesPerWindowOld/subsamplesPerWindow));
-        
-        std::cout << "subsamplesPerWindow" << subsamplesPerWindow << std::endl;
-        std::cout << "absPos" << absPos << std::endl;
-        int startingSample2 = (absPos-searchBoxLocation*subsamplesPerWindow);
-        
-        std::cout << "sugestedStartSample " << startingSample2 << std::endl;
-        
-        if (startingSample2 > 0)
-        {
-           startingSample = startingSample2;
-            
-           // searchBoxLocation = startingSample;
-           startingSampleSlider->setValue(startingSample);
-           
-            std::cout << "using startSample " << startingSample << std::endl;
-            
-        }
-        else
-        {
-            startingSample = 0;
-        }
-      */
+      
     }
     if (sliderThatWasMoved == startingSampleSlider)
     {
@@ -394,15 +508,17 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
         std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
         
     }
-    if (sliderThatWasMoved == conductionDistanceSlider)
-    {
-        
-        conductionDistance = conductionDistanceSlider->getValue();
-        std::cout << "conductionSpeed" << conductionDistance << std::endl;
+	if (sliderThatWasMoved == trackSpike_IncreaseRate_Slider)
+	{
+		trackSpike_IncreaseRate = sliderThatWasMoved->getValue();
+		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0)+ " V");
+	}
+	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
+	{
+		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
+		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
+	}
 
-		
-        
-    }
     
     //[UsersliderValueChanged_Post]
     //[/UsersliderValueChanged_Post]
@@ -449,9 +565,20 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
         }
         else {
             // If using regular scale (eg when using FPGA real time data)
-            imageThresholdSlider->setRange (0, 90, 0);
+            imageThresholdSlider->setRange (0, 100, 0);
         }
     }
+	if (buttonThatWasClicked == trackSpike_button)
+	{
+		if (buttonThatWasClicked->getToggleState() == true) {
+			trackThreshold_button->setEnabled(true);
+		}
+		else if (buttonThatWasClicked->getToggleState() == false)
+		{
+			trackThreshold_button->setEnabled(false);
+			trackThreshold_button->setToggleState(false, sendNotification);
+		}
+	}
 }
 
 

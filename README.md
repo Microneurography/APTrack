@@ -13,6 +13,5 @@ The Open Ephys team is moving their documentation from [atlassian](https://open-
 
 - Clone the plugin repo
 - Install [cmake](https://cmake.org/download/)
-- Create a folder named `Build` inside the cloned `OE-plugin-latency-tracker`
 - [Create the build files](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1301643269/Creating+Build+files).
 - Compile plugin

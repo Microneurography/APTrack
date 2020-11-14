@@ -11,36 +11,9 @@ struct protocolDataElement {
 };
 
 
-class blinkingButton : public Component,
-	public MultiTimer
-{
-public:
-
-	blinkingButton();
-
-	~blinkingButton();
-
-	void startFlashing(float rate);
-
-	void stopFlashing();
-
-	void paint(Graphics& g) override;
-
-private:
-	float flashAlpha = 0.0f;
-
-	int pulsePeriod;
-	int zapPeriod;
-
-	Colour colour{ Colours::red };
-
-	void timerCallback(int timerID) override;
-};
-
 class ppController : public Component,
 	public ButtonListener,
-	public MultiTimer,
-	public SliderListener
+	public MultiTimer
 {
 public:
 
@@ -49,8 +22,6 @@ public:
 	~ppController();
 
 	void buttonClicked(Button* buttonThatWasClicked) override;
-
-	void sliderValueChanged(Slider* sliderThatWasMoved) override;
 
 	void paint(Graphics& g) override;
 
@@ -72,13 +43,9 @@ private:
 	ScopedPointer<TextEditor> protocolVoltage_label;
 	ScopedPointer<TextEditor> protocolComment_label;
 
-	ScopedPointer<Slider> stimulusVoltageSlider;
-
 	ScopedPointer<UtilityButton> getFileButton;
 
 	ScopedPointer<TextEditor> fileName_label;
-
-	ScopedPointer<blinkingButton> flashingComponentDemo;
 
 	std::vector<protocolDataElement> protocolData;
 
@@ -103,4 +70,7 @@ private:
 	// PulsePal Specific
 	PulsePal pulsePal;
 	uint32_t pulsePalVersion;
+
+	void sendProtocolStepToPulsePal(protocolDataElement protocol);
+
 };

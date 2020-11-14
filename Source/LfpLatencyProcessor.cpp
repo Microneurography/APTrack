@@ -64,12 +64,17 @@ LfpLatencyProcessor::LfpLatencyProcessor()
     
     currentTrack = 0;
     
-    std::cout << getTotalNumberOfChannels() << std::endl;
-    
-    
+
+	// Set default channels
+	dataChannel_idx = 0;
+	triggerChannel_idx = 0;
+
+	// Set default stimulus threshold
+	stimulus_threshold = 2.5f;
     
     
 }
+
 
 void LfpLatencyProcessor::timerCallback(int timerID)
 {
@@ -152,60 +157,47 @@ void LfpLatencyProcessor::handleEvent (const EventChannel* eventInfo, const Midi
 
 void LfpLatencyProcessor::process (AudioSampleBuffer& buffer)
 {
-    // ALL CHANNEL REFERENCES ARE HARDCODED:
-    //CH1: NEURAL PROBE
-    //CH20: TTL STIMULATOR
-    int nChannels = buffer.getNumChannels();
+    int numChannels = buffer.getNumChannels();
     
-    
-    /*
-     //TO-Do: If no ADC detected, then AlertWindow.
-     // Need to understand better how dataChannelArray works before implementing this check.
-    if (! (dataChannelArray[18]->getChannelType() == DataChannel::ADC_CHANNEL)) //Redo chanel check outside of proess block?
+    if (numChannels > 0) // Avoids crashing when no data source connected
     {
-        juce::AlertWindow *alert = new juce::AlertWindow (String("ADC's not enabled"),String("Error"), juce::AlertWindow::WarningIcon );
-        alert->addButton (String("Continue"),1,juce::KeyPress(),juce::KeyPress());
-        alert->addToDesktop (4);
-        alert->setBounds(230,150,500,100);
-        int returnValue = alert->runModalLoop();
-        delete alert;
-    }
-     */
-    
-    if (nChannels > 0)
-    {
-        //Chanel 2 (3): Data
-        //Get numbber of samples in buffer
+		// get num of samples in buffer
         int nSamples = getNumSamples (0);
-        //Get RW pointer to buffer
-        const float* bufPtr = buffer.getReadPointer (17); //0
+
+        //Data channel
+        const float* bufPtr = buffer.getReadPointer(dataChannel_idx); 
         
-        //Chanel 19 (20): ADC pulses
-        //Get numbber of samples in buffer
-        //int nSamples_pulses = getNumSamples (19);
-        //Get RW pointer to buffer
-        //const float* bufPtr_pulses = buffer.getReadPointer (33);
-		const float* bufPtr_pulses = buffer.getReadPointer(18);
+		// Trigger channel
+		const float* bufPtr_pulses = buffer.getReadPointer(triggerChannel_idx);
+
+		// Debug channel, used to explore scalings
+		//const float* bufPtr_test = buffer.getReadPointer(23);
 
         //For each sample in buffer
         for (auto n = 0; n < nSamples; ++n)
         {
             //Read sample from DATA buffer
-            float data = *(bufPtr + n)*500.0f;
+            float data = *(bufPtr + n)*1.0f;
             
             //Read sample from TRIGGER (ADC) buffer
             float data_pulses = *(bufPtr_pulses + n);
 
+			//Read sample from Debug buffer
+			//float test_pulses = *(bufPtr_test + n);
+
             //If data is above threshold, and no event received lately
-            if (std::abs(data_pulses) > 3 && !eventReceived)
+            if (std::abs(data_pulses) > stimulus_threshold && !eventReceived)
             {
+				//DEBUG
+				//lastReceivedDACPulse=test_pulses;
+
                 //Print to console
-                std::cout << "Peak with amplitude: " << data_pulses << std::endl;
+                //std::cout << "Peak with amplitude: " << data_pulses << std::endl;
 
                 //Set flags
                 eventReceived = true;
 				// We have a pulse, start refactoery period timer
-				startTimer(1, 600);
+				startTimer(1, 200); //from 600
 
                 //Reset fifo index (so that buffer overwrites
                 fifoIndex = 0;
@@ -349,4 +341,55 @@ void LfpLatencyProcessor::changeParameter(int parameterID, int value)
     {
         samplesAfterStimulusStart = value;
     }
+	if (parameterID == 3)
+	{
+		// change current trigger chan
+		if(value >= 0 && value < getTotalNumberOfChannels())
+		{
+			triggerChannel_idx = value;
+		}
+	}
+	if (parameterID == 4)
+	{
+		// change current trigger chan
+		if (value >= 0 && value < getTotalNumberOfChannels())
+		{
+			dataChannel_idx = value;
+		}
+	}
+	if (parameterID == 5)
+	{
+		// change current strimulus detection threshold
+		if (value >= 0)
+		{
+			stimulus_threshold = value;
+		}
+	}
+}
+
+int LfpLatencyProcessor::getParameterInt(int parameterID)
+{
+	int value = -1;
+
+	if (parameterID == 1)
+	{
+		value = triggerChannel_idx;
+	}
+	if (parameterID == 2)
+	{
+		value = dataChannel_idx;
+	}
+
+	return value;
+}
+
+float LfpLatencyProcessor::getParameterFloat(int parameterID)
+{
+	float value = -1;
+
+	if (parameterID == 1)
+	{
+		value = lastReceivedDACPulse;
+	}
+	return value;
 }

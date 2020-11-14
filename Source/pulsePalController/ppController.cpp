@@ -7,73 +7,6 @@
 
 */
 
-blinkingButton::blinkingButton()
-{
-}
-
-blinkingButton::~blinkingButton()
-{
-}
-
-void blinkingButton::startFlashing(float rate)
-{
-
-
-	// Stimulus period
-	// Hz to ms
-	pulsePeriod = static_cast<int>(1000.0f / rate);
-
-	// Zap period. either 1/10th of pulsePeriod or 0.1s; whatever is smaller. 
-	zapPeriod = juce::jmin(pulsePeriod/10,50);
-
-	// flash frst pulse
-	flashAlpha = 1.0f;
-
-	//Start pulse timer
-	startTimer(0, pulsePeriod);
-
-	startTimer(1, zapPeriod);
-
-	repaint();
-}
-
-void blinkingButton::stopFlashing()
-{
-	flashAlpha = 0.0f;
-	stopTimer(0);
-	repaint();
-}
-
-void blinkingButton::paint(Graphics& g)
-{
-	g.setColour(Colours::darkslategrey.overlaidWith(Colours::lightgreen.withAlpha(flashAlpha)));
-	g.fillEllipse(getLocalBounds().toFloat());
-
-	// TODO: Write Text "Zap"
-}
-
-void blinkingButton::timerCallback(int timerID)
-{
-	//Short term trigger (makes dark)
-	if (timerID == 1)
-	{
-		// Light down
-		flashAlpha = 0.0f;
-		// Stop this timer
-		stopTimer(1);
-	}
-	//Long term trigger (makes high)
-	else if (timerID == 0)
-	{
-		// Ligth up 
-		flashAlpha = 1.0f;
-
-		//Start timer
-		startTimer(1, zapPeriod);
-	}
-	repaint();
-}
-
 
 /*
 	Pulse Pal controller
@@ -87,57 +20,32 @@ ppController::ppController()
 	pulsePal.updateDisplay("GUI Connected", "Click for Menu");
 	pulsePalVersion = pulsePal.getFirmwareVersion();
 
-	stimulusVoltage = 0.15f;
-
 	param_mAperVolts = 1.0f; // 50mA/5V=10mA/V
 
-	//Send pulses to channel 1
-	pulsePal.setBiphasic(1, 0);
-	pulsePal.setPhase1Voltage(1, 5);
-	pulsePal.setRestingVoltage(1, 0);
-	pulsePal.setPhase1Duration(1, 0.0005f); //0.5ms as per Obreja
-
-	//Send TTL to chan 2
-	pulsePal.setBiphasic(2, 0);
-	pulsePal.setPhase1Voltage(2, 5);
-	pulsePal.setRestingVoltage(2, 0);
-	pulsePal.setPhase1Duration(2, 0.0005f);
-
-	pulsePal.setContinuousLoop(1, 1);
-	pulsePal.setContinuousLoop(2, 1);
 
 	pulsePal.abortPulseTrains();
+
+	pulsePal.currentOutputParams[1].isBiphasic = 0;
+	pulsePal.currentOutputParams[1].phase1Voltage = 5.0f;
+	pulsePal.currentOutputParams[1].restingVoltage = 0.0f;
+	pulsePal.currentOutputParams[1].phase1Duration = 0.005f;
 	pulsePal.currentOutputParams[1].pulseTrainDuration = 1000.0f;
 	pulsePal.currentOutputParams[1].interPulseInterval = 2.0f;
+	pulsePal.currentOutputParams[1].phase1Voltage = 0.0f;
 
+	pulsePal.currentOutputParams[2].isBiphasic = 0;
+	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
+	pulsePal.currentOutputParams[2].restingVoltage = 0.0f;
+	pulsePal.currentOutputParams[2].phase1Duration = 0.005f;
 	pulsePal.currentOutputParams[2].pulseTrainDuration = 1000.0f;
 	pulsePal.currentOutputParams[2].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
+	pulsePal.currentOutputParams[2].phase1Voltage = 0.0f;
 
 	pulsePal.syncAllParams();
 
-	//ulsePal.triggerChannel(1);
-	pulsePal.triggerChannels(1, 1, 0, 0);
-	
-	/**
-	float customVoltages1[2] = { 5,5 };
-	float customPulseTimes1[2] = { 0};
-
-	pulsePal.sendCustomPulseTrain(1, 1, customPulseTimes1, customVoltages1);
-	pulsePal.setCustomTrainID(2, 2);
-	pulsePal.setCustomTrainTarget(2, 0);
-	pulsePal.setCustomTrainLoop(2, 0);
-	//Configure to fire on trigger channel 1 (from ardu pulse delay simulator)
-	pulsePal.setTrigger1Link(1, 0);
-	pulsePal.setTrigger1Link(2, 1);
-	pulsePal.setTrigger1Link(3, 0);
-	pulsePal.setTrigger1Link(4, 0);
-	//Set trigger mode to normal
-	pulsePal.setTriggerMode(2, 0);
-	**/
-
-
 	protocolStepNumber = -1;
+	stimulusVoltage = 0.0f;
+
 
 	//Get last opened file path 
 	lastFilePath = CoreServices::getDefaultUserSaveDirectory();
@@ -151,8 +59,6 @@ ppController::ppController()
 	addAndMakeVisible(fileName_label = new TextEditor("file label",0));
 	fileName_label->setReadOnly(true);
 	fileName_label->setText("No file selected", dontSendNotification);
-
-	addAndMakeVisible(flashingComponentDemo = new blinkingButton());
 
 	addAndMakeVisible(protocolStepNumber_label = new TextEditor("protocol_step_number", 0));
 	protocolStepNumber_label->setReadOnly(true);
@@ -180,15 +86,7 @@ ppController::ppController()
 	protocolTimeLeft_label->setReadOnly(true);
 	protocolTimeLeft_label->setText("-");
 
-	addAndMakeVisible(stimulusVoltageSlider = new Slider("Stimulus Voltage"));
-	stimulusVoltageSlider->setRange(0.0f, 5.0f, 0.01f);
-	stimulusVoltageSlider->setSliderStyle(Slider::LinearVertical);
-	stimulusVoltageSlider->setTextBoxStyle(Slider::TextBoxAbove, true, 80, 20);
-	stimulusVoltageSlider->addListener(this);
 
-	stimulusVoltage = 5.0f;
-	stimulusVoltageSlider->setValue(stimulusVoltage);
-	
 
 }
 
@@ -207,7 +105,7 @@ void ppController::paint(Graphics& g)
 {
 	g.setColour(Colours::darkslategrey);
 	//g.fillEllipse(getLocalBounds().toFloat());
-	g.drawRoundedRectangle(0, 0, 400, 200, 5, 2);
+	g.drawRoundedRectangle(0, 0, 300, 250, 5, 2);
 }
 
 void ppController::resized()
@@ -217,7 +115,7 @@ void ppController::resized()
 
 	fileName_label->setBounds(40, 5, 150, 20);
 
-	flashingComponentDemo->setBounds(200, 5, 30, 20);
+	//flashingComponentDemo->setBounds(200, 5, 30, 20);
 
 	protocolStepNumber_label->setBounds(5, 25, 200, 20);
 
@@ -228,60 +126,32 @@ void ppController::resized()
 	protocolComment_label->setBounds(5, 125, 90, 20);
 	protocolTimeLeft_label->setBounds(5, 150, 200, 20);
 
-	stimulusVoltageSlider->setBounds(250, 5, 55, 200);
+	//stimulusVoltageSlider->setBounds(250, 5, 55, 200);
 
 
 }
 
-void ppController::sliderValueChanged(Slider* sliderThatWasMoved)
-{
-	if (sliderThatWasMoved == stimulusVoltageSlider)
-	{
-		stimulusVoltage = sliderThatWasMoved->getValue();
-
-		pulsePal.setPhase1Voltage(3, stimulusVoltage);
-		//pulsePal.currentOutputParams[3].phase1Voltage = stimulusVoltage;
-		//pulsePal.syncAllParams();
-
-		/**
-		float customVoltages2[2] = { stimulusVoltage };
-		float customPulseTimes2[2] = { 0 };
-		pulsePal.sendCustomPulseTrain(2, 1, customPulseTimes2, customVoltages2);
-		pulsePal.setCustomTrainID(2, 2);
-		**/
-	}
-}
 
 void ppController::setStimulusVoltage(float newVoltage)
 {
 	//TODO: Check bounds
 	stimulusVoltage = newVoltage;
 
+	//Update channel voltages
+	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
+
 	pulsePal.currentOutputParams[1].phase1Voltage = stimulusVoltage;
 	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
 	pulsePal.syncAllParams();
 
-	//pulsePal.currentOutputParams[3].phase1Voltage = stimulusVoltage;
-	//pulsePal.syncAllParams();
-
-	/**
-	float customVoltages2[2] = { stimulusVoltage };
-	float customPulseTimes2[2] = { 0 };
-	pulsePal.sendCustomPulseTrain(2, 1, customPulseTimes2, customVoltages2);
-	pulsePal.setCustomTrainID(2, 2);
-	**/
 }
 
 void ppController::timerCallback(int timerID)
 {
-	// TODO: Cleanup code
-	if (timerID == 1)
+	if (timerID == 1) // Protocol step timer
 	{
 		//Stop old Timer
 		stopTimer(1);
-
-		// Stop flashing
-		flashingComponentDemo->stopFlashing();
 
 		//PulsePal Specific
 		pulsePal.abortPulseTrains();
@@ -292,16 +162,11 @@ void ppController::timerCallback(int timerID)
 			protocolStepNumber++;
 
 			// Update Labels
-			//protocolStepNumber_label->setText(String(protocolStepNumber + 1));
 			protocolStepNumber_label->setText(String(protocolStepNumber + 1) + "/" + String(elementCount)
 				+ " at " + String(protocolData[protocolStepNumber].rate) + " Hz, "
 				+ String(protocolData[protocolStepNumber].voltage) + " V");
 
-
-
-
 			protocolRate_label->setText(String(protocolData[protocolStepNumber].rate));
-
 
 			protocolVoltage_label->setText(String(protocolData[protocolStepNumber].voltage));
 			protocolComment_label->setText(protocolData[protocolStepNumber].comment);
@@ -309,41 +174,27 @@ void ppController::timerCallback(int timerID)
 			// Start next timer
 			startTimer(1,static_cast<int>(1000.0f * protocolData[protocolStepNumber].duration));
 
+			//send to pulse pal
+			sendProtocolStepToPulsePal(protocolData[protocolStepNumber]);
+
 			//Set new end Time time
 			endingTime = Time::getMillisecondCounter() + static_cast<int>(protocolData[protocolStepNumber].duration * 1000.0f);
 			protocolDuration_label->setText(String(protocolData[protocolStepNumber].duration));
 
-			//Send new command to "flasher"
-			flashingComponentDemo->startFlashing(protocolData[protocolStepNumber].rate);
-
-			//PulsePalSpecific
-
-			// Get pulse period in s
-			float pulsePeriod = (1.0f / protocolData[protocolStepNumber].rate);
-
-			//Send to pulsePal
-			//pulsePal.setPulseTrainDuration(1, protocolData[protocolStepNumber].duration); //Max 3600s->1h
-			//pulsePal.setInterPulseInterval(1,pulsePeriod);
-
-			pulsePal.abortPulseTrains();
-			pulsePal.currentOutputParams[1].pulseTrainDuration = protocolData[protocolStepNumber].duration;
-			pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod;
-			pulsePal.syncAllParams();
-			pulsePal.triggerChannel(1); //trigger
 
 		}
 		else
 		{
 			// If no more to draw then stop timer
 			stopTimer(0);
-		}
+			AlertWindow::showMessageBoxAsync(juce::AlertWindow::AlertIconType::InfoIcon, "Protocol info", "Protocol complete");
 
-		//
+		}
 
 		//Repaint
 		repaint();
 	}
-	else if (timerID == 0)
+	else if (timerID == 0) //UI refresh timer
 	{
 		// Calculate time left
 		secondsLeft = RelativeTime::milliseconds(endingTime - Time::getMillisecondCounter());
@@ -372,6 +223,8 @@ void ppController::buttonClicked(Button* buttonThatWasClicked)
 
 		if (chooseProtocolFile.browseForFileToOpen()) {
 			loadFile(chooseProtocolFile.getResult().getFullPathName());
+
+			std::cout << "Stim file path: " << chooseProtocolFile.getResult().getFullPathName() << std::endl;
 		}
 	}
 }
@@ -386,8 +239,6 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	StringArray protocolData_raw;
 	fileToRead.readLines(protocolData_raw);
 
-
-	//csvData.clear();
 
 	//TODO: Check if header matches what was expected
 
@@ -410,6 +261,12 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	//Get number of elements in string
 	elementCount = protocolData_raw.size();
 
+	// clear old protocol data, stop old timers
+	protocolData.clear();
+	stopTimer(0); // UI timer
+	stopTimer(1); // protocol timer
+
+	// store new protocol
 	for (int ii = 0; ii < elementCount; ii++) {
 
 		StringArray tempData;
@@ -417,21 +274,17 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 
 		tempData = StringArray::fromTokens(protocolData_raw[ii], ",", "\"");
 
-
 		tempObj.duration = tempData[0].getFloatValue();
 		tempObj.voltage = tempData[1].getFloatValue();
-		tempObj.rate = 0.5f;//tempData[2].getFloatValue();
+		tempObj.rate = tempData[2].getFloatValue();
 		tempObj.comment = tempData[3];
 
 
 		protocolData.push_back(tempObj);
 	}
 
-	//Display info prompt 
-	//AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon,"Stimulation protocol","File Loaded!");
-
+	
 	protocolStepNumber = 0;
-
 
 	// Start UI refresh timer
 	startTimer(0, 500);
@@ -439,19 +292,8 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	// Start Protocol Timer
 	startTimer(1,static_cast<int>(1000.0f * protocolData[protocolStepNumber].duration));
 
-
-
-	//Send command to "flasher"
-	flashingComponentDemo->startFlashing(protocolData[protocolStepNumber].rate);
-
-	//PulsePalSpecific
-	// Get pulse period in s
-	float pulsePeriod = (1.0f / protocolData[protocolStepNumber].rate);
-
-	//Send to pulsePal
-	pulsePal.setPulseTrainDuration(1, protocolData[protocolStepNumber].duration); //Max 3600s->1h
-	pulsePal.setInterPulseInterval(1, pulsePeriod);
-	pulsePal.triggerChannel(1); //trigger
+	// send to pulse pal
+	sendProtocolStepToPulsePal(protocolData[protocolStepNumber]);
 
 	// Update labels
 	protocolStepNumber_label->setText(String(protocolStepNumber + 1)+"/"+String(elementCount)
@@ -461,13 +303,37 @@ void ppController::loadFile(String file)//, std::vector<protocolDataElement> csv
 	protocolRate_label->setText(String(protocolData[protocolStepNumber].rate));
 	protocolDuration_label->setText(String(protocolData[protocolStepNumber].duration));
 
-
 	protocolVoltage_label->setText(String(protocolData[protocolStepNumber].voltage));
 	protocolComment_label->setText(protocolData[protocolStepNumber].comment);
 
 	// Handle time left
 	// End time is current time plus duration in ms
 	endingTime = Time::getMillisecondCounter() + static_cast<int>(protocolData[protocolStepNumber].duration * 1000.0f);
+}
+
+void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataStep)
+{
+	if (protocolDataStep.rate == 0) 
+	{
+		// if rate is 0 the treat as pause and abort pulse trains
+		pulsePal.abortPulseTrains();
+	}
+	else 
+	{
+		// if rate is nonzero then calculate pulse period and send to pulsepal
+		float pulsePeriod = (1.0f / protocolDataStep.rate);
+
+		pulsePal.abortPulseTrains();
+		pulsePal.currentOutputParams[1].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod; // in sec
+		pulsePal.currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal.currentOutputParams[2].interPulseInterval = pulsePeriod; // in sec
+
+		pulsePal.syncAllParams();
+
+		pulsePal.triggerChannels(1, 1, 0, 0);
+	}
+
 }
 
 String ppController::formatTimeLeftToString(RelativeTime step_secondsRemaining, float step_duration) 

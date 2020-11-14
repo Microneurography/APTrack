@@ -85,6 +85,50 @@ void LfpLatencyProcessorVisualizer::refreshState()
 void LfpLatencyProcessorVisualizer::update()
 {
     std::cout << "LfpLatencyProcessorVisualizer::update" << std::endl;
+
+	//Get number of availiable channels and update label
+	int numAvailiableChannels = processor->getTotalNumberOfChannels();
+
+	//Populate combobox with new channels, keep current selection if availiable
+	// get current selection
+	int last_triggerChannelId = content.triggerChannelComboBox->getSelectedId();
+	int last_dataChannelID = content.dataChannelComboBox->getSelectedId();
+
+	//Clear old values and repopulate combobox
+	content.triggerChannelComboBox->clear();
+	content.dataChannelComboBox->clear();
+
+	content.triggerChannelComboBox->addSectionHeading("Trigger");
+	content.dataChannelComboBox->addSectionHeading("Data");
+
+	for (int ii = 0; ii < numAvailiableChannels; ii++)
+	{
+		//TODO: better implementation first to through channel list and find type, then populate combobox
+		if (processor->getDataChannel(ii)->getChannelType() == DataChannel::HEADSTAGE_CHANNEL)
+		{
+			content.triggerChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
+			content.dataChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
+		}
+		else if (processor->getDataChannel(ii)->getChannelType() == DataChannel::ADC_CHANNEL)
+		{
+			content.triggerChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
+			content.dataChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
+		}
+	}
+	// If channel still availaible, keep selection, otherwise no don't select anything (TODO: and warn?)
+	// Trigger chanel combobox
+	if (content.triggerChannelComboBox->getNumItems() <= last_triggerChannelId)
+	{
+		content.triggerChannelComboBox->setSelectedId(last_triggerChannelId);
+	}
+	// data channel combobox
+	if (content.dataChannelComboBox->getNumItems() <= last_dataChannelID)
+	{
+		content.dataChannelComboBox->setSelectedId(last_dataChannelID);
+	}
+
+
+	
 }
 
 
@@ -110,10 +154,21 @@ void LfpLatencyProcessorVisualizer::endAnimation()
 
 void LfpLatencyProcessorVisualizer::timerCallback()
 {
+
+
     //std::cout << "LfpLatencyProcessorVisualizer::timerCallback" << std::endl;
     processor->changeParameter(1, content.subsamplesPerWindow);
     processor->changeParameter(2, content.startingSample);
-       
+	processor->changeParameter(3, content.triggerChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
+	processor->changeParameter(4, content.dataChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
+	processor->changeParameter(5, content.trigger_threshold_Slider->getValue()); // pass channel Id -1 = channel index
+
+	//content.textBox1->setText(String(processor->getParameterInt(1))); //Current trigger ch
+	//content.textBox2->setText(String(processor->getParameterInt(2))); //Current data ch
+
+	//content.selectedTriggerChanText->setText(String(processor->getParameterFloat(1)));
+	
+	
 	//Update spectrogram image
 	updateSpectrogram();
 
@@ -124,6 +179,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		processTrack();
 
 	}
+
     
    //Refresh canvas (redraw)
     refresh();
@@ -254,45 +310,6 @@ void LfpLatencyProcessorVisualizer::updateSpectrogram()
 void LfpLatencyProcessorVisualizer::processTrack()
 {
 
-
-	/**
-		if (samplesAfterStimulus > content.startingSample)
-		{
-			auto sample = dataToPrint[ii];
-
-			//If current sample is larger than previously stored peak, store sample as new peak
-			if (sample > lastWindowPeak)
-			{
-				lastWindowPeak = sample;
-			}
-
-			//Increment window sample counter
-			++windowSampleCount;
-
-			//If window is full, push window's peak into fifo
-			if (windowSampleCount >= content.subsamplesPerWindow)//76
-			
-							if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-							{
-								//Detected peak
-								content.spectrogramImage.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::yellowgreen);
-							}
-							else if (lastWindowPeak > content.highImageThreshold)
-							{
-								//Excessive peak
-								content.spectrogramImage.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::red);
-							}
-							else
-							{
-								//grayscale
-								content.spectrogramImage.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-							}
-						}
-
-						**/
-
-
-
 	// Get latency track data of previous row
 	float* lastRowData = processor->getdataCacheRow(1);
 
@@ -312,28 +329,41 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	int SpikeLocationRel= (SpikeLocationAbs - content.startingSample) / content.subsamplesPerWindow;
 
 	//display values
-	content.ROIspikeValue->setText(String(maxLevel,1));
+	content.ROISpikeMagnitude->setText(String(maxLevel,1) + " uV");
+	content.ROISpikeLatency->setText(String(SpikeLocationAbs/30.0f,1)+" ms"); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
 
-	content.ROIspikeLocation->setText(String(SpikeLocationRel));
+	// If we have enabled spike tracking the track spike
+	if (content.trackSpike_button->getToggleState() == true) {
 
-	if (maxLevel > content.detectionThreshold)
-	{
-		content.spikeDetected = true;
-		content.searchBoxSlider->setValue(SpikeLocationRel);
+		// Check for spike inside ROI box
+		if (maxLevel > content.detectionThreshold)
+		{
+			content.spikeDetected = true;
+			content.searchBoxSlider->setValue(SpikeLocationRel);
 
-		//Spike, decrease stimulation
-		float newStimulus = content.stimulusVoltage - (0.1)/10.0;
-		content.stimulusVoltageSlider->setValue(std::max(newStimulus, content.stimulusVoltageMin));
-		content.ppControllerComponent->setStimulusVoltage(std::max(newStimulus, content.stimulusVoltageMin));
-	}
-	else
-	{
-		content.spikeDetected = false;
+			// If we have enabled threshold tracking then update threshold:
+			// Spike, decrease stimulation
+			if (content.trackThreshold_button->getToggleState() == true)
+			{
+				float newStimulus = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+				content.stimulusVoltageSlider->setValue(std::max(newStimulus, content.stimulusVoltageMin));
+				content.ppControllerComponent->setStimulusVoltage(std::max(newStimulus, content.stimulusVoltageMin));
+			}
+		}
+		else
+		{
+			content.spikeDetected = false;
 
-		//No spike, increase stimulation
-		float newStimulus = content.stimulusVoltage + (0.1)/10.0;
-		content.stimulusVoltageSlider->setValue(std::min(newStimulus, content.stimulusVoltageMax));
-		content.ppControllerComponent->setStimulusVoltage(std::min(newStimulus, content.stimulusVoltageMax));
+			// If we have enabled threshold tracking then update threshold:
+			if (content.trackThreshold_button->getToggleState() == true)
+			{
+				//No spike, increase stimulation
+				float newStimulus = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
+				content.stimulusVoltageSlider->setValue(std::min(newStimulus, content.stimulusVoltageMax));
+				content.ppControllerComponent->setStimulusVoltage(std::min(newStimulus, content.stimulusVoltageMax));
+			}
+
+		}
 	}
 
 	
