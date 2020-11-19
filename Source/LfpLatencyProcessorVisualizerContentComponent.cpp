@@ -127,7 +127,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
 	// This should make a label? Where will it be though?
 	//addAndMakeVisible(new Label("Component name?", "Label text"));
-	addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton("New Label?"));
+	//addAndMakeVisible(myNewLabel = new ToggleButton("New Label?"));
+	//canThisBeAnything->addListener(this);
+	addAndMakeVisible(subsamplesPerWindowSliderLabel = new Label("Subsamples_Per_Window_Slider_Label"));
+	msLabel->setText("Subsamples Per Window Slider", dontSendNotification);
 
     addAndMakeVisible (startingSampleSlider = new Slider ("startingSampleSlider"));
     startingSampleSlider->setRange (0, 30000, 1);

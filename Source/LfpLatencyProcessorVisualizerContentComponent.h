@@ -119,6 +119,12 @@ private:
     ScopedPointer<GroupComponent> colorControlGroup;
 
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
+    
+	ScopedPointer<Label> subsamplesPerWindowSliderLabel;
+    ScopedPointer<Label> msLabel;
+    ScopedPointer<Label> cmLabel;
+    ScopedPointer<Label> mpersLabel;
+    //ScopedPointer<GroupComponent> detectionControlGroup;
 
     // Stimulus control
     ScopedPointer<Slider> stimulusVoltageSlider;
