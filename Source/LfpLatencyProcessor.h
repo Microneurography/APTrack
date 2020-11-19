@@ -24,7 +24,7 @@
 /*
  TODO: Spike detected indicator in GUI
  TODO: Spike threshold in GUI
- TODO: 
+ TODO:  ..
  */
 
 #ifndef LFPLATENCYPROCESSOR_H_INCLUDED

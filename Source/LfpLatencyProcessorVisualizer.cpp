@@ -84,10 +84,14 @@ void LfpLatencyProcessorVisualizer::refreshState()
 
 void LfpLatencyProcessorVisualizer::update()
 {
-    std::cout << "LfpLatencyProcessorVisualizer::update" << std::endl;
+    std::cout << "LfpLatencyProcessorVisualizer::update2" << std::endl;
 
 	//Get number of availiable channels and update label
-	int numAvailiableChannels = processor->getTotalNumberOfChannels();
+  // HACK: harcoded to 24
+	int numAvailiableChannels = processor->getTotalDataChannels();
+
+	std::cout << "LfpLatencyProcessorVisualizer::numAvailiableChannels" << numAvailiableChannels << std::endl;
+
 
 	//Populate combobox with new channels, keep current selection if availiable
 	// get current selection
@@ -121,14 +125,19 @@ void LfpLatencyProcessorVisualizer::update()
 	{
 		content.triggerChannelComboBox->setSelectedId(last_triggerChannelId);
 	}
+	else
+	{
+		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default trigger channel" method in processor instead of here?
+	}
 	// data channel combobox
 	if (content.dataChannelComboBox->getNumItems() <= last_dataChannelID)
 	{
 		content.dataChannelComboBox->setSelectedId(last_dataChannelID);
 	}
-
-
-	
+	else
+	{
+		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
+	}
 }
 
 
@@ -155,19 +164,12 @@ void LfpLatencyProcessorVisualizer::endAnimation()
 void LfpLatencyProcessorVisualizer::timerCallback()
 {
 
-
     //std::cout << "LfpLatencyProcessorVisualizer::timerCallback" << std::endl;
     processor->changeParameter(1, content.subsamplesPerWindow);
     processor->changeParameter(2, content.startingSample);
 	processor->changeParameter(3, content.triggerChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
 	processor->changeParameter(4, content.dataChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
 	processor->changeParameter(5, content.trigger_threshold_Slider->getValue()); // pass channel Id -1 = channel index
-
-	//content.textBox1->setText(String(processor->getParameterInt(1))); //Current trigger ch
-	//content.textBox2->setText(String(processor->getParameterInt(2))); //Current data ch
-
-	//content.selectedTriggerChanText->setText(String(processor->getParameterFloat(1)));
-	
 	
 	//Update spectrogram image
 	updateSpectrogram();

@@ -148,6 +148,7 @@ uint32_t PulsePal::getFirmwareVersionFromPulsePal() // JS 1/30/2014
     uint32_t firmwareVersion = 0;
     uint8_t responseBytes[5] = { 0 };
     uint8_t handshakeMessage[2] = { 213, 72 };
+    
     serial.writeBytes(handshakeMessage, 2);
     Sleep(100);
     serial.readBytes(responseBytes, 5);
