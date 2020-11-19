@@ -125,8 +125,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     subsamplesPerWindowSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     subsamplesPerWindowSlider->addListener (this);
     
-	// This should make a label?
-	addAndMakeVisible(new Label("Component name?", "Label text")); 
+	// This should make a label? Where will it be though?
+	//addAndMakeVisible(new Label("Component name?", "Label text"));
+	addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton("New Label?"));
 
     addAndMakeVisible (startingSampleSlider = new Slider ("startingSampleSlider"));
     startingSampleSlider->setRange (0, 30000, 1);
@@ -155,6 +156,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     colorStyleComboBox->addItem("WHOT,PLAIN", 3);
     colorStyleComboBox->addItem("BHOT,PLAIN", 4);
     
+	// Extended Scale appears on the GUI
     addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton("Extended scale?"));
     extendedColorScaleToggleButton->addListener(this);
 	extendedColorScaleToggleButton->setColour(ToggleButton::ColourIds::tickDisabledColourId,Colours::lightgrey);
