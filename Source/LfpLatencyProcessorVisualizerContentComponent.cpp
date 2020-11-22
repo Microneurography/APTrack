@@ -125,12 +125,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     subsamplesPerWindowSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     subsamplesPerWindowSlider->addListener (this);
     
-	// This should make a label? Where will it be though?
-	//addAndMakeVisible(new Label("Component name?", "Label text"));
-	//addAndMakeVisible(myNewLabel = new ToggleButton("New Label?"));
-	//canThisBeAnything->addListener(this);
+	// This makes a label, x and y coordinates 
 	addAndMakeVisible(subsamplesPerWindowSliderLabel = new Label("Subsamples_Per_Window_Slider_Label"));
-	msLabel->setText("Subsamples Per Window Slider", dontSendNotification);
+	subsamplesPerWindowSliderLabel->setText("Subsamples Per Window", sendNotification);
+	
 
     addAndMakeVisible (startingSampleSlider = new Slider ("startingSampleSlider"));
     startingSampleSlider->setRange (0, 30000, 1);
@@ -159,7 +157,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     colorStyleComboBox->addItem("WHOT,PLAIN", 3);
     colorStyleComboBox->addItem("BHOT,PLAIN", 4);
     
-	// Extended Scale appears on the GUI
     addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton("Extended scale?"));
     extendedColorScaleToggleButton->addListener(this);
 	extendedColorScaleToggleButton->setColour(ToggleButton::ColourIds::tickDisabledColourId,Colours::lightgrey);
@@ -337,8 +334,9 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     
     
     
-    
+    // If you want to move something down, you have to increase the y value
     subsamplesPerWindowSlider->setBounds(424, 152, 159, 64);
+	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50); // x y width height
     
     startingSampleSlider->setBounds(424, 224, 159, 64);
     
@@ -350,8 +348,14 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     
     searchBoxWidthSlider->setBounds(500, 54, 50, 50);
 
-
-
+    
+    ROIspikeLocation->setBounds(360, 336, 72, 24);
+    msLabel->setBounds(432, 336, 72, 24);
+    
+    ROIspikeValue->setBounds(360, 360, 72, 24);
+    mpersLabel->setBounds(432, 360, 72, 24);
+    
+    conductionDistanceSlider->setBounds(360, 456, 159, 64);
 
 	// Stimulus
 	ppControllerComponent->setBounds(600, 300, 402, 350);
