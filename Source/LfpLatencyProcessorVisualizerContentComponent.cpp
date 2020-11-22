@@ -66,12 +66,18 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
     addAndMakeVisible(colorControlGroup = new GroupComponent);
     colorControlGroup->setName(("Color control"));
+	addAndMakeVisible(colorControlGroupLabel = new Label("Color_Control_Group_Label"));
+	colorControlGroupLabel->setText("Color Control", sendNotification);
     
     addAndMakeVisible (imageThresholdSlider = new Slider ("imageThreshold"));
     imageThresholdSlider->setRange (0, 100, 0);
     imageThresholdSlider->setSliderStyle (Slider::ThreeValueVertical);
     imageThresholdSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     imageThresholdSlider->addListener (this);
+
+	addAndMakeVisible(imageThresholdSliderLabel = new Label("Image_Threshold_Slider_Label"));
+	imageThresholdSliderLabel->setText("Image Threshold", sendNotification);
+
 
 	// Stimulus control
 
@@ -82,6 +88,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
 	stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
 	stimulusVoltageSlider->addListener(this);
+
+	addAndMakeVisible(stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label"));
+	stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
 
 	addAndMakeVisible(stimulusVoltageMin_text = new TextEditor("Stimulus Min"));
 	stimulusVoltageMin_text->setText(String(stimulusVoltageMin) + " V");
@@ -98,6 +107,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     searchBoxSlider->setSliderStyle (Slider::LinearVertical);
     searchBoxSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     searchBoxSlider->addListener (this);
+	addAndMakeVisible(searchBoxSliderLabel = new Label("Search_Box_Slider_Label"));
+	searchBoxSliderLabel->setText("Search Box", sendNotification);
     
     addAndMakeVisible(ROISpikeLatency = new TextEditor("SearchBoxLocationLatency"));
     ROISpikeLatency->setText(String(searchBoxLocation));
@@ -107,12 +118,18 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
     addAndMakeVisible(lowImageThresholdText = new TextEditor("lowImageThreshold"));
 	lowImageThresholdText->setText(String(lowImageThreshold) + " uV");
+	addAndMakeVisible(lowImageThresholdTextLabel = new Label("Low_Image_Threshold_Text_Label"));
+	lowImageThresholdTextLabel->setText("Low Image Threshold", sendNotification);
     
     addAndMakeVisible(highImageThresholdText = new TextEditor("highImageThreshold"));
 	highImageThresholdText->setText(String(highImageThreshold) + " uV");
+	addAndMakeVisible(highImageThresholdTextLabel = new Label("High_Image_Threshold_Text_Label"));
+	highImageThresholdTextLabel->setText("High Image Threshold", sendNotification);
     
     addAndMakeVisible(detectionThresholdText = new TextEditor("spikeDetectionThresholdText"));
-    detectionThresholdText->setText(String(detectionThreshold)+" uV");
+    detectionThresholdText->setText(String(detectionThreshold) +" uV");
+	addAndMakeVisible(detectionThresholdTextLabel = new Label("Detection_Threshold_Text_Label"));
+	detectionThresholdTextLabel->setText("Detection Threshold", sendNotification);
     
     //buffer/window = ssp
     
@@ -125,7 +142,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     subsamplesPerWindowSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     subsamplesPerWindowSlider->addListener (this);
     
-	// This makes a label, x and y coordinates 
+	// This makes a label, x and y coordinates are described in function starting online 252
 	addAndMakeVisible(subsamplesPerWindowSliderLabel = new Label("Subsamples_Per_Window_Slider_Label"));
 	subsamplesPerWindowSliderLabel->setText("Subsamples Per Window", sendNotification);
 	
@@ -135,6 +152,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     startingSampleSlider->setSliderStyle (Slider::Rotary);
     startingSampleSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     startingSampleSlider->addListener (this);
+	addAndMakeVisible(startingSampleSliderLabel = new Label("Starting_Sample_Slider_Label"));
+	startingSampleSliderLabel->setText("Starting Sample", sendNotification);
     
     addAndMakeVisible (conductionDistanceSlider = new Slider ("conductionDistanceSlider"));
     conductionDistanceSlider->setRange (0, 2000, 1);
@@ -156,6 +175,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     colorStyleComboBox->addItem("BHOT", 2);
     colorStyleComboBox->addItem("WHOT,PLAIN", 3);
     colorStyleComboBox->addItem("BHOT,PLAIN", 4);
+	addAndMakeVisible(colorStyleComboBoxLabel = new Label("Color_Style_Combo_Box_Label"));
+	colorStyleComboBoxLabel->setText("Color Style Combination", sendNotification);
     
     addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton("Extended scale?"));
     extendedColorScaleToggleButton->addListener(this);
@@ -316,33 +337,44 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
     //[/UserPaint]
 }
 
+// If you want to move something down, you have to increase the y value
+// If you want something to move left, increase the x value
+// Sometimes this isn't true, as the coordinates are relative to the top-left of the component's parent
+// But I don't know how to find the parent, so this section of code was pain and suffering to make.
+// This also means you can't relate the location of one thing to another.
+// Please leave all arguments as you found them. Thank you <3
+// set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
     imageThresholdSlider->setBounds (360, 24, 55, 264);
-    
+	imageThresholdSliderLabel->setBounds(360, 24, 55, 264); // opposite to the instructions above 348, 270, 80, 50);
+   
     highImageThresholdText->setBounds (424, 24, 55, 24);
+	highImageThresholdTextLabel->setBounds(477, 24, 160, 25); // opposite to the instructions above
     
     lowImageThresholdText->setBounds (424, 72, 55, 24);
+	lowImageThresholdTextLabel->setBounds(477, 72, 160, 25); // opposite to the instructions above
     
     detectionThresholdText->setBounds(424, 48, 55, 24);
+	detectionThresholdTextLabel->setBounds(477, 48, 160, 25); // opposite to the instructions above
     
     searchBoxSlider->setBounds (295, 0, 15, 300);
+	searchBoxSliderLabel->setBounds(269, 281, 80, 50); // x value is inverted
     
-    
-    
-    
-    // If you want to move something down, you have to increase the y value
     subsamplesPerWindowSlider->setBounds(424, 152, 159, 64);
-	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50); // x y width height
+	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50);
     
     startingSampleSlider->setBounds(424, 224, 159, 64);
+	startingSampleSliderLabel->setBounds(347, 230, 80, 50); // x value is inverted - move up
     
     colorStyleComboBox->setBounds(424, 112, 120, 24);
-    
+	colorStyleComboBoxLabel->setBounds(424, 100, 120, 24); // move down
+
     colorControlGroup->setBounds(344, 0, 248, 304);
+	colorControlGroupLabel->setBounds(344, 0, 248, 304); // not sure what this is labelling
     
     extendedColorScaleToggleButton->setBounds(500, 24, 70, 24);
     
@@ -358,9 +390,10 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     conductionDistanceSlider->setBounds(360, 456, 159, 64);
 
 	// Stimulus
-	ppControllerComponent->setBounds(600, 300, 402, 350);
+	ppControllerComponent->setBounds(520, 400, 402, 350);
 
 	stimulusVoltageSlider->setBounds(600, 0, 55, 264);
+	stimulusVoltageSliderLabel->setBounds(590, 250, 80, 50); 
 
 	stimulusVoltageMin_text->setBounds(664, 72, 55, 24);
 	stimulusVoltage_text->setBounds(664, 48, 55, 24);

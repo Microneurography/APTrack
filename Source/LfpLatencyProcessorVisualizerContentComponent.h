@@ -101,33 +101,52 @@ private:
 
     //==============================================================================
     ScopedPointer<Slider> imageThresholdSlider;
+	ScopedPointer<Label> imageThresholdSliderLabel;
+
     ScopedPointer<Slider> searchBoxSlider;
+	ScopedPointer<Label> searchBoxSliderLabel;
 
+    ScopedPointer<TextEditor> ROIspikeLocation;
+	ScopedPointer<Label> msLabel;
+
+    ScopedPointer<TextEditor> ROIspikeValue;
+	ScopedPointer<Label> mpersLabel;
+    
+    ScopedPointer<Slider> conductionDistanceSlider;
+    
     ScopedPointer<TextEditor> detectionThresholdText;
-
+	ScopedPointer<Label> detectionThresholdTextLabel;
+    
     ScopedPointer<TextEditor> lowImageThresholdText;
+	ScopedPointer<Label> lowImageThresholdTextLabel;
+
     ScopedPointer<TextEditor> highImageThresholdText;
-
+	ScopedPointer<Label> highImageThresholdTextLabel;
+    
     ScopedPointer<Slider> subsamplesPerWindowSlider;
-
+	ScopedPointer<Label> subsamplesPerWindowSliderLabel;
+    
     ScopedPointer<Slider> startingSampleSlider;
-
+	ScopedPointer<Label> startingSampleSliderLabel;
+    
     ScopedPointer<Slider> searchBoxWidthSlider;
 
     ScopedPointer<ComboBox> colorStyleComboBox;
-
+	ScopedPointer<Label> colorStyleComboBoxLabel;
+    
     ScopedPointer<GroupComponent> colorControlGroup;
-
+	ScopedPointer<Label> colorControlGroupLabel;
+    
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
     
-	ScopedPointer<Label> subsamplesPerWindowSliderLabel;
-    ScopedPointer<Label> msLabel;
+	
     ScopedPointer<Label> cmLabel;
-    ScopedPointer<Label> mpersLabel;
+ 
     //ScopedPointer<GroupComponent> detectionControlGroup;
 
-    // Stimulus control
-    ScopedPointer<Slider> stimulusVoltageSlider;
+	// Stimulus control
+	ScopedPointer<Slider> stimulusVoltageSlider;
+	ScopedPointer<Label> stimulusVoltageSliderLabel;
 
     ScopedPointer<TextEditor> stimulusVoltageMax_text;
     ScopedPointer<TextEditor> stimulusVoltage_text;
