@@ -64,6 +64,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
     std::cout << "Post" << std::endl;
     
+	// The code for the descriptions is below
+	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
+
     addAndMakeVisible(colorControlGroup = new GroupComponent);
     colorControlGroup->setName(("Color control"));
 	addAndMakeVisible(colorControlGroupLabel = new Label("Color_Control_Group_Label"));
@@ -88,18 +91,24 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
 	stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
 	stimulusVoltageSlider->addListener(this);
-
 	addAndMakeVisible(stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label"));
 	stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
 
 	addAndMakeVisible(stimulusVoltageMin_text = new TextEditor("Stimulus Min"));
 	stimulusVoltageMin_text->setText(String(stimulusVoltageMin) + " V");
+	addAndMakeVisible(stimulusVoltageMin_textLabel = new Label("Stimulus_Voltage_Min_Text_Label"));
+	stimulusVoltageMin_textLabel->setText("Stimulus Voltage Min", sendNotification);
 
 	addAndMakeVisible(stimulusVoltageMax_text = new TextEditor("Stimulus Max"));
 	stimulusVoltageMax_text->setText(String(stimulusVoltageMax) + " V");
+	addAndMakeVisible(stimulusVoltageMax_textLabel = new Label("Stimulus_Voltage_Max_Text_Label"));
+	stimulusVoltageMax_textLabel->setText("Stimulus Voltage Max", sendNotification);
 
 	addAndMakeVisible(stimulusVoltage_text = new TextEditor("Stimulus now"));
 	stimulusVoltage_text->setText(String(stimulusVoltage) + " V");
+	addAndMakeVisible(stimulusVoltage_textLabel = new Label("Stimulus_Voltage_Text_Label"));
+	stimulusVoltage_textLabel->setText("Current Stimulus Voltage", sendNotification);
+	//
 
     
     addAndMakeVisible (searchBoxSlider = new Slider ("searchBox"));
@@ -112,10 +121,15 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
     addAndMakeVisible(ROISpikeLatency = new TextEditor("SearchBoxLocationLatency"));
     ROISpikeLatency->setText(String(searchBoxLocation));
+	addAndMakeVisible(ROISpikeLatencyLabel = new Label("ROI_Spike_Location_Label"));
+	searchBoxSliderLabel->setText("ROI Spike Location", sendNotification);
+    
     
     addAndMakeVisible(ROISpikeMagnitude = new TextEditor("SearchBoxLocationSpeed"));
     ROISpikeMagnitude->setText("NaN");
-    
+	addAndMakeVisible(ROISpikeMagnitudeLabel = new Label("ROI_Spike_Value_Label"));
+	searchBoxSliderLabel->setText("ROI Spike Value", sendNotification);
+
     addAndMakeVisible(lowImageThresholdText = new TextEditor("lowImageThreshold"));
 	lowImageThresholdText->setText(String(lowImageThreshold) + " uV");
 	addAndMakeVisible(lowImageThresholdTextLabel = new Label("Low_Image_Threshold_Text_Label"));
@@ -160,12 +174,16 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     conductionDistanceSlider->setSliderStyle (Slider::Rotary);
     conductionDistanceSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     conductionDistanceSlider->addListener (this);
+	addAndMakeVisible(conductionDistanceSliderLabel = new Label("Conduction_Distance_Slider_Label"));
+	startingSampleSliderLabel->setText("Conduction Distance", sendNotification);
     
     addAndMakeVisible (searchBoxWidthSlider = new Slider ("searchBoxWidthSlider"));
     searchBoxWidthSlider->setRange (1, 30, 1);
     searchBoxWidthSlider->setSliderStyle (Slider::Rotary);
     searchBoxWidthSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     searchBoxWidthSlider->addListener (this);
+	addAndMakeVisible(searchBoxWidthSliderLabel = new Label("search_Box_Width_Slider_Label"));
+	startingSampleSliderLabel->setText("Search Box Width", sendNotification);
     
     addAndMakeVisible(colorStyleComboBox = new ComboBox("Color style selector"));
     colorStyleComboBox->setEditableText(false);
@@ -243,6 +261,26 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trigger_threshold_Slider->setValue(2.5f);
 
 
+
+
+    
+    addAndMakeVisible(msLabel = new Label("ms_label"));
+    msLabel->setText ("ms", dontSendNotification);
+    
+    addAndMakeVisible(msLabel = new Label("ms_label"));
+    msLabel->setText ("ms", dontSendNotification);
+    
+    addAndMakeVisible(cmLabel = new Label("cm_label"));
+    cmLabel->setText ("cm", dontSendNotification);
+    
+    addAndMakeVisible(mpersLabel = new Label("mpers_label"));
+    mpersLabel->setText ("m/s", dontSendNotification);
+   
+    
+    
+    
+    
+    
     //[UserPreSize]
 
     imageThresholdSlider->setMinValue(0.0f);
@@ -367,6 +405,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     subsamplesPerWindowSlider->setBounds(424, 152, 159, 64);
 	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50);
     
+	// The labels below this need to be adjusted 
     startingSampleSlider->setBounds(424, 224, 159, 64);
 	startingSampleSliderLabel->setBounds(347, 230, 80, 50); // x value is inverted - move up
     
@@ -374,29 +413,36 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	colorStyleComboBoxLabel->setBounds(424, 100, 120, 24); // move down
 
     colorControlGroup->setBounds(344, 0, 248, 304);
-	colorControlGroupLabel->setBounds(344, 0, 248, 304); // not sure what this is labelling
-    
-    extendedColorScaleToggleButton->setBounds(500, 24, 70, 24);
+	colorControlGroupLabel->setBounds(344, 0, 248, 304); // not sure what this is labelling - might not be needed
+
+    extendedColorScaleToggleButton->setBounds(500, 24, 80, 24); // has label
     
     searchBoxWidthSlider->setBounds(500, 54, 50, 50);
-
+	searchBoxWidthSliderLabel->setBounds(500, 54, 50, 50);
     
-    ROIspikeLocation->setBounds(360, 336, 72, 24);
-    msLabel->setBounds(432, 336, 72, 24);
+	ROISpikeLatencyLabel->setBounds(360, 336, 72, 24);
+    ROISpikeLatency->setBounds(360, 336, 72, 24);
+    msLabel->setBounds(432, 336, 72, 24);	// this is a label for the units used, and not what the actual value is. 
     
-    ROIspikeValue->setBounds(360, 360, 72, 24);
-    mpersLabel->setBounds(432, 360, 72, 24);
+	ROISpikeMagnitudeLabel->setBounds(360, 360, 72, 24);
+    ROISpikeMagnitude->setBounds(360, 360, 72, 24);
+    mpersLabel->setBounds(432, 360, 72, 24); // this is a label for the units used, and not what the actual value is. 
     
     conductionDistanceSlider->setBounds(360, 456, 159, 64);
+	conductionDistanceSliderLabel->setBounds(360, 456, 159, 64);
 
 	// Stimulus
-	ppControllerComponent->setBounds(520, 400, 402, 350);
+	ppControllerComponent->setBounds(520, 400, 402, 350); // Don't think this needs a label
 
 	stimulusVoltageSlider->setBounds(600, 0, 55, 264);
 	stimulusVoltageSliderLabel->setBounds(590, 250, 80, 50); 
 
 	stimulusVoltageMin_text->setBounds(664, 72, 55, 24);
+	stimulusVoltageMin_textLabel->setBounds(664, 72, 55, 24);
+
 	stimulusVoltage_text->setBounds(664, 48, 55, 24);
+	stimulusVoltage_textLabel->setBounds(664, 48, 55, 24);
+
 	stimulusVoltageMax_text->setBounds(664, 24, 55, 24);
 
 	// Threshold trigger control
@@ -419,6 +465,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	trackSpike_IncreaseRate_Text->setBounds(660, 106, 72, 24);
 	trackSpike_DecreaseRate_Text->setBounds(660, 180, 72, 24);
 
+	stimulusVoltageMax_textLabel->setBounds(664, 24, 55, 24);
+	
     //[UserResized]
     //[/UserResized]
 }

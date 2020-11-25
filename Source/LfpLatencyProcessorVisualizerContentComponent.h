@@ -106,13 +106,16 @@ private:
     ScopedPointer<Slider> searchBoxSlider;
 	ScopedPointer<Label> searchBoxSliderLabel;
 
+	ScopedPointer<Label> ROIspikeLocationLabel;
     ScopedPointer<TextEditor> ROIspikeLocation;
 	ScopedPointer<Label> msLabel;
 
+	ScopedPointer<Label> ROIspikeValueLabel;
     ScopedPointer<TextEditor> ROIspikeValue;
 	ScopedPointer<Label> mpersLabel;
     
     ScopedPointer<Slider> conductionDistanceSlider;
+	ScopedPointer<Label> conductionDistanceSliderLabel;
     
     ScopedPointer<TextEditor> detectionThresholdText;
 	ScopedPointer<Label> detectionThresholdTextLabel;
@@ -130,7 +133,8 @@ private:
 	ScopedPointer<Label> startingSampleSliderLabel;
     
     ScopedPointer<Slider> searchBoxWidthSlider;
-
+	ScopedPointer<Label> searchBoxWidthSliderLabel;
+    
     ScopedPointer<ComboBox> colorStyleComboBox;
 	ScopedPointer<Label> colorStyleComboBoxLabel;
     
@@ -138,7 +142,6 @@ private:
 	ScopedPointer<Label> colorControlGroupLabel;
     
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
-    
 	
     ScopedPointer<Label> cmLabel;
  
@@ -148,9 +151,14 @@ private:
 	ScopedPointer<Slider> stimulusVoltageSlider;
 	ScopedPointer<Label> stimulusVoltageSliderLabel;
 
-    ScopedPointer<TextEditor> stimulusVoltageMax_text;
-    ScopedPointer<TextEditor> stimulusVoltage_text;
-    ScopedPointer<TextEditor> stimulusVoltageMin_text;
+	ScopedPointer<TextEditor> stimulusVoltageMax_text;
+	ScopedPointer<Label> stimulusVoltageMax_textLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltage_text;
+	ScopedPointer<Label> stimulusVoltage_textLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltageMin_text;
+	ScopedPointer<Label> stimulusVoltageMin_textLabel;
 
     ScopedPointer<ppController> ppControllerComponent;
 
