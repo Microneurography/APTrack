@@ -174,7 +174,10 @@ private:
     ScopedPointer<ToggleButton> trackThreshold_button;
 
     ScopedPointer<TextEditor> ROISpikeLatency;
+	ScopedPointer<Label> ROISpikeLatencyLabel;
+
     ScopedPointer<TextEditor> ROISpikeMagnitude;
+	ScopedPointer<Label> ROISpikeMagnitudeLabel;
 
     ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
     ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
