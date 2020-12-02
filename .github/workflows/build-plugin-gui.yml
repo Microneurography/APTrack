@@ -1,2 +1,32 @@
 name: Build plugin-gui
 on: workflow_dispatch
+
+jobs:
+  build:
+    name: Compile action
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build plugin-gui
+        run: |
+          cd .. 
+          git clone https://github.com/open-ephys/plugin-GUI.git 
+          sudo apt-get update 
+          sudo plugin-GUI/Resources/Scripts/install_linux_dependencies.sh
+          cd plugin-GUI/Build
+          export CC=clang CXX=clang++
+          cmake ..
+          make
+      - name: Archive compiled plugin-gui artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: plugin-GUI
+          path: |
+            /home/runner/work/OE-plugin-latency-tracker/plugin-GUI
+      - name: Archive compiled plugin-gui/Build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build
+          path: |
+            /home/runner/work/OE-plugin-latency-tracker/plugin-GUI/Build
