@@ -139,8 +139,7 @@ private:
 	ScopedPointer<Label> colorStyleComboBoxLabel;
     
     ScopedPointer<GroupComponent> colorControlGroup;
-	ScopedPointer<Label> colorControlGroupLabel;
-    
+	 
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
 	
     ScopedPointer<Label> cmLabel;
@@ -166,7 +165,10 @@ private:
     ScopedPointer<TextEditor> textBox2;
 
     ScopedPointer<ComboBox> triggerChannelComboBox;
+	ScopedPointer<Label> triggerChannelComboBoxLabel;
+
     ScopedPointer<ComboBox> dataChannelComboBox;
+	ScopedPointer<Label> dataChannelComboBoxLabel;
 
     ScopedPointer<Slider> Trigger_threshold; //TODO
 
@@ -179,13 +181,16 @@ private:
     ScopedPointer<TextEditor> ROISpikeMagnitude;
 	ScopedPointer<Label> ROISpikeMagnitudeLabel;
 
+	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
     ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
-    ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
-
     ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
+
+	ScopedPointer<Label> trackSpike_DecreaseRate_Slider_Label;
+	ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
     ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
 
     ScopedPointer<Slider> trigger_threshold_Slider;
+	ScopedPointer<Label> trigger_threshold_Slider_Label;
 
     //DEBUG
 

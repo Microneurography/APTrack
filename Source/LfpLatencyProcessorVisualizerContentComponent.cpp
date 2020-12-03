@@ -69,8 +69,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
     addAndMakeVisible(colorControlGroup = new GroupComponent);
     colorControlGroup->setName(("Color control"));
-	addAndMakeVisible(colorControlGroupLabel = new Label("Color_Control_Group_Label"));
-	colorControlGroupLabel->setText("Color Control", sendNotification);
     
     addAndMakeVisible (imageThresholdSlider = new Slider ("imageThreshold"));
     imageThresholdSlider->setRange (0, 100, 0);
@@ -122,13 +120,12 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     addAndMakeVisible(ROISpikeLatency = new TextEditor("SearchBoxLocationLatency"));
     ROISpikeLatency->setText(String(searchBoxLocation));
 	addAndMakeVisible(ROISpikeLatencyLabel = new Label("ROI_Spike_Location_Label"));
-	searchBoxSliderLabel->setText("ROI Spike Location", sendNotification);
-    
+	ROISpikeLatencyLabel->setText("ROI Spike Location", sendNotification);
     
     addAndMakeVisible(ROISpikeMagnitude = new TextEditor("SearchBoxLocationSpeed"));
     ROISpikeMagnitude->setText("NaN");
 	addAndMakeVisible(ROISpikeMagnitudeLabel = new Label("ROI_Spike_Value_Label"));
-	searchBoxSliderLabel->setText("ROI Spike Value", sendNotification);
+	ROISpikeMagnitudeLabel->setText("ROI Spike Value", sendNotification);
 
     addAndMakeVisible(lowImageThresholdText = new TextEditor("lowImageThreshold"));
 	lowImageThresholdText->setText(String(lowImageThreshold) + " uV");
@@ -175,7 +172,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     conductionDistanceSlider->setTextBoxStyle (Slider::TextBoxRight, false, 80, 20);
     conductionDistanceSlider->addListener (this);
 	addAndMakeVisible(conductionDistanceSliderLabel = new Label("Conduction_Distance_Slider_Label"));
-	startingSampleSliderLabel->setText("Conduction Distance", sendNotification);
+	conductionDistanceSliderLabel->setText("Conduction Distance", sendNotification);
     
     addAndMakeVisible (searchBoxWidthSlider = new Slider ("searchBoxWidthSlider"));
     searchBoxWidthSlider->setRange (1, 30, 1);
@@ -183,7 +180,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     searchBoxWidthSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     searchBoxWidthSlider->addListener (this);
 	addAndMakeVisible(searchBoxWidthSliderLabel = new Label("search_Box_Width_Slider_Label"));
-	startingSampleSliderLabel->setText("Search Box Width", sendNotification);
+	searchBoxWidthSliderLabel->setText("Search Box Width", sendNotification);
     
     addAndMakeVisible(colorStyleComboBox = new ComboBox("Color style selector"));
     colorStyleComboBox->setEditableText(false);
@@ -212,19 +209,21 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	triggerChannelComboBox->setJustificationType(Justification::centredLeft);
 	triggerChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
 	triggerChannelComboBox->addSectionHeading("Trigger");
+	addAndMakeVisible(triggerChannelComboBoxLabel = new Label("Trigger_Channel_Combo_Box_Label"));
+	triggerChannelComboBoxLabel->setText("Trigger Channel", sendNotification);
 
 	addAndMakeVisible(dataChannelComboBox = new ComboBox("Data Channel"));
 	dataChannelComboBox->setEditableText(false);
 	dataChannelComboBox->setJustificationType(Justification::centredLeft);
 	dataChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
 	dataChannelComboBox->addSectionHeading("Data");
-
+	addAndMakeVisible(dataChannelComboBoxLabel = new Label("Data_Channel_Combo_Box_Label"));
+	dataChannelComboBoxLabel->setText("Data Channel", sendNotification);
 
 	addAndMakeVisible(trackSpike_button = new ToggleButton("Track spike"));
 	trackSpike_button->addListener(this);
 	trackSpike_button->setToggleState(false, sendNotification);
 	trackSpike_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
-
 
 	addAndMakeVisible(trackThreshold_button = new ToggleButton("Track threshold"));
 	trackThreshold_button->addListener(this);
@@ -238,6 +237,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_IncreaseRate_Slider->addListener(this);
 	trackSpike_IncreaseRate_Slider->setValue(0.01f);
+	addAndMakeVisible(trackSpike_IncreaseRate_Slider_Label = new Label("Track_Spike_Increase_Rate_Slider_Label"));
+	trackSpike_IncreaseRate_Slider_Label->setText("Increase Rate of Spike Tracking", sendNotification);
+
 
 	addAndMakeVisible(trackSpike_DecreaseRate_Slider = new Slider("searchBoxWidthSlider"));
 	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
@@ -245,6 +247,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_DecreaseRate_Slider->addListener(this);
 	trackSpike_DecreaseRate_Slider->setValue(0.01f);
+	addAndMakeVisible(trackSpike_DecreaseRate_Slider_Label = new Label("Track_Spike_Decrease_Rate_Slider_Label"));
+	trackSpike_DecreaseRate_Slider_Label->setText("Decrease Rate of Spike Tracking", sendNotification);
 
 	addAndMakeVisible(trackSpike_IncreaseRate_Text = new TextEditor("trackSpike_IncreaseRate_Text"));
 	trackSpike_IncreaseRate_Text->setText("+"+String(trackSpike_IncreaseRate_Slider->getValue(),0) + " V");
@@ -259,8 +263,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trigger_threshold_Slider->setTextBoxStyle(Slider::TextBoxRight, false, 80, 20);
 	trigger_threshold_Slider->addListener(this);
 	trigger_threshold_Slider->setValue(2.5f);
-
-
+	addAndMakeVisible(trigger_threshold_Slider_Label = new Label("Trigger_Threshold_Slider_Label"));
+	trigger_threshold_Slider_Label->setText("Trigger Threshold", sendNotification);
 
 
     
@@ -388,7 +392,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[/UserPreResize]
 
     imageThresholdSlider->setBounds (360, 24, 55, 264);
-	imageThresholdSliderLabel->setBounds(360, 24, 55, 264); // opposite to the instructions above 348, 270, 80, 50);
+	imageThresholdSliderLabel->setBounds(348, 270, 80, 50); // opposite to the instructions above - got moved in the rebase
    
     highImageThresholdText->setBounds (424, 24, 55, 24);
 	highImageThresholdTextLabel->setBounds(477, 24, 160, 25); // opposite to the instructions above
@@ -405,48 +409,49 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     subsamplesPerWindowSlider->setBounds(424, 152, 159, 64);
 	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50);
     
-	// The labels below this need to be adjusted 
     startingSampleSlider->setBounds(424, 224, 159, 64);
-	startingSampleSliderLabel->setBounds(347, 230, 80, 50); // x value is inverted - move up
+	startingSampleSliderLabel->setBounds(347, 230, 80, 50); // x value is inverted
     
     colorStyleComboBox->setBounds(424, 112, 120, 24);
-	colorStyleComboBoxLabel->setBounds(424, 100, 120, 24); // move down
+	colorStyleComboBoxLabel->setBounds(424, 92, 120, 24); 
 
-    colorControlGroup->setBounds(344, 0, 248, 304);
-	colorControlGroupLabel->setBounds(344, 0, 248, 304); // not sure what this is labelling - might not be needed
+	colorControlGroup->setBounds(344, 0, 248, 304); // the rectangle in the gui - doesn't need a label
 
     extendedColorScaleToggleButton->setBounds(500, 24, 80, 24); // has label
     
     searchBoxWidthSlider->setBounds(500, 54, 50, 50);
-	searchBoxWidthSliderLabel->setBounds(500, 54, 50, 50);
+	searchBoxWidthSliderLabel->setBounds(550, 60, 100, 45); 
     
-	ROISpikeLatencyLabel->setBounds(360, 336, 72, 24);
+	ROISpikeLatencyLabel->setBounds(240, 336, 120, 24); 
     ROISpikeLatency->setBounds(360, 336, 72, 24);
-    msLabel->setBounds(432, 336, 72, 24);	// this is a label for the units used, and not what the actual value is. 
+    msLabel->setBounds(432, 336, 72, 24);	// this is a label for the units used 
     
-	ROISpikeMagnitudeLabel->setBounds(360, 360, 72, 24);
+	ROISpikeMagnitudeLabel->setBounds(240, 360, 120, 24); 
     ROISpikeMagnitude->setBounds(360, 360, 72, 24);
-    mpersLabel->setBounds(432, 360, 72, 24); // this is a label for the units used, and not what the actual value is. 
+    mpersLabel->setBounds(432, 360, 72, 24); // this is a label for the units used
     
     conductionDistanceSlider->setBounds(360, 456, 159, 64);
-	conductionDistanceSliderLabel->setBounds(360, 456, 159, 64);
+	conductionDistanceSliderLabel->setBounds(296, 456, 79, 64); // x inverted
 
 	// Stimulus
 	ppControllerComponent->setBounds(520, 400, 402, 350); // Don't think this needs a label
 
 	stimulusVoltageSlider->setBounds(600, 0, 55, 264);
-	stimulusVoltageSliderLabel->setBounds(590, 250, 80, 50); 
+	stimulusVoltageSliderLabel->setBounds(590, 250, 80, 50);
 
 	stimulusVoltageMin_text->setBounds(664, 72, 55, 24);
-	stimulusVoltageMin_textLabel->setBounds(664, 72, 55, 24);
+	stimulusVoltageMin_textLabel->setBounds(719, 72, 105, 24); // x inverted
 
 	stimulusVoltage_text->setBounds(664, 48, 55, 24);
-	stimulusVoltage_textLabel->setBounds(664, 48, 55, 24);
+	stimulusVoltage_textLabel->setBounds(719, 48, 115, 24);  // x inverted
 
 	stimulusVoltageMax_text->setBounds(664, 24, 55, 24);
+	stimulusVoltageMax_textLabel->setBounds(719, 24, 105, 24);  // x inverted 
 
+	// The labels below this need to be adjusted 
 	// Threshold trigger control
 	trigger_threshold_Slider->setBounds(30, 400, 159, 64);
+	trigger_threshold_Slider_Label->setBounds(15, 400, 79, 64); // in a good place, the slider itself needs to move
 
 
 	// channel control
@@ -454,18 +459,23 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	//textBox2->setBounds(10, 350, 72, 24);
 
 	triggerChannelComboBox->setBounds(120, 320, 72, 24);
+	triggerChannelComboBoxLabel->setBounds(120, 320, 72, 24);
+
 	dataChannelComboBox->setBounds(120, 350, 72, 24);
+	dataChannelComboBoxLabel->setBounds(120, 350, 72, 24);
 
-	trackSpike_button->setBounds(360, 394, 120, 24);
-	trackThreshold_button->setBounds(360, 428, 120, 24);
+	trackSpike_button->setBounds(360, 394, 120, 24); // has a label
 
+	trackThreshold_button->setBounds(360, 428, 120, 24); // has a label
+
+	trackSpike_IncreaseRate_Slider_Label->setBounds(690, 106, 79, 70);
 	trackSpike_IncreaseRate_Slider->setBounds(690, 106, 159, 64);
-	trackSpike_DecreaseRate_Slider->setBounds(690, 180, 159, 64);
-
 	trackSpike_IncreaseRate_Text->setBounds(660, 106, 72, 24);
+
+	trackSpike_DecreaseRate_Slider_Label->setBounds(690, 180, 79, 70);
+	trackSpike_DecreaseRate_Slider->setBounds(690, 180, 159, 64);
 	trackSpike_DecreaseRate_Text->setBounds(660, 180, 72, 24);
 
-	stimulusVoltageMax_textLabel->setBounds(664, 24, 55, 24);
 	
     //[UserResized]
     //[/UserResized]
