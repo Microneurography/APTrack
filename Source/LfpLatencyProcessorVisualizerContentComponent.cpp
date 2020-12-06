@@ -419,14 +419,14 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
     extendedColorScaleToggleButton->setBounds(500, 24, 80, 24); // has label
     
-    searchBoxWidthSlider->setBounds(500, 54, 50, 50);
-	searchBoxWidthSliderLabel->setBounds(550, 60, 100, 45); 
+    searchBoxWidthSlider->setBounds(500, 56, 50, 50);
+	searchBoxWidthSliderLabel->setBounds(550, 57, 60, 45); // might need moving down a little, hard to tell when it's a mess
     
 	ROISpikeLatencyLabel->setBounds(240, 336, 120, 24); 
     ROISpikeLatency->setBounds(360, 336, 72, 24);
     msLabel->setBounds(432, 336, 72, 24);	// this is a label for the units used 
     
-	ROISpikeMagnitudeLabel->setBounds(240, 360, 120, 24); 
+	ROISpikeMagnitudeLabel->setBounds(256.75, 360, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot
     ROISpikeMagnitude->setBounds(360, 360, 72, 24);
     mpersLabel->setBounds(432, 360, 72, 24); // this is a label for the units used
     
@@ -448,7 +448,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	stimulusVoltageMax_text->setBounds(664, 24, 55, 24);
 	stimulusVoltageMax_textLabel->setBounds(719, 24, 105, 24);  // x inverted 
 
-	// The labels below this need to be adjusted 
 	// Threshold trigger control
 	trigger_threshold_Slider->setBounds(30, 400, 159, 64);
 	trigger_threshold_Slider_Label->setBounds(15, 400, 79, 64); // in a good place, the slider itself needs to move
@@ -459,20 +458,20 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	//textBox2->setBounds(10, 350, 72, 24);
 
 	triggerChannelComboBox->setBounds(120, 320, 72, 24);
-	triggerChannelComboBoxLabel->setBounds(120, 320, 72, 24);
+	triggerChannelComboBoxLabel->setBounds(28, 320, 92, 24);
 
 	dataChannelComboBox->setBounds(120, 350, 72, 24);
-	dataChannelComboBoxLabel->setBounds(120, 350, 72, 24);
+	dataChannelComboBoxLabel->setBounds(48, 350, 72, 24); // fine
 
 	trackSpike_button->setBounds(360, 394, 120, 24); // has a label
 
 	trackThreshold_button->setBounds(360, 428, 120, 24); // has a label
 
-	trackSpike_IncreaseRate_Slider_Label->setBounds(690, 106, 79, 70);
+	trackSpike_IncreaseRate_Slider_Label->setBounds(800, 100, 60, 70); // x inverted
 	trackSpike_IncreaseRate_Slider->setBounds(690, 106, 159, 64);
 	trackSpike_IncreaseRate_Text->setBounds(660, 106, 72, 24);
 
-	trackSpike_DecreaseRate_Slider_Label->setBounds(690, 180, 79, 70);
+	trackSpike_DecreaseRate_Slider_Label->setBounds(800, 178, 60, 70); // x inverted
 	trackSpike_DecreaseRate_Slider->setBounds(690, 180, 159, 64);
 	trackSpike_DecreaseRate_Text->setBounds(660, 180, 72, 24);
 
