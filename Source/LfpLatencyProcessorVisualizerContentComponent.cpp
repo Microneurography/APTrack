@@ -38,7 +38,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 
 	// HACK
-	stimulusVoltage = 3.0f;
+	stimulusVoltage = 0.0f;
 	stimulusVoltageMax = 5.0f;
 	stimulusVoltageMin = 0.5f;
 
