@@ -497,7 +497,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		stimulusVoltage = sliderThatWasMoved->getValue();
 		stimulusVoltage_text->setText(String(stimulusVoltage,2));
 
-		if (stimulusVoltage > 3) {  // this will trigger everytime you move it after 4 volts, but maybe that's what you want?
+		if (stimulusVoltage > 4) {  // this will trigger everytime you move it after 4 volts, but maybe that's what you want?
 			// makes an alert window, returns true if user is okay with it being high
 			voltageTooHighOkay = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Voltage Too High Alert", "Are you sure you want to set the voltage this high?", "Yes", "No");
 		}
