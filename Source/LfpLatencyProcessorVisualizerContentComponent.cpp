@@ -38,7 +38,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	// HACK
 	stimulusVoltage = 0.0f;
-	stimulusVoltageMax = 10.0f;
+	stimulusVoltageMax = 10.0f; // you also have to change the range of the slider on line 87
 	stimulusVoltageMin = 0.5f;
 
 	trackSpike_IncreaseRate = 0.01;
@@ -84,7 +84,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(ppControllerComponent = new ppController());
 
 	addAndMakeVisible(stimulusVoltageSlider = new Slider("stimulusVoltage"));
-	stimulusVoltageSlider->setRange(0.0f, 4.0f, 0);
+	stimulusVoltageSlider->setRange(0.0f, 10.0f, 0);
 	stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
 	stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
 	stimulusVoltageSlider->addListener(this);
@@ -501,7 +501,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 			// makes an alert window, returns true if user is okay with it being high
 			voltageTooHighOkay = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Voltage Too High Alert", "Are you sure you want to set the voltage this high?", "Yes", "No");
 		}
-		if (voltageTooHighOkay) {
+		while (voltageTooHighOkay) {
 			ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 		}
 	}
