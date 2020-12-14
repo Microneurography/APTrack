@@ -501,7 +501,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 			// makes an alert window, returns true if user is okay with it being high
 			voltageTooHighOkay = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Voltage Too High Alert", "Are you sure you want to set the voltage this high?", "Yes", "No");
 		}
-		while (voltageTooHighOkay) {
+		if (voltageTooHighOkay) {
 			ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 		}
 	}
