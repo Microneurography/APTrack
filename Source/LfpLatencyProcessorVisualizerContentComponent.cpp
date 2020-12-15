@@ -485,42 +485,52 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     //[/UsersliderValueChanged_Pre]
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
+		cout << "Stuck here 1\n";
 		//Lower value
 		stimulusVoltageMin = sliderThatWasMoved->getMinValue();
 		stimulusVoltageMin_text->setText(String(stimulusVoltageMin,2));
-
+		cout << "Stuck here 2\n";
 		//Upper value
 		stimulusVoltageMax = sliderThatWasMoved->getMaxValue();
 		stimulusVoltageMax_text->setText(String(stimulusVoltageMax,2));
-
+		cout << "Stuck here 3\n";
 		//mid value
 		stimulusVoltage = sliderThatWasMoved->getValue();
 		stimulusVoltage_text->setText(String(stimulusVoltage,2));
 
 		// very slow for some reason
+		cout << "Got here\n";
 		if (stimulusVoltage > 4 && alreadyAlerted == false) {
+			cout << "Made it past the if\n";
 			// makes an alert window, returns true if user is okay with it being high
 			voltageTooHighOkay = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::WarningIcon, "Voltage Could Be Too High", "Are you sure you want to set the voltage this high?", "Yes", "No");
+			cout << "Created Window\n";
 			alreadyAlerted = true;
+			cout << "already alterted is now true\n";
 		}
 		if (voltageTooHighOkay) {
+			cout << "Made it past the 2nd if\n";
 			ppControllerComponent->setStimulusVoltage(stimulusVoltage);
+			cout << "Updated stimulus voltage\n";
 		}
+		cout << "Done\n";
 	}
     if (sliderThatWasMoved == imageThresholdSlider)
     {
+		cout << "Stuck here 4\n";
         //[UserSliderCode_imageThresholdSlider] -- add your slider handling code here..
 
         //Lower value
+		cout << "Stuck here 5\n";
         lowImageThreshold = sliderThatWasMoved->getMinValue();
         std::cout << "Slider lower: " << lowImageThreshold << std::endl;
         lowImageThresholdText->setText(String(lowImageThreshold,1)+" uV");
-
+		cout << "Stuck here 6\n";
         //Upper value
         highImageThreshold = sliderThatWasMoved->getMaxValue();
         std::cout << "Slider upper: " << highImageThreshold << std::endl;
         highImageThresholdText->setText(String(highImageThreshold,1) + " uV");
-        
+		cout << "Stuck here 7\n";
         //mid value
         detectionThreshold = sliderThatWasMoved->getValue();
         std::cout << "DetectionThehold" << detectionThreshold << std::endl;
@@ -531,14 +541,14 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     }
     if (sliderThatWasMoved == searchBoxSlider)
     {
-
+		cout << "Stuck here 8\n";
         searchBoxLocation = sliderThatWasMoved->getValue();
         std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
         
     }
     if (sliderThatWasMoved == subsamplesPerWindowSlider)
     {
-        
+		cout << "Stuck here 9\n";
         //auto subsamplesPerWindowOld = subsamplesPerWindow;
         subsamplesPerWindow = sliderThatWasMoved->getValue();
         std::cout << "subsamplesPerWindow" << searchBoxLocation << std::endl;
@@ -546,25 +556,27 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     }
     if (sliderThatWasMoved == startingSampleSlider)
     {
-        
+		cout << "Stuck here 10\n";
         startingSample = sliderThatWasMoved->getValue();
         std::cout << "startingSample" << startingSample << std::endl;
         
     }
     if (sliderThatWasMoved == searchBoxWidthSlider)
     {
-        
+		cout << "Stuck here 11\n";
         searchBoxWidth = sliderThatWasMoved->getValue();
         std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
         
     }
 	if (sliderThatWasMoved == trackSpike_IncreaseRate_Slider)
 	{
+		cout << "Stuck here 12\n";
 		trackSpike_IncreaseRate = sliderThatWasMoved->getValue();
 		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0)+ " V");
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
+		cout << "Stuck here 13\n";
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}

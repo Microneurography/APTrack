@@ -161,6 +161,7 @@ void ppController::resized()
 
 void ppController::setStimulusVoltage(float newVoltage)
 {
+	std::cout << "moved to pp controller\n";
 	//TODO: Check bounds
 	stimulusVoltage = newVoltage;
 
@@ -168,8 +169,11 @@ void ppController::setStimulusVoltage(float newVoltage)
 	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
 
 	pulsePal.currentOutputParams[1].phase1Voltage = stimulusVoltage;
-	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
+	std::cout << "Updating stimulus voltage in pp \n";
+	pulsePal.currentOutputParams[2].phase1Voltage = 10.0f; 
+	std::cout << "updating max voltage in pp\n";
 	pulsePal.syncAllParams();
+	std::cout << "synced all params in pp\n";
 }
 
 void ppController::StopCurrentProtocol()
