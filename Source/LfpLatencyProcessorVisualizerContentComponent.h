@@ -97,6 +97,7 @@ private:
     float stimulusVoltageMin;
 
 	bool voltageTooHighOkay;
+	bool alreadyAlerted = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
