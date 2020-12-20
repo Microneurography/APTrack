@@ -388,5 +388,5 @@ String ppController::formatTimeLeftToString(RelativeTime step_secondsRemaining, 
 {
 	//Format mm:ss/mm:ss
 	// TODO: cleanup?
-	return (String(static_cast<int>(std::floor(step_secondsRemaining.inMinutes())) % 60).paddedLeft('0', 2) + ":" + String(static_cast<int>(std::floor(step_secondsRemaining.inSeconds())) % 60).paddedLeft('0', 2) + "/" + String(static_cast<int>(std::floor(RelativeTime::RelativeTime(step_duration).inMinutes())) % 60).paddedLeft('0', 2) + ":" + String(static_cast<int>(std::floor(RelativeTime::RelativeTime(step_duration).inSeconds())) % 60).paddedLeft('0', 2));
+	return (String(static_cast<int>(std::floor(step_secondsRemaining.inMinutes())) % 60).paddedLeft('0', 2) + ":" + String(static_cast<int>(std::floor(step_secondsRemaining.inSeconds())) % 60).paddedLeft('0', 2) + "/" + String(static_cast<int>(std::floor(RelativeTime(step_duration).inMinutes())) % 60).paddedLeft('0', 2) + ":" + String(static_cast<int>(std::floor(RelativeTime(step_duration).inSeconds())) % 60).paddedLeft('0', 2));
 }

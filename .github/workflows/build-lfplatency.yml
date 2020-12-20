@@ -1,0 +1,46 @@
+name: Build LfpLatency
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: Compile action
+    runs-on: ubuntu-20.04
+    container: merlllle/compiled-plugin-gui:firsttry
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build plugin
+        run: |
+          cd ..
+          cp -R OE-plugin-latency-tracker/ /OE-plugin-latency-tracker/ # Not use mv to remove the error in Post Checkout and Stop containers
+          cd /OE-plugin-latency-tracker/Build 
+          export CC=gcc-8 CXX=g++-8 
+          cmake .. 
+          make
+      
+      # Tried download artifact, but download from another workflow is not supported
+      # - name: Download compiled plugin-gui
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: plugin-gui
+
+      # Tried only download build but didn't work
+      # - name: Build plugin-gui
+      #   run: |
+      #     cd .. 
+      #     git clone https://github.com/open-ephys/plugin-GUI.git 
+      #     ls plugin-GUI
+      # - name: Download plugin gui artifact
+      #   uses: dawidd6/action-download-artifact@v2
+      #   with:
+      #     workflow: build-plugin-gui.yml
+      #     name: Build
+      #     path: /home/runner/work/OE-plugin-latency-tracker/plugin-GUI
+
+      # Tried download whole directory but didn't work
+      # - name: Download plugin gui artifact
+      #   uses: dawidd6/action-download-artifact@v2
+      #   with:
+      #     workflow: build-plugin-gui.yml
+      #     name: plugin-GUI
+      #     path: /home/runner/work/OE-plugin-latency-tracker
