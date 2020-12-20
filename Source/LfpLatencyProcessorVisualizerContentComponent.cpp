@@ -34,7 +34,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     searchBoxLocation = 150;
     conductionDistance = 100;
 
-
+	setWantsKeyboardFocus(true);
 
 	// HACK
 	stimulusVoltage = 0.0f;
@@ -477,6 +477,32 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	
     //[UserResized]
     //[/UserResized]
+}
+
+bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {
+	if (k.getTextCharacter() == '=' || k.getTextCharacter() == '+') {
+		searchBoxSlider->setValue(searchBoxSlider->getValue() + 20, sendNotificationAsync);
+		return true;
+	}
+	else if (k.getTextCharacter() == '-') {
+		searchBoxSlider->setValue(searchBoxSlider->getValue() - 20, sendNotificationAsync);
+		return true;
+	}
+	if ((k == KeyPress::upKey) && (startingSample < 30000)) {
+		startingSample = startingSample++;
+		startingSampleSlider->setValue(startingSample);
+		std::cout << "startingSample" << startingSample << std::endl;
+		return true;
+	}
+	else if ((k == KeyPress::downKey) && (startingSample > 0)) {
+		startingSample = startingSample--;
+		startingSampleSlider->setValue(startingSample);
+		std::cout << "startingSample" << startingSample << std::endl;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)

@@ -53,7 +53,7 @@ public:
     void resized() override;
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
-
+	bool keyPressed(const KeyPress& k) override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
 private:
