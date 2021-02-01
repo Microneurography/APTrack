@@ -18,6 +18,7 @@ The Open Ephys team is moving their documentation from [atlassian](https://open-
 
 ## Walkthrough
 
+Visualiser for the plugin:
 <p align="center">
     <img src="./Resources/mainui.png" alt="ui.png" title="UI" width="896" height="556">
 </p>
