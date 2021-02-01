@@ -15,3 +15,12 @@ The Open Ephys team is moving their documentation from [atlassian](https://open-
 - Install [cmake](https://cmake.org/download/)
 - [Create the build files](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1301643269/Creating+Build+files).
 - [Compile plugin](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds)
+<<<<<<< Updated upstream
+=======
+
+## Walkthrough
+
+<p align="center">
+    <img src="./Resources/mainui.png" alt="ui.png" title="UI" width="896" height="556">
+</p>
+>>>>>>> Stashed changes
