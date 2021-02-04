@@ -18,6 +18,11 @@ The Open Ephys team is moving their documentation from [atlassian](https://open-
 
 ## Walkthrough
 
+This plugin is intened for use alongside the Pulse Pal. However, it can be used without. If not detected, a propmt will display upon starting the plugin, as shown here:
+<p align="center">
+    <img src="./Resources/pulsepalwarning.png" alt="ppw.png" title="Pulse Pal Warning">
+</p>
+
 Visualiser for the plugin:
 <p align="center">
     <img src="./Resources/mainui.png" alt="ui.png" title="UI" width="896" height="556">
