@@ -29,10 +29,25 @@ Visualiser for the plugin:
     <img src="./Resources/mainui.png" alt="ui.png" title="UI" width="896" height="556">
 </p>
 
-By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage is set to 10. If the Stimulus Voltage is increased pas 4 volts, a warning prompt will appear, alerting the user.
+**The GUI is currently under refurbishment, bear with us!**
+
+> Trigger Channel
+> Data Channel
+> Trigger Threshold
+> Subsamples Per Window
+> Starting Sample
+> Image Threshold Values
+>
+
+> Stimulus Voltage
+By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage is set to 10. If the Stimulus Voltage is increased past 4 volts, a warning prompt will appear, alerting the user.
 <p align="center">
     <img src="./Resources/voltagewarning.png" alt="voltage warning.png" title="Voltage Warning">
 </p>
+
+
+
+
 
 ## Keybinds
 
@@ -44,3 +59,6 @@ The following keybinds can be used to adjust settings:
 | Down Arrow        | Decrease Starting Sample Value        |
 | +                 | Increase Search Box Location Value        |
 | -                 | Decrease Search Box Location Value        |
+
+## Development
+Please note, this plugin is still in development. Any suggestions/questions should be directed to PUT CONTACT HERE 
