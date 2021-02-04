@@ -16,16 +16,17 @@ The Open Ephys team is moving their documentation from [atlassian](https://open-
 - [Create the build files](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1301643269/Creating+Build+files).
 - [Compile plugin](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds)
 
-  When compiling via Visual Studio, various header files and libraries will be required. To save time, be sure to add the following files to the Include Directories of the ALL-BUILD project.  
-  These can be found inside of the main GUI directory  
+When compiling via Visual Studio, various header files and libraries will be required. To save time, be sure to add the following files to the Include Directories of the ALL-BUILD project.  
+These can be found inside of the main GUI directory  
 
-  - .\plugin-GUI-master\PluginGenerator\JuceLibraryCode
-  - .\plugin-GUI-master\Plugins\Headers
-  - .\plugin-GUI-master\JuceLibraryCode
-  - .\plugin-GUI-master\Source
+- .\plugin-GUI-master\PluginGenerator\JuceLibraryCode
+- .\plugin-GUI-master\Plugins\Headers
+- .\plugin-GUI-master\JuceLibraryCode
+- .\plugin-GUI-master\Source
 
 Alongisde those, the open-ephys.lib needs to be linked to the OE-plugin-latency-tracker-main project  
-This can be found in: .\plugin-GUI-master\Build\Debug\open-ephys.lib
+This can be found in:   
+**.\plugin-GUI-master\Build\Debug\open-ephys.lib**
 
 ## Walkthrough
 
