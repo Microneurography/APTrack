@@ -7,22 +7,22 @@ The Open Ephys team is moving their documentation from [atlassian](https://open-
 
 ## Installation
 
-- [Compile the main GUI](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491621/Windows). 
+1. [Compile the main GUI](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491621/Windows). 
 
 >Note that [ZMQ plugins](https://github.com/open-ephys-plugins/ZMQPlugins) and [HDF5 Plugins](https://github.com/open-ephys-plugins/HDF5Plugins) are no longer shipped by default with the code base and can be **downloaded**, [built and installed](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds) from their own repositories. Follow the steps in the related pages to do so.
 
-- Clone the plugin repo
-- Install [cmake](https://cmake.org/download/)
-- [Create the build files](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1301643269/Creating+Build+files).
-- [Compile plugin](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds)
+2. Clone the plugin repo
+3. Install [cmake](https://cmake.org/download/)
+4. [Create the build files](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1301643269/Creating+Build+files).
+5. [Compile plugin](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds)
 
 When compiling via Visual Studio, various header files and libraries will be required. To save time, be sure to add the following files to the Include Directories of the ALL-BUILD project.  
 These can be found inside of the main GUI directory, **plugin-GUI-master**  
 
-- \PluginGenerator\JuceLibraryCode
-- \Plugins\Headers
-- \JuceLibraryCode
-- \Source
+- \PluginGenerator\JuceLibraryCode\
+- \Plugins\Headers\
+- \JuceLibraryCode\
+- \Source\
 
 Alongisde those, the open-ephys.lib needs to be linked to the OE-plugin-latency-tracker-main project  
 This can be found in:   
@@ -43,19 +43,19 @@ Visualiser for the plugin:
 
 **The GUI is currently under refurbishment, bear with us!**
 
-> Trigger Channel
+> Trigger Channel and Data Channel: Set to corresponding channels on Pulse Pal and Recording Device
 
-> Data Channel
+> Trigger Threshold: 
 
-> Trigger Threshold
+> Subsamples Per Window: 
 
-> Subsamples Per Window
-
-> Starting Sample
+> Starting Sample: Can be increased/decreased
 
 > Image Threshold Values
 
->
+> 
+
+#### Spike Tracking
 
 #### Stimulus Voltage  
 
