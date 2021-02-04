@@ -32,21 +32,24 @@ Visualiser for the plugin:
 **The GUI is currently under refurbishment, bear with us!**
 
 > Trigger Channel
+
 > Data Channel
+
 > Trigger Threshold
+
 > Subsamples Per Window
+
 > Starting Sample
+
 > Image Threshold Values
+
 >
 
-> Stimulus Voltage
+>Stimulus Voltage  
 By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage is set to 10. If the Stimulus Voltage is increased past 4 volts, a warning prompt will appear, alerting the user.
 <p align="center">
     <img src="./Resources/voltagewarning.png" alt="voltage warning.png" title="Voltage Warning">
 </p>
-
-
-
 
 
 ## Keybinds
