@@ -38,9 +38,11 @@ By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage
 
 The following keybinds can be used to adjust settings:
 
+<p align='center'>
 | Key               | Binding                                                                |
 |--------------     |------------------------------------------------------------------------|
 | Up Arrow          | Increase Starting Sample Value        |
 | Down Arrow        | Decrease Starting Sample Value        |
 | +                 | Increase Search Box Location Value        |
 | -                 | Decrease Search Box Location Value        |
+</p>
