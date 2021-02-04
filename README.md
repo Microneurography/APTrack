@@ -29,7 +29,7 @@ Visualiser for the plugin:
     <img src="./Resources/mainui.png" alt="ui.png" title="UI" width="896" height="556">
 </p>
 
-By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage is set to 10. If the Stimulus Voltage is increased pas 4 volts, a warning prompt will appear alerting the user.
+By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage is set to 10. If the Stimulus Voltage is increased pas 4 volts, a warning prompt will appear, alerting the user.
 <p align="center">
     <img src="./Resources/voltagewarning.png" alt="voltage warning.png" title="Voltage Warning">
 </p>
@@ -39,4 +39,5 @@ By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage
 The following keybinds can be used to adjust settings:
 
 Up Arrow/Down Arrow: Increase/Decrease Starting Sample Value
+
 +/-: Increase/Decrease Search Box Location
