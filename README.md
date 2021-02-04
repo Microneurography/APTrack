@@ -45,7 +45,8 @@ Visualiser for the plugin:
 
 >
 
->Stimulus Voltage  
+#### Stimulus Voltage  
+
 By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage is set to 10. If the Stimulus Voltage is increased past 4 volts, a warning prompt will appear, alerting the user.
 <p align="center">
     <img src="./Resources/voltagewarning.png" alt="voltage warning.png" title="Voltage Warning">
