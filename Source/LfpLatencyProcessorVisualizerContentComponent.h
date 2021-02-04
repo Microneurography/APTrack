@@ -103,7 +103,9 @@ private:
     float trackSpike_IncreaseRate;
 
     //==============================================================================
-    ScopedPointer<Slider> imageThresholdSlider;
+	ScopedPointer<TabbedComponent> setupTab;
+	
+	ScopedPointer<Slider> imageThresholdSlider;
 	ScopedPointer<Label> imageThresholdSliderLabel;
 
     ScopedPointer<Slider> searchBoxSlider;

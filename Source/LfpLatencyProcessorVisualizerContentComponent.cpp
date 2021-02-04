@@ -62,7 +62,14 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     }
     
     std::cout << "Post" << std::endl;
-    
+
+	addAndMakeVisible(setupTab = new TabbedComponent(TabsAtTop));
+	setupTab->newTab("Setup",
+		Colour(175,168,168),
+		Component* contentComponent,
+		bool deleteComponentWhenNotNeeded,
+		int insertIndex = -1
+
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
 
