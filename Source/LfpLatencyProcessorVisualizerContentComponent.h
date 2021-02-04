@@ -195,6 +195,7 @@ private:
     ScopedPointer<Slider> trigger_threshold_Slider;
 	ScopedPointer<Label> trigger_threshold_Slider_Label;
 
+
     //DEBUG
 
     //==============================================================================
