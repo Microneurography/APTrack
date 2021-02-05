@@ -106,6 +106,8 @@ private:
     
     int draw_imageHeight;
     int draw_rightHandEdge;
+
+	int spikeLocations[5];
     
     //Pointer to processor
     LfpLatencyProcessor* processor;

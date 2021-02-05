@@ -53,7 +53,7 @@ public:
     void resized() override;
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
-
+	bool keyPressed(const KeyPress& k) override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
 private:
@@ -96,36 +96,71 @@ private:
 
     float stimulusVoltageMin;
 
+	bool voltageTooHighOkay;
+	bool alreadyAlerted = false;
+
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
 
     //==============================================================================
     ScopedPointer<Slider> imageThresholdSlider;
+	ScopedPointer<Label> imageThresholdSliderLabel;
+
     ScopedPointer<Slider> searchBoxSlider;
+	ScopedPointer<Label> searchBoxSliderLabel;
 
+	ScopedPointer<Label> ROIspikeLocationLabel;
+    ScopedPointer<TextEditor> ROIspikeLocation;
+	ScopedPointer<Label> msLabel;
+
+	ScopedPointer<Label> ROIspikeValueLabel;
+    ScopedPointer<TextEditor> ROIspikeValue;
+	ScopedPointer<Label> mpersLabel;
+    
+    ScopedPointer<Slider> conductionDistanceSlider;
+	ScopedPointer<Label> conductionDistanceSliderLabel;
+    
     ScopedPointer<TextEditor> detectionThresholdText;
-
+	ScopedPointer<Label> detectionThresholdTextLabel;
+    
     ScopedPointer<TextEditor> lowImageThresholdText;
+	ScopedPointer<Label> lowImageThresholdTextLabel;
+
     ScopedPointer<TextEditor> highImageThresholdText;
-
+	ScopedPointer<Label> highImageThresholdTextLabel;
+    
     ScopedPointer<Slider> subsamplesPerWindowSlider;
-
+	ScopedPointer<Label> subsamplesPerWindowSliderLabel;
+    
     ScopedPointer<Slider> startingSampleSlider;
-
+	ScopedPointer<Label> startingSampleSliderLabel;
+    
     ScopedPointer<Slider> searchBoxWidthSlider;
-
+	ScopedPointer<Label> searchBoxWidthSliderLabel;
+    
     ScopedPointer<ComboBox> colorStyleComboBox;
-
+	ScopedPointer<Label> colorStyleComboBoxLabel;
+    
     ScopedPointer<GroupComponent> colorControlGroup;
-
+	 
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
+	
+    ScopedPointer<Label> cmLabel;
+ 
+    //ScopedPointer<GroupComponent> detectionControlGroup;
 
-    // Stimulus control
-    ScopedPointer<Slider> stimulusVoltageSlider;
+	// Stimulus control
+	ScopedPointer<Slider> stimulusVoltageSlider;
+	ScopedPointer<Label> stimulusVoltageSliderLabel;
 
-    ScopedPointer<TextEditor> stimulusVoltageMax_text;
-    ScopedPointer<TextEditor> stimulusVoltage_text;
-    ScopedPointer<TextEditor> stimulusVoltageMin_text;
+	ScopedPointer<TextEditor> stimulusVoltageMax_text;
+	ScopedPointer<Label> stimulusVoltageMax_textLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltage_text;
+	ScopedPointer<Label> stimulusVoltage_textLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltageMin_text;
+	ScopedPointer<Label> stimulusVoltageMin_textLabel;
 
     ScopedPointer<ppController> ppControllerComponent;
 
@@ -133,23 +168,34 @@ private:
     ScopedPointer<TextEditor> textBox2;
 
     ScopedPointer<ComboBox> triggerChannelComboBox;
+	ScopedPointer<Label> triggerChannelComboBoxLabel;
+
     ScopedPointer<ComboBox> dataChannelComboBox;
+	ScopedPointer<Label> dataChannelComboBoxLabel;
 
     ScopedPointer<Slider> Trigger_threshold; //TODO
 
     ScopedPointer<ToggleButton> trackSpike_button;
     ScopedPointer<ToggleButton> trackThreshold_button;
 
+	ScopedPointer<ComboBox> trackSpikeComboBox;
+
     ScopedPointer<TextEditor> ROISpikeLatency;
+	ScopedPointer<Label> ROISpikeLatencyLabel;
+
     ScopedPointer<TextEditor> ROISpikeMagnitude;
+	ScopedPointer<Label> ROISpikeMagnitudeLabel;
 
+	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
     ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
-    ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
-
     ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
+
+	ScopedPointer<Label> trackSpike_DecreaseRate_Slider_Label;
+	ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
     ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
 
     ScopedPointer<Slider> trigger_threshold_Slider;
+	ScopedPointer<Label> trigger_threshold_Slider_Label;
 
     //DEBUG
 
