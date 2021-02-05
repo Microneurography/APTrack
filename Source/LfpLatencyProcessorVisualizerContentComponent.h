@@ -103,8 +103,30 @@ private:
     float trackSpike_IncreaseRate;
 
     //==============================================================================
-	ScopedPointer<TabbedComponent> setupTab;
+	// setup
+	ScopedPointer<TabbedButtonBar> setupTab;
+
+	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
+	ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
+	ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
+
+	ScopedPointer<Label> trackSpike_DecreaseRate_Slider_Label;
+	ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
+	ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
+
+	ScopedPointer<Slider> stimulusVoltageSlider;
+	ScopedPointer<Label> stimulusVoltageSliderLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltageMax_text;
+	ScopedPointer<Label> stimulusVoltageMax_textLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltage_text;
+	ScopedPointer<Label> stimulusVoltage_textLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltageMin_text;
+	ScopedPointer<Label> stimulusVoltageMin_textLabel;
 	
+	// main GUI
 	ScopedPointer<Slider> imageThresholdSlider;
 	ScopedPointer<Label> imageThresholdSliderLabel;
 
@@ -152,19 +174,7 @@ private:
     //ScopedPointer<GroupComponent> detectionControlGroup;
 
 	// Stimulus control
-	ScopedPointer<Slider> stimulusVoltageSlider;
-	ScopedPointer<Label> stimulusVoltageSliderLabel;
-
-	ScopedPointer<TextEditor> stimulusVoltageMax_text;
-	ScopedPointer<Label> stimulusVoltageMax_textLabel;
-
-	ScopedPointer<TextEditor> stimulusVoltage_text;
-	ScopedPointer<Label> stimulusVoltage_textLabel;
-
-	ScopedPointer<TextEditor> stimulusVoltageMin_text;
-	ScopedPointer<Label> stimulusVoltageMin_textLabel;
-
-    ScopedPointer<ppController> ppControllerComponent;
+	ScopedPointer<ppController> ppControllerComponent;
 
     ScopedPointer<TextEditor> textBox1;
     ScopedPointer<TextEditor> textBox2;
@@ -185,14 +195,6 @@ private:
 
     ScopedPointer<TextEditor> ROISpikeMagnitude;
 	ScopedPointer<Label> ROISpikeMagnitudeLabel;
-
-	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
-    ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
-    ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
-
-	ScopedPointer<Label> trackSpike_DecreaseRate_Slider_Label;
-	ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
-    ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
 
     ScopedPointer<Slider> trigger_threshold_Slider;
 	ScopedPointer<Label> trigger_threshold_Slider_Label;

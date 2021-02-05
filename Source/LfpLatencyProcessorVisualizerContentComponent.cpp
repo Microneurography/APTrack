@@ -61,14 +61,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
         }
     }
     
-    std::cout << "Post" << std::endl;
-
-	addAndMakeVisible(setupTab = new TabbedComponent(TabsAtTop));
-	setupTab->newTab("Setup",
-		Colour(175,168,168),
-		Component* contentComponent,
-		bool deleteComponentWhenNotNeeded,
-		int insertIndex = -1
+	std::cout << "Post" << std::endl;
 
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
@@ -86,7 +79,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	imageThresholdSliderLabel->setText("Image Threshold", sendNotification);
 
 
-	// Stimulus control
+	// Stimulus control - setup components
 
 	addAndMakeVisible(ppControllerComponent = new ppController());
 
@@ -237,6 +230,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackThreshold_button->setEnabled(trackSpike_button->getToggleState());
 	trackThreshold_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
 
+
+	// setup components
 	addAndMakeVisible(trackSpike_IncreaseRate_Slider = new Slider("searchBoxWidthSlider"));
 	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
 	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
@@ -261,6 +256,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	addAndMakeVisible(trackSpike_DecreaseRate_Text = new TextEditor("trackSpike_DecreaseRate_Text"));
 	trackSpike_DecreaseRate_Text->setText("-"+String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
+	//
+
 
 	//Debug
 	addAndMakeVisible(trigger_threshold_Slider = new Slider("trigger_threshold_Slider"));
@@ -315,7 +312,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     setSize (700, 900);
     
     spikeDetected = false;
-
 
     //[Constructor] You can add your own custom stuff here..
     //[/Constructor]
@@ -396,6 +392,12 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
+
+	// trying to create a tab for the setup components
+	TabbedButtonBar* createTabButton(setupTab);
+	cout << "setup Tab made\n";
+	// This line causes open ephys to crash
+	//setupTab->addTab("Setup", Colour(192, 192, 192), 0);
 
     imageThresholdSlider->setBounds (360, 24, 55, 264);
 	imageThresholdSliderLabel->setBounds(348, 270, 80, 50); // opposite to the instructions above - got moved in the rebase
