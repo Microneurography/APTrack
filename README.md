@@ -55,7 +55,9 @@ Visualiser for the plugin:
 
 > 
 
-#### Spike Tracking
+#### Spike Tracking  
+The Threshold Values are used to detct spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box
+
 
 #### Stimulus Voltage  
 
@@ -71,8 +73,8 @@ The following keybinds can be used to adjust settings:
 
 | Key               | Binding                                                                |
 |--------------     |------------------------------------------------------------------------|
-| Up Arrow          | Increase Starting Sample Value        |
-| Down Arrow        | Decrease Starting Sample Value        |
+| Up Arrow          | Increase Starting Sample Value            |
+| Down Arrow        | Decrease Starting Sample Value            |
 | +                 | Increase Search Box Location Value        |
 | -                 | Decrease Search Box Location Value        |
 
