@@ -394,13 +394,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[/UserPreResize]
 
 	// trying to create a tab for the setup components
-	TabbedComponent* createTabButton(setupTab);
-	//TabbedComponent* setupTab = TabbedComponent::createTabButton(setupTab);
-	cout << "setup Tab made\n";
+	// TabbedComponent* createTabButton(setupTab);
+	// TabbedComponent* setupTab = TabbedComponent::createTabButton(setupTab);
+	// cout << "setup Tab made\n";
 	// This line causes open ephys to crash
-	//setupTab->addTab("Setup", Colour(192, 192, 192), 0);
-	//setupTab->toFront;
-	setupTab->getTabbedButtonBar;
+	// setupTab->addTab("Setup", Colour(192, 192, 192), 0);
+	// setupTab->toFront;
+	// setupTab->getTabbedButtonBar;
 
     imageThresholdSlider->setBounds (360, 24, 55, 264);
 	imageThresholdSliderLabel->setBounds(348, 270, 80, 50); // opposite to the instructions above - got moved in the rebase
@@ -433,13 +433,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     searchBoxWidthSlider->setBounds(500, 56, 50, 50);
 	searchBoxWidthSliderLabel->setBounds(550, 57, 60, 45); // might need moving down a little, hard to tell when it's a mess
     
-	ROISpikeLatencyLabel->setBounds(240, 336, 120, 24); 
-    ROISpikeLatency->setBounds(360, 336, 72, 24);
-    msLabel->setBounds(432, 336, 72, 24);	// this is a label for the units used 
+	ROISpikeLatencyLabel->setBounds(576, 336, 120, 24);  // 192 difference
+    ROISpikeLatency->setBounds(696, 336, 72, 24);
+    msLabel->setBounds(768, 336, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
     
-	ROISpikeMagnitudeLabel->setBounds(256.75, 360, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot
-    ROISpikeMagnitude->setBounds(360, 360, 72, 24);
-    mpersLabel->setBounds(432, 360, 72, 24); // this is a label for the units used
+	ROISpikeMagnitudeLabel->setBounds(592.75, 360, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
+    ROISpikeMagnitude->setBounds(1032, 360, 72, 24); // 72 difference
+    mpersLabel->setBounds(1104, 360, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
     
     conductionDistanceSlider->setBounds(360, 456, 159, 64);
 	conductionDistanceSliderLabel->setBounds(296, 456, 79, 64); // x inverted
