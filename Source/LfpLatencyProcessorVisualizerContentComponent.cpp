@@ -394,10 +394,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[/UserPreResize]
 
 	// trying to create a tab for the setup components
-	TabbedButtonBar* createTabButton(setupTab);
+	TabbedComponent* createTabButton(setupTab);
+	//TabbedComponent* setupTab = TabbedComponent::createTabButton(setupTab);
 	cout << "setup Tab made\n";
 	// This line causes open ephys to crash
 	//setupTab->addTab("Setup", Colour(192, 192, 192), 0);
+	//setupTab->toFront;
+	setupTab->getTabbedButtonBar;
 
     imageThresholdSlider->setBounds (360, 24, 55, 264);
 	imageThresholdSliderLabel->setBounds(348, 270, 80, 50); // opposite to the instructions above - got moved in the rebase

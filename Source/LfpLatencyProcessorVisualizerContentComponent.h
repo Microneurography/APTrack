@@ -104,7 +104,7 @@ private:
 
     //==============================================================================
 	// setup
-	ScopedPointer<TabbedButtonBar> setupTab;
+	ScopedPointer<TabbedComponent> setupTab;
 
 	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
 	ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
