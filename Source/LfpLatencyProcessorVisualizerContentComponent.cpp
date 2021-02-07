@@ -448,7 +448,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	stimulusVoltageMax_textLabel->setBounds(719, 24, 105, 24);  // x inverted 
 
 	// Threshold trigger control
-	trigger_threshold_Slider->setBounds(30, 400, 159, 64);
+	trigger_threshold_Slider->setBounds(65, 400, 159, 64);
 	trigger_threshold_Slider_Label->setBounds(15, 400, 79, 64); // in a good place, the slider itself needs to move
 
 
