@@ -24,6 +24,73 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+
+// So we can make the setup box less dark.
+class CustomLookAndFeel : public juce::LookAndFeel_V3 {
+public:
+	void CallOutBox::LookAndFeelMethods::drawCallOutBoxBackground(CallOutBox& box, Graphics& g, const Path& path, Image& cachedImage) {
+		if (cachedImage.isNull())
+		{
+			cachedImage = Image(Image::ARGB, box.getWidth(), box.getHeight(), true);
+			Graphics g2(cachedImage);
+
+			DropShadow(Colours::darkgrey.withAlpha(1.0f), 8, Point<int>(0, 2)).drawForPath(g2, path);
+		}
+
+		g.setColour(Colours::black);
+		g.drawImageAt(cachedImage, 0, 0);
+
+		g.setColour(Colour::greyLevel(0.23f).withAlpha(0.9f));
+		g.fillPath(path);
+
+		g.setColour(Colours::white.withAlpha(0.8f));
+		g.strokePath(path, PathStrokeType(2.0f));
+	}
+
+	void Slider::LookAndFeelMethods::drawLinearSliderBackground(Graphics& g, int x, int y, int width, int height,
+		float /*sliderPos*/,
+		float /*minSliderPos*/,
+		float /*maxSliderPos*/,
+		const Slider::SliderStyle /*style*/, Slider& slider)
+	{
+		const float sliderRadius = (float)(getSliderThumbRadius(slider) - 2);
+
+		const Colour trackColour(slider.findColour(Slider::trackColourId));
+		const Colour gradCol1(trackColour.overlaidWith(Colours::lightgrey.withAlpha(slider.isEnabled() ? 0.25f : 0.13f)));
+		const Colour gradCol2(trackColour.overlaidWith(Colour(0x14000000)));
+		Path indent;
+
+		if (slider.isHorizontal())
+		{
+			const float iy = y + height * 0.5f - sliderRadius * 0.5f;
+			const float ih = sliderRadius;
+
+			g.setGradientFill(ColourGradient(gradCol1, 0.0f, iy,
+				gradCol2, 0.0f, iy + ih, false));
+
+			indent.addRoundedRectangle(x - sliderRadius * 0.5f, iy,
+				width + sliderRadius, ih,
+				5.0f);
+		}
+		else
+		{
+			const float ix = x + width * 0.5f - sliderRadius * 0.5f;
+			const float iw = sliderRadius;
+
+			g.setGradientFill(ColourGradient(gradCol1, ix, 0.0f,
+				gradCol2, ix + iw, 0.0f, false));
+
+			indent.addRoundedRectangle(ix, y - sliderRadius * 0.5f,
+				iw, height + sliderRadius,
+				5.0f);
+		}
+
+		g.fillPath(indent);
+
+		g.setColour(Colour(0x4c000000));
+		g.strokePath(indent, PathStrokeType(0.5f));
+	}
+};
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -79,32 +146,45 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	imageThresholdSliderLabel->setText("Image Threshold", sendNotification);
 
 
-	// Stimulus control - setup components
+	addAndMakeVisible(setupButton = new TextButton("setupButton"));
+	setupButton->setButtonText("Setup");
+	setupButton->addListener(this);
+	setupButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
+
+	// Stimulus control - setup components
 	addAndMakeVisible(ppControllerComponent = new ppController());
 
-	addAndMakeVisible(stimulusVoltageSlider = new Slider("stimulusVoltage"));
+	// Not added here because they appear in the setup box.
+	stimulusVoltageSlider = new Slider("stimulusVoltage");
 	stimulusVoltageSlider->setRange(0.0f, 10.0f, 0);
 	stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
 	stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
 	stimulusVoltageSlider->addListener(this);
-	addAndMakeVisible(stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label"));
+	stimulusVoltageSlider->setLookAndFeel(new CustomLookAndFeel);
+	stimulusVoltageSlider->setColour(Slider::ColourIds::thumbColourId, Colours::darkgrey);
+	stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label");
 	stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
+	stimulusVoltageSliderLabel->setColour(Label::ColourIds::textColourId, Colours::white);
 
-	addAndMakeVisible(stimulusVoltageMin_text = new TextEditor("Stimulus Min"));
+	stimulusVoltageMin_text = new TextEditor("Stimulus Min");
 	stimulusVoltageMin_text->setText(String(stimulusVoltageMin) + " V");
-	addAndMakeVisible(stimulusVoltageMin_textLabel = new Label("Stimulus_Voltage_Min_Text_Label"));
+	stimulusVoltageMin_textLabel = new Label("Stimulus_Voltage_Min_Text_Label");
 	stimulusVoltageMin_textLabel->setText("Stimulus Voltage Min", sendNotification);
+	stimulusVoltageMin_textLabel->setColour(Label::ColourIds::textColourId, Colours::white);
 
-	addAndMakeVisible(stimulusVoltageMax_text = new TextEditor("Stimulus Max"));
+	stimulusVoltageMax_text = new TextEditor("Stimulus Max");
 	stimulusVoltageMax_text->setText(String(stimulusVoltageMax) + " V");
-	addAndMakeVisible(stimulusVoltageMax_textLabel = new Label("Stimulus_Voltage_Max_Text_Label"));
+	stimulusVoltageMax_textLabel = new Label("Stimulus_Voltage_Max_Text_Label");
 	stimulusVoltageMax_textLabel->setText("Stimulus Voltage Max", sendNotification);
+	stimulusVoltageMax_textLabel->setColour(Label::ColourIds::textColourId, Colours::white);
 
-	addAndMakeVisible(stimulusVoltage_text = new TextEditor("Stimulus now"));
+	stimulusVoltage_text = new TextEditor("Stimulus now");
 	stimulusVoltage_text->setText(String(stimulusVoltage) + " V");
-	addAndMakeVisible(stimulusVoltage_textLabel = new Label("Stimulus_Voltage_Text_Label"));
+	stimulusVoltage_textLabel = new Label("Stimulus_Voltage_Text_Label");
 	stimulusVoltage_textLabel->setText("Current Stimulus Voltage", sendNotification);
+	stimulusVoltage_textLabel->setColour(Label::ColourIds::textColourId, Colours::white);
+
 	//
 
     
@@ -231,30 +311,32 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackThreshold_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
 
 
-	// setup components
-	addAndMakeVisible(trackSpike_IncreaseRate_Slider = new Slider("searchBoxWidthSlider"));
+	// Increase/Decrease rate of spike tracking
+	// Not added here as they are in the setup box.
+	trackSpike_IncreaseRate_Slider = new Slider("searchBoxWidthSlider");
 	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
 	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_IncreaseRate_Slider->addListener(this);
 	trackSpike_IncreaseRate_Slider->setValue(0.01f);
-	addAndMakeVisible(trackSpike_IncreaseRate_Slider_Label = new Label("Track_Spike_Increase_Rate_Slider_Label"));
+	trackSpike_IncreaseRate_Slider_Label = new Label("Track_Spike_Increase_Rate_Slider_Label");
 	trackSpike_IncreaseRate_Slider_Label->setText("Increase Rate of Spike Tracking", sendNotification);
+	trackSpike_IncreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
 
-
-	addAndMakeVisible(trackSpike_DecreaseRate_Slider = new Slider("searchBoxWidthSlider"));
+	trackSpike_DecreaseRate_Slider = new Slider("searchBoxWidthSlider");
 	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
 	trackSpike_DecreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_DecreaseRate_Slider->addListener(this);
 	trackSpike_DecreaseRate_Slider->setValue(0.01f);
-	addAndMakeVisible(trackSpike_DecreaseRate_Slider_Label = new Label("Track_Spike_Decrease_Rate_Slider_Label"));
+	trackSpike_DecreaseRate_Slider_Label = new Label("Track_Spike_Decrease_Rate_Slider_Label");
 	trackSpike_DecreaseRate_Slider_Label->setText("Decrease Rate of Spike Tracking", sendNotification);
+	trackSpike_DecreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
 
-	addAndMakeVisible(trackSpike_IncreaseRate_Text = new TextEditor("trackSpike_IncreaseRate_Text"));
+	trackSpike_IncreaseRate_Text = new TextEditor("trackSpike_IncreaseRate_Text");
 	trackSpike_IncreaseRate_Text->setText("+"+String(trackSpike_IncreaseRate_Slider->getValue(),0) + " V");
 
-	addAndMakeVisible(trackSpike_DecreaseRate_Text = new TextEditor("trackSpike_DecreaseRate_Text"));
+	trackSpike_DecreaseRate_Text = new TextEditor("trackSpike_DecreaseRate_Text");
 	trackSpike_DecreaseRate_Text->setText("-"+String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	//
 
@@ -393,14 +475,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-	// trying to create a tab for the setup components
-	// TabbedComponent* createTabButton(setupTab);
-	// TabbedComponent* setupTab = TabbedComponent::createTabButton(setupTab);
-	// cout << "setup Tab made\n";
-	// This line causes open ephys to crash
-	// setupTab->addTab("Setup", Colour(192, 192, 192), 0);
-	// setupTab->toFront;
-	// setupTab->getTabbedButtonBar;
+	setupButton->setBounds(675, 10, 120, 24);
 
     imageThresholdSlider->setBounds (360, 24, 55, 264);
 	imageThresholdSliderLabel->setBounds(348, 270, 80, 50); // opposite to the instructions above - got moved in the rebase
@@ -447,18 +522,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	// Stimulus
 	ppControllerComponent->setBounds(520, 400, 402, 350); // Don't think this needs a label
 
-	stimulusVoltageSlider->setBounds(600, 0, 55, 264);
-	stimulusVoltageSliderLabel->setBounds(590, 250, 80, 50);
-
-	stimulusVoltageMin_text->setBounds(664, 72, 55, 24);
-	stimulusVoltageMin_textLabel->setBounds(719, 72, 105, 24); // x inverted
-
-	stimulusVoltage_text->setBounds(664, 48, 55, 24);
-	stimulusVoltage_textLabel->setBounds(719, 48, 115, 24);  // x inverted
-
-	stimulusVoltageMax_text->setBounds(664, 24, 55, 24);
-	stimulusVoltageMax_textLabel->setBounds(719, 24, 105, 24);  // x inverted 
-
 	// Threshold trigger control
 	trigger_threshold_Slider->setBounds(30, 400, 159, 64);
 	trigger_threshold_Slider_Label->setBounds(15, 400, 79, 64); // in a good place, the slider itself needs to move
@@ -477,14 +540,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	trackSpike_button->setBounds(360, 394, 120, 24); // has a label
 
 	trackThreshold_button->setBounds(360, 428, 120, 24); // has a label
-
-	trackSpike_IncreaseRate_Slider_Label->setBounds(800, 100, 60, 70); // x inverted
-	trackSpike_IncreaseRate_Slider->setBounds(690, 106, 159, 64);
-	trackSpike_IncreaseRate_Text->setBounds(660, 106, 72, 24);
-
-	trackSpike_DecreaseRate_Slider_Label->setBounds(800, 178, 60, 70); // x inverted
-	trackSpike_DecreaseRate_Slider->setBounds(690, 180, 159, 64);
-	trackSpike_DecreaseRate_Text->setBounds(660, 180, 72, 24);
 
 	
     //[UserResized]
@@ -655,6 +710,8 @@ void LfpLatencyProcessorVisualizerContentComponent::mouseWheelMove(const MouseEv
     
 }
  */
+
+
 void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked==extendedColorScaleToggleButton)
@@ -679,8 +736,56 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			trackThreshold_button->setToggleState(false, sendNotification);
 		}
 	}
-}
+	if (buttonThatWasClicked == setupButton) {
 
+		Viewport* view = new Viewport("viewTest");
+		view->setLookAndFeel(&this->getLookAndFeel());
+		view->addAndMakeVisible(stimulusVoltageSlider);
+		view->addAndMakeVisible(stimulusVoltageSliderLabel);
+
+		view->addAndMakeVisible(stimulusVoltageMin_text);
+		view->addAndMakeVisible(stimulusVoltageMin_textLabel);
+
+		view->addAndMakeVisible(stimulusVoltageMax_text);
+		view->addAndMakeVisible(stimulusVoltageMax_textLabel);
+
+		view->addAndMakeVisible(stimulusVoltage_text);
+		view->addAndMakeVisible(stimulusVoltage_textLabel);
+
+		view->addAndMakeVisible(trackSpike_IncreaseRate_Slider);
+		view->addAndMakeVisible(trackSpike_IncreaseRate_Text);
+		view->addAndMakeVisible(trackSpike_IncreaseRate_Slider_Label);
+
+		view->addAndMakeVisible(trackSpike_DecreaseRate_Slider);
+		view->addAndMakeVisible(trackSpike_DecreaseRate_Text);
+		view->addAndMakeVisible(trackSpike_DecreaseRate_Slider_Label);
+
+		trackSpike_IncreaseRate_Text->setBounds(84, 101, 72, 24);
+		trackSpike_IncreaseRate_Slider->setBounds(120, 130, 72, 72);
+		trackSpike_IncreaseRate_Slider_Label->setBounds(156, 96, 105, 32);
+
+		trackSpike_DecreaseRate_Text->setBounds(84, 221, 72, 24);
+		trackSpike_DecreaseRate_Slider->setBounds(120, 250, 72, 72);
+		trackSpike_DecreaseRate_Slider_Label->setBounds(156, 216, 105, 32);
+
+		stimulusVoltageSlider->setBounds(12, 5, 55, 304);
+		stimulusVoltageSliderLabel->setBounds(5, 290, 80, 50);
+
+		stimulusVoltageMin_text->setBounds(84, 53, 72, 24);
+		stimulusVoltageMin_textLabel->setBounds(156, 53, 105, 24); // x inverted
+
+		stimulusVoltage_text->setBounds(84, 29, 72, 24);
+		stimulusVoltage_textLabel->setBounds(156, 29, 115, 24);  // x inverted
+
+		stimulusVoltageMax_text->setBounds(84, 5, 72, 24);
+		stimulusVoltageMax_textLabel->setBounds(156, 5, 105, 24);  // x inverted 
+
+		view->setSize(270, 325);
+
+		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, setupButton->getBounds(), this);
+		setupBox.setLookAndFeel(new CustomLookAndFeel());
+	}
+}
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 //[/MiscUserCode]

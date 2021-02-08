@@ -104,7 +104,6 @@ private:
 
     //==============================================================================
 	// setup
-	ScopedPointer<TabbedComponent> setupTab;
 
 	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
 	ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
@@ -129,6 +128,8 @@ private:
 	// main GUI
 	ScopedPointer<Slider> imageThresholdSlider;
 	ScopedPointer<Label> imageThresholdSliderLabel;
+
+    ScopedPointer<TextButton> setupButton;
 
     ScopedPointer<Slider> searchBoxSlider;
 	ScopedPointer<Label> searchBoxSliderLabel;
