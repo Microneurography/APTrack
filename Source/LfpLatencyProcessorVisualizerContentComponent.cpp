@@ -510,13 +510,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     searchBoxWidthSlider->setBounds(500, 56, 50, 50);
 	searchBoxWidthSliderLabel->setBounds(550, 57, 60, 45); // might need moving down a little, hard to tell when it's a mess
 
-	ROISpikeLatencyLabel->setBounds(1006, 336, 120, 24);  // 192 difference
-	ROISpikeLatency->setBounds(1140, 336, 72, 24);
-	msLabel->setBounds(1212, 336, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
-
-	ROISpikeMagnitudeLabel->setBounds(1022.75, 360, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
-	ROISpikeMagnitude->setBounds(1140, 360, 72, 24); // 72 difference
-	mpersLabel->setBounds(1212, 360, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	ROISpikeLatencyLabel->setBounds(1006, 192, 120, 24);  // 192 difference
+	ROISpikeLatency->setBounds(1140, 192, 72, 24);
+	msLabel->setBounds(1212, 192, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	// latency is 24 less on the y
+	ROISpikeMagnitudeLabel->setBounds(1022.75, 216, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
+	ROISpikeMagnitude->setBounds(1140, 216, 72, 24); // 72 difference
+	mpersLabel->setBounds(1212, 216, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
 
 	// Lucy's Group
     conductionDistanceSlider->setBounds(360, 456, 159, 64);
