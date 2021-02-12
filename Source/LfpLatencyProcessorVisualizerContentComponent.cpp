@@ -476,8 +476,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[/UserPreResize]
 
 	// Diana's Group
-	setupButton->setBounds(675, 10, 120, 24);
-
     imageThresholdSlider->setBounds (360, 24, 55, 264);
 	imageThresholdSliderLabel->setBounds(348, 270, 80, 50); // opposite to the instructions above - got moved in the rebase
    
@@ -497,31 +495,33 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50);
     
 	// Grace's group
-    startingSampleSlider->setBounds(424, 224, 159, 64);
-	startingSampleSliderLabel->setBounds(347, 230, 80, 50); // x value is inverted
+    startingSampleSlider->setBounds(1062, 496, 159, 64);
+	startingSampleSliderLabel->setBounds(987, 502, 80, 50); // x value is inverted
    
-    colorStyleComboBox->setBounds(424, 112, 120, 24);
-	colorStyleComboBoxLabel->setBounds(424, 92, 120, 24); 
+    colorStyleComboBox->setBounds(965, 10, 120, 24);
+	colorStyleComboBoxLabel->setBounds(845, 10, 120, 24); 
 
-	colorControlGroup->setBounds(344, 0, 248, 304); // the rectangle in the gui - doesn't need a label
+	colorControlGroup->setBounds(852, 300, 398, 304); // the rectangle in the gui - doesn't need a label
 
-    extendedColorScaleToggleButton->setBounds(500, 24, 80, 24); // has label
-    
-    searchBoxWidthSlider->setBounds(500, 56, 50, 50);
-	searchBoxWidthSliderLabel->setBounds(550, 57, 60, 45); // might need moving down a little, hard to tell when it's a mess
+    extendedColorScaleToggleButton->setBounds(1090, 10, 80, 24); // has label
 
-	ROISpikeLatencyLabel->setBounds(1006, 192, 120, 24);  // 192 difference
-	ROISpikeLatency->setBounds(1140, 192, 72, 24);
-	msLabel->setBounds(1212, 192, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	// x inversed on these two
+    searchBoxWidthSlider->setBounds(845, 192, 50, 50);
+	searchBoxWidthSliderLabel->setBounds(895, 192, 60, 45); // might need moving down a little, hard to tell when it's a mess
+
+	ROISpikeLatencyLabel->setBounds(1046, 192, 120, 24);  // 192 difference
+	ROISpikeLatency->setBounds(1160, 192, 72, 24);
+	msLabel->setBounds(1232, 192, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
 	// latency is 24 less on the y
-	ROISpikeMagnitudeLabel->setBounds(1022.75, 216, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
-	ROISpikeMagnitude->setBounds(1140, 216, 72, 24); // 72 difference
-	mpersLabel->setBounds(1212, 216, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	ROISpikeMagnitudeLabel->setBounds(1062.75, 216, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
+	ROISpikeMagnitude->setBounds(1160, 216, 72, 24); // 72 difference
+	mpersLabel->setBounds(1232, 216, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
 
 	// Lucy's Group
     conductionDistanceSlider->setBounds(360, 456, 159, 64);
 	conductionDistanceSliderLabel->setBounds(296, 456, 79, 64); // x inverted
 
+	setupButton->setBounds(675, 10, 120, 24);
 	// Stimulus
 	ppControllerComponent->setBounds(520, 400, 402, 350); // Don't think this needs a label
 
