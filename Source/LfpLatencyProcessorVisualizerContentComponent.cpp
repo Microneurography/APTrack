@@ -475,6 +475,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
+	// Diana's Group
 	setupButton->setBounds(675, 10, 120, 24);
 
     imageThresholdSlider->setBounds (360, 24, 55, 264);
@@ -495,9 +496,10 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     subsamplesPerWindowSlider->setBounds(424, 152, 159, 64);
 	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50);
     
+	// Grace's group
     startingSampleSlider->setBounds(424, 224, 159, 64);
 	startingSampleSliderLabel->setBounds(347, 230, 80, 50); // x value is inverted
-    
+   
     colorStyleComboBox->setBounds(424, 112, 120, 24);
 	colorStyleComboBoxLabel->setBounds(424, 92, 120, 24); 
 
@@ -507,15 +509,16 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     
     searchBoxWidthSlider->setBounds(500, 56, 50, 50);
 	searchBoxWidthSliderLabel->setBounds(550, 57, 60, 45); // might need moving down a little, hard to tell when it's a mess
-    
-	ROISpikeLatencyLabel->setBounds(576, 336, 120, 24);  // 192 difference
-    ROISpikeLatency->setBounds(696, 336, 72, 24);
-    msLabel->setBounds(768, 336, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
-    
-	ROISpikeMagnitudeLabel->setBounds(592.75, 360, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
-    ROISpikeMagnitude->setBounds(1032, 360, 72, 24); // 72 difference
-    mpersLabel->setBounds(1104, 360, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
-    
+
+	ROISpikeLatencyLabel->setBounds(1006, 336, 120, 24);  // 192 difference
+	ROISpikeLatency->setBounds(1140, 336, 72, 24);
+	msLabel->setBounds(1212, 336, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
+
+	ROISpikeMagnitudeLabel->setBounds(1022.75, 360, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
+	ROISpikeMagnitude->setBounds(1140, 360, 72, 24); // 72 difference
+	mpersLabel->setBounds(1212, 360, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
+
+	// Lucy's Group
     conductionDistanceSlider->setBounds(360, 456, 159, 64);
 	conductionDistanceSliderLabel->setBounds(296, 456, 79, 64); // x inverted
 
