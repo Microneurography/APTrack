@@ -3,7 +3,7 @@ This plugin extends the functionality of the [Open Ephys GUI](https://github.com
 
 ## Resources
 
-The Open Ephys team is moving their documentation from [atlassian](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491527/Open+Ephys+GUI) to [GitHub](https://open-ephys.github.io/gui-docs/User-Manual/Installing-the-GUI.html), however this has not yet been completed so I would suggest to refer to the atlassian documentation for now.
+The Open Ephys team is moving their documentation from [atlassian](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491527/Open+Ephys+GUI) to [GitHub](https://open-ephys.github.io/gui-docs/User-Manual/Installing-the-GUI.html), however this has not yet been completed so I would suggest referring to the atlassian documentation for now.
 
 ## Installation
 
@@ -43,20 +43,20 @@ Visualiser for the plugin:
 
 **The GUI is currently under refurbishment, bear with us!**
 
-> Trigger Channel and Data Channel: Set to corresponding channels on Pulse Pal and Recording Device
+> Trigger Channel and Data Channel: Used to set the corresponding channels on Pulse Pal and Recording Device.
 
-> Trigger Threshold: 
+> Trigger Threshold: If exceeded in the trigger channel, a new will be added.
 
-> Subsamples Per Window: 
+> Subsamples Per Window: Number of samples used per 'track' displayed on the plot. It can be thought of as an inverse 'zoom' scale - As the number of values plotted in a given space increases the figure zooms out.
 
-> Starting Sample: Can be increased/decreased
+> Starting Sample: If exceeded by the by a sample, it will be stored as a new peak.
 
-> Image Threshold Values
+> Image Threshold Values: These are the limits for the colour scale on the plot
 
-> 
 
 #### Spike Tracking  
-The Threshold Values are used to detct spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box
+The Threshold Values are used to detect spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box.  
+**Multiple Spike Tracking in Development**
 
 
 #### Stimulus Voltage  
@@ -67,9 +67,9 @@ By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage
 </p>
 
 
-## Keybinds
+## Key binds
 
-The following keybinds can be used to adjust settings:
+The following key binds can be used to adjust settings:
 
 | Key               | Binding                                                                |
 |--------------     |------------------------------------------------------------------------|
