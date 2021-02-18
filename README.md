@@ -73,10 +73,14 @@ The following key binds can be used to adjust settings:
 
 | Key               | Binding                                                                |
 |--------------     |------------------------------------------------------------------------|
-| Up Arrow          | Increase Starting Sample Value            |
-| Down Arrow        | Decrease Starting Sample Value            |
-| +                 | Increase Search Box Location Value        |
-| -                 | Decrease Search Box Location Value        |
+| Up Arrow          | Increase Starting Sample Slider             |
+| Down Arrow        | Decrease Starting Sample Slider             |
+| Right Arrow       | Increase Search Box Location                |
+| Left Arrow        | Decrease Search Box Location                |
+| +                 | Increase Subsamples per Window Value        |
+| -                 | Decrease Subsamples per Window Value        |
+
+All these binds work on a number pad.
 
 ## Development
 Please note, this plugin is still in development. Any suggestions/questions should be directed to PUT CONTACT HERE 
