@@ -44,6 +44,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_IncreaseRate = 0.01;
 	trackSpike_DecreaseRate = 0.01;
 
+	
+
 
     //[/Constructor_pre]
     
@@ -480,24 +482,31 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 }
 
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {
-	if (k.getTextCharacter() == '=' || k.getTextCharacter() == '+') {
-		searchBoxSlider->setValue(searchBoxSlider->getValue() + 20, sendNotificationAsync);
+	
+	int maxSubsample = std::round(DATA_CACHE_SIZE_SAMPLES / SPECTROGRAM_HEIGHT);
+	
+	if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindow < maxSubsample)) {
+		subsamplesPerWindowSlider->setValue(subsamplesPerWindowSlider->getValue() + 5, sendNotificationAsync);
 		return true;
 	}
-	else if (k.getTextCharacter() == '-') {
-		searchBoxSlider->setValue(searchBoxSlider->getValue() - 20, sendNotificationAsync);
+	else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindow > 0)) {
+		subsamplesPerWindowSlider->setValue(subsamplesPerWindowSlider->getValue() - 5, sendNotificationAsync);
 		return true;
 	}
-	if ((k == KeyPress::upKey) && (startingSample < 30000)) {
-		startingSample = startingSample++;
-		startingSampleSlider->setValue(startingSample);
-		std::cout << "startingSample" << startingSample << std::endl;
+	else if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSample < 30000)) {
+		startingSampleSlider->setValue(startingSampleSlider->getValue() + 100, sendNotificationAsync);
 		return true;
 	}
-	else if ((k == KeyPress::downKey) && (startingSample > 0)) {
-		startingSample = startingSample--;
-		startingSampleSlider->setValue(startingSample);
-		std::cout << "startingSample" << startingSample << std::endl;
+	else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSample > 0)) {
+		startingSampleSlider->setValue(startingSampleSlider->getValue() - 100, sendNotificationAsync);
+		return true;
+	}
+	else if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < 300)) {
+		searchBoxSlider->setValue(searchBoxSlider->getValue() + 5, sendNotificationAsync);
+		return true;
+	}
+	else if ((k == KeyPress::leftKey || k == KeyPress::numberPad4) && (searchBoxLocation > 0)) {
+		searchBoxSlider->setValue(searchBoxSlider->getValue() - 5, sendNotificationAsync);
 		return true;
 	}
 	else {
@@ -577,7 +586,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		cout << "Stuck here 9\n";
         //auto subsamplesPerWindowOld = subsamplesPerWindow;
         subsamplesPerWindow = sliderThatWasMoved->getValue();
-        std::cout << "subsamplesPerWindow" << searchBoxLocation << std::endl;
+        std::cout << "subsamplesPerWindow" << subsamplesPerWindow << std::endl;
       
     }
     if (sliderThatWasMoved == startingSampleSlider)
