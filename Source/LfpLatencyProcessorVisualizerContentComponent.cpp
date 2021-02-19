@@ -315,7 +315,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackThreshold_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
 	addAndMakeVisible(trackThreshold_button_Label = new Label("track_threshold_button_label"));
 	trackThreshold_button_Label->setText("Track Threshold", sendNotification);
-	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::grey);
+	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 
 
 	// Increase/Decrease rate of spike tracking
@@ -748,7 +748,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		{
 			trackThreshold_button->setEnabled(false);
 			trackThreshold_button->setToggleState(false, sendNotification);
-			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::grey);
+			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 		}
 	}
 	if (buttonThatWasClicked == setupButton) {
