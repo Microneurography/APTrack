@@ -192,8 +192,6 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 
 void LfpLatencyProcessorVisualizer::updateSpectrogram()
 {
-    return;
-
     for (int track=0; track < tracksAmount; track++)
     {
         //Get image dimension
