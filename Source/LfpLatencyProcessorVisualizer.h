@@ -90,6 +90,8 @@ private:
     float level;
     
     int pixelsPerTrack;
+
+    int tracksAmount;
     
     int imageLinePoint;
     

@@ -46,11 +46,11 @@
 //fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
 
-//With in pixels of spectrogram imagee
+//Width in pixels of spectrogram image
 //300 pixels = 300 tracks approx 5 min
-#define SPECTROGRAM_WIDTH 300
+#define SPECTROGRAM_WIDTH 600
 
-#define SPECTROGRAM_HEIGHT 300
+#define SPECTROGRAM_HEIGHT 600
 
 #define EVENT_DETECTION_THRESHOLD 1500
 
@@ -59,7 +59,7 @@
 #define DATA_CACHE_SIZE_TRACKS 300
 
 //for debug
-#define SEARCH_BOX_WITDHT 3
+#define SEARCH_BOX_WIDTH 3
 
 /**
     This class serves as a template for creating new processors.

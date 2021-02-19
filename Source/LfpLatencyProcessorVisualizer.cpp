@@ -43,7 +43,9 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
     windowSampleCount = 0;
     lastWindowPeak = 0;
     
-    pixelsPerTrack = 5;
+    tracksAmount = 60;
+
+    pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
     
     imageLinePoint = 0;
     
@@ -190,8 +192,9 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 
 void LfpLatencyProcessorVisualizer::updateSpectrogram()
 {
-        
-    for (int track=0; track < 60; track++)
+    return;
+
+    for (int track=0; track < tracksAmount; track++)
     {
         //Get image dimension
         draw_imageHeight = content.spectrogramImage.getHeight();

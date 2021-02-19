@@ -189,7 +189,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
     
     addAndMakeVisible (searchBoxSlider = new Slider ("searchBox"));
-    searchBoxSlider->setRange(0, 300, 1);
+    searchBoxSlider->setRange(0, SPECTROGRAM_HEIGHT, 1);
     searchBoxSlider->setSliderStyle (Slider::LinearVertical);
     searchBoxSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     searchBoxSlider->addListener (this);
@@ -254,7 +254,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	conductionDistanceSliderLabel->setText("Conduction Distance", sendNotification);
     
     addAndMakeVisible (searchBoxWidthSlider = new Slider ("searchBoxWidthSlider"));
-    searchBoxWidthSlider->setRange (1, 30, 1);
+    searchBoxWidthSlider->setRange (1, 63, 1);
     searchBoxWidthSlider->setSliderStyle (Slider::Rotary);
     searchBoxWidthSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     searchBoxWidthSlider->addListener (this);
@@ -272,9 +272,11 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(colorStyleComboBoxLabel = new Label("Color_Style_Combo_Box_Label"));
 	colorStyleComboBoxLabel->setText("Color Style Combination", sendNotification);
     
-    addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton("Extended scale?"));
+    addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton(""));
     extendedColorScaleToggleButton->addListener(this);
 	extendedColorScaleToggleButton->setColour(ToggleButton::ColourIds::tickDisabledColourId,Colours::lightgrey);
+	addAndMakeVisible(extendedColorScaleToggleButtonLabel = new Label("Extended_Scale_Toggle_Button_Label"));
+	extendedColorScaleToggleButtonLabel->setText("Extended Scale", sendNotification);
 
 	addAndMakeVisible(textBox2 = new TextEditor("selectedDataChanText"));
 	textBox2->setText("Data");
@@ -299,16 +301,21 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(dataChannelComboBoxLabel = new Label("Data_Channel_Combo_Box_Label"));
 	dataChannelComboBoxLabel->setText("Data Channel", sendNotification);
 
-	addAndMakeVisible(trackSpike_button = new ToggleButton("Track spike"));
+	addAndMakeVisible(trackSpike_button = new ToggleButton(""));
 	trackSpike_button->addListener(this);
 	trackSpike_button->setToggleState(false, sendNotification);
 	trackSpike_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
+	addAndMakeVisible(trackSpike_button_Label = new Label("track_spike_button_label"));
+	trackSpike_button_Label->setText("Track Spike", sendNotification);
 
-	addAndMakeVisible(trackThreshold_button = new ToggleButton("Track threshold"));
+	addAndMakeVisible(trackThreshold_button = new ToggleButton(""));
 	trackThreshold_button->addListener(this);
 	trackThreshold_button->setToggleState(false, sendNotification);
 	trackThreshold_button->setEnabled(trackSpike_button->getToggleState());
 	trackThreshold_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
+	addAndMakeVisible(trackThreshold_button_Label = new Label("track_threshold_button_label"));
+	trackThreshold_button_Label->setText("Track Threshold", sendNotification);
+	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::grey);
 
 
 	// Increase/Decrease rate of spike tracking
@@ -457,7 +464,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 		g.setColour(Colours::lightyellow);
 	}
     
-    g.drawRoundedRectangle(300-8, 300-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
+    g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -476,73 +483,76 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[/UserPreResize]
 
 	// Diana's Group
-    imageThresholdSlider->setBounds (360, 24, 55, 264);
-	imageThresholdSliderLabel->setBounds(348, 270, 80, 50); // opposite to the instructions above - got moved in the rebase
+    imageThresholdSlider->setBounds (685, 400, 55, 264);
+	imageThresholdSliderLabel->setBounds(670, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
    
-    highImageThresholdText->setBounds (424, 24, 55, 24);
-	highImageThresholdTextLabel->setBounds(477, 24, 160, 25); // opposite to the instructions above
+    highImageThresholdText->setBounds (770, 410, 55, 24);
+	highImageThresholdTextLabel->setBounds(830, 410, 160, 25); // opposite to the instructions above
     
-    lowImageThresholdText->setBounds (424, 72, 55, 24);
-	lowImageThresholdTextLabel->setBounds(477, 72, 160, 25); // opposite to the instructions above
+    lowImageThresholdText->setBounds (770, 458, 55, 24);
+	lowImageThresholdTextLabel->setBounds(830, 458, 160, 25); // opposite to the instructions above
     
-    detectionThresholdText->setBounds(424, 48, 55, 24);
-	detectionThresholdTextLabel->setBounds(477, 48, 160, 25); // opposite to the instructions above
+    detectionThresholdText->setBounds(770, 434, 55, 24);
+	detectionThresholdTextLabel->setBounds(830, 434, 160, 25); // opposite to the instructions above
     
-    searchBoxSlider->setBounds (295, 0, 15, 300);
-	searchBoxSliderLabel->setBounds(269, 281, 80, 50); // x value is inverted
+    searchBoxSlider->setBounds (SPECTROGRAM_WIDTH-5, 0, 15, SPECTROGRAM_HEIGHT);
+	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH-35, SPECTROGRAM_HEIGHT-17, 80, 50); // x value is inverted
     
-    subsamplesPerWindowSlider->setBounds(424, 152, 159, 64);
-	subsamplesPerWindowSliderLabel->setBounds(347, 159, 80, 50);
+    subsamplesPerWindowSlider->setBounds(850, 487, 159, 64);
+	subsamplesPerWindowSliderLabel->setBounds(770, 494, 80, 50);
     
 	// Grace's group
-    startingSampleSlider->setBounds(1062, 496, 159, 64);
-	startingSampleSliderLabel->setBounds(987, 502, 80, 50); // x value is inverted
+    startingSampleSlider->setBounds(850, 556, 159, 64);
+	startingSampleSliderLabel->setBounds(770, 563, 80, 50); // x value is inverted
    
-    colorStyleComboBox->setBounds(965, 10, 120, 24);
-	colorStyleComboBoxLabel->setBounds(845, 10, 120, 24); 
+    colorStyleComboBox->setBounds(785, 10, 120, 24);
+	colorStyleComboBoxLabel->setBounds(665, 10, 120, 24); 
 
-	colorControlGroup->setBounds(852, 300, 398, 304); // the rectangle in the gui - doesn't need a label
+	colorControlGroup->setBounds(665, 390, 398, 304); // the rectangle in the gui - doesn't need a label
 
-    extendedColorScaleToggleButton->setBounds(1090, 10, 80, 24); // has label
+    extendedColorScaleToggleButton->setBounds(780, 39, 24, 24); 
+    extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24); 
 
 	// x inversed on these two
-    searchBoxWidthSlider->setBounds(845, 192, 50, 50);
-	searchBoxWidthSliderLabel->setBounds(895, 192, 60, 45); // might need moving down a little, hard to tell when it's a mess
+    searchBoxWidthSlider->setBounds(478, 643, 50, 64);
+	searchBoxWidthSliderLabel->setBounds(524, 664, 120, 24);
 
-	ROISpikeLatencyLabel->setBounds(1046, 192, 120, 24);  // 192 difference
-	ROISpikeLatency->setBounds(1160, 192, 72, 24);
-	msLabel->setBounds(1232, 192, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	ROISpikeLatencyLabel->setBounds(866, 126, 120, 24);  // 192 difference
+	ROISpikeLatency->setBounds(980, 126, 72, 24);
+	msLabel->setBounds(1052, 126, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
 	// latency is 24 less on the y
-	ROISpikeMagnitudeLabel->setBounds(1062.75, 216, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
-	ROISpikeMagnitude->setBounds(1160, 216, 72, 24); // 72 difference
-	mpersLabel->setBounds(1232, 216, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	ROISpikeMagnitudeLabel->setBounds(866, 155, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
+	ROISpikeMagnitude->setBounds(980, 155, 72, 24); // 72 difference
+	mpersLabel->setBounds(1052, 155, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
 
 	// Lucy's Group
-    conductionDistanceSlider->setBounds(360, 456, 159, 64);
-	conductionDistanceSliderLabel->setBounds(296, 456, 79, 64); // x inverted
+    conductionDistanceSlider->setBounds(850, 625, 159, 64);
+	conductionDistanceSliderLabel->setBounds(770, 632, 79, 64); // x inverted
 
-	setupButton->setBounds(675, 10, 120, 24);
+	setupButton->setBounds(955, 10, 120, 24);
 	// Stimulus
-	ppControllerComponent->setBounds(520, 400, 402, 350); // Don't think this needs a label
+	ppControllerComponent->setBounds(667, 260, 402, 350);
 
 	// Threshold trigger control
-	trigger_threshold_Slider->setBounds(30, 400, 159, 64);
-	trigger_threshold_Slider_Label->setBounds(15, 400, 79, 64); // in a good place, the slider itself needs to move
+	trigger_threshold_Slider->setBounds(780, 189, 159, 64);
+	trigger_threshold_Slider_Label->setBounds(665, 209, 120, 24); // in a good place, the slider itself needs to move
 
 
 	// channel control
 	//textBox1->setBounds(10, 320, 72, 24);
 	//textBox2->setBounds(10, 350, 72, 24);
 
-	triggerChannelComboBox->setBounds(120, 320, 72, 24);
-	triggerChannelComboBoxLabel->setBounds(28, 320, 92, 24);
+	triggerChannelComboBox->setBounds(785, 68, 120, 24);
+	triggerChannelComboBoxLabel->setBounds(665, 68, 120, 24);
 
-	dataChannelComboBox->setBounds(120, 350, 72, 24);
-	dataChannelComboBoxLabel->setBounds(48, 350, 72, 24); // fine
+	dataChannelComboBox->setBounds(785, 97, 120, 24);
+	dataChannelComboBoxLabel->setBounds(665, 97, 120, 24); // fine
 
-	trackSpike_button->setBounds(360, 394, 120, 24); // has a label
+	trackSpike_button->setBounds(780, 126, 120, 24);
+	trackSpike_button_Label->setBounds(665, 126, 120, 24);
 
-	trackThreshold_button->setBounds(360, 428, 120, 24); // has a label
+	trackThreshold_button->setBounds(780, 155, 120, 24);
+	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
 
 	
     //[UserResized]
@@ -732,11 +742,13 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 	{
 		if (buttonThatWasClicked->getToggleState() == true) {
 			trackThreshold_button->setEnabled(true);
+			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::black);
 		}
 		else if (buttonThatWasClicked->getToggleState() == false)
 		{
 			trackThreshold_button->setEnabled(false);
 			trackThreshold_button->setToggleState(false, sendNotification);
+			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::grey);
 		}
 	}
 	if (buttonThatWasClicked == setupButton) {

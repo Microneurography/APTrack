@@ -169,6 +169,7 @@ private:
     ScopedPointer<GroupComponent> colorControlGroup;
 	 
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
+    ScopedPointer<Label> extendedColorScaleToggleButtonLabel;
 	
     ScopedPointer<Label> cmLabel;
  
@@ -189,7 +190,10 @@ private:
     ScopedPointer<Slider> Trigger_threshold; //TODO
 
     ScopedPointer<ToggleButton> trackSpike_button;
+    ScopedPointer<Label> trackSpike_button_Label;
+
     ScopedPointer<ToggleButton> trackThreshold_button;
+    ScopedPointer<Label> trackThreshold_button_Label;
 
     ScopedPointer<TextEditor> ROISpikeLatency;
 	ScopedPointer<Label> ROISpikeLatencyLabel;
