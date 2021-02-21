@@ -485,28 +485,56 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 	
 	int maxSubsample = std::round(DATA_CACHE_SIZE_SAMPLES / SPECTROGRAM_HEIGHT);
 	
+	//Lucy's style of keybind was much better than mine as it allowed to adjust value and slider position and send a notification in one single line, so thank you <3, from James
+	
+	//Increase subsamplesperwindow
 	if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindow < maxSubsample)) {
 		subsamplesPerWindowSlider->setValue(subsamplesPerWindowSlider->getValue() + 5, sendNotificationAsync);
 		return true;
 	}
+	//Decrease subsamplesperwindow
 	else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindow > 0)) {
 		subsamplesPerWindowSlider->setValue(subsamplesPerWindowSlider->getValue() - 5, sendNotificationAsync);
 		return true;
 	}
+	//Increase starting sample
 	else if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSample < 30000)) {
 		startingSampleSlider->setValue(startingSampleSlider->getValue() + 100, sendNotificationAsync);
 		return true;
 	}
+	//Decrease starting sample
 	else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSample > 0)) {
 		startingSampleSlider->setValue(startingSampleSlider->getValue() - 100, sendNotificationAsync);
 		return true;
 	}
+	//Increase search box location
 	else if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < 300)) {
 		searchBoxSlider->setValue(searchBoxSlider->getValue() + 5, sendNotificationAsync);
 		return true;
 	}
+	//Decrease search box location
 	else if ((k == KeyPress::leftKey || k == KeyPress::numberPad4) && (searchBoxLocation > 0)) {
 		searchBoxSlider->setValue(searchBoxSlider->getValue() - 5, sendNotificationAsync);
+		return true;
+	}
+	//Increase highImageThreshold
+	else if ((k == KeyPress::pageUpKey || k == KeyPress::numberPad9) && (highImageThreshold < 100)) {
+		imageThresholdSlider->setMaxValue(imageThresholdSlider->getMaxValue() + 2, sendNotificationAsync);
+		return true;
+	}
+	//Decrease highImageThreshold
+	else if ((k == KeyPress::pageDownKey || k == KeyPress::numberPad3) && (highImageThreshold > 0)) {
+		imageThresholdSlider->setMaxValue(imageThresholdSlider->getMaxValue() - 2, sendNotificationAsync);
+		return true;
+	}
+	//Increase lowImageThreshold
+	else if ((k == KeyPress::homeKey || k == KeyPress::numberPad7) && (lowImageThreshold < 100)) {
+		imageThresholdSlider->setMinValue(imageThresholdSlider->getMinValue() + 2, sendNotificationAsync);
+		return true;
+	}
+	//Decrease lowImageThreshold
+	else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > 0)) {
+		imageThresholdSlider->setMinValue(imageThresholdSlider->getMinValue() - 2, sendNotificationAsync);
 		return true;
 	}
 	else {
