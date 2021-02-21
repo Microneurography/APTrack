@@ -79,6 +79,10 @@ The following key binds can be used to adjust settings:
 | Left Arrow        | Decrease Search Box Location                |
 | +                 | Increase Subsamples per Window Value        |
 | -                 | Decrease Subsamples per Window Value        |
+| Page Up           | Increase High Image Threshold               |
+| Page Down         | Decrease High Image Threshold               |
+| Home              | Increase Low Image Threshold                |
+| End               | Decrease Low Image Threshold                |
 
 All these binds work on a number pad.
 
