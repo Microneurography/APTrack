@@ -15,16 +15,17 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
-        name: Login to DockerHub
+        name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }} # Add your dockerhub username to the repo's secrets
-          password: ${{ secrets.DOCKERHUB_TOKEN }} # Add your dockerhub password to the repo's secrets
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
       -
         name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: merlllle/compiled-plugin-gui:latest # Replace with your username and appname in the format as `username/appname:latest`
+          tags: ghcr.io/microneurography/oe-plugin-latency-tracker/compiled-plugin-gui:latest
           file: ./Containerization/Dockerfile
