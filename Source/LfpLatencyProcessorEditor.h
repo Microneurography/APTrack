@@ -77,9 +77,6 @@ public:
 
 
 private:
-    // This component contains all components and graphics that were added using Projucer.
-    // It's bounds initially the same bounds as the gray workspace (but only till the drawerButton for X)
-
     LfpLatencyProcessor* processor;
 
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;

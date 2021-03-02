@@ -1,29 +1,5 @@
-/*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 4.2.1
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
-
-  ==============================================================================
-*/
-
-//[Headers] You can add your own extra header files here...
-//[/Headers]
-
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
 
 // So we can make the setup box less dark.
 class CustomLookAndFeel : public juce::LookAndFeel_V3 {
@@ -91,13 +67,11 @@ public:
 		g.strokePath(indent, PathStrokeType(0.5f));
 	}
 };
-//[/MiscUserDefs]
 
 //==============================================================================
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
 : spectrogramImage (Image::RGB, SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT, true),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
     searchBoxLocation = 150;
     conductionDistance = 100;
 
@@ -114,8 +88,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	
 
 
-    //[/Constructor_pre]
-    
     std::cout << "Pre" << std::endl;
     draw_imageHeight = spectrogramImage.getHeight();
     draw_rightHandEdge = spectrogramImage.getWidth();
@@ -379,7 +351,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
     
     
-    //[UserPreSize]
 
     imageThresholdSlider->setMinValue(0.0f);
     imageThresholdSlider->setMaxValue(90.0f);
@@ -398,21 +369,15 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     searchBoxWidthSlider->setValue(3);
     
     extendedColorScaleToggleButton->setToggleState(false,sendNotification);
-    //[/UserPreSize]
 
     setSize (700, 900);
     
     spikeDetected = false;
 
-    //[Constructor] You can add your own custom stuff here..
-    //[/Constructor]
 }
 
 LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerContentComponent()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
     imageThresholdSlider = nullptr;
     searchBoxSlider = nullptr;
     subsamplesPerWindowSlider = nullptr;
@@ -436,21 +401,15 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	trackSpike_IncreaseRate_Text = nullptr;
 	trackSpike_DecreaseRate_Text = nullptr;
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
 }
 
 //==============================================================================
 void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
     g.fillAll (Colours::grey);
     g.setOpacity (1.0f);
     g.drawImage(spectrogramImage, 0,0,SPECTROGRAM_WIDTH,SPECTROGRAM_HEIGHT,0,0,SPECTROGRAM_WIDTH,SPECTROGRAM_HEIGHT);
     //Note, drawImage handles rescaling!
-    //[/UserPrePaint]
     
 	if (trackSpike_button->getToggleState() == true)
 	{
@@ -467,9 +426,6 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	}
     
     g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 // If you want to move something down, you have to increase the y value
@@ -481,9 +437,6 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 // set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
 	// Diana's Group
     imageThresholdSlider->setBounds (685, 400, 55, 264);
 	imageThresholdSliderLabel->setBounds(670, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
@@ -555,10 +508,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	trackThreshold_button->setBounds(780, 155, 120, 24);
 	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
-
-	
-    //[UserResized]
-    //[/UserResized]
 }
 
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {
@@ -624,8 +573,6 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 {
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
 		cout << "Stuck here 1\n";
@@ -661,7 +608,6 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     if (sliderThatWasMoved == imageThresholdSlider)
     {
 		cout << "Stuck here 4\n";
-        //[UserSliderCode_imageThresholdSlider] -- add your slider handling code here..
 
         //Lower value
 		cout << "Stuck here 5\n";
@@ -680,7 +626,6 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
         detectionThresholdText->setText(String(detectionThreshold,1) + " uV");
 
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
-        //[/UserSliderCode_imageThresholdSlider]
     }
     if (sliderThatWasMoved == searchBoxSlider)
     {
@@ -723,10 +668,6 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
-
-    
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
 }
 
 /*
@@ -838,39 +779,3 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 }
-
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="LfpLatencyProcessorVisualizerContentComponent"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="spectrogramImage (Image::RGB, SPECTROGRAM_WIDTH, FIFO_BUFFER_SIZE, true)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="700" initialHeight="900">
-  <BACKGROUND backgroundColour="ffffff">
-    <ROUNDRECT pos="544 8 104 296" cornerSize="10" fill="solid: fff0f8ff" hasStroke="0"/>
-  </BACKGROUND>
-  <SLIDER name="imageThreshold" id="170175c6caff4f98" memberName="imageThresholdSlider"
-          virtualName="" explicitFocusOrder="0" pos="568 16 55 272" min="0"
-          max="1000" int="0" style="TwoValueVertical" textBoxPos="NoTextBox"
-          textBoxEditable="0" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
-          needsCallback="1"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
