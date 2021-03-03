@@ -228,8 +228,12 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
         auto parameter = getParameterObject(i);
         parameterNode->setAttribute("name", parameter->getName());
         parameterNode->setAttribute("type", parameter->getParameterTypeString());
+		parameterNode->setAttribute("time stamp", parameter->getName());
 
-        auto parameterValue = getParameterVar(i, currentChannel);
+		auto parameterValue = getParameterVar(i, currentChannel);
+		//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());
+		//XmlElement *timeStampToXML = mainNode->createNewChildElement(timeStamp);
+		//saveToXml(timeStampToXML);
 
         if (parameter->isBoolean())
             parameterNode->setAttribute("value", (int)parameterValue);
