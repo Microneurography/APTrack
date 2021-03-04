@@ -43,13 +43,15 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
     windowSampleCount = 0;
     lastWindowPeak = 0;
     
-    pixelsPerTrack = 5;
+    tracksAmount = 60;
+
+    pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
     
     imageLinePoint = 0;
     
     samplesAfterStimulus = 0;
     
-    startCallbacks();
+    startCallbacks(); 
     
     // Store pointer to processor
     processor = processor_pointer;
@@ -101,7 +103,6 @@ void LfpLatencyProcessorVisualizer::update()
 	//Clear old values and repopulate combobox
 	content.triggerChannelComboBox->clear();
 	content.dataChannelComboBox->clear();
-	content.trackSpikeComboBox->clear();
 
 	content.triggerChannelComboBox->addSectionHeading("Trigger");
 	content.dataChannelComboBox->addSectionHeading("Data");
@@ -138,10 +139,6 @@ void LfpLatencyProcessorVisualizer::update()
 	else
 	{
 		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
-	}
-	if (content.trackSpike_button->getToggleState() == true) 
-	{
-		content.searchBoxSlider->setValue(spikeLocations[content.trackSpikeComboBox->getSelectedId()]);
 	}
 }
 
@@ -195,8 +192,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 
 void LfpLatencyProcessorVisualizer::updateSpectrogram()
 {
-        
-    for (int track=0; track < 60; track++)
+    for (int track=0; track < tracksAmount; track++)
     {
         //Get image dimension
         draw_imageHeight = content.spectrogramImage.getHeight();
@@ -317,7 +313,6 @@ void LfpLatencyProcessorVisualizer::updateSpectrogram()
 void LfpLatencyProcessorVisualizer::processTrack()
 {
 
-	int i = 0;
 	// Get latency track data of previous row
 	float* lastRowData = processor->getdataCacheRow(1);
 
@@ -347,10 +342,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (maxLevel > content.detectionThreshold)
 		{
 			content.spikeDetected = true;
-			spikeLocations[i] = (SpikeLocationRel);
-			content.trackSpikeComboBox->addItem("Spike" + i, i);
-			content.searchBoxSlider->setValue(spikeLocations[i]);
-			i = i + 1;
+			
+			//content.searchBoxSlider->setValue(SpikeLocationRel);
+
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation
 			if (content.trackThreshold_button->getToggleState() == true)

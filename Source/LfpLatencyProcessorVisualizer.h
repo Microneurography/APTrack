@@ -90,6 +90,8 @@ private:
     float level;
     
     int pixelsPerTrack;
+
+    int tracksAmount;
     
     int imageLinePoint;
     
@@ -106,8 +108,6 @@ private:
     
     int draw_imageHeight;
     int draw_rightHandEdge;
-
-	int spikeLocations[5];
     
     //Pointer to processor
     LfpLatencyProcessor* processor;
