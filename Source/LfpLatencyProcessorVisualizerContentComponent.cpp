@@ -21,6 +21,7 @@
 //[/Headers]
 
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
+#include "LfpLatencyProcessor.h"
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
@@ -624,6 +625,8 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 {
+	LfpLatencyProcessor* process = new LfpLatencyProcessor(); // to save the new value to xml
+	XmlElement *XmlValue = new XmlElement("COMPONENT NAME");
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 	if (sliderThatWasMoved == stimulusVoltageSlider)
@@ -631,17 +634,17 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		cout << "Stuck here 1\n";
 		//Lower value
 		stimulusVoltageMin = sliderThatWasMoved->getMinValue();
+		XmlValue->setAttribute("stimulusVoltageMin", stimulusVoltageMin);
 		stimulusVoltageMin_text->setText(String(stimulusVoltageMin,2));
 		cout << "Stuck here 2\n";
 		//Upper value
 		stimulusVoltageMax = sliderThatWasMoved->getMaxValue();
+		XmlValue->setAttribute("stimulusVoltageMax", stimulusVoltageMax);
 		stimulusVoltageMax_text->setText(String(stimulusVoltageMax,2));
 		cout << "Stuck here 3\n";
 		//mid value
 		stimulusVoltage = sliderThatWasMoved->getValue();
-		stimulusVoltage_text->setText(String(stimulusVoltage,2));
 
-		// very slow for some reason
 		cout << "Got here\n";
 		if (stimulusVoltage > 4 && alreadyAlerted == false) {
 			cout << "Made it past the if\n";
@@ -651,8 +654,10 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 			alreadyAlerted = true;
 			cout << "already alterted is now true\n";
 		}
-		if (voltageTooHighOkay) {
+		if (voltageTooHighOkay || stimulusVoltage < 4) {
 			cout << "Made it past the 2nd if\n";
+			XmlValue->setAttribute("stimulusVoltage", stimulusVoltage);
+			stimulusVoltage_text->setText(String(stimulusVoltage, 2));
 			ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 			cout << "Updated stimulus voltage\n";
 		}
@@ -666,16 +671,19 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
         //Lower value
 		cout << "Stuck here 5\n";
         lowImageThreshold = sliderThatWasMoved->getMinValue();
+		XmlValue->setAttribute("lowImageThreshold", lowImageThreshold);
         std::cout << "Slider lower: " << lowImageThreshold << std::endl;
         lowImageThresholdText->setText(String(lowImageThreshold,1)+" uV");
 		cout << "Stuck here 6\n";
         //Upper value
         highImageThreshold = sliderThatWasMoved->getMaxValue();
+		XmlValue->setAttribute("highImageThreshold", highImageThreshold);
         std::cout << "Slider upper: " << highImageThreshold << std::endl;
         highImageThresholdText->setText(String(highImageThreshold,1) + " uV");
 		cout << "Stuck here 7\n";
         //mid value
         detectionThreshold = sliderThatWasMoved->getValue();
+		XmlValue->setAttribute("detectionThreshold", detectionThreshold);
         std::cout << "DetectionThehold" << detectionThreshold << std::endl;
         detectionThresholdText->setText(String(detectionThreshold,1) + " uV");
 
@@ -686,6 +694,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     {
 		cout << "Stuck here 8\n";
         searchBoxLocation = sliderThatWasMoved->getValue();
+		XmlValue->setAttribute("searchBoxLocation", searchBoxLocation);
         std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
         
     }
@@ -694,6 +703,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		cout << "Stuck here 9\n";
         //auto subsamplesPerWindowOld = subsamplesPerWindow;
         subsamplesPerWindow = sliderThatWasMoved->getValue();
+		XmlValue->setAttribute("subsamplesPerWindow", subsamplesPerWindow);
         std::cout << "subsamplesPerWindow" << subsamplesPerWindow << std::endl;
       
     }
@@ -701,6 +711,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     {
 		cout << "Stuck here 10\n";
         startingSample = sliderThatWasMoved->getValue();
+		XmlValue->setAttribute("startingSample", startingSample);
         std::cout << "startingSample" << startingSample << std::endl;
         
     }
@@ -708,6 +719,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     {
 		cout << "Stuck here 11\n";
         searchBoxWidth = sliderThatWasMoved->getValue();
+		XmlValue->setAttribute("searchBoxWidth", searchBoxWidth);
         std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
         
     }
@@ -715,15 +727,18 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 	{
 		cout << "Stuck here 12\n";
 		trackSpike_IncreaseRate = sliderThatWasMoved->getValue();
+		XmlValue->setAttribute("trackSpike_IncreaseRate", trackSpike_IncreaseRate);
 		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0)+ " V");
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
 		cout << "Stuck here 13\n";
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
+		XmlValue->setAttribute("trackSpike_DecreaseRate", trackSpike_DecreaseRate);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
-
+	process->saveCustomParametersToXml(XmlValue);
+	delete process;
     
     //[UsersliderValueChanged_Post]
     //[/UsersliderValueChanged_Post]

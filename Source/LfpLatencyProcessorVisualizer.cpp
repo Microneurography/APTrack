@@ -89,7 +89,7 @@ void LfpLatencyProcessorVisualizer::update()
     std::cout << "LfpLatencyProcessorVisualizer::update2" << std::endl;
 
 	//Get number of availiable channels and update label
-  // HACK: harcoded to 24
+    // HACK: harcoded to 24
 	int numAvailiableChannels = processor->getTotalDataChannels();
 
 	std::cout << "LfpLatencyProcessorVisualizer::numAvailiableChannels" << numAvailiableChannels << std::endl;
