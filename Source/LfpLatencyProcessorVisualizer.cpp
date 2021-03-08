@@ -313,6 +313,7 @@ void LfpLatencyProcessorVisualizer::updateSpectrogram()
 void LfpLatencyProcessorVisualizer::processTrack()
 {
 
+	int i = 0;
 	// Get latency track data of previous row
 	float* lastRowData = processor->getdataCacheRow(1);
 
@@ -339,11 +340,23 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	if (content.trackSpike_button->getToggleState() == true) {
 
 		// Check for spike inside ROI box
-		if (maxLevel > content.detectionThreshold)
+		if (maxLevel > content.detectionThreshold && i < 4)
 		{
 			content.spikeDetected = true;
-			
-			//content.searchBoxSlider->setValue(SpikeLocationRel);
+			spikeLocations[i] = SpikeLocationRel;
+			content.trackSpikeComboBox->setSelectedId(i);
+			switch (content.trackSpikeComboBox->getSelectedId()) {
+				case 1:
+					content.searchBoxSlider->setValue(spikeLocations[0]);
+				case 2:
+					content.searchBoxSlider->setValue(spikeLocations[1]);
+				case 3:
+					content.searchBoxSlider->setValue(spikeLocations[2]);
+				case 4:
+					content.searchBoxSlider->setValue(spikeLocations[3]);
+			}
+			i = i + 1;
+			std::cout << "Spike Found" << SpikeLocationRel << std::endl;
 
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation

@@ -630,8 +630,9 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 		return true;
 	}
 	// Track Spike
-	else if ((k == KeyPress::spaceKey || k == KeyPress::numberPadEquals)) {
+	else if ((k == KeyPress::spaceKey || k == KeyPress::numberPad0)) {
 		trackSpike_button->triggerClick();
+		return true;
 	}
 	else {
 		return false;

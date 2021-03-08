@@ -105,6 +105,7 @@ private:
     
     float lastWindowPeak;
     int windowSampleCount;
+	int spikeLocations[4];
     
     int draw_imageHeight;
     int draw_rightHandEdge;
