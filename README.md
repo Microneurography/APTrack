@@ -4,31 +4,55 @@ This plugin extends the functionality of the [Open Ephys GUI](https://github.com
 ## Resources
 
 The Open Ephys team is moving their documentation from [atlassian](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491527/Open+Ephys+GUI) to [GitHub](https://open-ephys.github.io/gui-docs/User-Manual/Installing-the-GUI.html), however this has not yet been completed so I would suggest referring to the atlassian documentation for now.
+### Getting Started with Open-Ephys and LfpLatency Plugin
+#### Step 1: Compiling Open-Ephys
+**Pre-requisities: cmake, git, (git bash for Windows), (Virtual Studio 2019 for Windows)**
+We recommend compiling on Windows.
 
-## Installation
+	1. Go to a place in your local directory. For ease of communication, I’ll call this directory *~/home*
+	2. Open a terminal in ~/home, type git clone https://github.com/open-ephys/plugin-GUI.git
+##### For Windows Users:
+	3. Go to *~home/plugin-GUI/Build* folder
+	4. Type *cmake -G "Visual Studio 16 2019" -A x64 ..* 
+	5. In Visual Studio, select the *open-ephys.sln* file from the Build folder.
+	6. Optional: From the Build menu, select Configuration Manager, then select Release
+	7. Select Build/Build Solution (or press F6) to build the GUI from source or hit the "Debug"/”Release” button to build and run. 
+	***N.B. The Release version runs significantly better than debug, but will take longer.***
+##### For Linux Users:
+	3. Install the Linux dependencies by running *sudo ./install_linux_dependencies.sh* in the *Resources/Scripts* folder.
+	4. From the same directory, type *sudo cp 40-open-ephys.rules /etc/udev/rules.d*
+	5. Type *sudo service udev restart* on Ubuntu/Debian or *sudo udevadm control --reload-rules* on Fedora/CentOS. These last two steps will allow your computer to communicate with the Open Ephys acquisition board.
+	6. Go to *~/home/plugin-GUI/Build*
+	7. Type *cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..* to create the build files.
+	8. Type *make* to build the main application. If this fails, you are probably missing dependencies (see above, and please let us know if any dependencies are missing from the instructions). 
+If the above steps are successful, there will be a compiled binary at *Build/Debug/open-ephys* 
 
-1. [Compile the main GUI](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491621/Windows). 
+#### Step 2: Building the Microneurography Plugin
+	1. Return to *~/home*
+	2. Clone the plugin github here
+**If you chose debug above, you must continue with debug with the plugin.**
+##### For Windows Users:
+	3. Repeat all previous Windows steps for the GUI, except now for the plugin. **Except this time, choose the install option on the right hand side:**
+<p align="center">
+    <img src="./Resources/vsinstall.png" alt="virtual studio.png" title="Choose the INSTALL option">
+</p>
+##### For Linux users
+	3. Repeat steps 6, 7 and 8 for the plugin.
+	4. Copy all files from *~home/OE-plugin-latency-tracker/Build/Release* and paste into *~home/plugin-GUI/Build/Release/plugins*
 
->Note that [ZMQ plugins](https://github.com/open-ephys-plugins/ZMQPlugins) and [HDF5 Plugins](https://github.com/open-ephys-plugins/HDF5Plugins) are no longer shipped by default with the code base and can be **downloaded**, [built and installed](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds) from their own repositories. Follow the steps in the related pages to do so.
+#### Launching
+You should now find an executable called open-ephys in *~home/GUI-plugin/Build/Release* (Or debug if you chose that option.)
+When launched, you should see LfpLatency in the list of sinks, in the Processors panel on the left.
+<p align="center">
+    <img src="./Resources/listofsinks.png" alt="LfpLatency.png" title="Here is where you can find the plugin in the GUI">
+</p>
+Drag it to the signal chain on the bottom of the screen.
+Then press the left tab button, this will launch it into the GUI:
+<p align="center">
+    <img src="./Resources/tabbutton.png" alt="Tab Button.png" title="The button you need to press to launch the plugin">
+</p>
 
-2. Clone the plugin repo
-3. Install [cmake](https://cmake.org/download/)
-4. [Create the build files](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1301643269/Creating+Build+files).
-5. [Compile plugin](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds)
-
-When compiling via Visual Studio, various header files and libraries will be required. To save time, be sure to add the following files to the Include Directories of the ALL-BUILD project.  
-These can be found inside of the main GUI directory, **plugin-GUI-master**  
-
-- \PluginGenerator\JuceLibraryCode\
-- \Plugins\Headers\
-- \JuceLibraryCode\
-- \Source\
-
-Alongisde those, the open-ephys.lib needs to be linked to the OE-plugin-latency-tracker-main project  
-This can be found in:   
-**.\plugin-GUI-master\Build\Debug\open-ephys.lib**
-
-## Walkthrough
+### Walkthrough
 
 This plugin is intened for use alongside the Pulse Pal. However, it can be used without. If not detected, a prompt will display upon starting the plugin, as shown here:
 <p align="center">
