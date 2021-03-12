@@ -21,6 +21,13 @@ public:
 	bool keyPressed(const KeyPress& k) override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
+    int getStartingSample() const;
+    int getSubsamplesPerWindow() const;
+    float getLowImageThreshold() const;
+    float getHighImageThreshold() const;
+    float getDetectionThreshold() const;
+    int getColorStyleComboBoxSelectedId() const;
+
 private:
     Image spectrogramImage; //Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,

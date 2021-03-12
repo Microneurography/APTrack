@@ -779,3 +779,33 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 }
+
+int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
+{
+	return startingSample;
+}
+
+int LfpLatencyProcessorVisualizerContentComponent::getSubsamplesPerWindow() const
+{
+	return subsamplesPerWindow;
+}
+
+float LfpLatencyProcessorVisualizerContentComponent::getLowImageThreshold() const
+{
+	return lowImageThreshold;
+}
+
+float LfpLatencyProcessorVisualizerContentComponent::getHighImageThreshold() const
+{
+	return highImageThreshold;
+}
+
+float LfpLatencyProcessorVisualizerContentComponent::getDetectionThreshold() const
+{
+	return detectionThreshold;
+}
+
+int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelectedId() const
+{
+	return colorStyleComboBox->getSelectedId();
+}
