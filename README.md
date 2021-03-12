@@ -20,13 +20,13 @@ We recommend compiling on Windows.
 	
 ***N.B. The Release version runs significantly better than debug, but will take longer.***
 ##### For Linux Users:
-	3. Install the Linux dependencies by running sudo ./install_linux_dependencies.sh in the *Resources/Scripts folder.
+	3. Install the Linux dependencies by running sudo ./install_linux_dependencies.sh in the Resources/Scripts folder.
 	4. From the same directory, type sudo cp 40-open-ephys.rules /etc/udev/rules.d
 	5. Type sudo service udev restart on Ubuntu/Debian or sudo udevadm control --reload-rules on Fedora/CentOS. These last two steps will allow your computer to communicate with the Open Ephys acquisition board.
 	6. Go to ~/home/plugin-GUI/Build
 	7. Type cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. to create the build files.
 	8. Type make to build the main application. If this fails, you are probably missing dependencies (see above, and please let us know if any dependencies are missing from the instructions). 
-If the above steps are successful, there will be a compiled binary at Build/Debug/open-ephys*
+If the above steps are successful, there will be a compiled binary at Build/Debug/open-ephys
 
 #### Step 2: Building the Microneurography Plugin
 	1. Return to ~/home
@@ -42,10 +42,11 @@ If the above steps are successful, there will be a compiled binary at Build/Debu
 
 ##### For Linux users
 	3. Repeat steps 6, 7 and 8 for the plugin.
-	4. Copy all files from *~home/OE-plugin-latency-tracker/Build/Release* and paste into *~home/plugin-GUI/Build/Release/plugins*
+	4. Copy all files from ~home/OE-plugin-latency-tracker/Build/Release and paste into ~home/plugin-GUI/Build/Release/plugins
 
-#### Launching
-You should now find an executable called open-ephys in *~home/GUI-plugin/Build/Release* (Or debug if you chose that option.)
+
+### Walkthrough
+You should now find an executable called open-ephys in ~home/GUI-plugin/Build/Release (Or debug if you chose that option.)
 When launched, you should see LfpLatency in the list of sinks, in the Processors panel on the left.
 <p align="center">
     <img src="./Resources/listofsinks.png" alt="LfpLatency.png" title="Here is where you can find the plugin in the GUI">
@@ -56,8 +57,6 @@ Then press the left tab button, this will launch it into the GUI:
 <p align="center">
     <img src="./Resources/tabbutton.png" alt="Tab Button.png" title="The button you need to press to launch the plugin">
 </p>
-
-### Walkthrough
 
 This plugin is intened for use alongside the Pulse Pal. However, it can be used without. If not detected, a prompt will display upon starting the plugin, as shown here:
 <p align="center">
