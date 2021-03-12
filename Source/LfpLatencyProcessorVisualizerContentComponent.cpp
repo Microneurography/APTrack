@@ -740,7 +740,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 	printf("running save custom params to XML\n");
 	process->saveCustomParametersToXml(XmlValue);
 	printf("tidying up\n");
-	//delete process;
+	delete process;
 	printf("all done\n");
     
     //[UsersliderValueChanged_Post]
