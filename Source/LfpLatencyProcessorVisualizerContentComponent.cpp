@@ -74,8 +74,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 {
     searchBoxLocation = 150;
     conductionDistance = 100;
-	//spectrogram.test();
-	//spectrogram.image = spectrogramImage;
 
 	setWantsKeyboardFocus(true);
 
@@ -86,25 +84,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	trackSpike_IncreaseRate = 0.01;
 	trackSpike_DecreaseRate = 0.01;
-
-	
-
-
-    // std::cout << "Pre" << std::endl;
-    // draw_imageHeight = spectrogram.image.getHeight();
-    // draw_rightHandEdge = spectrogram.image.getWidth();
-    // std::cout << "Med" << std::endl;
-    
-    // //Paint image
-    // for (auto ii = 0; ii< SPECTROGRAM_HEIGHT; ii++)
-    // {
-    //     for (auto jj = 0; jj<SPECTROGRAM_WIDTH ; jj++)
-    //     {
-    //         spectrogram.image.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-ii, Colours::yellowgreen);
-    //     }
-    // }
-    
-	std::cout << "Post" << std::endl;
 
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does

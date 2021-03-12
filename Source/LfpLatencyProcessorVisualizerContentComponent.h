@@ -31,8 +31,7 @@ public:
     int getColorStyleComboBoxSelectedId() const;
 
 private:
-    LfpLatencySpectrogram spectrogram;
-    //Image spectrogramImage; //Will contain the spectrogram image.
+    LfpLatencySpectrogram spectrogram; // Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;

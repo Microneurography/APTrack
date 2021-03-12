@@ -116,51 +116,18 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor& processor, const LfpLate
                             case 1:
                                 //WHOT
                                 drawHot(x, y, lastWindowPeak, content, wLevel);
-                                /*
-                                if (lastWindowPeak > content.getDetectionThreshold() && lastWindowPeak < content.getHighImageThreshold())
-                                {
-                                    //Detected peak
-                                    image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::yellowgreen);
-                                }
-                                else if (lastWindowPeak > content.getHighImageThreshold())
-                                {
-                                    //Excessive peak
-                                    image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::red);
-                                }
-                                else
-                                {
-                                    //grayscale
-                                    image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colour::fromFloatRGBA(wLevel, wLevel, wLevel, 1.0f));
-                                }
-                                */
                                 break;
                             case 2:
                                 //BHOT
                                 drawHot(x, y, lastWindowPeak, content, bLevel);
-                                /*
-                                if (lastWindowPeak > content.getDetectionThreshold() && lastWindowPeak < content.getHighImageThreshold())
-                                {
-                                    image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::darkgreen);
-                                }
-                                else if (lastWindowPeak > content.getHighImageThreshold())
-                                {
-                                    image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colours::red);
-                                }
-                                else
-                                {
-                                    image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colour::fromFloatRGBA(bLevel, bLevel, bLevel, 1.0f));
-                                }
-                                */
                                 break;
                             case 3:
                                 //WHOT, only grayscale
                                 drawHotGrayScale(x, y, wLevel);
-                                // image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colour::fromFloatRGBA(wLevel, wLevel, wLevel, 1.0f));
                                 break;
                             case 4:
                                 //BHOT, only grayscale
                                 drawHotGrayScale(x, y, bLevel);
-                                // image.setPixelAt(draw_rightHandEdge - jj, draw_imageHeight - imageLinePoint, Colour::fromFloatRGBA(bLevel, bLevel, bLevel, 1.0f));
                                 break;
                             default:
                                 break;
