@@ -216,35 +216,26 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
-    XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
-    mainNode->setAttribute("numParameters", getNumParameters());
-
+	printf("Trying to save\n");
+    XmlElement *mainNode = new XmlElement("LfpLatencyProcessor");
+	printf("made the main node\n");
     // Open Ephys Plugin Generator will insert generated code to save parameters here. Don't edit this section.
     //[OPENEPHYS_PARAMETERS_SAVE_SECTION_BEGIN]
-    for (int i = 0; i < getNumParameters(); ++i)
-    {
-        XmlElement *parameterNode = mainNode->createNewChildElement("Parameter");
-
-        auto parameter = getParameterObject(i);
-        parameterNode->setAttribute("name", parameter->getName());
-        parameterNode->setAttribute("type", parameter->getParameterTypeString());
-		//parameterNode->setAttribute("time stamp", parameter->getName());
-
-		auto parameterValue = getParameterVar(i, currentChannel);
-		//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());
-		//XmlElement *timeStampToXML = mainNode->createNewChildElement(timeStamp);
-		//saveToXml(timeStampToXML);
-
-        if (parameter->isBoolean())
-            parameterNode->setAttribute("value", (int)parameterValue);
-        else if (parameter->isContinuous() || parameter->isDiscrete() || parameter->isNumerical())
-            parameterNode->setAttribute("value", (double)parameterValue);
-    }
+	mainNode->addChildElement(parentElement);
+	printf("Added the parent element\n");
+	//XmlElement *TracksToXML = mainNode->createNewChildElement("Tracks");
+	//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());
+	//TracksToXML->setAttribute("Track1", timeStamp)
+	saveToXml(mainNode);
+	printf("saved to xml\n");
+	delete mainNode;
+	printf("cleaning up\n");
     //[OPENEPHYS_PARAMETERS_SAVE_SECTION_END]
 }
 
 void LfpLatencyProcessor::loadCustomParametersFromXml()
 {
+	printf("Trying to load\n");
     if (parametersAsXml == nullptr) // prevent double-loading
         return;
 
@@ -260,7 +251,7 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
 
             forEachXmlChildElement(*mainNode, parameterNode)
             {
-                if (parameterNode->hasTagName("Parameter"))
+                if (parameterNode->hasTagName("Components"))
                 {
                     ++parameterIdx;
 

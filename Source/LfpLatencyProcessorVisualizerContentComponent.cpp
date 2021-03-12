@@ -626,7 +626,7 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 {
 	LfpLatencyProcessor* process = new LfpLatencyProcessor(); // to save the new value to xml
-	XmlElement *XmlValue = new XmlElement("COMPONENT NAME");
+	juce::XmlElement *XmlValue = new XmlElement("Components");
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 	if (sliderThatWasMoved == stimulusVoltageSlider)
@@ -737,8 +737,11 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		XmlValue->setAttribute("trackSpike_DecreaseRate", trackSpike_DecreaseRate);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
+	printf("running save custom params to XML\n");
 	process->saveCustomParametersToXml(XmlValue);
-	delete process;
+	printf("tidying up\n");
+	//delete process;
+	printf("all done\n");
     
     //[UsersliderValueChanged_Post]
     //[/UsersliderValueChanged_Post]
