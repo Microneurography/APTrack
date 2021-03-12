@@ -6,6 +6,8 @@
 
 #include "pulsePalController/ppController.h"
 
+#include "LfpLatencySpectrogram.h"
+
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
                                                       public ButtonListener
@@ -29,7 +31,8 @@ public:
     int getColorStyleComboBoxSelectedId() const;
 
 private:
-    Image spectrogramImage; //Will contain the spectrogram image.
+    LfpLatencySpectrogram spectrogram;
+    //Image spectrogramImage; //Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;

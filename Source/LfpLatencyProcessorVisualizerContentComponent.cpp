@@ -70,10 +70,12 @@ public:
 
 //==============================================================================
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
-: spectrogramImage (Image::RGB, SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT, true),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
+: spectrogram(SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
 {
     searchBoxLocation = 150;
     conductionDistance = 100;
+	//spectrogram.test();
+	//spectrogram.image = spectrogramImage;
 
 	setWantsKeyboardFocus(true);
 
@@ -88,19 +90,19 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	
 
 
-    std::cout << "Pre" << std::endl;
-    draw_imageHeight = spectrogramImage.getHeight();
-    draw_rightHandEdge = spectrogramImage.getWidth();
-    std::cout << "Med" << std::endl;
+    // std::cout << "Pre" << std::endl;
+    // draw_imageHeight = spectrogram.image.getHeight();
+    // draw_rightHandEdge = spectrogram.image.getWidth();
+    // std::cout << "Med" << std::endl;
     
-    //Paint image
-    for (auto ii = 0; ii< SPECTROGRAM_HEIGHT; ii++)
-    {
-        for (auto jj = 0; jj<SPECTROGRAM_WIDTH ; jj++)
-        {
-            spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-ii, Colours::yellowgreen);
-        }
-    }
+    // //Paint image
+    // for (auto ii = 0; ii< SPECTROGRAM_HEIGHT; ii++)
+    // {
+    //     for (auto jj = 0; jj<SPECTROGRAM_WIDTH ; jj++)
+    //     {
+    //         spectrogram.image.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-ii, Colours::yellowgreen);
+    //     }
+    // }
     
 	std::cout << "Post" << std::endl;
 
@@ -408,7 +410,9 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 {
     g.fillAll (Colours::grey);
     g.setOpacity (1.0f);
-    g.drawImage(spectrogramImage, 0,0,SPECTROGRAM_WIDTH,SPECTROGRAM_HEIGHT,0,0,SPECTROGRAM_WIDTH,SPECTROGRAM_HEIGHT);
+    g.drawImage(spectrogram.getImage(),
+		0,0,spectrogram.getImageWidth(),spectrogram.getImageHeight(),
+		0,0,spectrogram.getImageWidth(),spectrogram.getImageHeight());
     //Note, drawImage handles rescaling!
     
 	if (trackSpike_button->getToggleState() == true)
