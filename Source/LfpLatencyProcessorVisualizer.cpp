@@ -26,9 +26,6 @@
 
 LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor_pointer)
 {
-    // Open Ephys Plugin Generator will insert generated code for editor here. Don't edit this section.
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_BEGIN]
-
     //m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
     //content.setLookAndFeel (m_contentLookAndFeel);
     addAndMakeVisible (&content);
@@ -59,7 +56,6 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
 
     
     
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_END]
 }
 
 
@@ -192,122 +188,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 
 void LfpLatencyProcessorVisualizer::updateSpectrogram()
 {
-    for (int track=0; track < tracksAmount; track++)
-    {
-        //Get image dimension
-        draw_imageHeight = content.spectrogramImage.getHeight();
-        draw_rightHandEdge = content.spectrogramImage.getWidth()-track*pixelsPerTrack;
-        imageLinePoint= 0;
-
-        //Get data array
-        float* dataToPrint = processor->getdataCacheRow(track);
-        
-        //Reset subsampling flags
-        samplesAfterStimulus = 0;
-        lastWindowPeak = 0.0f;
-        windowSampleCount = 0;
-        for (auto ii=0; ii< (DATA_CACHE_SIZE_SAMPLES); ii++)
-        {
-            if (samplesAfterStimulus > content.startingSample)
-            {
-                auto sample = dataToPrint[ii];
-                
-                //If current sample is larger than previously stored peak, store sample as new peak
-                if (sample > lastWindowPeak)
-                {
-                    lastWindowPeak = sample;
-                }
-                
-                //Increment window sample counter
-                ++windowSampleCount;
-                
-                //If window is full, push window's peak into fifo
-                if (windowSampleCount >= content.subsamplesPerWindow)//76
-                {
-                    //If fifo is full, print warning to console
-                    if (imageLinePoint== SPECTROGRAM_HEIGHT)
-                    {
-                        //std::cout << "Spectrogram Full!" << std::endl;
-                    }
-                    
-                    //If fifo not full, store peak into fifo
-                    if (imageLinePoint < SPECTROGRAM_HEIGHT)
-                    {
-                        //Update spectrogram with selected color scheme
-                        switch (content.colorStyleComboBox->getSelectedId()) {
-                            case 1:
-                                //WHOT
-                                level = (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-                                    {
-                                        //Detected peak
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::yellowgreen);
-                                    }
-                                    else if (lastWindowPeak > content.highImageThreshold)
-                                    {
-                                        //Excessive peak
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::red);
-                                    }
-                                    else
-                                    {
-                                        //grayscale
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                    }
-                                }
-                                break;
-                            case 2:
-                                //BHOT
-                                level = 1.0f- (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::darkgreen);
-                                    }
-                                    else if (lastWindowPeak > content.highImageThreshold)
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::red);
-                                    }
-                                    else
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                    }
-                                }
-                                break;
-                            case 3:
-                                //WHOT, only grayscale
-                                level = (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                }
-                                break;
-                            case 4:
-                                //BHOT, only grayscale
-                                level = 1.0f- (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        //Go to next line
-                        imageLinePoint++;
-                    }
-                    //Reset subsampling flags
-                    lastWindowPeak = 0.0f;
-                    windowSampleCount = 0;
-                }
-            }
-            samplesAfterStimulus++;
-        }
-        
-    }
-    
+    content.spectrogram.update(*processor, content);
 }
 
 void LfpLatencyProcessorVisualizer::processTrack()

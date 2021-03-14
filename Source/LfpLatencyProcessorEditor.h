@@ -25,7 +25,6 @@
 
 #include <VisualizerEditorHeaders.h>
 #include <AllLookAndFeels.h>
-#include "LfpLatencyProcessorContentComponent.h"
 #include "LfpLatencyProcessor.h"
 
 
@@ -78,10 +77,6 @@ public:
 
 
 private:
-    // This component contains all components and graphics that were added using Projucer.
-    // It's bounds initially the same bounds as the gray workspace (but only till the drawerButton for X)
-    LfpLatencyProcessorContentComponent content;
-
     LfpLatencyProcessor* processor;
 
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
