@@ -98,6 +98,7 @@ private:
 
 	bool voltageTooHighOkay;
 	bool alreadyAlerted = false;
+	bool testSpikesPls = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
@@ -193,6 +194,7 @@ private:
     ScopedPointer<Label> trackSpike_button_Label;
 
 	ScopedPointer<ComboBox> trackSpikeComboBox;
+	ScopedPointer<TextButton> spikeTestButton;
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;

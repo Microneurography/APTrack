@@ -356,6 +356,11 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpikeComboBox->addItem("Spike 2", 2);
 	trackSpikeComboBox->addItem("Spike 3", 3);
 	trackSpikeComboBox->addItem("Spike 4", 4);
+
+	addAndMakeVisible(spikeTestButton = new TextButton("spikeTest"));
+	spikeTestButton->setButtonText("TEST SPIKES");
+	spikeTestButton->addListener(this);
+	spikeTestButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 	//
 
 
@@ -564,6 +569,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
 
 	trackSpikeComboBox->setBounds(950, 97, 120, 24);
+	spikeTestButton->setBounds(950, 67, 120, 24);
 
 	trackThreshold_button->setBounds(780, 155, 120, 24);
 	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
@@ -627,6 +633,15 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 	//Decrease lowImageThreshold
 	else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > 0)) {
 		imageThresholdSlider->setMinValue(imageThresholdSlider->getMinValue() - 2, sendNotificationAsync);
+		return true;
+	}
+	// Increase imageThreshold
+	else if ((k.getTextCharacter() == ']') && (detectionThreshold < 100)) {
+		imageThresholdSlider->setValue(imageThresholdSlider->getValue() + 2, sendNotificationAsync);
+		return true;
+	}
+	else if ((k.getTextCharacter() == '[') && (detectionThreshold > 0)) {
+		imageThresholdSlider->setValue(imageThresholdSlider->getValue() - 2, sendNotificationAsync);
 		return true;
 	}
 	// Track Spike
@@ -803,6 +818,11 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			trackThreshold_button->setEnabled(false);
 			trackThreshold_button->setToggleState(false, sendNotification);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
+		}
+	}
+	if (buttonThatWasClicked == spikeTestButton) {
+		if (buttonThatWasClicked->getToggleState() == false) {
+			testSpikesPls = true;
 		}
 	}
 	if (buttonThatWasClicked == setupButton) {

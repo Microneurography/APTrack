@@ -339,24 +339,24 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	// If we have enabled spike tracking the track spike
 	if (content.trackSpike_button->getToggleState() == true) {
 
+		switch (content.trackSpikeComboBox->getSelectedId()) {
+		case 1:
+			content.searchBoxSlider->setValue(spikeLocations[0]);
+		case 2:
+			content.searchBoxSlider->setValue(spikeLocations[1]);
+		case 3:
+			content.searchBoxSlider->setValue(spikeLocations[2]);
+		case 4:
+			content.searchBoxSlider->setValue(spikeLocations[3]);
+		}
 		// Check for spike inside ROI box
-		if (maxLevel > content.detectionThreshold && i < 4)
+		if (maxLevel > content.detectionThreshold && i < 4 && spikeLocations[i] != SpikeLocationRel)
 		{
 			content.spikeDetected = true;
 			spikeLocations[i] = SpikeLocationRel;
-			content.trackSpikeComboBox->setSelectedId(i);
-			switch (content.trackSpikeComboBox->getSelectedId()) {
-				case 1:
-					content.searchBoxSlider->setValue(spikeLocations[0]);
-				case 2:
-					content.searchBoxSlider->setValue(spikeLocations[1]);
-				case 3:
-					content.searchBoxSlider->setValue(spikeLocations[2]);
-				case 4:
-					content.searchBoxSlider->setValue(spikeLocations[3]);
-			}
+			content.trackSpikeComboBox->setSelectedId(i + 1);
 			i = i + 1;
-			std::cout << "Spike Found" << SpikeLocationRel << std::endl;
+			std::cout << "Spike Found " << SpikeLocationRel << spikeLocations[i-1] << std::endl;
 
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation
@@ -381,6 +381,14 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			}
 
 		}
+	}
+	if (content.testSpikesPls == true) {
+		
+		//clear the spike array
+		std::fill_n(spikeLocations, 4, 0);
+
+		//generate a bunch of new spike locations to track
+
 	}
 
 	
