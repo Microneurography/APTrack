@@ -75,6 +75,9 @@ public:
 
 	/** Process new track*/
 	void processTrack();
+
+	/**Test Multi Spike Tracking*/
+	void spikeTest();
     
     
     /** Fill in rightmost edge of spectrogram with up to date data*/

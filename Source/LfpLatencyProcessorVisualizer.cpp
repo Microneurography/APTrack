@@ -183,8 +183,11 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		processTrack();
 
 	}
-
-    
+	if (content.testSpikesPls == true) {
+		
+		spikeTest();
+	
+	}
    //Refresh canvas (redraw)
     refresh();
 }
@@ -382,16 +385,23 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 		}
 	}
+
+}
+
+void LfpLatencyProcessorVisualizer::spikeTest(){
 	if (content.testSpikesPls == true) {
-		
+
 		//clear the spike array
 		std::fill_n(spikeLocations, 4, 0);
 
 		//generate a bunch of new spike locations to track
+		auto spike1 = Random::getSystemRandom().nextInt(600);
+		auto spike2 = Random::getSystemRandom().nextInt(600);
+		auto spike3 = Random::getSystemRandom().nextInt(600);
+		auto spike4 = Random::getSystemRandom().nextInt(600);
 
 	}
 
-	
 }
 
 void LfpLatencyProcessorVisualizer::setParameter (int parameter, float newValue)

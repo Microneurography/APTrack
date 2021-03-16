@@ -821,7 +821,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		}
 	}
 	if (buttonThatWasClicked == spikeTestButton) {
-		if (buttonThatWasClicked->getToggleState() == false) {
+		if (buttonThatWasClicked->getToggleState() == true) {
 			testSpikesPls = true;
 		}
 	}
