@@ -820,9 +820,13 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 		}
 	}
-	if (buttonThatWasClicked == spikeTestButton) {
+	if (buttonThatWasClicked == spikeTestButton) 
+	{
 		if (buttonThatWasClicked->getToggleState() == true) {
-			testSpikesPls = true;
+			spikeTestButton->setEnabled(true);
+		}
+		else if (buttonThatWasClicked->getToggleState() == false) {
+			spikeTestButton->setEnabled(false);
 		}
 	}
 	if (buttonThatWasClicked == setupButton) {

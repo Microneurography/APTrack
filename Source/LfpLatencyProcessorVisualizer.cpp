@@ -140,6 +140,17 @@ void LfpLatencyProcessorVisualizer::update()
 	{
 		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
 	}
+	//track spike combo box control
+	switch (content.trackSpikeComboBox->getSelectedId()) {
+	case 1:
+		content.searchBoxSlider->setValue(spikeLocations[0]);
+	case 2:
+		content.searchBoxSlider->setValue(spikeLocations[1]);
+	case 3:
+		content.searchBoxSlider->setValue(spikeLocations[2]);
+	case 4:
+		content.searchBoxSlider->setValue(spikeLocations[3]);
+	}
 }
 
 
@@ -183,11 +194,16 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		processTrack();
 
 	}
-	if (content.testSpikesPls == true) {
+	if (content.spikeTestButton->getToggleState() == true) {
 		
 		spikeTest();
 	
 	}
+	//generate a bunch of random spikes for the spike test function, with dynamically changing values
+	for (int i = 0; i < 4; i++) {
+		randomSpikeLocations[i] = Random::getSystemRandom().nextInt(600);
+	}
+
    //Refresh canvas (redraw)
     refresh();
 }
@@ -342,16 +358,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	// If we have enabled spike tracking the track spike
 	if (content.trackSpike_button->getToggleState() == true) {
 
-		switch (content.trackSpikeComboBox->getSelectedId()) {
-		case 1:
-			content.searchBoxSlider->setValue(spikeLocations[0]);
-		case 2:
-			content.searchBoxSlider->setValue(spikeLocations[1]);
-		case 3:
-			content.searchBoxSlider->setValue(spikeLocations[2]);
-		case 4:
-			content.searchBoxSlider->setValue(spikeLocations[3]);
-		}
+
 		// Check for spike inside ROI box
 		if (maxLevel > content.detectionThreshold && i < 4 && spikeLocations[i] != SpikeLocationRel)
 		{
@@ -389,18 +396,22 @@ void LfpLatencyProcessorVisualizer::processTrack()
 }
 
 void LfpLatencyProcessorVisualizer::spikeTest(){
-	if (content.testSpikesPls == true) {
 
 		//clear the spike array
-		std::fill_n(spikeLocations, 4, 0);
-
-		//generate a bunch of new spike locations to track
-		auto spike1 = Random::getSystemRandom().nextInt(600);
-		auto spike2 = Random::getSystemRandom().nextInt(600);
-		auto spike3 = Random::getSystemRandom().nextInt(600);
-		auto spike4 = Random::getSystemRandom().nextInt(600);
-
-	}
+		//std::fill_n(spikeLocations, 4, 0);
+		
+		//if not enabled, enable spike tracking
+		if (content.trackSpike_button->getToggleState() == false) {
+			
+			content.trackSpike_button->triggerClick();
+		
+		}
+		
+		//load up array with randomly generated spikes
+		for (int i = 0; i < 4; i++) {
+			spikeLocations[i] = randomSpikeLocations[i];
+			std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
+		}
 
 }
 

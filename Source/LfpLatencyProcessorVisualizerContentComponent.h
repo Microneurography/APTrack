@@ -98,7 +98,6 @@ private:
 
 	bool voltageTooHighOkay;
 	bool alreadyAlerted = false;
-	bool testSpikesPls = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
