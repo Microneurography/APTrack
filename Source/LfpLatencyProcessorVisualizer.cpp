@@ -141,16 +141,16 @@ void LfpLatencyProcessorVisualizer::update()
 		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
 	}
 	//track spike combo box control
-	switch (content.trackSpikeComboBox->getSelectedId()) {
-	case 1:
-		content.searchBoxSlider->setValue(spikeLocations[0]);
-	case 2:
-		content.searchBoxSlider->setValue(spikeLocations[1]);
-	case 3:
-		content.searchBoxSlider->setValue(spikeLocations[2]);
-	case 4:
-		content.searchBoxSlider->setValue(spikeLocations[3]);
-	}
+	//switch (content.trackSpikeComboBox->getSelectedId()) {
+	//case 1:
+		//content.searchBoxSlider->setValue(spikeLocations[0]);
+	//case 2:
+		//content.searchBoxSlider->setValue(spikeLocations[1]);
+	//case 3:
+		//content.searchBoxSlider->setValue(spikeLocations[2]);
+	//case 4:
+		//content.searchBoxSlider->setValue(spikeLocations[3]);
+	//}
 }
 
 
@@ -194,14 +194,16 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		processTrack();
 
 	}
-	if (content.spikeTestButton->getToggleState() == true) {
+	if (content.testSpikePls == true) {
 		
 		spikeTest();
+
 	
 	}
 	//generate a bunch of random spikes for the spike test function, with dynamically changing values
 	for (int i = 0; i < 4; i++) {
 		randomSpikeLocations[i] = Random::getSystemRandom().nextInt(600);
+
 	}
 
    //Refresh canvas (redraw)
@@ -364,8 +366,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		{
 			content.spikeDetected = true;
 			spikeLocations[i] = SpikeLocationRel;
-			content.trackSpikeComboBox->setSelectedId(i + 1);
-			i = i + 1;
+			//content.trackSpikeComboBox->setSelectedId(i + 1);
+			//i = i + 1;
 			std::cout << "Spike Found " << SpikeLocationRel << spikeLocations[i-1] << std::endl;
 
 			// If we have enabled threshold tracking then update threshold:
@@ -410,7 +412,9 @@ void LfpLatencyProcessorVisualizer::spikeTest(){
 		//load up array with randomly generated spikes
 		for (int i = 0; i < 4; i++) {
 			spikeLocations[i] = randomSpikeLocations[i];
-			std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
+			//std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
+			updateSpectrogram();
+			processTrack();
 		}
 
 }
