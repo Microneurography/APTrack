@@ -22,9 +22,7 @@
 
 #ifndef LFPLATENCYPROCESSOREDITOR_H_INCLUDED
 #define LFPLATENCYPROCESSOREDITOR_H_INCLUDED
-
 #include <VisualizerEditorHeaders.h>
-#include <AllLookAndFeels.h>
 #include "LfpLatencyProcessorContentComponent.h"
 #include "LfpLatencyProcessor.h"
 
