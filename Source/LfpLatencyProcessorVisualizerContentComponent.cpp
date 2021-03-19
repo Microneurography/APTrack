@@ -623,6 +623,12 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 	}
 }
 
+
+// could pass a bool value to this function for loading in values
+// if the bool is false, we are not loading up, run as currently written
+// if the bool is true, we are loading up, so do not update the xml
+// also need a way of passing the value and connecting to a slider, maybe as just a string and int
+
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
 {
 	LfpLatencyProcessor* process = new LfpLatencyProcessor(); // to save the new value to xml

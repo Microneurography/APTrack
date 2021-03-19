@@ -217,6 +217,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
 	printf("Trying to save\n");
+	
     XmlElement *mainNode = new XmlElement("LfpLatencyProcessor");
 	printf("made the main node\n");
     // Open Ephys Plugin Generator will insert generated code to save parameters here. Don't edit this section.
@@ -226,10 +227,8 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 	//XmlElement *TracksToXML = mainNode->createNewChildElement("Tracks");
 	//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());
 	//TracksToXML->setAttribute("Track1", timeStamp)
-	saveToXml(mainNode);
-	printf("saved to xml\n");
-	delete mainNode;
-	printf("cleaning up\n");
+	// save file??
+
     //[OPENEPHYS_PARAMETERS_SAVE_SECTION_END]
 }
 
@@ -239,29 +238,26 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
     if (parametersAsXml == nullptr) // prevent double-loading
         return;
 
-    // use parametersAsXml to restore state
-
     // Open Ephys Plugin Generator will insert generated code to load parameters here. Don't edit this section.
     //[OPENEPHYS_PARAMETERS_LOAD_SECTION_BEGIN]
-    forEachXmlChildElement(*parametersAsXml, mainNode)
+   forEachXmlChildElement(*parametersAsXml, mainNode)
     {
         if (mainNode->hasTagName("LfpLatencyProcessor"))
         {
             int parameterIdx = -1;
-
+			// use parametersAsXml to restore state
             forEachXmlChildElement(*mainNode, parameterNode)
             {
                 if (parameterNode->hasTagName("Components"))
                 {
                     ++parameterIdx;
-
-                    String parameterType = parameterNode->getStringAttribute("type");
+                   /* String parameterType = parameterNode->getStringAttribute("type");
                     if (parameterType == "Boolean")
                         setParameter(parameterIdx, parameterNode->getBoolAttribute("value"));
                     else if (parameterType == "Continuous" || parameterType == "Numerical")
                         setParameter(parameterIdx, parameterNode->getDoubleAttribute("value"));
                     else if (parameterType == "Discrete")
-                        setParameter(parameterIdx, parameterNode->getIntAttribute("value"));
+                        setParameter(parameterIdx, parameterNode->getIntAttribute("value"));*/
                 }
             }
         }
