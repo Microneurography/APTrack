@@ -512,30 +512,33 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
+	searchBoxSlider->setBounds(SPECTROGRAM_WIDTH - 5, 0, 15, SPECTROGRAM_HEIGHT);
+	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH - 35, SPECTROGRAM_HEIGHT - 17, 80, 50); // x value is inverted
+
 	// Diana's Group
-    imageThresholdSlider->setBounds (685, 400, 55, 264);
-	imageThresholdSliderLabel->setBounds(670, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
+    imageThresholdSlider->setBounds (795, 400, 55, 264);
+	imageThresholdSliderLabel->setBounds(780, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
    
-    highImageThresholdText->setBounds (770, 410, 55, 24);
-	highImageThresholdTextLabel->setBounds(830, 410, 160, 25); // opposite to the instructions above
+    highImageThresholdText->setBounds (880, 410, 55, 24);
+	highImageThresholdTextLabel->setBounds(940, 410, 160, 25); // opposite to the instructions above
     
-    lowImageThresholdText->setBounds (770, 458, 55, 24);
-	lowImageThresholdTextLabel->setBounds(830, 458, 160, 25); // opposite to the instructions above
+    lowImageThresholdText->setBounds (880, 458, 55, 24);
+	lowImageThresholdTextLabel->setBounds(940, 458, 160, 25); // opposite to the instructions above
     
-    detectionThresholdText->setBounds(770, 434, 55, 24);
-	detectionThresholdTextLabel->setBounds(830, 434, 160, 25); // opposite to the instructions above
-    
-    searchBoxSlider->setBounds (SPECTROGRAM_WIDTH-5, 0, 15, SPECTROGRAM_HEIGHT);
-	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH-35, SPECTROGRAM_HEIGHT-17, 80, 50); // x value is inverted
-    
-    subsamplesPerWindowSlider->setBounds(850, 487, 159, 64);
-	subsamplesPerWindowSliderLabel->setBounds(770, 494, 80, 50);
+    detectionThresholdText->setBounds(880, 434, 55, 24);
+	detectionThresholdTextLabel->setBounds(940, 434, 160, 25); // opposite to the instructions above
+       
+    subsamplesPerWindowSlider->setBounds(960, 487, 159, 64);
+	subsamplesPerWindowSliderLabel->setBounds(880, 494, 80, 50);
     
 	// Grace's group
-    startingSampleSlider->setBounds(850, 556, 159, 64);
-	startingSampleSliderLabel->setBounds(770, 563, 80, 50); // x value is inverted
+    startingSampleSlider->setBounds(960, 556, 159, 64);
+	startingSampleSliderLabel->setBounds(880, 563, 80, 50); // x value is inverted
+
+	conductionDistanceSlider->setBounds(960, 625, 159, 64);
+	conductionDistanceSliderLabel->setBounds(880, 632, 79, 64); // x inverted
    
-	colorControlGroup->setBounds(665, 390, 398, 304); // the rectangle in the gui - doesn't need a label
+	//colorControlGroup->setBounds(775, 390, 398, 304); // the rectangle in the gui - doesn't need a label
 
 	// x inversed on these two
     searchBoxWidthSlider->setBounds(478, 643, 50, 64);
@@ -550,8 +553,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	mpersLabel->setBounds(1132, 155, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
 
 	// Lucy's Group
-    conductionDistanceSlider->setBounds(850, 625, 159, 64);
-	conductionDistanceSliderLabel->setBounds(770, 632, 79, 64); // x inverted
+   
 
 	setupButton->setBounds(955, 10, 120, 24);
 	optionsButton->setBounds(665, 10, 120, 24);
