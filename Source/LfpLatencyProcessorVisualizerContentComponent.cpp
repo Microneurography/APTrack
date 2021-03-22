@@ -367,6 +367,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//trackSpikeComboBox->addItem("Spike 3", 3);
 	//trackSpikeComboBox->addItem("Spike 4", 4);
 	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes"));
+	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
+	spikeTracker->getHeader().addColumn("Spike", 1, 50);
+	spikeTracker->getHeader().addColumn("Location", 2, 50);
 	spikeTracker->autoSizeAllColumns();
 
 	addAndMakeVisible(spikeTestButton = new TextButton("spikeTest"));
