@@ -25,11 +25,8 @@ public:
 
     void update(LfpLatencyProcessor& processor, const LfpLatencyProcessorVisualizerContentComponent& content);
 
-
 private:
     Image image;
-    friend class LfpLatencyProcessorVisualizer;
-    friend class LfpLatencyProcessorVisualizerContentComponent;
 
     void paintAll(Colour colour);
     void drawHot(int x, int y, float lastWindowPeak, const LfpLatencyProcessorVisualizerContentComponent& content, float level);
