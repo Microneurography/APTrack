@@ -519,29 +519,31 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH - 35, SPECTROGRAM_HEIGHT - 17, 80, 50); // x value is inverted
 
 	// Diana's Group
-    imageThresholdSlider->setBounds (795, 400, 55, 264);
-	imageThresholdSliderLabel->setBounds(780, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
-   
-    highImageThresholdText->setBounds (880, 410, 55, 24);
-	highImageThresholdTextLabel->setBounds(940, 410, 160, 25); // opposite to the instructions above
-    
-    lowImageThresholdText->setBounds (880, 458, 55, 24);
-	lowImageThresholdTextLabel->setBounds(940, 458, 160, 25); // opposite to the instructions above
-    
-    detectionThresholdText->setBounds(880, 434, 55, 24);
-	detectionThresholdTextLabel->setBounds(940, 434, 160, 25); // opposite to the instructions above
+	// there's something in the range of x: 670 - 1060 y: 400 That stops the top half of the image threshold slider from working.
+	// Other sliders work fine in this range
+	imageThresholdSlider->setBounds(1061, 400, 55, 264); //diff = 116
+	imageThresholdSliderLabel->setBounds(1038, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
+
+	highImageThresholdText->setBounds(830, 410, 55, 24);
+	highImageThresholdTextLabel->setBounds(670, 410, 160, 25); // opposite to the instructions above
+
+	lowImageThresholdText->setBounds(830, 458, 55, 24);
+	lowImageThresholdTextLabel->setBounds(670, 458, 160, 25); // opposite to the instructions above
+
+	detectionThresholdText->setBounds(830, 434, 55, 24);
+	detectionThresholdTextLabel->setBounds(670, 434, 160, 25); // opposite to the instructions above
        
-    subsamplesPerWindowSlider->setBounds(960, 487, 159, 64);
-	subsamplesPerWindowSliderLabel->setBounds(880, 494, 80, 50);
+	subsamplesPerWindowSlider->setBounds(750, 487, 159, 64);
+	subsamplesPerWindowSliderLabel->setBounds(670, 494, 80, 50);
     
 	// Grace's group
-    startingSampleSlider->setBounds(960, 556, 159, 64);
-	startingSampleSliderLabel->setBounds(880, 563, 80, 50); // x value is inverted
+	startingSampleSlider->setBounds(750, 556, 159, 64);
+	startingSampleSliderLabel->setBounds(670, 563, 80, 50); // x value is inverted
 
-	conductionDistanceSlider->setBounds(960, 625, 159, 64);
-	conductionDistanceSliderLabel->setBounds(880, 632, 79, 64); // x inverted
+	conductionDistanceSlider->setBounds(750, 625, 159, 64);
+	conductionDistanceSliderLabel->setBounds(670, 632, 79, 64); // x inverted
    
-	//colorControlGroup->setBounds(775, 390, 398, 304); // the rectangle in the gui - doesn't need a label
+	colorControlGroup->setBounds(665, 390, 515, 304); // the rectangle in the gui - doesn't need a label
 
 	// x inversed on these two
     searchBoxWidthSlider->setBounds(478, 643, 50, 64);
@@ -550,6 +552,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	ROISpikeLatencyLabel->setBounds(920, 126, 120, 24);  // 192 difference
 	ROISpikeLatency->setBounds(1050, 126, 72, 24);
 	msLabel->setBounds(1132, 126, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	
 	// latency is 24 less on the y
 	ROISpikeMagnitudeLabel->setBounds(920, 155, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
 	ROISpikeMagnitude->setBounds(1050, 155, 72, 24); // 72 difference
