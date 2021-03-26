@@ -38,7 +38,8 @@
 */
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
-                                                      public ButtonListener
+                                                      public ButtonListener,
+													  public TableListBoxModel
 {
 public:
     //==============================================================================
@@ -54,6 +55,10 @@ public:
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
 	bool keyPressed(const KeyPress& k) override;
+	
+	int getNumRows(void) override;
+	void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
+	void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
 private:
@@ -196,6 +201,7 @@ private:
 
 	//ScopedPointer<ComboBox> trackSpikeComboBox;
 	ScopedPointer<TableListBox> spikeTracker;
+	ScopedPointer<TableListBoxModel> spikeTrackerContent;
 	ScopedPointer<TextButton> spikeTestButton;
 
     ScopedPointer<ToggleButton> trackThreshold_button;

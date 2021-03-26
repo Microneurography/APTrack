@@ -366,10 +366,14 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//trackSpikeComboBox->addItem("Spike 2", 2);
 	//trackSpikeComboBox->addItem("Spike 3", 3);
 	//trackSpikeComboBox->addItem("Spike 4", 4);
+	
+	/* code from old version of table*/
 	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes"));
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 50);
+	//spikeTrackerContent->getNumRows();
+	spikeTracker->setModel(spikeTrackerContent);
 	spikeTracker->autoSizeAllColumns();
 
 	addAndMakeVisible(spikeTestButton = new TextButton("spikeTest"));
@@ -461,6 +465,7 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	trackSpike_button = nullptr;
 	//trackSpikeComboBox = nullptr;
 	spikeTracker = nullptr;
+	spikeTrackerContent = nullptr;
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -499,7 +504,10 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
     
     g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 
-    //[UserPaint] Add your own custom painting code here..
+    //code for table
+	spikeTrackerContent->paintCell(g, 0, 1, 20, 20, true);
+
+	//[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
 
@@ -531,26 +539,26 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	detectionThresholdText->setBounds(946, 434, 55, 24);
 	detectionThresholdTextLabel->setBounds(786, 434, 160, 25); // opposite to the instructions above
-       
+
 	subsamplesPerWindowSlider->setBounds(866, 487, 159, 64);
 	subsamplesPerWindowSliderLabel->setBounds(786, 494, 80, 50);
-    
+
 	startingSampleSlider->setBounds(866, 556, 159, 64);
 	startingSampleSliderLabel->setBounds(786, 563, 80, 50); // x value is inverted
 
 	conductionDistanceSlider->setBounds(866, 625, 159, 64);
 	conductionDistanceSliderLabel->setBounds(786, 632, 79, 64); // x inverted
-   
+
 	colorControlGroup->setBounds(781, 390, 362, 304); // the rectangle in the gui - doesn't need a label
 
 	// x inversed on these two
-    searchBoxWidthSlider->setBounds(478, 643, 50, 64);
+	searchBoxWidthSlider->setBounds(478, 643, 50, 64);
 	searchBoxWidthSliderLabel->setBounds(524, 664, 120, 24);
 
 	ROISpikeLatencyLabel->setBounds(920, 126, 120, 24);  // 192 difference
 	ROISpikeLatency->setBounds(1050, 126, 72, 24);
 	msLabel->setBounds(1132, 126, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
-	
+
 	// latency is 24 less on the y
 	ROISpikeMagnitudeLabel->setBounds(920, 155, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
 	ROISpikeMagnitude->setBounds(1050, 155, 72, 24); // 72 difference
@@ -932,6 +940,27 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, optionsButton->getBounds(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
+}
+
+int LfpLatencyProcessorVisualizerContentComponent::getNumRows() {
+	return 4;
+}
+
+void LfpLatencyProcessorVisualizerContentComponent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
+	
+	//defining text for collumn
+	String text;
+	text = String(rowNumber);
+
+	//add text TEST
+	g.drawText(text, 2, 0, width - 4, height, Justification::centredLeft, true);
+	g.setColour(Colours::aliceblue);
+	g.fillRect(width - 1, 0, 1, height);
+
+}
+
+void LfpLatencyProcessorVisualizerContentComponent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
+	return;
 }
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
