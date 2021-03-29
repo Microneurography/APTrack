@@ -421,32 +421,32 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
 	// Diana's Group
-    imageThresholdSlider->setBounds (685, 400, 55, 264);
-	imageThresholdSliderLabel->setBounds(670, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
-   
-    highImageThresholdText->setBounds (770, 410, 55, 24);
-	highImageThresholdTextLabel->setBounds(830, 410, 160, 25); // opposite to the instructions above
-    
-    lowImageThresholdText->setBounds (770, 458, 55, 24);
-	lowImageThresholdTextLabel->setBounds(830, 458, 160, 25); // opposite to the instructions above
-    
-    detectionThresholdText->setBounds(770, 434, 55, 24);
-	detectionThresholdTextLabel->setBounds(830, 434, 160, 25); // opposite to the instructions above
+	imageThresholdSlider->setBounds(1061, 400, 55, 264); //diff = 116
+	imageThresholdSliderLabel->setBounds(1038, 664, 100, 24); // opposite to the instructions above - got moved in the rebase
+
+	highImageThresholdText->setBounds(946, 410, 55, 24);
+	highImageThresholdTextLabel->setBounds(786, 410, 160, 25); // opposite to the instructions above
+
+	lowImageThresholdText->setBounds(946, 458, 55, 24);
+	lowImageThresholdTextLabel->setBounds(786, 458, 160, 25); // opposite to the instructions above
+
+	detectionThresholdText->setBounds(946, 434, 55, 24);
+	detectionThresholdTextLabel->setBounds(786, 434, 160, 25); // opposite to the instructions above
     
     searchBoxSlider->setBounds (SPECTROGRAM_WIDTH-5, 0, 15, SPECTROGRAM_HEIGHT);
 	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH-35, SPECTROGRAM_HEIGHT-17, 80, 50); // x value is inverted
     
-    subsamplesPerWindowSlider->setBounds(850, 487, 159, 64);
-	subsamplesPerWindowSliderLabel->setBounds(770, 494, 80, 50);
+	subsamplesPerWindowSlider->setBounds(866, 487, 159, 64);
+	subsamplesPerWindowSliderLabel->setBounds(786, 494, 80, 50);
     
 	// Grace's group
-    startingSampleSlider->setBounds(850, 556, 159, 64);
-	startingSampleSliderLabel->setBounds(770, 563, 80, 50); // x value is inverted
+	startingSampleSlider->setBounds(866, 556, 159, 64);
+	startingSampleSliderLabel->setBounds(786, 563, 80, 50); // x value is inverted
    
     colorStyleComboBox->setBounds(785, 10, 120, 24);
 	colorStyleComboBoxLabel->setBounds(665, 10, 120, 24); 
 
-	colorControlGroup->setBounds(665, 390, 398, 304); // the rectangle in the gui - doesn't need a label
+	colorControlGroup->setBounds(781, 390, 362, 304); // the rectangle in the gui - doesn't need a label
 
     extendedColorScaleToggleButton->setBounds(780, 39, 24, 24); 
     extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24); 
@@ -464,8 +464,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	mpersLabel->setBounds(1052, 155, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
 
 	// Lucy's Group
-    conductionDistanceSlider->setBounds(850, 625, 159, 64);
-	conductionDistanceSliderLabel->setBounds(770, 632, 79, 64); // x inverted
+	conductionDistanceSlider->setBounds(866, 625, 159, 64);
+	conductionDistanceSliderLabel->setBounds(786, 632, 79, 64); // x inverted
 
 	setupButton->setBounds(955, 10, 120, 24);
 	// Stimulus
