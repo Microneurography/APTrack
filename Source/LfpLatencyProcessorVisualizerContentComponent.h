@@ -1,69 +1,42 @@
-/*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 4.2.1
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
-
-  ==============================================================================
-*/
-
 #ifndef __JUCE_HEADER_D83F67960ECDED8C__
 #define __JUCE_HEADER_D83F67960ECDED8C__
 
-//[Headers]     -- You can add your own extra header files here --
 #include <EditorHeaders.h>
 #include "LfpLatencyProcessor.h"
 
 #include "pulsePalController/ppController.h"
 
-//[/Headers]
+#include "LfpLatencySpectrogram.h"
 
-//==============================================================================
-/**
-                                                                    //[Comments]
-    An auto-generated component, created by the Projucer.
-
-    Describe your class and how it works here!
-                                                                    //[/Comments]
-*/
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
                                                       public ButtonListener,
-													  public TableListBoxModel
+                                                      public TableListBoxModel
 {
 public:
-    //==============================================================================
     LfpLatencyProcessorVisualizerContentComponent();
     ~LfpLatencyProcessorVisualizerContentComponent();
-
-    //==============================================================================
-    //[UserMethods]     -- You can add your own custom methods in this section.
-    //[/UserMethods]
 
     void paint(Graphics &g) override;
     void resized() override;
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
 	bool keyPressed(const KeyPress& k) override;
-	
-	int getNumRows(void) override;
-	void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
-	void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
+    int getStartingSample() const;
+    int getSubsamplesPerWindow() const;
+    float getLowImageThreshold() const;
+    float getHighImageThreshold() const;
+    float getDetectionThreshold() const;
+    int getColorStyleComboBoxSelectedId() const;
+
+    int getNumRows(void) override;
+    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
+    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
+
 private:
-    //[UserVariables]   -- You can add your own custom variables in this section.
-    Image spectrogramImage; //Will contain the spectrogram image.
+    LfpLatencySpectrogram spectrogram; // Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
@@ -93,7 +66,6 @@ private:
     float conductionDistance;
 
     int absPos;
-    //[/UserVariables]
 
     float stimulusVoltage;
 
@@ -103,12 +75,11 @@ private:
 
 	bool voltageTooHighOkay;
 	bool alreadyAlerted = false;
-	bool testSpikePls = false;
+    bool testSpikePls = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
 
-    //==============================================================================
 	// setup
 
 	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
@@ -136,7 +107,7 @@ private:
 	ScopedPointer<Label> imageThresholdSliderLabel;
 
     ScopedPointer<TextButton> setupButton;
-	ScopedPointer<TextButton> optionsButton;
+    ScopedPointer<TextButton> optionsButton;
 
     ScopedPointer<Slider> searchBoxSlider;
 	ScopedPointer<Label> searchBoxSliderLabel;
@@ -199,10 +170,10 @@ private:
     ScopedPointer<ToggleButton> trackSpike_button;
     ScopedPointer<Label> trackSpike_button_Label;
 
-	//ScopedPointer<ComboBox> trackSpikeComboBox;
-	ScopedPointer<TableListBox> spikeTracker;
-	ScopedPointer<TableListBoxModel> spikeTrackerContent;
-	ScopedPointer<TextButton> spikeTestButton;
+    //ScopedPointer<ComboBox> trackSpikeComboBox;
+    ScopedPointer<TableListBox> spikeTracker;
+    ScopedPointer<TableListBoxModel> spikeTrackerContent;
+    ScopedPointer<TextButton> spikeTestButton;
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
@@ -216,14 +187,10 @@ private:
     ScopedPointer<Slider> trigger_threshold_Slider;
 	ScopedPointer<Label> trigger_threshold_Slider_Label;
 
-	
+
     //DEBUG
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorVisualizerContentComponent)
 };
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
 
 #endif // __JUCE_HEADER_D83F67960ECDED8C__

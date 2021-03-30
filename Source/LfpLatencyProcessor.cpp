@@ -35,10 +35,6 @@ LfpLatencyProcessor::LfpLatencyProcessor()
 {
     setProcessorType(PROCESSOR_TYPE_SINK);
 
-    // Open Ephys Plugin Generator will insert generated code for parameters here. Don't edit this section.
-    //[OPENEPHYS_PARAMETERS_SECTION_BEGIN]
-    //[OPENEPHYS_PARAMETERS_SECTION_END]
-
     //Parameter controlling number of samples per subsample window
     //auto parameter0 = new Parameter ("detectionThreshold", 1, 4000, 1000, 0);
     //parameters.add (parameter0);
@@ -219,8 +215,6 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
     XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
     mainNode->setAttribute("numParameters", getNumParameters());
 
-    // Open Ephys Plugin Generator will insert generated code to save parameters here. Don't edit this section.
-    //[OPENEPHYS_PARAMETERS_SAVE_SECTION_BEGIN]
     for (int i = 0; i < getNumParameters(); ++i)
     {
         XmlElement *parameterNode = mainNode->createNewChildElement("Parameter");
@@ -236,7 +230,6 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
         else if (parameter->isContinuous() || parameter->isDiscrete() || parameter->isNumerical())
             parameterNode->setAttribute("value", (double)parameterValue);
     }
-    //[OPENEPHYS_PARAMETERS_SAVE_SECTION_END]
 }
 
 void LfpLatencyProcessor::loadCustomParametersFromXml()
@@ -246,8 +239,6 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
 
     // use parametersAsXml to restore state
 
-    // Open Ephys Plugin Generator will insert generated code to load parameters here. Don't edit this section.
-    //[OPENEPHYS_PARAMETERS_LOAD_SECTION_BEGIN]
     forEachXmlChildElement(*parametersAsXml, mainNode)
     {
         if (mainNode->hasTagName("LfpLatencyProcessor"))
@@ -271,7 +262,6 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
             }
         }
     }
-    //[OPENEPHYS_PARAMETERS_LOAD_SECTION_END]
 }
 
 bool LfpLatencyProcessor::checkEventReceived()

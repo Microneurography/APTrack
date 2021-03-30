@@ -26,9 +26,6 @@
 
 LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor_pointer)
 {
-    // Open Ephys Plugin Generator will insert generated code for editor here. Don't edit this section.
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_BEGIN]
-
     //m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
     //content.setLookAndFeel (m_contentLookAndFeel);
     addAndMakeVisible (&content);
@@ -59,7 +56,6 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
 
     
     
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_END]
 }
 
 
@@ -140,17 +136,6 @@ void LfpLatencyProcessorVisualizer::update()
 	{
 		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
 	}
-	//track spike combo box control
-	//switch (content.trackSpikeComboBox->getSelectedId()) {
-	//case 1:
-		//content.searchBoxSlider->setValue(spikeLocations[0]);
-	//case 2:
-		//content.searchBoxSlider->setValue(spikeLocations[1]);
-	//case 3:
-		//content.searchBoxSlider->setValue(spikeLocations[2]);
-	//case 4:
-		//content.searchBoxSlider->setValue(spikeLocations[3]);
-	//}
 }
 
 
@@ -194,18 +179,8 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		processTrack();
 
 	}
-	if (content.testSpikePls == true) {
-		
-		spikeTest();
 
-	
-	}
-	//generate a bunch of random spikes for the spike test function, with dynamically changing values
-	for (int i = 0; i < 4; i++) {
-		randomSpikeLocations[i] = Random::getSystemRandom().nextInt(600);
-
-	}
-
+    
    //Refresh canvas (redraw)
     refresh();
 }
@@ -213,122 +188,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 
 void LfpLatencyProcessorVisualizer::updateSpectrogram()
 {
-    for (int track=0; track < tracksAmount; track++)
-    {
-        //Get image dimension
-        draw_imageHeight = content.spectrogramImage.getHeight();
-        draw_rightHandEdge = content.spectrogramImage.getWidth()-track*pixelsPerTrack;
-        imageLinePoint= 0;
-
-        //Get data array
-        float* dataToPrint = processor->getdataCacheRow(track);
-        
-        //Reset subsampling flags
-        samplesAfterStimulus = 0;
-        lastWindowPeak = 0.0f;
-        windowSampleCount = 0;
-        for (auto ii=0; ii< (DATA_CACHE_SIZE_SAMPLES); ii++)
-        {
-            if (samplesAfterStimulus > content.startingSample)
-            {
-                auto sample = dataToPrint[ii];
-                
-                //If current sample is larger than previously stored peak, store sample as new peak
-                if (sample > lastWindowPeak)
-                {
-                    lastWindowPeak = sample;
-                }
-                
-                //Increment window sample counter
-                ++windowSampleCount;
-                
-                //If window is full, push window's peak into fifo
-                if (windowSampleCount >= content.subsamplesPerWindow)//76
-                {
-                    //If fifo is full, print warning to console
-                    if (imageLinePoint== SPECTROGRAM_HEIGHT)
-                    {
-                        //std::cout << "Spectrogram Full!" << std::endl;
-                    }
-                    
-                    //If fifo not full, store peak into fifo
-                    if (imageLinePoint < SPECTROGRAM_HEIGHT)
-                    {
-                        //Update spectrogram with selected color scheme
-                        switch (content.colorStyleComboBox->getSelectedId()) {
-                            case 1:
-                                //WHOT
-                                level = (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-                                    {
-                                        //Detected peak
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::yellowgreen);
-                                    }
-                                    else if (lastWindowPeak > content.highImageThreshold)
-                                    {
-                                        //Excessive peak
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::red);
-                                    }
-                                    else
-                                    {
-                                        //grayscale
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                    }
-                                }
-                                break;
-                            case 2:
-                                //BHOT
-                                level = 1.0f- (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::darkgreen);
-                                    }
-                                    else if (lastWindowPeak > content.highImageThreshold)
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::red);
-                                    }
-                                    else
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                    }
-                                }
-                                break;
-                            case 3:
-                                //WHOT, only grayscale
-                                level = (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                }
-                                break;
-                            case 4:
-                                //BHOT, only grayscale
-                                level = 1.0f- (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        //Go to next line
-                        imageLinePoint++;
-                    }
-                    //Reset subsampling flags
-                    lastWindowPeak = 0.0f;
-                    windowSampleCount = 0;
-                }
-            }
-            samplesAfterStimulus++;
-        }
-        
-    }
-    
+    content.spectrogram.update(*processor, content);
 }
 
 void LfpLatencyProcessorVisualizer::processTrack()
@@ -360,7 +220,6 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	// If we have enabled spike tracking the track spike
 	if (content.trackSpike_button->getToggleState() == true) {
 
-
 		// Check for spike inside ROI box
 		if (maxLevel > content.detectionThreshold && i < 4 && spikeLocations[i] != SpikeLocationRel)
 		{
@@ -368,7 +227,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			spikeLocations[i] = SpikeLocationRel;
 			//content.trackSpikeComboBox->setSelectedId(i + 1);
 			//i = i + 1;
-			std::cout << "Spike Found " << SpikeLocationRel << spikeLocations[i-1] << std::endl;
+			std::cout << "Spike Found " << SpikeLocationRel << spikeLocations[i - 1] << std::endl;
 
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation
@@ -395,27 +254,27 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		}
 	}
 
+	
 }
+void LfpLatencyProcessorVisualizer::spikeTest() {
 
-void LfpLatencyProcessorVisualizer::spikeTest(){
+	//clear the spike array
+	//std::fill_n(spikeLocations, 4, 0);
 
-		//clear the spike array
-		//std::fill_n(spikeLocations, 4, 0);
-		
-		//if not enabled, enable spike tracking
-		if (content.trackSpike_button->getToggleState() == false) {
-			
-			content.trackSpike_button->triggerClick();
-		
-		}
-		
-		//load up array with randomly generated spikes
-		for (int i = 0; i < 4; i++) {
-			spikeLocations[i] = randomSpikeLocations[i];
-			//std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
-			updateSpectrogram();
-			processTrack();
-		}
+	//if not enabled, enable spike tracking
+	if (content.trackSpike_button->getToggleState() == false) {
+
+		content.trackSpike_button->triggerClick();
+
+	}
+
+	//load up array with randomly generated spikes
+	for (int i = 0; i < 4; i++) {
+		spikeLocations[i] = randomSpikeLocations[i];
+		//std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
+		updateSpectrogram();
+		processTrack();
+	}
 
 }
 

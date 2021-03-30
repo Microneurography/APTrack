@@ -38,7 +38,7 @@ class LfpLatencyProcessorVisualizer : public Visualizer
 {
 public:
     /** The class constructor, used to initialize any members. */
-    LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor);
+    LfpLatencyProcessorVisualizer(LfpLatencyProcessor* processor);
 
     /** The class destructor, used to deallocate memory */
     ~LfpLatencyProcessorVisualizer();
@@ -62,64 +62,64 @@ public:
     void endAnimation() override;
 
     /** Called by an editor to initiate a parameter change.*/
-    void setParameter (int, float) override;
+    void setParameter(int, float) override;
 
     /** Called by an editor to initiate a parameter change.*/
-    void setParameter (int, int, int, float) override;
-    
+    void setParameter(int, int, int, float) override;
+
     /** Updates spectrogram*/
     void timerCallback() override;
-    
-    /** Shuffle spectrogram to left*/ 
-    void updateSpectrogram(); 
 
-	/** Process new track*/
-	void processTrack();
+    /** Shuffle spectrogram to left*/
+    void updateSpectrogram();
 
-	/**Test Multi Spike Tracking*/
-	void spikeTest();
-    
-    
+    /** Process new track*/
+    void processTrack();
+
+    /**Test Multi Spike Tracking*/
+    void spikeTest();
+
+
     /** Fill in rightmost edge of spectrogram with up to date data*/
     /*
      //DEPRECATED
     void newLineOfSpectrogram();
     */
-    
-    
+
+
 private:
 
-    
+
     float level;
-    
+
     int pixelsPerTrack;
 
     int tracksAmount;
-    
+
     int imageLinePoint;
-    
+
     int samplesAfterStimulus;
-    
+
     int missCounter;
-    
+
     int hitCounter;
-    
+
     int prevLocation;
-    
+
     float lastWindowPeak;
     int windowSampleCount;
-	int spikeLocations[4];
-	int randomSpikeLocations[4];
-	
-    
+    int spikeLocations[4];
+    int randomSpikeLocations[4];
+
+
     int draw_imageHeight;
     int draw_rightHandEdge;
-    
+
     //Pointer to processor
     LfpLatencyProcessor* processor;
-    
+
     friend class LfpLatencyProcessorVisualizerContentComponent;
-    
+
     // This component contains all components and graphics that were added using Projucer.
     // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
@@ -127,7 +127,7 @@ private:
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
     // ========================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessorVisualizer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorVisualizer);
 };
 
 
