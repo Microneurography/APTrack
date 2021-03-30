@@ -4,13 +4,13 @@
 // So we can make the setup box less dark.
 class CustomLookAndFeel : public juce::LookAndFeel_V3 {
 public:
-	void CallOutBox::LookAndFeelMethods::drawCallOutBoxBackground(CallOutBox& box, Graphics& g, const Path& path, Image& cachedImage) {
+	void drawCallOutBoxBackground(CallOutBox& box, Graphics& g, const Path& path, Image& cachedImage) override {
 		if (cachedImage.isNull())
 		{
 			cachedImage = Image(Image::ARGB, box.getWidth(), box.getHeight(), true);
 			Graphics g2(cachedImage);
 
-			DropShadow(Colours::darkgrey.withAlpha(1.0f), 8, Point<int>(0, 2)).drawForPath(g2, path);
+			DropShadow(Colours::darkgrey.withAlpha(1.0f), 8, juce::Point<int>(0, 2)).drawForPath(g2, path);
 		}
 
 		g.setColour(Colours::black);
@@ -23,11 +23,11 @@ public:
 		g.strokePath(path, PathStrokeType(2.0f));
 	}
 
-	void Slider::LookAndFeelMethods::drawLinearSliderBackground(Graphics& g, int x, int y, int width, int height,
+	void drawLinearSliderBackground(Graphics& g, int x, int y, int width, int height,
 		float /*sliderPos*/,
 		float /*minSliderPos*/,
 		float /*maxSliderPos*/,
-		const Slider::SliderStyle /*style*/, Slider& slider)
+		const Slider::SliderStyle /*style*/, Slider& slider) override
 	{
 		const float sliderRadius = (float)(getSliderThumbRadius(slider) - 2);
 
