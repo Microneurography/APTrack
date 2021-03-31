@@ -217,19 +217,45 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
 	printf("Trying to save\n");
-	
-    XmlElement *mainNode = new XmlElement("LfpLatencyProcessor");
-	printf("made the main node\n");
-    // Open Ephys Plugin Generator will insert generated code to save parameters here. Don't edit this section.
-    //[OPENEPHYS_PARAMETERS_SAVE_SECTION_BEGIN]
-	mainNode->addChildElement(parentElement);
-	printf("Added the parent element\n");
+	File recoveryConfigFile = File("C:/Users/gsboo/source/repos/plugin-GUI/Build/Release/recoveryConfig.xml");
+	XmlElement *recoveryConfig = XmlDocument::parse(recoveryConfigFile);
+	bool foundPlugin = false;
+	bool foundElement = false;
+	forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor")
+	{
+		foundPlugin = true;
+		printf("Found this plugins node\n");
+		// all the xml stuff needs rewriting in visualiser content component
+		// Each componenet needs to be dealt with individually, instead of all the componenets together
+		forEachXmlChildElementWithTagName(*thisPlugin, theElement, parentElement->getTagName())
+		{
+			foundElement = true;
+			printf("found the Component node\n");
+			thisPlugin->replaceChildElement(theElement, parentElement); // just replace it
+			printf("Added the element\n");
+		}
+		if (foundElement == false) { 
+			printf("Did not find the Component node\n");
+			thisPlugin->addChildElement(parentElement); // add it in the first place
+			printf("Added it now element\n");
+			foundElement = true; // it is there now
+		}
+	}
+	if (foundPlugin == false) { // if thisPlugin wasn't found, it wasn't there, and we need to make it.
+		printf("Making LfpLatencyProcessor\n");
+		XmlElement *thisPlugin = new XmlElement("LfpLatencyProcessor"); // create thisPlugin as an xmlElement
+		recoveryConfig->addChildElement(thisPlugin); // add it to the Xml Doc
+		printf("Added LfpLatency Processor to the xml\n");
+		thisPlugin->addChildElement(parentElement);  // also save what we came here to save
+		printf("added the element we wanted to save\n");
+	}
+	// finally, we can save the xml element to the file
+	recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 24);
+	printf("Written to file\n");
+	// This needs to be added at some other place. This function is for generically adding things to the xml under this plugins name
 	//XmlElement *TracksToXML = mainNode->createNewChildElement("Tracks");
 	//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());
 	//TracksToXML->setAttribute("Track1", timeStamp)
-	// save file??
-
-    //[OPENEPHYS_PARAMETERS_SAVE_SECTION_END]
 }
 
 void LfpLatencyProcessor::loadCustomParametersFromXml()
