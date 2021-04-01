@@ -217,41 +217,71 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
 	printf("Trying to save\n");
-	File recoveryConfigFile = File("C:/Users/gsboo/source/repos/plugin-GUI/Build/Release/recoveryConfig.xml");
-	XmlElement *recoveryConfig = XmlDocument::parse(recoveryConfigFile);
-	bool foundPlugin = false;
-	bool foundElement = false;
-	forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor")
+	foundPlugin = false;
+	printf("Created plugin bool\n");
+	foundElement = false;
+	docExisted = false;
+	printf("created bools\n");
+	// recoveryConfigFile = File("recoveryConfig.xml");
+	printf("Loaded file\n");
+	if (File("recoveryConfig.xml").exists()) 
 	{
-		foundPlugin = true;
-		printf("Found this plugins node\n");
-		// all the xml stuff needs rewriting in visualiser content component
-		// Each componenet needs to be dealt with individually, instead of all the componenets together
-		forEachXmlChildElementWithTagName(*thisPlugin, theElement, parentElement->getTagName())
+		docExisted = true;
+		recoveryConfigFile = File("recoveryConfig.xml");
+		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
+		printf("Parsed file\n");
+		forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor")
 		{
-			foundElement = true;
-			printf("found the Component node\n");
-			thisPlugin->replaceChildElement(theElement, parentElement); // just replace it
-			printf("Added the element\n");
-		}
-		if (foundElement == false) { 
-			printf("Did not find the Component node\n");
-			thisPlugin->addChildElement(parentElement); // add it in the first place
-			printf("Added it now element\n");
-			foundElement = true; // it is there now
+			printf("Found this plugins node\n");
+			foundPlugin = true;
+			printf("set bool to true\n");
+			forEachXmlChildElementWithTagName(*thisPlugin, theElement, parentElement->getTagName())
+			{
+				printf("found the Component node\n");
+				foundElement = true;
+				printf("set bool to true\n");
+				name = parentElement->getAttributeName(0);  // the parentElement has just one attribute, so we want to extract it
+				printf("Found name\n");
+				value = parentElement->getAttributeValue(0);
+				printf("Found value\n");
+				theElement->setAttribute(name, value); // then add or replace it if the attribute exists, to the one already in the XML doc
+				printf("Added the element\n");
+			}
+			if (foundElement == false) {
+				printf("Did not find the Component node\n");
+				thisPlugin->addChildElement(parentElement); // add it in the first place
+				printf("Added it now element\n");
+				foundElement = true; // it is there now
+			}
 		}
 	}
-	if (foundPlugin == false) { // if thisPlugin wasn't found, it wasn't there, and we need to make it.
+	else // it doesn't exist, so we have to make it
+	{
+		printf("Making the main xml element\n");
+		recoveryConfig = new XmlElement("Recovery Configuration");
+	}
+	if (foundPlugin == false) // if thisPlugin wasn't found, it wasn't there, and we need to make it.
+	{ 
 		printf("Making LfpLatencyProcessor\n");
-		XmlElement *thisPlugin = new XmlElement("LfpLatencyProcessor"); // create thisPlugin as an xmlElement
+		thisPlugin = new XmlElement("LfpLatencyProcessor"); // create thisPlugin as an xmlElement
+		printf("Adding LfpLatency Processor to the main xml element\n");
 		recoveryConfig->addChildElement(thisPlugin); // add it to the Xml Doc
-		printf("Added LfpLatency Processor to the xml\n");
-		thisPlugin->addChildElement(parentElement);  // also save what we came here to save
-		printf("added the element we wanted to save\n");
+		printf("adding the element we wanted to save\n");
+		thisPlugin->addChildElement(parentElement); // this will be components with the attribute
 	}
-	// finally, we can save the xml element to the file
-	recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 24);
-	printf("Written to file\n");
+	printf("Writing to file\n");
+	if (!docExisted) {
+		printf("It didn't exist so we're making the file and adding content\n");
+		recoveryConfigFile = File("recoveryConfig.xml");
+		recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 24); // this doesn't work properly
+	}
+	else
+	{	
+		printf("It did exist so we can just save the file\n");
+		// finally, we can save the xml element to the file
+		recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 24);
+		printf("deleting our xml copy of the file\n");
+	}
 	// This needs to be added at some other place. This function is for generically adding things to the xml under this plugins name
 	//XmlElement *TracksToXML = mainNode->createNewChildElement("Tracks");
 	//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());

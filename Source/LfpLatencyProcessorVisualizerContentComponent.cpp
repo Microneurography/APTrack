@@ -629,24 +629,24 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 // if the bool is true, we are loading up, so do not update the xml
 // also need a way of passing the value and connecting to a slider, maybe as just a string and int
 
-void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
+void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* sliderThatWasMoved)
 {
 	LfpLatencyProcessor* process = new LfpLatencyProcessor(); // to save the new value to xml
 	juce::XmlElement *XmlValue = new XmlElement("Components");
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
+	//[UsersliderValueChanged_Pre]
+	//[/UsersliderValueChanged_Pre]
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
 		cout << "Stuck here 1\n";
 		//Lower value
 		stimulusVoltageMin = sliderThatWasMoved->getMinValue();
 		XmlValue->setAttribute("stimulusVoltageMin", stimulusVoltageMin);
-		stimulusVoltageMin_text->setText(String(stimulusVoltageMin,2));
+		stimulusVoltageMin_text->setText(String(stimulusVoltageMin, 2));
 		cout << "Stuck here 2\n";
 		//Upper value
 		stimulusVoltageMax = sliderThatWasMoved->getMaxValue();
 		XmlValue->setAttribute("stimulusVoltageMax", stimulusVoltageMax);
-		stimulusVoltageMax_text->setText(String(stimulusVoltageMax,2));
+		stimulusVoltageMax_text->setText(String(stimulusVoltageMax, 2));
 		cout << "Stuck here 3\n";
 		//mid value
 		stimulusVoltage = sliderThatWasMoved->getValue();
@@ -669,72 +669,72 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		}
 		cout << "Done\n";
 	}
-    if (sliderThatWasMoved == imageThresholdSlider)
-    {
+	if (sliderThatWasMoved == imageThresholdSlider)
+	{
 		cout << "Stuck here 4\n";
-        //[UserSliderCode_imageThresholdSlider] -- add your slider handling code here..
+		//[UserSliderCode_imageThresholdSlider] -- add your slider handling code here..
 
-        //Lower value
+		//Lower value
 		cout << "Stuck here 5\n";
-        lowImageThreshold = sliderThatWasMoved->getMinValue();
+		lowImageThreshold = sliderThatWasMoved->getMinValue();
 		XmlValue->setAttribute("lowImageThreshold", lowImageThreshold);
-        std::cout << "Slider lower: " << lowImageThreshold << std::endl;
-        lowImageThresholdText->setText(String(lowImageThreshold,1)+" uV");
+		std::cout << "Slider lower: " << lowImageThreshold << std::endl;
+		lowImageThresholdText->setText(String(lowImageThreshold, 1) + " uV");
 		cout << "Stuck here 6\n";
-        //Upper value
-        highImageThreshold = sliderThatWasMoved->getMaxValue();
+		//Upper value
+		highImageThreshold = sliderThatWasMoved->getMaxValue();
 		XmlValue->setAttribute("highImageThreshold", highImageThreshold);
-        std::cout << "Slider upper: " << highImageThreshold << std::endl;
-        highImageThresholdText->setText(String(highImageThreshold,1) + " uV");
+		std::cout << "Slider upper: " << highImageThreshold << std::endl;
+		highImageThresholdText->setText(String(highImageThreshold, 1) + " uV");
 		cout << "Stuck here 7\n";
-        //mid value
-        detectionThreshold = sliderThatWasMoved->getValue();
+		//mid value
+		detectionThreshold = sliderThatWasMoved->getValue();
 		XmlValue->setAttribute("detectionThreshold", detectionThreshold);
-        std::cout << "DetectionThehold" << detectionThreshold << std::endl;
-        detectionThresholdText->setText(String(detectionThreshold,1) + " uV");
+		std::cout << "DetectionThehold" << detectionThreshold << std::endl;
+		detectionThresholdText->setText(String(detectionThreshold, 1) + " uV");
 
-        //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
-        //[/UserSliderCode_imageThresholdSlider]
-    }
-    if (sliderThatWasMoved == searchBoxSlider)
-    {
+		//sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
+		//[/UserSliderCode_imageThresholdSlider]
+	}
+	if (sliderThatWasMoved == searchBoxSlider)
+	{
 		cout << "Stuck here 8\n";
-        searchBoxLocation = sliderThatWasMoved->getValue();
+		searchBoxLocation = sliderThatWasMoved->getValue();
 		XmlValue->setAttribute("searchBoxLocation", searchBoxLocation);
-        std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
-        
-    }
-    if (sliderThatWasMoved == subsamplesPerWindowSlider)
-    {
+		std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
+
+	}
+	if (sliderThatWasMoved == subsamplesPerWindowSlider)
+	{
 		cout << "Stuck here 9\n";
-        //auto subsamplesPerWindowOld = subsamplesPerWindow;
-        subsamplesPerWindow = sliderThatWasMoved->getValue();
+		//auto subsamplesPerWindowOld = subsamplesPerWindow;
+		subsamplesPerWindow = sliderThatWasMoved->getValue();
 		XmlValue->setAttribute("subsamplesPerWindow", subsamplesPerWindow);
-        std::cout << "subsamplesPerWindow" << subsamplesPerWindow << std::endl;
-      
-    }
-    if (sliderThatWasMoved == startingSampleSlider)
-    {
+		std::cout << "subsamplesPerWindow" << subsamplesPerWindow << std::endl;
+
+	}
+	if (sliderThatWasMoved == startingSampleSlider)
+	{
 		cout << "Stuck here 10\n";
-        startingSample = sliderThatWasMoved->getValue();
+		startingSample = sliderThatWasMoved->getValue();
 		XmlValue->setAttribute("startingSample", startingSample);
-        std::cout << "startingSample" << startingSample << std::endl;
-        
-    }
-    if (sliderThatWasMoved == searchBoxWidthSlider)
-    {
+		std::cout << "startingSample" << startingSample << std::endl;
+
+	}
+	if (sliderThatWasMoved == searchBoxWidthSlider)
+	{
 		cout << "Stuck here 11\n";
-        searchBoxWidth = sliderThatWasMoved->getValue();
+		searchBoxWidth = sliderThatWasMoved->getValue();
 		XmlValue->setAttribute("searchBoxWidth", searchBoxWidth);
-        std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
-        
-    }
+		std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
+
+	}
 	if (sliderThatWasMoved == trackSpike_IncreaseRate_Slider)
 	{
 		cout << "Stuck here 12\n";
 		trackSpike_IncreaseRate = sliderThatWasMoved->getValue();
 		XmlValue->setAttribute("trackSpike_IncreaseRate", trackSpike_IncreaseRate);
-		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0)+ " V");
+		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0) + " V");
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
@@ -748,9 +748,9 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 	printf("tidying up\n");
 	delete process;
 	printf("all done\n");
-    
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
+
+	//[UsersliderValueChanged_Post]
+	//[/UsersliderValueChanged_Post]
 }
 
 /*

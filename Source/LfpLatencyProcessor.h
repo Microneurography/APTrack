@@ -170,7 +170,14 @@ public:
 
 
 private:
-
+	bool foundPlugin;
+	bool foundElement;
+	bool docExisted;
+	File recoveryConfigFile;
+	String value;
+	String name;
+	XmlElement *thisPlugin;
+	XmlElement *recoveryConfig;
 	//debug
 	float lastReceivedDACPulse;
 
