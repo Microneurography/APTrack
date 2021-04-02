@@ -224,13 +224,15 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 	printf("created bools\n");
 	// recoveryConfigFile = File("recoveryConfig.xml");
 	printf("Loaded file\n");
-	if (File("recoveryConfig.xml").exists()) 
+	// File::getCurrentWorkingDirectory() +
+	if (File("recoveryConfig.xml").exists())
 	{
 		docExisted = true;
-		recoveryConfigFile = File("recoveryConfig.xml");
+		//static workingDirectory = File::getCurrentWorkingDirectory()
+		//recoveryConfigFile = File("recoveryConfig.xml"); // not passing it the right thing
 		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
 		printf("Parsed file\n");
-		forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor")
+		forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor") 
 		{
 			printf("Found this plugins node\n");
 			foundPlugin = true;
@@ -273,13 +275,13 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 	if (!docExisted) {
 		printf("It didn't exist so we're making the file and adding content\n");
 		recoveryConfigFile = File("recoveryConfig.xml");
-		recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 24); // this doesn't work properly
+		recoveryConfig->createDocument("", false, true, "utf-8", 60); // this doesn't work properly
 	}
 	else
 	{	
 		printf("It did exist so we can just save the file\n");
 		// finally, we can save the xml element to the file
-		recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 24);
+		recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 60);
 		printf("deleting our xml copy of the file\n");
 	}
 	// This needs to be added at some other place. This function is for generically adding things to the xml under this plugins name

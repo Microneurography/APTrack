@@ -177,6 +177,7 @@ private:
 	String value;
 	String name;
 	XmlElement *thisPlugin;
+	XmlElement *theElement;
 	XmlElement *recoveryConfig;
 	//debug
 	float lastReceivedDACPulse;
