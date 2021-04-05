@@ -68,6 +68,42 @@ public:
 	}
 };
 
+//I really like this method of dealing with tables but juce is a lil bitch that doesn't want me to do it this way
+//Just keep trying until it works xoxo
+
+class CustomGridModel : public TableListBoxModel {
+	public:
+		virtual int CustomGridModel::TableListBoxModel::getNumRows() {
+			return 4;
+		}
+		virtual void CustomGridModel::TableListBoxModel::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
+
+			g.setColour(Colours::lightgrey);  // [5]
+			Font font = 12.0f;
+			g.setFont(font);
+
+			if (columnId == 1)
+			{
+				auto text = "1";
+
+				g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
+			}
+
+			g.setColour(Colours::lightblue);
+			g.fillRect(width - 1, 0, 1, height);
+
+		}
+		virtual void CustomGridModel::TableListBoxModel::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
+
+			if (rowIsSelected) {
+				g.fillAll(Colours::yellow);
+			}
+			else {
+				g.fillAll(Colours::lightgrey);
+			}
+		}
+};
+
 //==============================================================================
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
 : spectrogram(SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
@@ -317,7 +353,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 50);
 	//spikeTrackerContent->getNumRows();
-	//spikeTracker->setModel(spikeTrackerContent);
+	gModel = new CustomGridModel();
+	spikeTrackerContent = new TableListBoxModel(spikeTracker, gModel); // something something virtual methods??
+	spikeTracker->setModel(spikeTrackerContent);
 	spikeTracker->autoSizeAllColumns();
 
 	addAndMakeVisible(spikeTestButton = new TextButton("spikeTest"));
@@ -432,7 +470,9 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	{
 		g.setColour(Colours::lightyellow);
 	}
-    
+	spikeTrackerContent->getNumRows();
+	//THIS LINE CAUSES CRASH VVV
+	spikeTrackerContent->paintCell(g, 0, 0, 20, 20, true);
     g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 }
 
@@ -859,25 +899,4 @@ int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelected
 {
 	return colorStyleComboBox->getSelectedId();
 }
-int LfpLatencyProcessorVisualizerContentComponent::getNumRows() {
-	return 4;
-}
 
-void LfpLatencyProcessorVisualizerContentComponent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
-
-	/*
-	//defining text for collumn
-	String text;
-	text = String(rowNumber);
-
-	//add text TEST
-	g.drawText(text, 2, 0, width - 4, height, Justification::centredLeft, true);
-	g.setColour(Colours::aliceblue);
-	g.fillRect(width - 1, 0, 1, height);
-	*/
-
-}
-
-void LfpLatencyProcessorVisualizerContentComponent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
-	
-}
