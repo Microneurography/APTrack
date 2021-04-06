@@ -632,7 +632,9 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* sliderThatWasMoved)
 {
 	LfpLatencyProcessor* process = new LfpLatencyProcessor(); // to save the new value to xml
-	juce::XmlElement *XmlValue = new XmlElement("Components");
+	juce::XmlElement *XmlValue = new XmlElement("Components"); 
+	// pass it by reference instead?
+	// juce::XMLElement var("Components");
 	//[UsersliderValueChanged_Pre]
 	//[/UsersliderValueChanged_Pre]
 	if (sliderThatWasMoved == stimulusVoltageSlider)
@@ -747,6 +749,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 	process->saveCustomParametersToXml(XmlValue);
 	printf("tidying up\n");
 	delete process;
+	XmlValue->~XmlElement(); // deleting the xml value so no leaking of memory
 	printf("all done\n");
 
 	//[UsersliderValueChanged_Post]

@@ -25,6 +25,8 @@
 
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorEditor.h"
+#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\files\\juce_File.h"
+#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
 
 //If the processor uses a custom editor, it needs its header to instantiate it
 //#include "ExampleEditor.h"
@@ -218,22 +220,26 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
 	printf("Trying to save\n");
 	foundPlugin = false;
-	printf("Created plugin bool\n");
 	foundElement = false;
 	docExisted = false;
+	fileOK = false;
+	writtenOK = false;
 	printf("created bools\n");
-	// recoveryConfigFile = File("recoveryConfig.xml");
+	workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
+	workingDirectory += "\\recoveryConfig.xml";
+	recoveryConfigFile = File(workingDirectory);
+	//recoveryConfigFile = workingDirectory.append("\\recoveryConfig.xml", ); // not passing it the right thing
 	printf("Loaded file\n");
-	// File::getCurrentWorkingDirectory() +
-	if (File("recoveryConfig.xml").exists())
+	if (recoveryConfigFile.exists())
 	{
+		
 		docExisted = true;
-		//static workingDirectory = File::getCurrentWorkingDirectory()
-		//recoveryConfigFile = File("recoveryConfig.xml"); // not passing it the right thing
 		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
 		printf("Parsed file\n");
-		forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor") 
+		forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor") // can't return the child of recovery config, because it's children
 		{
+			// set up an ideal config file
+			// so you know best case will work
 			printf("Found this plugins node\n");
 			foundPlugin = true;
 			printf("set bool to true\n");
@@ -256,38 +262,63 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 				foundElement = true; // it is there now
 			}
 		}
+		fileOK = true;
 	}
-	else // it doesn't exist, so we have to make it
+	else // the file doesn't exist, so we have to make it and its main element
 	{
-		printf("Making the main xml element\n");
-		recoveryConfig = new XmlElement("Recovery Configuration");
+		printf("It didn't exist so we're making the file and adding content\n");
+		//recoveryConfigFile->createDocument("1.0", false, true, "utf-8", 60); // this doesn't work properly
+		Result res = Result(recoveryConfigFile.create());
+		if (Result::ok())
+		{
+			std::cout << "file created ok" << std::endl;
+			fileOK = true;
+			printf("Making the main xml element");
+			recoveryConfig = new XmlElement("Settings");
+		}
+		else // The docuent didn't exist and we were unable to make it. Simply report to user and continue.
+		{ 
+			std::cout << "WARNING: The file was unable to be saved due to error " << res.getErrorMessage() << std::endl;
+			std::cout << "The plugin will keep attempting to make the file every time you change a configuration." << std::endl;
+			std::cout << "Please be aware that this error message means the configuration you changed WAS NOT saved, and will not be saved." << std::endl;
+		}
 	}
-	if (foundPlugin == false) // if thisPlugin wasn't found, it wasn't there, and we need to make it.
+
+	// if thisPlugin wasn't found but we managed to make the file or it existed, we need to make it.
+	if (foundPlugin == false && fileOK || docExisted)
 	{ 
 		printf("Making LfpLatencyProcessor\n");
 		thisPlugin = new XmlElement("LfpLatencyProcessor"); // create thisPlugin as an xmlElement
-		printf("Adding LfpLatency Processor to the main xml element\n");
-		recoveryConfig->addChildElement(thisPlugin); // add it to the Xml Doc
 		printf("adding the element we wanted to save\n");
 		thisPlugin->addChildElement(parentElement); // this will be components with the attribute
+		printf("Adding LfpLatency Processor to the main xml element\n");
+		recoveryConfig->addChildElement(thisPlugin); // add it to the Xml Doc
 	}
-	printf("Writing to file\n");
-	if (!docExisted) {
-		printf("It didn't exist so we're making the file and adding content\n");
-		recoveryConfigFile = File("recoveryConfig.xml");
-		recoveryConfig->createDocument("", false, true, "utf-8", 60); // this doesn't work properly
+
+	// if the file now exists, we can save it
+	if (fileOK || docExisted) { 
+		printf("Writing to file\n");
+		writtenOK = recoveryConfig->writeToFile(recoveryConfigFile, "1.0", "UTF-8", 60);
+		//recoveryConfigFile, "1.0", "utf-8", 60);
+		printf("done\n");
 	}
-	else
-	{	
-		printf("It did exist so we can just save the file\n");
-		// finally, we can save the xml element to the file
-		recoveryConfig->writeToFile(recoveryConfigFile, "", "utf-8", 60);
-		printf("deleting our xml copy of the file\n");
+
+	// The document was unable to save
+	if (writtenOK == false) 
+	{
+		std::cout << "WARNING: The file was unable to be saved due to an error with writing to the xml file" << std::endl;
+		std::cout << "Please be aware that this error message means the configuration you changed WAS NOT saved, and will not be saved." << std::endl;
 	}
 	// This needs to be added at some other place. This function is for generically adding things to the xml under this plugins name
 	//XmlElement *TracksToXML = mainNode->createNewChildElement("Tracks");
 	//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());
 	//TracksToXML->setAttribute("Track1", timeStamp)
+	// deleting everything
+	recoveryConfig->~XmlElement(); // deleting an element deletes all its children
+	//recoveryConfigFile.~File();
+	workingDirectory.~String();
+	value.~String();
+	name.~String();
 }
 
 void LfpLatencyProcessor::loadCustomParametersFromXml()

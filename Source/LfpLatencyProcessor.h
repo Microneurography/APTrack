@@ -167,13 +167,16 @@ public:
 
 	//debug
 	float getParameterFloat(int parameterID);
-
+	//Result makingFile;
 
 private:
 	bool foundPlugin;
 	bool foundElement;
 	bool docExisted;
+	bool fileOK;
+	bool writtenOK;
 	File recoveryConfigFile;
+	String workingDirectory;
 	String value;
 	String name;
 	XmlElement *thisPlugin;
