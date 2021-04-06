@@ -68,42 +68,6 @@ public:
 	}
 };
 
-//I really like this method of dealing with tables but juce is a lil bitch that doesn't want me to do it this way
-//Just keep trying until it works xoxo
-
-class CustomGridModel : public TableListBoxModel {
-	public:
-		virtual int CustomGridModel::TableListBoxModel::getNumRows() {
-			return 4;
-		}
-		virtual void CustomGridModel::TableListBoxModel::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
-
-			g.setColour(Colours::lightgrey);  // [5]
-			Font font = 12.0f;
-			g.setFont(font);
-
-			if (columnId == 1)
-			{
-				auto text = "1";
-
-				g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
-			}
-
-			g.setColour(Colours::lightblue);
-			g.fillRect(width - 1, 0, 1, height);
-
-		}
-		virtual void CustomGridModel::TableListBoxModel::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
-
-			if (rowIsSelected) {
-				g.fillAll(Colours::yellow);
-			}
-			else {
-				g.fillAll(Colours::lightgrey);
-			}
-		}
-};
-
 //==============================================================================
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
 : spectrogram(SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
@@ -352,9 +316,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 50);
+	//WHY WON'T THIS WORK??? WHAT EVEN IS A CUSTOM GRID MODEL IM GOING INSANE
 	//spikeTrackerContent->getNumRows();
-	gModel = new CustomGridModel();
-	spikeTrackerContent = new TableListBoxModel(spikeTracker, gModel); // something something virtual methods??
+	//gModel = new CustomGridModel();
+	//spikeTrackerContent = new TableListBoxModel(spikeTracker, gModel); // something something virtual methods??
 	spikeTracker->setModel(spikeTrackerContent);
 	spikeTracker->autoSizeAllColumns();
 
@@ -900,3 +865,34 @@ int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelected
 	return colorStyleComboBox->getSelectedId();
 }
 
+int LfpLatencyProcessorVisualizerContentComponent::getNumRows() {
+	return 0;
+}
+
+void LfpLatencyProcessorVisualizerContentComponent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
+
+	g.setColour(Colours::lightgrey);  // [5]
+	Font font = 12.0f;
+	g.setFont(font);
+
+	if (columnId == 1)
+	{
+		auto text = "1";
+
+		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
+	}
+
+	g.setColour(Colours::lightblue);
+	g.fillRect(width - 1, 0, 1, height);
+
+}
+
+void LfpLatencyProcessorVisualizerContentComponent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
+
+	if (rowIsSelected) {
+		g.fillAll(Colours::yellow);
+	}
+	else {
+		g.fillAll(Colours::lightgrey);
+	}
+}
