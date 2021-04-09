@@ -218,101 +218,129 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
-	printf("Trying to save\n");
+	name = parentElement->getAttributeName(0);
+	value = parentElement->getAttributeValue(0);
+	std::cout << "Trying to save " << name << std::endl;
 	foundPlugin = false;
-	foundElement = false;
+	wrongPlugin = false;
+	foundSettings = false;
+	foundSignalchain = false;
+	foundProcessor = false;
 	docExisted = false;
 	fileOK = false;
 	writtenOK = false;
-	printf("created bools\n");
 	workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
 	workingDirectory += "\\recoveryConfig.xml";
 	recoveryConfigFile = File(workingDirectory);
 	//recoveryConfigFile = workingDirectory.append("\\recoveryConfig.xml", ); // not passing it the right thing
-	printf("Loaded file\n");
+	std::cout << "Loaded recoveryConfig.XML" << std::endl;
 	if (recoveryConfigFile.exists())
 	{
-		
 		docExisted = true;
-		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
-		printf("Parsed file\n");
-		forEachXmlChildElementWithTagName(*recoveryConfig, thisPlugin, "LfpLatencyProcessor") // can't return the child of recovery config, because it's children
+		recoveryConfig = XmlDocument::parse(recoveryConfigFile); 
+		std::cout << "Parsed file" << std::endl;
+		if (recoveryConfig != NULL) // if there was no error with parsing
 		{
-			// set up an ideal config file
-			// so you know best case will work
-			printf("Found this plugins node\n");
-			foundPlugin = true;
-			printf("set bool to true\n");
-			forEachXmlChildElementWithTagName(*thisPlugin, theElement, parentElement->getTagName())
+			forEachXmlChildElementWithTagName(*recoveryConfig, signalchain, "SIGNALCHAIN")
 			{
-				printf("found the Component node\n");
-				foundElement = true;
-				printf("set bool to true\n");
-				name = parentElement->getAttributeName(0);  // the parentElement has just one attribute, so we want to extract it
-				printf("Found name\n");
-				value = parentElement->getAttributeValue(0);
-				printf("Found value\n");
-				theElement->setAttribute(name, value); // then add or replace it if the attribute exists, to the one already in the XML doc
-				printf("Added the element\n");
-			}
-			if (foundElement == false) {
-				printf("Did not find the Component node\n");
-				thisPlugin->addChildElement(parentElement); // add it in the first place
-				printf("Added it now element\n");
-				foundElement = true; // it is there now
+				foundSignalchain = true;
+				forEachXmlChildElementWithTagName(*signalchain, processor, "PROCESSOR")
+				{
+					foundProcessor = true;
+					// the indexing of attributes is super weird and not constant, even if they appear to be in the same index in the xml
+					i = 0;
+					while (i < processor->getNumAttributes() && !foundPlugin && !wrongPlugin) // find the correct attribute
+					{
+						if (processor->getAttributeName(i) == "libraryName")
+						{
+							if (processor->getAttributeValue(i) == "LfpLatency plugin library")
+							{
+								foundPlugin = true;
+								processor->setAttribute(name, value); // add or replace the element - I may just add a child XmlElement instead of doing this to keep things tidy
+							}
+							else
+							{
+								wrongPlugin = true;
+							}
+						}
+						i++;
+					}
+				} // It will find all of them and run the code for each of them
 			}
 		}
-		fileOK = true;
+		else // there was an error with parsing it, it's probably a blank file.
+		{
+			std::cout << "FAILURE: The file was unable to be openend due to an unknown error" << std::endl;
+			std::cout << "All previous data written to recoveryConfig.XML has been lost." << std::endl;
+			std::cout << "Lfp Latency Plugin will now delete the old file, and create a new one." << std::endl;
+			docExisted = false;
+			recoveryConfigFile.deleteFile();
+
+		}
 	}
-	else // the file doesn't exist, so we have to make it and its main element
+
+	if (!docExisted) // the file doesn't exist, so we have to make it and its main element
 	{
-		printf("It didn't exist so we're making the file and adding content\n");
+		std::cout << "Unable to find recoveryConfig.XML" << std::endl;
 		//recoveryConfigFile->createDocument("1.0", false, true, "utf-8", 60); // this doesn't work properly
+		std::cout << "Making recoveryConfig.XML" << std::endl;
 		Result res = Result(recoveryConfigFile.create());
 		if (Result::ok())
 		{
-			std::cout << "file created ok" << std::endl;
+			std::cout << "File Created OK" << std::endl;
 			fileOK = true;
-			printf("Making the main xml element");
-			recoveryConfig = new XmlElement("Settings");
+			recoveryConfig = new XmlElement("SETTINGS"); 
 		}
 		else // The docuent didn't exist and we were unable to make it. Simply report to user and continue.
 		{ 
 			std::cout << "WARNING: The file was unable to be saved due to error " << res.getErrorMessage() << std::endl;
 			std::cout << "The plugin will keep attempting to make the file every time you change a configuration." << std::endl;
-			std::cout << "Please be aware that this error message means the configuration you changed WAS NOT saved, and will not be saved." << std::endl;
+			std::cout << "Please be aware that this error message means that " << name << " at " << value << " WAS NOT saved, and will not be saved." << std::endl;
 		}
 	}
 
 	// if thisPlugin wasn't found but we managed to make the file or it existed, we need to make it.
-	if (foundPlugin == false && fileOK || docExisted)
+	if (foundPlugin == false && (fileOK || docExisted)) // need to do the or first otherwise logic doesn't work
 	{ 
-		printf("Making LfpLatencyProcessor\n");
-		thisPlugin = new XmlElement("LfpLatencyProcessor"); // create thisPlugin as an xmlElement
-		printf("adding the element we wanted to save\n");
-		thisPlugin->addChildElement(parentElement); // this will be components with the attribute
-		printf("Adding LfpLatency Processor to the main xml element\n");
-		recoveryConfig->addChildElement(thisPlugin); // add it to the Xml Doc
+		if (foundSignalchain == false) {
+			signalchain = new XmlElement("SIGNALCHAIN");
+			recoveryConfig->addChildElement(signalchain);
+		}
+		// if we found a processor, but it wasn't *the* processor we wanted, we'll be here.
+		processor = new XmlElement("PROCESSOR");
+		signalchain->addChildElement(processor);
+		// Badly hardcoded stuff, but hopefully it should never have to do this, or these things will get overwritten
+		processor->setAttribute(name, value);
+		processor->setAttribute("name", "Sinks/LfpLatency");
+		processor->setAttribute("insertionPoint", 1);
+		processor->setAttribute("pluginName", "LfpLatency");
+		processor->setAttribute("pluginType", 1);
+		processor->setAttribute("pluginIndex", 3);
+		processor->setAttribute("libraryName", "LfpLatency plugin library");
+		processor->setAttribute("libraryVersion", 1);
+		processor->setAttribute("isSource", 0);
+		processor->setAttribute("isSink", 1);
+		processor->setAttribute("NodeId", 100);
 	}
 
-	// if the file now exists, we can save it
+	// if the file now exists, so we can save it
 	if (fileOK || docExisted) { 
-		printf("Writing to file\n");
-		writtenOK = recoveryConfig->writeToFile(recoveryConfigFile, "1.0", "UTF-8", 60);
-		//recoveryConfigFile, "1.0", "utf-8", 60);
-		printf("done\n");
-	}
-
-	// The document was unable to save
-	if (writtenOK == false) 
-	{
-		std::cout << "WARNING: The file was unable to be saved due to an error with writing to the xml file" << std::endl;
-		std::cout << "Please be aware that this error message means the configuration you changed WAS NOT saved, and will not be saved." << std::endl;
+		writtenOK = recoveryConfig->writeToFile(recoveryConfigFile, "", "UTF-8", 60);
+		if (writtenOK == false) // The document was unable to save
+		{
+			std::cout << "WARNING: The file was unable to be saved due to an error with writing to the xml file" << std::endl;
+			std::cout << "Please be aware that this error message means that " << name << " at " << value << " WAS NOT saved, and will not be saved." << std::endl;
+		}
+		else 
+		{
+			std::cout << name << " saved successfully." << std::endl;
+		}
 	}
 	// This needs to be added at some other place. This function is for generically adding things to the xml under this plugins name
 	//XmlElement *TracksToXML = mainNode->createNewChildElement("Tracks");
 	//uint64 timeStamp = getTimestamp(LfpLatencyProcessorVisualizerContentComponent.dataChannelComboBox->getSelectedId());
 	//TracksToXML->setAttribute("Track1", timeStamp)
+
 	// deleting everything
 	recoveryConfig->~XmlElement(); // deleting an element deletes all its children
 	//recoveryConfigFile.~File();

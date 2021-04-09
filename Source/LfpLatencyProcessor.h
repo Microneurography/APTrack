@@ -170,8 +170,12 @@ public:
 	//Result makingFile;
 
 private:
+	int i;
 	bool foundPlugin;
-	bool foundElement;
+	bool wrongPlugin;
+	bool foundSettings;
+	bool foundSignalchain;
+	bool foundProcessor;
 	bool docExisted;
 	bool fileOK;
 	bool writtenOK;
@@ -179,9 +183,9 @@ private:
 	String workingDirectory;
 	String value;
 	String name;
-	XmlElement *thisPlugin;
-	XmlElement *theElement;
 	XmlElement *recoveryConfig;
+	XmlElement *signalchain;
+	XmlElement *processor;
 	//debug
 	float lastReceivedDACPulse;
 
