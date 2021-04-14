@@ -42,6 +42,7 @@
 
 #include <ProcessorHeaders.h>
 #include <functional>
+#include <map>
 
 //fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
@@ -176,6 +177,7 @@ private:
 	bool foundSettings;
 	bool foundSignalchain;
 	bool foundProcessor;
+	bool foundCustomParams;
 	bool docExisted;
 	bool fileOK;
 	bool writtenOK;
@@ -186,6 +188,9 @@ private:
 	XmlElement *recoveryConfig;
 	XmlElement *signalchain;
 	XmlElement *processor;
+	XmlElement *customParams;
+
+	int j;
 	//debug
 	float lastReceivedDACPulse;
 
