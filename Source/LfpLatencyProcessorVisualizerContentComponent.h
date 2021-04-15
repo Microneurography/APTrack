@@ -7,6 +7,7 @@
 #include "pulsePalController/ppController.h"
 
 #include "LfpLatencySpectrogram.h"
+#include "LfpLatencySpectrogramControlPanel.h"
 
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
@@ -35,6 +36,8 @@ private:
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
+
+    ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
 
     //Image thresholds
     float lowImageThreshold;
@@ -97,9 +100,6 @@ private:
 	ScopedPointer<Label> stimulusVoltageMin_textLabel;
 	
 	// main GUI
-	ScopedPointer<Slider> imageThresholdSlider;
-	ScopedPointer<Label> imageThresholdSliderLabel;
-
     ScopedPointer<TextButton> setupButton;
 
     ScopedPointer<Slider> searchBoxSlider;
@@ -113,32 +113,12 @@ private:
     ScopedPointer<TextEditor> ROIspikeValue;
 	ScopedPointer<Label> mpersLabel;
     
-    ScopedPointer<Slider> conductionDistanceSlider;
-	ScopedPointer<Label> conductionDistanceSliderLabel;
-    
-    ScopedPointer<TextEditor> detectionThresholdText;
-	ScopedPointer<Label> detectionThresholdTextLabel;
-    
-    ScopedPointer<TextEditor> lowImageThresholdText;
-	ScopedPointer<Label> lowImageThresholdTextLabel;
-
-    ScopedPointer<TextEditor> highImageThresholdText;
-	ScopedPointer<Label> highImageThresholdTextLabel;
-    
-    ScopedPointer<Slider> subsamplesPerWindowSlider;
-	ScopedPointer<Label> subsamplesPerWindowSliderLabel;
-    
-    ScopedPointer<Slider> startingSampleSlider;
-	ScopedPointer<Label> startingSampleSliderLabel;
-    
     ScopedPointer<Slider> searchBoxWidthSlider;
 	ScopedPointer<Label> searchBoxWidthSliderLabel;
     
     ScopedPointer<ComboBox> colorStyleComboBox;
 	ScopedPointer<Label> colorStyleComboBoxLabel;
     
-    ScopedPointer<GroupComponent> colorControlGroup;
-	 
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
     ScopedPointer<Label> extendedColorScaleToggleButtonLabel;
 	
