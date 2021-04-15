@@ -35,6 +35,7 @@ public:
     int getNumRows() override;
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
+    void updateTable(Graphics& g);
 
 private:
     LfpLatencySpectrogram spectrogram; // Will contain the spectrogram image.
@@ -172,7 +173,6 @@ private:
 
     //ScopedPointer<ComboBox> trackSpikeComboBox;
     ScopedPointer<TableListBox> spikeTracker;
-    ScopedPointer<TableListBoxModel> spikeTrackerContent;
     ScopedPointer<TextButton> spikeTestButton;
 
     ScopedPointer<ToggleButton> trackThreshold_button;

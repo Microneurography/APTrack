@@ -79,6 +79,8 @@ public:
     /**Test Multi Spike Tracking*/
     void spikeTest();
 
+    /**Add cells to multi tracking table*/
+
 
     /** Fill in rightmost edge of spectrogram with up to date data*/
     /*
@@ -110,8 +112,7 @@ private:
     int windowSampleCount;
     int spikeLocations[4];
     int randomSpikeLocations[4];
-
-
+    
     int draw_imageHeight;
     int draw_rightHandEdge;
 

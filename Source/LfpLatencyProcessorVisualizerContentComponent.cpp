@@ -316,12 +316,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 50);
-	//WHY WON'T THIS WORK??? WHAT EVEN IS A CUSTOM GRID MODEL IM GOING INSANE
-	//spikeTrackerContent->getNumRows();
-	//gModel = new CustomGridModel();
-	//spikeTrackerContent = new TableListBoxModel(spikeTracker, gModel); // something something virtual methods??
-	spikeTracker->setModel(spikeTrackerContent);
 	spikeTracker->autoSizeAllColumns();
+	spikeTracker->updateContent();
+
+	//NOTE TO SELF: Graphics class only usually used in paint function. Is that where the code should go??
 
 	addAndMakeVisible(spikeTestButton = new TextButton("spikeTest"));
 	spikeTestButton->setButtonText("TEST SPIKES");
@@ -378,8 +376,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     searchBoxWidthSlider->setValue(3);
     
     extendedColorScaleToggleButton->setToggleState(false,sendNotification);
-
-    setSize (700, 900);
+    
+	setSize (700, 900);
     
     spikeDetected = false;
 
@@ -404,6 +402,8 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	trackThreshold_button = nullptr;
 	trackSpike_button = nullptr;
+	spikeTestButton = nullptr;
+	spikeTracker = nullptr;
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -415,7 +415,7 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 //==============================================================================
 void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 {
-    g.fillAll (Colours::grey);
+	g.fillAll (Colours::grey);
     g.setOpacity (1.0f);
     g.drawImage(spectrogram.getImage(),
 		0,0,spectrogram.getImageWidth(),spectrogram.getImageHeight(),
@@ -435,10 +435,9 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	{
 		g.setColour(Colours::lightyellow);
 	}
-	spikeTrackerContent->getNumRows();
-	//THIS LINE CAUSES CRASH VVV
-	spikeTrackerContent->paintCell(g, 0, 0, 20, 20, true);
-    g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
+	//If I write any code in here to do with spike tracking it crashes so I need to do it elsewhere
+	updateTable(g);
+	g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 }
 
 // If you want to move something down, you have to increase the y value
@@ -835,38 +834,12 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 	}
 }
 
-int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
-{
-	return startingSample;
-}
-
-int LfpLatencyProcessorVisualizerContentComponent::getSubsamplesPerWindow() const
-{
-	return subsamplesPerWindow;
-}
-
-float LfpLatencyProcessorVisualizerContentComponent::getLowImageThreshold() const
-{
-	return lowImageThreshold;
-}
-
-float LfpLatencyProcessorVisualizerContentComponent::getHighImageThreshold() const
-{
-	return highImageThreshold;
-}
-
-float LfpLatencyProcessorVisualizerContentComponent::getDetectionThreshold() const
-{
-	return detectionThreshold;
-}
-
-int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelectedId() const
-{
-	return colorStyleComboBox->getSelectedId();
+void LfpLatencyProcessorVisualizerContentComponent::updateTable(Graphics& g) {
+	std::cout << spikeTracker->getModel()->getNumRows() << endl;
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getNumRows() {
-	return 0;
+	return 1;
 }
 
 void LfpLatencyProcessorVisualizerContentComponent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
@@ -895,4 +868,35 @@ void LfpLatencyProcessorVisualizerContentComponent::paintRowBackground(Graphics&
 	else {
 		g.fillAll(Colours::lightgrey);
 	}
+
+}
+
+int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
+{
+	return startingSample;
+}
+
+int LfpLatencyProcessorVisualizerContentComponent::getSubsamplesPerWindow() const
+{
+	return subsamplesPerWindow;
+}
+
+float LfpLatencyProcessorVisualizerContentComponent::getLowImageThreshold() const
+{
+	return lowImageThreshold;
+}
+
+float LfpLatencyProcessorVisualizerContentComponent::getHighImageThreshold() const
+{
+	return highImageThreshold;
+}
+
+float LfpLatencyProcessorVisualizerContentComponent::getDetectionThreshold() const
+{
+	return detectionThreshold;
+}
+
+int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelectedId() const
+{
+	return colorStyleComboBox->getSelectedId();
 }
