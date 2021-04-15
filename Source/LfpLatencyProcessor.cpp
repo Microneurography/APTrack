@@ -39,7 +39,7 @@ std::mutex savingAndLoadingLock;
 
 
 LfpLatencyProcessor::LfpLatencyProcessor()
-    : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0)
+    : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages()
 
 {
     setProcessorType(PROCESSOR_TYPE_SINK);
@@ -99,6 +99,18 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
     //std::cout << "Creating editor." << std::endl;
 
     return editor;
+}
+void LfpLatencyProcessor::addMessage(std::string message){
+    messages.push(message);
+}
+
+// create event channel for pulsepal
+void LfpLatencyProcessor::createEventChannels(){
+        EventChannel* chan = new EventChannel(EventChannel::TEXT, 1, 1000,0.0f, this,0);
+        chan->setName(getName() + " PulsePal Messages");
+        chan->setDescription("Messages from the pulsepal runner");
+        chan->setIdentifier("pulsepal.event");
+        eventChannelArray.add(chan);
 }
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
@@ -216,6 +228,11 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
                 currentSample++;
             }
         }
+    }
+    while(!messages.empty()){
+        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(0), CoreServices::getGlobalTimestamp(), messages.front());
+		addEvent(getEventChannel(0), event, 0);
+        messages.pop();
     }
 }
 

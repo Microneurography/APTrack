@@ -41,7 +41,7 @@ class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                  
 {
 public:
-    LfpLatencyProcessorVisualizerContentComponent();
+    LfpLatencyProcessorVisualizerContentComponent(LfpLatencyProcessor* processor);
     ~LfpLatencyProcessorVisualizerContentComponent();
 
     void paint(Graphics &g) override;

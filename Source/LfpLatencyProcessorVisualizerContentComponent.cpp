@@ -71,7 +71,7 @@ public:
 
 
 //==============================================================================
-LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
+LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent (LfpLatencyProcessor* processor)
 : searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
 {
 	isSaving = false;
@@ -179,7 +179,11 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
 
 	// Stimulus control - setup components
+	//
+	auto evtChannel =  processor->getEventChannel(0);
+
 	addAndMakeVisible(ppControllerComponent = new ppController());
+	ppControllerComponent->setProcessor(processor);
 
 	// Not added here because they appear in the setup box.
 	stimulusVoltageSlider = new Slider("stimulusVoltage");

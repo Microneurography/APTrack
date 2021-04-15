@@ -18,7 +18,7 @@ ppController::ppController()
 	protocolDuration = 0.0f;
 
 	stimulusVoltage = 0.0f;
-	pulsePalConnected = false;
+	pulsePalConnected = true;
 
 	while (AlertWindow::showOkCancelBox(juce::AlertWindow::AlertIconType::WarningIcon, "PulsePal not connected", "A PulsePal could not be found", "Search again", "Continue without PulsePal"))
 	{
@@ -115,6 +115,10 @@ ppController::ppController()
 
 	addAndMakeVisible(protocolStepComment_label = new Label("protocolStepComment_label"));
 	protocolStepComment_label->setText("Comment", dontSendNotification);
+}
+
+void ppController::setProcessor(LfpLatencyProcessor* processor){
+	this->processor = processor;
 }
 
 ppController::~ppController()
@@ -268,6 +272,12 @@ void ppController::timerCallback(int timerID)
 
 void ppController::buttonClicked(Button *buttonThatWasClicked)
 {
+	// if (this->eventChannel != nullptr){
+	// 	auto te = TextEvent::createTextEvent(this->eventChannel,CoreServices::getGlobalTimestamp(),"hello :)",0);
+	// 	this->processor->addEvent(this->eventChannel,te,0);
+		
+	// }
+	
 	if (buttonThatWasClicked == getFileButton)
 	{
 		//If loading new file
@@ -352,6 +362,8 @@ void ppController::loadFile(String file) //, std::vector<protocolDataElement> cs
 	// Start UI refresh timer
 	startTimer(0, 500);
 
+	this->processor->addMessage("starting stimulus protocol: " + fileToRead.getFileName().toStdString());
+
 	// Start Protocol Timer
 	startTimer(1, static_cast<int>(1000.0f * protocolData[protocolStepNumber].duration));
 
@@ -372,6 +384,9 @@ void ppController::loadFile(String file) //, std::vector<protocolDataElement> cs
 
 void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataStep)
 {
+	std::stringstream ss;
+	ss << "voltage:" << protocolDataStep.voltage << "; rate:" << protocolDataStep.rate << "; duration:" << protocolDataStep.duration;
+	this->processor->addMessage(ss.str());
 	if (protocolDataStep.rate == 0)
 	{
 		// if rate is 0 the treat as pause and abort pulse trains

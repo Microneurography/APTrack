@@ -44,6 +44,7 @@
 #include <functional>
 #include <map>
 #include <unordered_map>
+#include <queue>
 
 //fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
@@ -63,6 +64,7 @@
 //for debug
 #define SEARCH_BOX_WIDTH 3
 
+class ppController;
 /**
     This class serves as a template for creating new processors.
 
@@ -118,6 +120,7 @@ public:
     /** Load custom settings from XML*/
     virtual void loadCustomParametersFromXml() override;
 
+    virtual void createEventChannels() override;
     /** Optional method called every time the signal chain is refreshed or changed in any way.
 
         Allows the processor to handle variations in the channel configuration or any other parameter
@@ -180,6 +183,10 @@ public:
 	//Result makingFile;
 
 private:
+
+    void addMessage(std::string message);
+    friend class ppController;
+
 	//debug
 	float lastReceivedDACPulse;
 
@@ -209,6 +216,8 @@ private:
     int samplesAfterStimulusStart;
 
 	float stimulus_threshold;
+    
+    std::queue<String> messages;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessor);

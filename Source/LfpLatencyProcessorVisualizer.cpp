@@ -24,7 +24,8 @@
 #include "LfpLatencyProcessor.h"
 
 
-LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor_pointer)
+LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor_pointer):
+	content(processor_pointer)
 {
     //m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
     //content.setLookAndFeel (m_contentLookAndFeel);
@@ -52,6 +53,7 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
     
     // Store pointer to processor
     processor = processor_pointer;
+
     
 
     

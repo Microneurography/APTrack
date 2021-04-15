@@ -1,6 +1,8 @@
+#pragma once
 #include <EditorHeaders.h>
 #include <functional>
 #include "serial/PulsePal.h"
+#include "../LfpLatencyProcessor.h"
 
 
 struct protocolDataElement {
@@ -19,6 +21,8 @@ public:
 
 	ppController();
 
+
+
 	~ppController();
 
 	void buttonClicked(Button* buttonThatWasClicked) override;
@@ -30,7 +34,7 @@ public:
 	void resized() override;
 
 	void setStimulusVoltage(float newVoltage);
-
+	void setProcessor(LfpLatencyProcessor* processor);
 private:
 
 	int protocolStepNumber;
@@ -63,7 +67,7 @@ private:
 
 	ScopedPointer<UtilityButton> getFileButton;
 	ScopedPointer<TextEditor> fileName_text;
-
+	LfpLatencyProcessor * processor;
 	File lastFilePath;
 
 	void loadFile(String file);//, std::vector<protocolDataElement> data);
