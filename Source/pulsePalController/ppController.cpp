@@ -42,20 +42,28 @@ ppController::ppController()
 
 	// configure pulse pal
 	pulsePal.currentOutputParams[1].isBiphasic = 0;
-	pulsePal.currentOutputParams[1].phase1Voltage = 5.0f;
 	pulsePal.currentOutputParams[1].restingVoltage = 0.0f;
 	pulsePal.currentOutputParams[1].phase1Duration = 0.0005f;
 	pulsePal.currentOutputParams[1].pulseTrainDuration = 1000.0f;
 	pulsePal.currentOutputParams[1].interPulseInterval = 2.0f;
 	pulsePal.currentOutputParams[1].phase1Voltage = 0.0f;
+	pulsePal.currentOutputParams[1].phase2Voltage = 0.0f;
 
 	pulsePal.currentOutputParams[2].isBiphasic = 0;
-	pulsePal.currentOutputParams[2].phase1Voltage = 5.0f;
 	pulsePal.currentOutputParams[2].restingVoltage = 0.0f;
 	pulsePal.currentOutputParams[2].phase1Duration = 0.0005f;
 	pulsePal.currentOutputParams[2].pulseTrainDuration = 1000.0f;
 	pulsePal.currentOutputParams[2].interPulseInterval = 2.0f;
 	pulsePal.currentOutputParams[2].phase1Voltage = 0.0f;
+	pulsePal.currentOutputParams[2].phase2Voltage = 0.0f;
+
+	pulsePal.currentOutputParams[3].isBiphasic = 0;
+	pulsePal.currentOutputParams[3].restingVoltage = 0.0f;
+	pulsePal.currentOutputParams[3].phase1Duration = 0.0005f;
+	pulsePal.currentOutputParams[3].pulseTrainDuration = 1000.0f;
+	pulsePal.currentOutputParams[3].interPulseInterval = 2.0f;
+	pulsePal.currentOutputParams[3].phase1Voltage = 0.0f;
+	pulsePal.currentOutputParams[3].phase2Voltage = 0.0f;
 
 	pulsePal.syncAllParams();
 
@@ -172,6 +180,8 @@ void ppController::setStimulusVoltage(float newVoltage)
 	std::cout << "Updating stimulus voltage in pp \n";
 	pulsePal.currentOutputParams[2].phase1Voltage = 10.0f; 
 	std::cout << "updating max voltage in pp\n";
+	pulsePal.currentOutputParams[3].phase1Voltage = 10.0f; 
+
 	pulsePal.syncAllParams();
 	std::cout << "synced all params in pp\n";
 }
@@ -371,16 +381,27 @@ void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataSt
 	{
 		// if rate is nonzero then calculate pulse period and send to pulsepal
 		float pulsePeriod = (1.0f / protocolDataStep.rate);
+		// HACK: currently we are providing a TTL to open/close relay on output. 
+		// Set channel 3 high Xms, delay the others by the response  
 
+		float RELAY_TTL_delay_s = 0.05; // The delay in seconds between 
 		pulsePal.abortPulseTrains();
+		// Channel 1 - to the stimulator
 		pulsePal.currentOutputParams[1].pulseTrainDuration = protocolDataStep.duration; // in sec
-		pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod;				// in sec
+		pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod;
+		pulsePal.currentOutputParams[1].pulseTrainDelay = RELAY_TTL_delay_s;				// in sec
+		// Channel 2 - feedback to TTL on acquisition
 		pulsePal.currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
 		pulsePal.currentOutputParams[2].interPulseInterval = pulsePeriod;				// in sec
+		pulsePal.currentOutputParams[2].pulseTrainDelay = RELAY_TTL_delay_s;
+		// Channel 3 - open/close relay
+		pulsePal.currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration + (RELAY_TTL_delay_s*2); // duration of the TTL should start before the stimulus, and end after the stimulus
+		pulsePal.currentOutputParams[3].interPulseInterval = pulsePeriod - (RELAY_TTL_delay_s*2); // TODO: This might crash if pulsePeriod becomes negative.
+		pulsePal.currentOutputParams[2].pulseTrainDelay = 0;
 
 		pulsePal.syncAllParams();
 
-		pulsePal.triggerChannels(1, 1, 0, 0);
+		pulsePal.triggerChannels(1, 1, 1, 0);
 	}
 }
 
