@@ -8,11 +8,24 @@
 
 #include "LfpLatencySpectrogram.h"
 
+class TableContent : public TableListBoxModel
+{
+public:
+   
+    TableContent();
+    ~TableContent();
+    
+    virtual int getNumRows();
+    virtual void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
+    virtual void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
+
+
+};
+
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
-                                                      public ButtonListener,
-                                                      public TableListBoxModel
-                                                      
+                                                      public ButtonListener
+                                                 
 {
 public:
     LfpLatencyProcessorVisualizerContentComponent();
@@ -32,16 +45,13 @@ public:
     float getDetectionThreshold() const;
     int getColorStyleComboBoxSelectedId() const;
 
-    int getNumRows() override;
-    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
-    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
-    void updateTable(Graphics& g);
-
 private:
     LfpLatencySpectrogram spectrogram; // Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
+
+    ScopedPointer<TableContent> spikeTrackerContent;
 
     //Image thresholds
     float lowImageThreshold;

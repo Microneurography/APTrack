@@ -68,6 +68,7 @@ public:
 	}
 };
 
+
 //==============================================================================
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
 : spectrogram(SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
@@ -312,7 +313,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//trackSpikeComboBox->addItem("Spike 4", 4);
 
 	/* code from old version of table*/
-	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes"));
+	spikeTrackerContent = new TableContent();
+	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes", spikeTrackerContent));
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 50);
@@ -436,7 +438,6 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 		g.setColour(Colours::lightyellow);
 	}
 	//If I write any code in here to do with spike tracking it crashes so I need to do it elsewhere
-	updateTable(g);
 	g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 }
 
@@ -834,15 +835,19 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 	}
 }
 
-void LfpLatencyProcessorVisualizerContentComponent::updateTable(Graphics& g) {
-	std::cout << spikeTracker->getModel()->getNumRows() << endl;
-}
 
-int LfpLatencyProcessorVisualizerContentComponent::getNumRows() {
+int TableContent::getNumRows() {
 	return 1;
 }
 
-void LfpLatencyProcessorVisualizerContentComponent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
+TableContent::TableContent() {
+
+}
+TableContent::~TableContent() {
+
+}
+
+void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
 
 	g.setColour(Colours::lightgrey);  // [5]
 	Font font = 12.0f;
@@ -860,7 +865,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paintCell(Graphics& g, int r
 
 }
 
-void LfpLatencyProcessorVisualizerContentComponent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
+void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
 
 	if (rowIsSelected) {
 		g.fillAll(Colours::yellow);
