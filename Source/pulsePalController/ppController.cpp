@@ -397,7 +397,7 @@ void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataSt
 		// Channel 3 - open/close relay
 		pulsePal.currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration + (RELAY_TTL_delay_s*2); // duration of the TTL should start before the stimulus, and end after the stimulus
 		pulsePal.currentOutputParams[3].interPulseInterval = pulsePeriod - (RELAY_TTL_delay_s*2); // TODO: This might crash if pulsePeriod becomes negative.
-		pulsePal.currentOutputParams[2].pulseTrainDelay = 0;
+		pulsePal.currentOutputParams[3].pulseTrainDelay = 0;
 
 		pulsePal.syncAllParams();
 
