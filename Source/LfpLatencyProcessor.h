@@ -170,6 +170,8 @@ public:
 	float getParameterFloat(int parameterID);
 	//Result makingFile;
 
+	std::map<String, String> customParameters;
+
 private:
 	int i;
 	bool foundPlugin;

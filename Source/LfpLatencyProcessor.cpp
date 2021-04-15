@@ -369,10 +369,13 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
 	{
 		return;
 	}
+	wrongPlugin = false;
 	workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
 	workingDirectory += "\\recoveryConfig.xml";
 	recoveryConfigFile = File(workingDirectory);
 	std::cout << "Loaded recoveryConfig.XML" << std::endl;
+	// doing the same iteration sequence as before, but this time with no checks because if it doesn't exist at this point just leave it and fall out
+	// it doesn't make sense to create new things when you're trying to load them in.
 	if (recoveryConfigFile.exists())
 	{
 		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
@@ -398,15 +401,14 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
 									{
 										name = customParams->getAttributeName(j);
 										value = customParams->getAttributeValue(j);
-										map<String, String> customParameters;
-										customParameters.insert(pair<String, String>(name, value));  // save in the map
+										customParameters.insert(name, value);  // save in the map
 										j++;
 									}
 								}
 							}
 							else
 							{
-								wrongPlugin = true;
+								wrongPlugin = true; // this bool stays because if it can't find it then I want it to stop looking
 							}
 						}
 						i++;
