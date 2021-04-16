@@ -9,16 +9,16 @@
 #include "LfpLatencySpectrogram.h"
 
 class TableContent : public TableListBoxModel
+                     
 {
 public:
    
     TableContent();
     ~TableContent();
     
-    virtual int getNumRows();
-    virtual void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
-    virtual void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
-
+    int getNumRows();
+    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
+    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
 
 };
 

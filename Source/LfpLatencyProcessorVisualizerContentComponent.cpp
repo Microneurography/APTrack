@@ -317,7 +317,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes", spikeTrackerContent));
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
-	spikeTracker->getHeader().addColumn("Location", 2, 50);
+	spikeTracker->getHeader().addColumn("Location", 2, 100);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
@@ -438,6 +438,12 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 		g.setColour(Colours::lightyellow);
 	}
 	//If I write any code in here to do with spike tracking it crashes so I need to do it elsewhere
+	spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
+	spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
+	spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
+	spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+	spikeTracker->autoSizeAllColumns();
+	spikeTracker->updateContent();
 	g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 }
 
@@ -837,30 +843,37 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 
 
 int TableContent::getNumRows() {
-	return 1;
+	return 4;
 }
 
 TableContent::TableContent() {
 
 }
+
 TableContent::~TableContent() {
 
 }
 
 void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
 
-	g.setColour(Colours::lightgrey);  // [5]
+	g.setColour(Colours::black);  // [5]
 	Font font = 12.0f;
 	g.setFont(font);
 
 	if (columnId == 1)
 	{
-		auto text = "1";
+		auto text = to_string(rowNumber + 1);
 
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
 	}
+	if (columnId == 2) {
 
-	g.setColour(Colours::lightblue);
+		auto text = "Location would go here";
+
+		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+	}
+
+	g.setColour(Colours::transparentWhite);
 	g.fillRect(width - 1, 0, 1, height);
 
 }
@@ -868,7 +881,7 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
 
 	if (rowIsSelected) {
-		g.fillAll(Colours::yellow);
+		g.fillAll(Colours::darkgrey);
 	}
 	else {
 		g.fillAll(Colours::lightgrey);
