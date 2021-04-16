@@ -39,7 +39,7 @@
 
 #include <Windows.h>
 #endif
-
+#include <string>
 #include <ProcessorHeaders.h>
 #include <functional>
 #include <map>

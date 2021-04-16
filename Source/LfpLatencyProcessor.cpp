@@ -22,6 +22,7 @@
 */
 
 #include <stdio.h>
+#include <string>
 
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorEditor.h"
@@ -401,7 +402,7 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
 									{
 										name = customParams->getAttributeName(j);
 										value = customParams->getAttributeValue(j);
-										customParameters.insert(name, value);  // save in the map
+										customParameters.insert(std::make_pair(name, value));  // save in the map
 										j++;
 									}
 								}
