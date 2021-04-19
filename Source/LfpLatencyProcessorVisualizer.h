@@ -124,7 +124,7 @@ private:
     // This component contains all components and graphics that were added using Projucer.
     // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
-    //
+    TableContent tc;
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
     // ========================================================================

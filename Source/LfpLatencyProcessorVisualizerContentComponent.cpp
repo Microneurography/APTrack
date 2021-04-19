@@ -867,9 +867,9 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
 	}
 	if (columnId == 2) {
-
-		auto text = "Location would go here";
-
+	
+		auto text = to_string(spikeLocations[rowNumber]);
+		
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
 	}
 
@@ -887,6 +887,11 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 		g.fillAll(Colours::lightgrey);
 	}
 
+}
+
+void TableContent::setSpikeLocations(int i, int location) {
+
+	spikeLocations[i] = location;
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const

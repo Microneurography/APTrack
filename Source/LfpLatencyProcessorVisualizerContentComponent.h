@@ -19,6 +19,12 @@ public:
     int getNumRows();
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
+    void setSpikeLocations(int i, int location);
+
+private:
+
+    int spikeLocations[4];
+    int randomSpikeLocations[4];
 
 };
 

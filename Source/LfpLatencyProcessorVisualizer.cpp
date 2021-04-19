@@ -225,6 +225,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		{
 			content.spikeDetected = true;
 			spikeLocations[i] = SpikeLocationRel;
+			tc.setSpikeLocations(i, SpikeLocationRel);
 			//content.trackSpikeComboBox->setSelectedId(i + 1);
 			//i = i + 1;
 			std::cout << "Spike Found " << SpikeLocationRel << spikeLocations[i - 1] << std::endl;
