@@ -439,9 +439,12 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	}
 	//If I write any code in here to do with spike tracking it crashes so I need to do it elsewhere
 	spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
 	spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+	while (spikeDetected) {
+		spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
+		spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+	}
+	
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 	g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
@@ -867,10 +870,14 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
 	}
 	if (columnId == 2) {
-	
-		auto text = to_string(spikeLocations[rowNumber]);
-		
-		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+		if (spikeFound) {
+			auto text = to_string(tableSpikeLocations[rowNumber]);
+			g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+		}
+		else {
+			auto text = "NULL";
+			g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+		}
 	}
 
 	g.setColour(Colours::transparentWhite);
@@ -889,10 +896,6 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 
 }
 
-void TableContent::setSpikeLocations(int i, int location) {
-
-	spikeLocations[i] = location;
-}
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
 {
