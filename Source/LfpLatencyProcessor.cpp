@@ -222,21 +222,16 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
 	name = parentElement->getAttributeName(0);
 	value = parentElement->getAttributeValue(0);
-	std::cout << "Trying to save " << name << std::endl;
-	foundPlugin = false;
-	wrongPlugin = false;
-	foundSettings = false;
-	foundSignalchain = false;
-	foundProcessor = false;
+	elementName = parentElement->getTagName();
+	std::cout << "Trying to save " << name << std::endl; 
 	foundCustomParams = false;
 	docExisted = false;
 	fileOK = false;
 	writtenOK = false;
 	workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-	workingDirectory += "\\recoveryConfig.xml";
+	workingDirectory += "\\LastLfpLatencyPluginComponents.xml";
 	recoveryConfigFile = File(workingDirectory);
-	//recoveryConfigFile = workingDirectory.append("\\recoveryConfig.xml", ); // not passing it the right thing
-	std::cout << "Loaded recoveryConfig.XML" << std::endl;
+	std::cout << "Loaded XML" << std::endl;
 	if (recoveryConfigFile.exists())
 	{
 		docExisted = true;
@@ -244,46 +239,21 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 		std::cout << "Parsed file" << std::endl;
 		if (recoveryConfig != NULL) // if there was no error with parsing
 		{
-			forEachXmlChildElementWithTagName(*recoveryConfig, signalchain, "SIGNALCHAIN")
+			forEachXmlChildElementWithTagName(*recoveryConfig, customParams, elementName)
 			{
-				foundSignalchain = true;
-				forEachXmlChildElementWithTagName(*signalchain, processor, "PROCESSOR")
-				{
-					foundProcessor = true;
-					// the indexing of attributes is super weird and not constant, even if they appear to be in the same index in the xml
-					i = 0;
-					while (i < processor->getNumAttributes() && !foundPlugin && !wrongPlugin) // find the correct attribute
-					{
-						if (processor->getAttributeName(i) == "libraryName")
-						{
-							if (processor->getAttributeValue(i) == "LfpLatency plugin library")
-							{
-								foundPlugin = true;
-								forEachXmlChildElementWithTagName(*processor, customParams, "PARAMETERS")
-								{
-									foundCustomParams = true;
-									customParams->setAttribute(name, value); // add or replce the element
-								}
-								if (foundCustomParams == false)
-								{
-									customParams = new XmlElement("PARAMETERS");
-									customParams->setAttribute(name, value); // I tried writing this line just once, but it caused a crash because of customParams not being defined
-								}
-							}
-							else
-							{
-								wrongPlugin = true;
-							}
-						}
-						i++;
-					}
-				} // It will find all of them and run the code for each of them
+				foundCustomParams = true;
+				customParams->setAttribute(name, value);
+			}
+			if (foundCustomParams == false)
+			{
+				customParams = new XmlElement(elementName);
+				customParams->setAttribute(name, value); // I tried writing this line just once, but it caused a crash because of customParams not being defined
 			}
 		}
 		else // there was an error with parsing it, it's probably a blank file.
 		{
 			std::cout << "FAILURE: The file was unable to be openend due to an unknown error" << std::endl;
-			std::cout << "All previous data written to recoveryConfig.XML has been lost." << std::endl;
+			std::cout << "All previous data written to LastLfpLatencyPluginComponents.XML has been lost." << std::endl;
 			std::cout << "Lfp Latency Plugin will now delete the old file, and create a new one." << std::endl;
 			docExisted = false;
 			recoveryConfigFile.deleteFile();
@@ -293,15 +263,18 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 
 	if (!docExisted) // the file doesn't exist, so we have to make it and its main element
 	{
-		std::cout << "Unable to find recoveryConfig.XML" << std::endl;
+		std::cout << "Unable to find LastLfpLatencyPluginComponents.XML" << std::endl;
 		//recoveryConfigFile->createDocument("1.0", false, true, "utf-8", 60); // this doesn't work properly
-		std::cout << "Making recoveryConfig.XML" << std::endl;
+		std::cout << "Making the XML" << std::endl;
 		Result res = Result(recoveryConfigFile.create());
 		if (Result::ok())
 		{
 			std::cout << "File Created OK" << std::endl;
 			fileOK = true;
-			recoveryConfig = new XmlElement("SETTINGS"); 
+			recoveryConfig = new XmlElement("LastLfpLatencyPluginComponents"); 
+			customParams = new XmlElement(elementName);
+			customParams->setAttribute(name, value);
+			recoveryConfig->addChildElement(customParams);
 		}
 		else // The docuent didn't exist and we were unable to make it. Simply report to user and continue.
 		{ 
@@ -311,31 +284,14 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 		}
 	}
 
-	// if thisPlugin wasn't found but we managed to make the file or it existed, we need to make it.
-	if (foundPlugin == false && (fileOK || docExisted)) // need to do the or first otherwise logic doesn't work
-	{ 
-		if (foundSignalchain == false) {
-			signalchain = new XmlElement("SIGNALCHAIN");
-			recoveryConfig->addChildElement(signalchain);
-		}
-		// if we found a processor, but it wasn't *the* processor we wanted, we'll be here.
-		processor = new XmlElement("PROCESSOR");
-		signalchain->addChildElement(processor);
-		// Badly hardcoded stuff, but hopefully it should never have to do this, or these things will get overwritten
-		processor->setAttribute("name", "Sinks/LfpLatency");
-		processor->setAttribute("insertionPoint", 1);
-		processor->setAttribute("pluginName", "LfpLatency");
-		processor->setAttribute("pluginType", 1);
-		processor->setAttribute("pluginIndex", 3);
-		processor->setAttribute("libraryName", "LfpLatency plugin library");
-		processor->setAttribute("libraryVersion", 1);
-		processor->setAttribute("isSource", 0);
-		processor->setAttribute("isSink", 1);
-		processor->setAttribute("NodeId", 100);
-		customParams = new XmlElement("PARAMETERS");
-		processor->addChildElement(customParams);
-		customParams->setAttribute(name, value);
-	}
+	//// if thisPlugin wasn't found but we managed to make the file or it existed, we need to make it.
+	//if (foundPlugin == false && (fileOK || docExisted)) // need to do the or first otherwise logic doesn't work
+	//{ 
+	//	// if we found a processor, but it wasn't *the* processor we wanted, we'll be here.
+	//	customParams = new XmlElement(elementName);
+	//	processor->addChildElement(customParams);
+	//	customParams->setAttribute(name, value);
+	//}
 
 	// if the file now exists, so we can save it
 	if (fileOK || docExisted) { 
@@ -361,6 +317,7 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 	workingDirectory.~String();
 	value.~String();
 	name.~String();
+	elementName.~String();
 }
 
 void LfpLatencyProcessor::loadCustomParametersFromXml()
@@ -370,62 +327,40 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
 	{
 		return;
 	}
-	wrongPlugin = false;
 	workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-	workingDirectory += "\\recoveryConfig.xml";
+	workingDirectory += "\\LastLfpLatencyPluginComponents.xml";
 	recoveryConfigFile = File(workingDirectory);
 	std::cout << "Loaded recoveryConfig.XML" << std::endl;
 	// doing the same iteration sequence as before, but this time with no checks because if it doesn't exist at this point just leave it and fall out
 	// it doesn't make sense to create new things when you're trying to load them in.
+	std::cout << "Loaded XML" << std::endl;
 	if (recoveryConfigFile.exists())
 	{
 		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
 		std::cout << "Parsed file" << std::endl;
 		if (recoveryConfig != NULL) // if there was no error with parsing
 		{
-			forEachXmlChildElementWithTagName(*recoveryConfig, signalchain, "SIGNALCHAIN")
+			forEachXmlChildElement(*recoveryConfig, customParams) // for every child
 			{
-				forEachXmlChildElementWithTagName(*signalchain, processor, "PROCESSOR")
+				j = 0;
+				while (j < customParams->getNumAttributes())  // for all the attributes
 				{
-					// the indexing of attributes is super weird and not constant, even if they appear to be in the same index in the xml
-					i = 0;
-					while (i < processor->getNumAttributes() && !wrongPlugin) // find the correct attribute
-					{
-						if (processor->getAttributeName(i) == "libraryName")
-						{
-							if (processor->getAttributeValue(i) == "LfpLatency plugin library")
-							{
-								forEachXmlChildElementWithTagName(*processor, customParams, "PARAMETERS")
-								{
-									j = 0;
-									while (j < customParams->getNumAttributes())  // for all the attributes
-									{
-										name = customParams->getAttributeName(j);
-										value = customParams->getAttributeValue(j);
-										customParameters.insert(std::make_pair(name, value));  // save in the map
-										j++;
-									}
-								}
-							}
-							else
-							{
-								wrongPlugin = true; // this bool stays because if it can't find it then I want it to stop looking
-							}
-						}
-						i++;
-					}
-				} // It will find all of them and run the code for each of them
+					name = customParams->getAttributeName(j);
+					value = customParams->getAttributeValue(j);
+					customParameters.insert(std::make_pair(name, value));  // save in the map
+					j++;
+				}
 			}
 		}
-		else // there was an error with parsing it, it's probably a blank file.
-		{
-			std::cout << "FAILURE: The file was unable to be openend due to an unknown error" << std::endl;
-			std::cout << "All previous data written to recoveryConfig.XML has been lost." << std::endl;
-			std::cout << "Lfp Latency Plugin is unable to load previous settings." << std::endl;
-		}
 	}
-    // Open Ephys Plugin Generator will insert generated code to load parameters here. Don't edit this section.
-    //[OPENEPHYS_PARAMETERS_LOAD_SECTION_BEGIN]
+	else // there was an error with parsing it, it's probably a blank file.
+	{
+		std::cout << "FAILURE: The file was unable to be openend due to an unknown error" << std::endl;
+		std::cout << "All previous data written to LastLfpLatencyPluginComponents.XML has been lost." << std::endl;
+		std::cout << "Lfp Latency Plugin is unable to load previous settings." << std::endl;
+	}
+	// Open Ephys Plugin Generator will insert generated code to load parameters here. Don't edit this section.
+	//[OPENEPHYS_PARAMETERS_LOAD_SECTION_BEGIN]
    //forEachXmlChildElement(*parametersAsXml, mainNode)
    // {
    //     if (mainNode->hasTagName("LfpLatencyProcessor"))

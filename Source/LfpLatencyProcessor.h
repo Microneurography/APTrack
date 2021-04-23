@@ -174,11 +174,6 @@ public:
 
 private:
 	int i;
-	bool foundPlugin;
-	bool wrongPlugin;
-	bool foundSettings;
-	bool foundSignalchain;
-	bool foundProcessor;
 	bool foundCustomParams;
 	bool docExisted;
 	bool fileOK;
@@ -187,6 +182,7 @@ private:
 	String workingDirectory;
 	String value;
 	String name;
+	String elementName;
 	XmlElement *recoveryConfig;
 	XmlElement *signalchain;
 	XmlElement *processor;
