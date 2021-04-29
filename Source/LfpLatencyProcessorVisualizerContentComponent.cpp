@@ -746,9 +746,10 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
 	printf("running save custom params to XML\n");
-	process->saveCustomParametersToXml(XmlValue);
+	process->saveRecoveryData(XmlValue);
 	printf("tidying up\n");
-	delete process;
+	delete process; // THIS IS IT!!!!!!!! THIS IS WHERE MY PROBLEMS ARE COMING FROM!! This is leaking memory
+	// Always, always use ScopedPointers, OwnedArrays, ReferenceCountedObjects, etc, and avoid the 'delete' operator at all costs!
 	XmlValue->~XmlElement(); // deleting the xml value so no leaking of memory
 	printf("all done\n");
 

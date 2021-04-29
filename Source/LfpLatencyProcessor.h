@@ -103,6 +103,12 @@ public:
         are modified only through this method while data acquisition is active. */
     void setParameter (int parameterIndex, float newValue) override;
 
+	/** This method is a critical section protected with a semaphore. Allows you to save slider values, and maybe
+	some data if you wanted. */
+	virtual void saveRecoveryData(XmlElement* parentElement);
+
+	virtual void loadRecoveryData();
+
     /** Saving custom settings to XML. */
     virtual void saveCustomParametersToXml (XmlElement* parentElement) override;
 

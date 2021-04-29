@@ -29,6 +29,7 @@
 #include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\files\\juce_File.h"
 #include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
 #include <map>
+#include "semaphore.hpp"
 
 //If the processor uses a custom editor, it needs its header to instantiate it
 //#include "ExampleEditor.h"
@@ -218,12 +219,14 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     }
 }
 
-void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
+
+void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 {
+	// If a second thread comes in, it will corrupt the file
 	name = parentElement->getAttributeName(0);
 	value = parentElement->getAttributeValue(0);
 	elementName = parentElement->getTagName();
-	std::cout << "Trying to save " << name << std::endl; 
+	std::cout << "Trying to save " << name << std::endl;
 	foundCustomParams = false;
 	docExisted = false;
 	fileOK = false;
@@ -235,7 +238,7 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 	if (recoveryConfigFile.exists())
 	{
 		docExisted = true;
-		recoveryConfig = XmlDocument::parse(recoveryConfigFile); 
+		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
 		std::cout << "Parsed file" << std::endl;
 		if (recoveryConfig != NULL) // if there was no error with parsing
 		{
@@ -271,13 +274,13 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 		{
 			std::cout << "File Created OK" << std::endl;
 			fileOK = true;
-			recoveryConfig = new XmlElement("LastLfpLatencyPluginComponents"); 
+			recoveryConfig = new XmlElement("LastLfpLatencyPluginComponents");
 			customParams = new XmlElement(elementName);
 			customParams->setAttribute(name, value);
 			recoveryConfig->addChildElement(customParams);
 		}
 		else // The docuent didn't exist and we were unable to make it. Simply report to user and continue.
-		{ 
+		{
 			std::cout << "WARNING: The file was unable to be saved due to error " << res.getErrorMessage() << std::endl;
 			std::cout << "The plugin will keep attempting to make the file every time you change a configuration." << std::endl;
 			std::cout << "Please be aware that this error message means that " << name << " at " << value << " WAS NOT saved, and will not be saved." << std::endl;
@@ -294,14 +297,14 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 	//}
 
 	// if the file now exists, so we can save it
-	if (fileOK || docExisted) { 
+	if (fileOK || docExisted) {
 		writtenOK = recoveryConfig->writeToFile(recoveryConfigFile, "", "UTF-8", 60);
 		if (writtenOK == false) // The document was unable to save
 		{
 			std::cout << "WARNING: The file was unable to be saved due to an error with writing to the xml file" << std::endl;
 			std::cout << "Please be aware that this error message means that " << name << " at " << value << " WAS NOT saved, and will not be saved." << std::endl;
 		}
-		else 
+		else
 		{
 			std::cout << name << " saved successfully." << std::endl;
 		}
@@ -320,6 +323,45 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 	elementName.~String();
 }
 
+void LfpLatencyProcessor::loadRecoveryData()
+{
+	// doing the same iteration sequence as before, but this time with no checks because if it doesn't exist at this point just leave it and fall out
+	// it doesn't make sense to create new things when you're trying to load them in
+	forEachXmlChildElement(*parametersAsXml, customParams) // for every child
+	{
+		j = 0;
+		while (j < customParams->getNumAttributes())  // for all the attributes
+		{
+			name = customParams->getAttributeName(j);
+			value = customParams->getAttributeValue(j);
+			customParameters.insert(std::make_pair(name, value));  // save in the map
+			j++;
+		}
+	}
+}
+
+void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
+{
+	XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
+    mainNode->setAttribute("numParameters", getNumParameters());
+
+    for (int i = 0; i < getNumParameters(); ++i)
+    {
+        XmlElement *parameterNode = mainNode->createNewChildElement("Parameter");
+
+        auto parameter = getParameterObject(i);
+        parameterNode->setAttribute("name", parameter->getName());
+        parameterNode->setAttribute("type", parameter->getParameterTypeString());
+
+        auto parameterValue = getParameterVar(i, currentChannel);
+
+        if (parameter->isBoolean())
+            parameterNode->setAttribute("value", (int)parameterValue);
+        else if (parameter->isContinuous() || parameter->isDiscrete() || parameter->isNumerical())
+            parameterNode->setAttribute("value", (double)parameterValue);
+    }
+}
+
 void LfpLatencyProcessor::loadCustomParametersFromXml()
 {
 	printf("Trying to load\n");
@@ -327,63 +369,30 @@ void LfpLatencyProcessor::loadCustomParametersFromXml()
 	{
 		return;
 	}
-	workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-	workingDirectory += "\\LastLfpLatencyPluginComponents.xml";
-	recoveryConfigFile = File(workingDirectory);
-	std::cout << "Loaded recoveryConfig.XML" << std::endl;
-	// doing the same iteration sequence as before, but this time with no checks because if it doesn't exist at this point just leave it and fall out
-	// it doesn't make sense to create new things when you're trying to load them in.
-	std::cout << "Loaded XML" << std::endl;
-	if (recoveryConfigFile.exists())
+	
+	forEachXmlChildElement(*parametersAsXml, mainNode)
 	{
-		recoveryConfig = XmlDocument::parse(recoveryConfigFile);
-		std::cout << "Parsed file" << std::endl;
-		if (recoveryConfig != NULL) // if there was no error with parsing
+		if (mainNode->hasTagName("LfpLatencyProcessor"))
 		{
-			forEachXmlChildElement(*recoveryConfig, customParams) // for every child
+			int parameterIdx = -1;
+
+			forEachXmlChildElement(*mainNode, parameterNode)
 			{
-				j = 0;
-				while (j < customParams->getNumAttributes())  // for all the attributes
+				if (parameterNode->hasTagName("Parameter"))
 				{
-					name = customParams->getAttributeName(j);
-					value = customParams->getAttributeValue(j);
-					customParameters.insert(std::make_pair(name, value));  // save in the map
-					j++;
+					++parameterIdx;
+
+					String parameterType = parameterNode->getStringAttribute("type");
+					if (parameterType == "Boolean")
+						setParameter(parameterIdx, parameterNode->getBoolAttribute("value"));
+					else if (parameterType == "Continuous" || parameterType == "Numerical")
+						setParameter(parameterIdx, parameterNode->getDoubleAttribute("value"));
+					else if (parameterType == "Discrete")
+						setParameter(parameterIdx, parameterNode->getIntAttribute("value"));
 				}
 			}
 		}
 	}
-	else // there was an error with parsing it, it's probably a blank file.
-	{
-		std::cout << "FAILURE: The file was unable to be openend due to an unknown error" << std::endl;
-		std::cout << "All previous data written to LastLfpLatencyPluginComponents.XML has been lost." << std::endl;
-		std::cout << "Lfp Latency Plugin is unable to load previous settings." << std::endl;
-	}
-	// Open Ephys Plugin Generator will insert generated code to load parameters here. Don't edit this section.
-	//[OPENEPHYS_PARAMETERS_LOAD_SECTION_BEGIN]
-   //forEachXmlChildElement(*parametersAsXml, mainNode)
-   // {
-   //     if (mainNode->hasTagName("LfpLatencyProcessor"))
-   //     {
-   //         int parameterIdx = -1;
-			//// use parametersAsXml to restore state
-   //         forEachXmlChildElement(*mainNode, parameterNode)
-   //         {
-   //             if (parameterNode->hasTagName("Components"))
-   //             {
-   //                 ++parameterIdx;
-   //                String parameterType = parameterNode->getStringAttribute("type");
-   //                 if (parameterType == "Boolean")
-   //                     setParameter(parameterIdx, parameterNode->getBoolAttribute("value"));
-   //                 else if (parameterType == "Continuous" || parameterType == "Numerical")
-   //                     setParameter(parameterIdx, parameterNode->getDoubleAttribute("value"));
-   //                 else if (parameterType == "Discrete")
-   //                     setParameter(parameterIdx, parameterNode->getIntAttribute("value"));
-   //             }
-   //         }
-   //     }
-   // }
-   // //[OPENEPHYS_PARAMETERS_LOAD_SECTION_END]
 }
 
 bool LfpLatencyProcessor::checkEventReceived()
