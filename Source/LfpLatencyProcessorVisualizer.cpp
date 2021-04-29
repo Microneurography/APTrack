@@ -194,22 +194,21 @@ void LfpLatencyProcessorVisualizer::updateSpectrogram()
 void LfpLatencyProcessorVisualizer::processTrack()
 {
 
-	int i = 0;
 	// Get latency track data of previous row
 	float* lastRowData = processor->getdataCacheRow(1);
 
 	// HACK Get searchbox location in absolute units
 
-	int serachBoxLocationAbs = content.startingSample + content.searchBoxLocation* content.subsamplesPerWindow;
+	int searchBoxLocationAbs = content.startingSample + content.searchBoxLocation* content.subsamplesPerWindow;
 	int searchBoxWidthAbs = content.searchBoxWidth * content.subsamplesPerWindow;
 
 	// get spike magnitude
-	float maxLevel = FloatVectorOperations::findMaximum(lastRowData + (serachBoxLocationAbs - searchBoxWidthAbs),
+	float maxLevel = FloatVectorOperations::findMaximum(lastRowData + (searchBoxLocationAbs - searchBoxWidthAbs),
 		searchBoxWidthAbs * 2 + content.subsamplesPerWindow);
 
 	// get spike location
-	int SpikeLocationAbs = std::max_element(lastRowData + (serachBoxLocationAbs - searchBoxWidthAbs),
-		lastRowData + (serachBoxLocationAbs + searchBoxWidthAbs)) - lastRowData; // Note we substract lastRowData so that index starts at zero
+	int SpikeLocationAbs = std::max_element(lastRowData + (searchBoxLocationAbs - searchBoxWidthAbs),
+		lastRowData + (searchBoxLocationAbs + searchBoxWidthAbs)) - lastRowData; // Note we substract lastRowData so that index starts at zero
 
 	int SpikeLocationRel= (SpikeLocationAbs - content.startingSample) / content.subsamplesPerWindow;
 
@@ -218,14 +217,45 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	content.ROISpikeLatency->setText(String(SpikeLocationAbs/30.0f,1)+" ms"); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
 
 	// If we have enabled spike tracking the track spike
-	if (content.trackSpike_button->getToggleState() == true) {
+	if (content.trackSpike_button->getToggleState() == true && i < 4) {
 
 		// Check for spike inside ROI box
-		if (maxLevel > content.detectionThreshold && i < 4)
+		if (maxLevel > content.detectionThreshold)
 		{
 			content.spikeDetected = true;
-			tc.spikeFound = true;
-			tc.tableSpikeLocations[i] = SpikeLocationRel;
+			
+			if (i != 0) {
+				if (spikeLocations[i - 1].searchBoxLocation == content.searchBoxLocation) {
+					content.newSpikeDetected = false;
+				}
+				else {
+					spikeLocations[i].startingSample = content.startingSample;
+					spikeLocations[i].searchBoxLocation = content.searchBoxLocation;
+					spikeLocations[i].subsamples = content.subsamplesPerWindow;
+					spikeLocations[i].searchBoxWidth = content.searchBoxWidth;
+					spikeLocations[i].lastRowData = lastRowData;
+				}
+			}
+			else {
+				spikeLocations[i].startingSample = content.startingSample;
+				spikeLocations[i].searchBoxLocation = content.searchBoxLocation;
+				spikeLocations[i].subsamples = content.subsamplesPerWindow;
+				spikeLocations[i].searchBoxWidth = content.searchBoxWidth;
+				spikeLocations[i].lastRowData = lastRowData;
+			}
+
+			i++;
+
+			// This is a new struct that I'm gonna fill with all the info about the spike, so essentially I can recreate the spike tracking muddle elsewhere
+			
+			
+			//CODE FOR LATER
+			//spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
+			//spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
+			//spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
+			//spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
+			//spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+		
 
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation
@@ -268,7 +298,7 @@ void LfpLatencyProcessorVisualizer::spikeTest() {
 
 	//load up array with randomly generated spikes
 	for (int i = 0; i < 4; i++) {
-		spikeLocations[i] = randomSpikeLocations[i];
+		//spikeLocations[i] = randomSpikeLocations[i];
 		tc.tableSpikeLocations[i] = randomSpikeLocations[i];
 		//std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
 		updateSpectrogram();

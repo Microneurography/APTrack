@@ -19,13 +19,46 @@ public:
     int getNumRows();
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
+    Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
 
-    int tableSpikeLocations[4];
-    int randomSpikeLocations[4];
+private:    
+    
+    friend class LfpLatencyProcessorVisualizer;
+    
+    int tableSpikeLocations[4] = { 0, 0, 0, 0 };
+    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
 
     bool spikeFound = false;
 
+    class SelectableColumnComponent : public Component
+    {
+    public:
+        SelectableColumnComponent(TableContent& tcon) : owner(tcon)
+        {
+            addAndMakeVisible(toggleButton);
+
+        }
+
+        void resized() override
+        {
+            toggleButton.setBoundsInset(juce::BorderSize<int>(2));
+        }
+
+        void setRowAndColumn(int newRow, int newColumn)
+        {
+            row = newRow;
+            columnId = newColumn;
+        }
+
+    private:
+        TableContent& owner;
+        juce::ToggleButton toggleButton;
+        int row, columnId;
+
+    };
+
 };
+
 
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
@@ -74,6 +107,7 @@ private:
     int searchBoxWidth;
 
     bool spikeDetected;
+    bool newSpikeDetected;
     float detectionThreshold;
     int subsamplesPerWindow;
     int startingSample;

@@ -91,7 +91,19 @@ public:
 
 private:
 
-
+    struct spikeinfo {
+        float* lastRowData;
+        int SBLA;
+        int SBWA;
+        float MAXLEVEL;
+        int SLA;
+        int SLR;
+        int startingSample;
+        int searchBoxLocation;
+        int subsamples;
+        int searchBoxWidth;
+    };
+    
     float level;
 
     int pixelsPerTrack;
@@ -107,11 +119,16 @@ private:
     int hitCounter;
 
     int prevLocation;
-
+    
     float lastWindowPeak;
+
     int windowSampleCount;
-    int spikeLocations[4];
-    int randomSpikeLocations[4];
+    
+    spikeinfo spikeLocations[4];
+
+    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
+    
+    int i = 0;
     
     int draw_imageHeight;
     int draw_rightHandEdge;
@@ -120,6 +137,7 @@ private:
     LfpLatencyProcessor* processor;
 
     friend class LfpLatencyProcessorVisualizerContentComponent;
+    friend class TableContent;
 
     // This component contains all components and graphics that were added using Projucer.
     // It's bounds initially have same bounds as the canvas itself.

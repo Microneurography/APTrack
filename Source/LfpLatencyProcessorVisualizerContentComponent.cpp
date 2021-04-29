@@ -406,6 +406,7 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	trackSpike_button = nullptr;
 	spikeTestButton = nullptr;
 	spikeTracker = nullptr;
+	spikeTrackerContent = nullptr;
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -437,13 +438,12 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	{
 		g.setColour(Colours::lightyellow);
 	}
-	//If I write any code in here to do with spike tracking it crashes so I need to do it elsewhere
+	//Paint is called constatnly, so the cells should be paiting the new number in them
 	spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
 	spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
-	while (spikeDetected) {
-		spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
-		spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
-	}
+	spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
+	spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+
 	
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
@@ -850,6 +850,7 @@ int TableContent::getNumRows() {
 }
 
 TableContent::TableContent() {
+	
 
 }
 
@@ -870,14 +871,10 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
 	}
 	if (columnId == 2) {
-		if (spikeFound) {
-			auto text = to_string(tableSpikeLocations[rowNumber]);
-			g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
-		}
-		else {
-			auto text = "NULL";
-			g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
-		}
+		
+		auto text = to_string(tableSpikeLocations[rowNumber]);
+		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+
 	}
 
 	g.setColour(Colours::transparentWhite);
@@ -892,6 +889,22 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 	}
 	else {
 		g.fillAll(Colours::lightgrey);
+	}
+
+}
+
+Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
+	if (columnId == 3) {
+		auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
+	
+		if (selectionBox == nullptr)
+			selectionBox = new SelectableColumnComponent(*this);
+
+		selectionBox->setRowAndColumn(rowNumber, columnId);
+		return selectionBox;
+	}
+	if (columnId == 2) {
+		return nullptr;
 	}
 
 }
