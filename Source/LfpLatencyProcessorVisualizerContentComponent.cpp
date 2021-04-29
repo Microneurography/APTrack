@@ -318,6 +318,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
+	spikeTracker->getHeader().addColumn("Select Spike", 3, 150);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
@@ -845,13 +846,13 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 }
 
 
+
 int TableContent::getNumRows() {
 	return 4;
 }
 
 TableContent::TableContent() {
-	
-
+		
 }
 
 TableContent::~TableContent() {
@@ -903,9 +904,8 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 		selectionBox->setRowAndColumn(rowNumber, columnId);
 		return selectionBox;
 	}
-	if (columnId == 2) {
-		return nullptr;
-	}
+	jassert(existingComponentToUpdate == nullptr);
+	return nullptr;
 
 }
 
