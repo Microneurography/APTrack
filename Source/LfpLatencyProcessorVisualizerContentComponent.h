@@ -27,6 +27,7 @@ private:
     
     int tableSpikeLocations[4] = { 0, 0, 0, 0 };
     int randomSpikeLocations[4] = { 0, 0, 0, 0 };
+    int buttonSelected = 5;
 
     bool spikeFound = false;
 
@@ -37,6 +38,12 @@ private:
         {
             addAndMakeVisible(toggleButton);
 
+            if (tcon.buttonSelected == 5) {
+                if (toggleButton.getToggleState() == true) {
+                    tcon.buttonSelected = row;
+                }
+
+            }
         }
 
         void resized() override

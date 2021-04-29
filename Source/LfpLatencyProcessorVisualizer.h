@@ -79,7 +79,8 @@ public:
     /**Test Multi Spike Tracking*/
     void spikeTest();
 
-    /**Add cells to multi tracking table*/
+    /*Update spike info structs*/
+    void updateSpikeInfo(int i);
 
 
     /** Fill in rightmost edge of spectrogram with up to date data*/

@@ -82,7 +82,7 @@ void LfpLatencyProcessorVisualizer::refreshState()
 
 void LfpLatencyProcessorVisualizer::update()
 {
-    std::cout << "LfpLatencyProcessorVisualizer::update2" << std::endl;
+	std::cout << "LfpLatencyProcessorVisualizer::update2" << std::endl;
 
 	//Get number of availiable channels and update label
   // HACK: harcoded to 24
@@ -194,6 +194,7 @@ void LfpLatencyProcessorVisualizer::updateSpectrogram()
 void LfpLatencyProcessorVisualizer::processTrack()
 {
 
+	
 	// Get latency track data of previous row
 	float* lastRowData = processor->getdataCacheRow(1);
 
@@ -224,17 +225,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		{
 			content.spikeDetected = true;
 			
-			if (i != 0) {
-				if (spikeLocations[i - 1].searchBoxLocation == content.searchBoxLocation) {
-					content.newSpikeDetected = false;
-				}
-				else {
-					spikeLocations[i].startingSample = content.startingSample;
-					spikeLocations[i].searchBoxLocation = content.searchBoxLocation;
-					spikeLocations[i].subsamples = content.subsamplesPerWindow;
-					spikeLocations[i].searchBoxWidth = content.searchBoxWidth;
-					spikeLocations[i].lastRowData = lastRowData;
-				}
+
+			if (spikeLocations[i - 1].searchBoxLocation == content.searchBoxLocation) {
+				content.newSpikeDetected = false;
 			}
 			else {
 				spikeLocations[i].startingSample = content.startingSample;
@@ -246,6 +239,21 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 			i++;
 
+			switch (tc.buttonSelected) {
+				case 0:
+					updateSpikeInfo(0);
+					content.searchBoxSlider->setValue(spikeLocations[0].SLR);
+				case 1:
+					updateSpikeInfo(1);
+					content.searchBoxSlider->setValue(spikeLocations[1].SLR);
+				case 2:
+					updateSpikeInfo(2);
+					content.searchBoxSlider->setValue(spikeLocations[2].SLR);
+				case 3:
+					updateSpikeInfo(3);
+					content.searchBoxSlider->setValue(spikeLocations[3].SLR);
+			}
+			
 			// This is a new struct that I'm gonna fill with all the info about the spike, so essentially I can recreate the spike tracking muddle elsewhere
 			
 			
@@ -304,6 +312,16 @@ void LfpLatencyProcessorVisualizer::spikeTest() {
 		updateSpectrogram();
 		processTrack();
 	}
+
+}
+
+void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
+	
+	spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
+	spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
+	spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
+	spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
+	spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
 
 }
 
