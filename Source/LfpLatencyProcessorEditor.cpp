@@ -31,9 +31,10 @@ LfpLatencyProcessorEditor::LfpLatencyProcessorEditor (GenericProcessor* parentNo
     : VisualizerEditor (parentNode, useDefaultParameterEditors)
 {
     tabText = "LfpLatency";
-    
+
     // why not use processor = static_cast<LfpLatencyProcessor*>(parentNode);?
     processor = (LfpLatencyProcessor*) this->getProcessor();
+	processor->loadRecoveryData(); // load old stuff in
 
     // Open Ephys Plugin Generator will insert generated code for editor here. Don't edit this section.
     //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_BEGIN]

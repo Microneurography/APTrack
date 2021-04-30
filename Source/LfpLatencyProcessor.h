@@ -107,6 +107,7 @@ public:
 	some data if you wanted. */
 	virtual void saveRecoveryData(XmlElement* parentElement);
 
+	/** Starts by asking the user if they would like to load data, the rest is a critical section. */
 	virtual void loadRecoveryData();
 
     /** Saving custom settings to XML. */
@@ -179,6 +180,11 @@ public:
 	std::map<String, String> customParameters;
 
 private:
+	// loading
+	bool loadRecovery;
+	bool loaded;
+
+	// saving
 	int i;
 	bool foundCustomParams;
 	bool docExisted;
@@ -193,6 +199,8 @@ private:
 	XmlElement *signalchain;
 	XmlElement *processor;
 	XmlElement *customParams;
+
+	CriticalSection fileAccess;
 
 	int j;
 	//debug

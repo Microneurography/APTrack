@@ -631,8 +631,8 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* sliderThatWasMoved)
 {
-	LfpLatencyProcessor* process = new LfpLatencyProcessor(); // to save the new value to xml
-	juce::XmlElement *XmlValue = new XmlElement("Components"); 
+	process = new LfpLatencyProcessor(); // to save the new value to xml
+	XmlValue = new XmlElement("Components"); 
 	// pass it by reference instead?
 	// juce::XMLElement var("Components");
 	//[UsersliderValueChanged_Pre]
@@ -748,9 +748,10 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 	printf("running save custom params to XML\n");
 	process->saveRecoveryData(XmlValue);
 	printf("tidying up\n");
-	delete process; // THIS IS IT!!!!!!!! THIS IS WHERE MY PROBLEMS ARE COMING FROM!! This is leaking memory
+	// Shouldn't need to delete things anymore because Scoped Pointers remove themselves
+	// delete process; // THIS IS IT!!!!!!!! THIS IS WHERE MY PROBLEMS ARE COMING FROM!! This is leaking memory
 	// Always, always use ScopedPointers, OwnedArrays, ReferenceCountedObjects, etc, and avoid the 'delete' operator at all costs!
-	XmlValue->~XmlElement(); // deleting the xml value so no leaking of memory
+	// XmlValue->~XmlElement(); // deleting the xml value so no leaking of memory
 	printf("all done\n");
 
 	//[UsersliderValueChanged_Post]

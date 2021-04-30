@@ -204,7 +204,9 @@ private:
     ScopedPointer<Slider> trigger_threshold_Slider;
 	ScopedPointer<Label> trigger_threshold_Slider_Label;
 
-
+	// In order to save values
+	ScopedPointer<LfpLatencyProcessor> process;
+	ScopedPointer<XmlElement> XmlValue;
     //DEBUG
 
     //==============================================================================

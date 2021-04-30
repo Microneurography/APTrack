@@ -223,6 +223,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 {
 	// If a second thread comes in, it will corrupt the file
+	ScopedLock s1(fileAccess); // I think, I hope, this is enough to protect it
 	name = parentElement->getAttributeName(0);
 	value = parentElement->getAttributeValue(0);
 	elementName = parentElement->getTagName();
@@ -267,7 +268,6 @@ void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 	if (!docExisted) // the file doesn't exist, so we have to make it and its main element
 	{
 		std::cout << "Unable to find LastLfpLatencyPluginComponents.XML" << std::endl;
-		//recoveryConfigFile->createDocument("1.0", false, true, "utf-8", 60); // this doesn't work properly
 		std::cout << "Making the XML" << std::endl;
 		Result res = Result(recoveryConfigFile.create());
 		if (Result::ok())
@@ -315,6 +315,7 @@ void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 	//TracksToXML->setAttribute("Track1", timeStamp)
 
 	// deleting everything
+	// If I make everything a ScopedPointer instead, it'll be fine and won't need this
 	recoveryConfig->~XmlElement(); // deleting an element deletes all its children
 	//recoveryConfigFile.~File();
 	workingDirectory.~String();
@@ -325,17 +326,43 @@ void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 
 void LfpLatencyProcessor::loadRecoveryData()
 {
-	// doing the same iteration sequence as before, but this time with no checks because if it doesn't exist at this point just leave it and fall out
+	// this function will be called from the same one that asks if pulse pal could be loaded, because I think that's the entry point
+	loaded = false;
+	loadRecovery = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Load LfpLatency Configurations?", "Would you like to load previous Lfp Latency Configurations?", "Yes", "No");
+	// doing the same iteration sequence as before, but this time with no checks because 
+	// if it doesn't exist at this point just leave it, report to user (using loaded) fall out
 	// it doesn't make sense to create new things when you're trying to load them in
-	forEachXmlChildElement(*parametersAsXml, customParams) // for every child
+	if (loadRecovery)
 	{
-		j = 0;
-		while (j < customParams->getNumAttributes())  // for all the attributes
+		ScopedLock s1(fileAccess); // I think, I hope, this is enough to protect it
+		workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
+		workingDirectory += "\\LastLfpLatencyPluginComponents.xml";
+		recoveryConfigFile = File(workingDirectory);
+		std::cout << "Loaded XML" << std::endl;
+		if (recoveryConfigFile.exists())
 		{
-			name = customParams->getAttributeName(j);
-			value = customParams->getAttributeValue(j);
-			customParameters.insert(std::make_pair(name, value));  // save in the map
-			j++;
+			recoveryConfig = XmlDocument::parse(recoveryConfigFile);
+			std::cout << "Parsed file" << std::endl;
+			if (recoveryConfig != NULL) // if there was no error with parsing
+			{
+				loaded = true;
+				forEachXmlChildElement(*recoveryConfig, customParams) // for every child
+				{
+					j = 0;
+					while (j < customParams->getNumAttributes())  // for all the attributes
+					{
+						name = customParams->getAttributeName(j);
+						value = customParams->getAttributeValue(j);
+						customParameters.insert(std::make_pair(name, value));  // save in the map
+						j++;
+					}
+				}
+				// then call the other function that updates the slider values
+			}
+		}
+		if (loaded == false)
+		{
+			AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon, "Error Loading LfpLatency Configurations", "Could not open the file due to unknown reasons. Configurations could not be loaded.", "OK");
 		}
 	}
 }
