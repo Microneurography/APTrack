@@ -21,6 +21,7 @@ public:
     void setHighImageThresholdText(const String& newText);
     void setDetectionThresholdText(const String& newText);
     void setLowImageThresholdText(const String& newText);
+    void loadParameters(const std::map<String, String>& newParameters);
 private:
     ScopedPointer<GroupComponent> outline;
 
