@@ -318,7 +318,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
-	spikeTracker->getHeader().addColumn("Select Spike", 3, 150);
+	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
+	spikeTracker->getHeader().addColumn("Select Spike", 4, 140);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
@@ -489,13 +490,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     searchBoxWidthSlider->setBounds(478, 643, 50, 64);
 	searchBoxWidthSliderLabel->setBounds(524, 664, 120, 24);
 
-	ROISpikeLatencyLabel->setBounds(920, 126, 120, 24);  // 192 difference
-	ROISpikeLatency->setBounds(1050, 126, 72, 24);
-	msLabel->setBounds(1132, 126, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	ROISpikeLatencyLabel->setBounds(980, 260, 120, 24);  // 192 difference
+	ROISpikeLatency->setBounds(1110, 260, 72, 24);
+	msLabel->setBounds(1190, 260, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
 	// latency is 24 less on the y
-	ROISpikeMagnitudeLabel->setBounds(920, 155, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
-	ROISpikeMagnitude->setBounds(1050, 155, 72, 24); // 72 difference
-	mpersLabel->setBounds(1132, 155, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
+	ROISpikeMagnitudeLabel->setBounds(980, 290, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
+	ROISpikeMagnitude->setBounds(1110, 290, 72, 24); // 72 difference
+	mpersLabel->setBounds(1190, 290, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
 
 
 	// Lucy's Group
@@ -509,8 +510,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	ppControllerComponent->setBounds(667, 260, 402, 350);
 
 	// Threshold trigger control
-	trigger_threshold_Slider->setBounds(1050, 189, 159, 64);
-	trigger_threshold_Slider_Label->setBounds(920, 209, 120, 24); // in a good place, the slider itself needs to move
+	trigger_threshold_Slider->setBounds(1110, 320, 159, 64);
+	trigger_threshold_Slider_Label->setBounds(980, 340, 120, 24); // in a good place, the slider itself needs to move
 
 
 	// channel control
@@ -522,7 +523,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	dataChannelComboBoxLabel->setBounds(665, 97, 120, 24); // fine
 
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
-	spikeTracker->setBounds(665, 40, 250, 200);
+	spikeTracker->setBounds(665, 40, 410, 200);
 
 	trackThreshold_button->setBounds(780, 155, 120, 24);
 	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
@@ -895,14 +896,27 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 }
 
 Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
-	if (columnId == 3) {
+	if (columnId == 4) {
 		auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
 	
 		if (selectionBox == nullptr)
 			selectionBox = new SelectableColumnComponent(*this);
 
 		selectionBox->setRowAndColumn(rowNumber, columnId);
+
+		if (selectionBox->getTState() == true) {
+			buttonSelected = rowNumber;
+		}
 		return selectionBox;
+	}
+	if (columnId == 2) {
+		auto* textLabel = static_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+
+		if (textLabel == nullptr)
+			textLabel = new UpdatingTextColumnComponent(*this, rowNumber);
+
+		textLabel->setRowAndColumn(rowNumber, columnId);
+		return textLabel;
 	}
 	jassert(existingComponentToUpdate == nullptr);
 	return nullptr;

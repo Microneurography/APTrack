@@ -177,6 +177,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		processor->resetEventFlag();
 
 		processTrack();
+		//updateTable();
 
 	}
 
@@ -230,17 +231,23 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				content.newSpikeDetected = false;
 			}
 			else {
+				content.newSpikeDetected = true;
+				cout << "Spiked Found" << endl;
 				spikeLocations[i].startingSample = content.startingSample;
 				spikeLocations[i].searchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].subsamples = content.subsamplesPerWindow;
 				spikeLocations[i].searchBoxWidth = content.searchBoxWidth;
 				spikeLocations[i].lastRowData = lastRowData;
+				spikeLocations[i].isFull = true;
+				cout << "Did i get here" << endl;
 			}
 
 			i++;
-
+			
+			
 			switch (tc.buttonSelected) {
 				case 0:
+					setConfig(0);
 					updateSpikeInfo(0);
 					content.searchBoxSlider->setValue(spikeLocations[0].SLR);
 				case 1:
@@ -322,6 +329,26 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 	spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
 	spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 	spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+
+}
+
+void LfpLatencyProcessorVisualizer::setConfig(int i) {
+
+}
+
+void LfpLatencyProcessorVisualizer::updateTable() {
+
+	if (content.spikeDetected) {
+		for (int q = 0; q < 4; q++) {
+			if (spikeLocations[i].isFull == true) {
+				updateSpikeInfo(q);
+				tc.tableSpikeLocations[q] = spikeLocations[q].SLR;
+			}
+			else {
+				continue;
+			}
+		}
+	}
 
 }
 

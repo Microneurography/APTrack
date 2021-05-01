@@ -21,34 +21,18 @@ public:
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
     Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
 
-private:    
-    
-    friend class LfpLatencyProcessorVisualizer;
-    
-    int tableSpikeLocations[4] = { 0, 0, 0, 0 };
-    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
-    int buttonSelected = 5;
-
-    bool spikeFound = false;
-
     class SelectableColumnComponent : public Component
     {
     public:
         SelectableColumnComponent(TableContent& tcon) : owner(tcon)
         {
-            addAndMakeVisible(toggleButton);
+            addAndMakeVisible(toggleButton = new ToggleButton);
 
-            if (tcon.buttonSelected == 5) {
-                if (toggleButton.getToggleState() == true) {
-                    tcon.buttonSelected = row;
-                }
-
-            }
         }
 
         void resized() override
         {
-            toggleButton.setBoundsInset(juce::BorderSize<int>(2));
+            toggleButton->setBoundsInset(juce::BorderSize<int>(1));
         }
 
         void setRowAndColumn(int newRow, int newColumn)
@@ -56,13 +40,45 @@ private:
             row = newRow;
             columnId = newColumn;
         }
-
+        bool getTState()
+        {
+            return toggleButton->getToggleState();
+        }
     private:
         TableContent& owner;
-        juce::ToggleButton toggleButton;
+        ScopedPointer<ToggleButton> toggleButton;
         int row, columnId;
 
     };
+    class UpdatingTextColumnComponent : public juce::Label
+    {
+    public:
+        UpdatingTextColumnComponent(TableContent& tcon, int rowNumber) : owner(tcon)
+        {
+            setText(to_string(tcon.tableSpikeLocations[rowNumber]), dontSendNotification);
+        }
+        void setRowAndColumn(const int newRow, const int newColumn)
+        {
+            row = newRow;
+            columnId = newColumn;
+
+        }
+        private:
+            TableContent& owner;
+            int row, columnId;
+            juce::Colour textColour;
+    };
+
+private:    
+    
+    friend class LfpLatencyProcessorVisualizer;
+    
+    int tableSpikeLocations[4] = { 0, 0, 0, 0 };
+    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
+    int buttonSelected = 0;
+
+
+    bool spikeFound = false;
 
 };
 
@@ -113,8 +129,8 @@ private:
 
     int searchBoxWidth;
 
-    bool spikeDetected;
-    bool newSpikeDetected;
+    bool spikeDetected = false;
+    bool newSpikeDetected = false;
     float detectionThreshold;
     int subsamplesPerWindow;
     int startingSample;

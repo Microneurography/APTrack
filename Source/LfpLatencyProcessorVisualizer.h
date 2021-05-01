@@ -82,6 +82,12 @@ public:
     /*Update spike info structs*/
     void updateSpikeInfo(int i);
 
+    /*Set settings to right level to find spike*/
+    void setConfig(int i);
+
+    /*Update info in the table*/
+    void updateTable();
+
 
     /** Fill in rightmost edge of spectrogram with up to date data*/
     /*
@@ -103,6 +109,7 @@ private:
         int searchBoxLocation;
         int subsamples;
         int searchBoxWidth;
+        bool isFull = false;
     };
     
     float level;
