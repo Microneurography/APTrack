@@ -26,6 +26,7 @@
 #include <mutex>
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorEditor.h"
+// #include "LfpLatencySpectrogramControlPanel"
 #include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\files\\juce_File.h"
 #include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
 #include <map>
@@ -64,10 +65,6 @@ LfpLatencyProcessor::LfpLatencyProcessor()
 
 {
     setProcessorType(PROCESSOR_TYPE_SINK);
-
-    // Open Ephys Plugin Generator will insert generated code for parameters here. Don't edit this section.
-    //[OPENEPHYS_PARAMETERS_SECTION_BEGIN]
-    //[OPENEPHYS_PARAMETERS_SECTION_END]
 
     //Parameter controlling number of samples per subsample window
     //auto parameter0 = new Parameter ("detectionThreshold", 1, 4000, 1000, 0);
@@ -382,7 +379,8 @@ void LfpLatencyProcessor::loadRecoveryData()
 						j++;
 					}
 				}
-				// then call the other function that updates the slider values - this function is in the refacotred version already, see LfpLatencySpectrogramControlPanel::loadParameters
+                // The files haven't been merged in for some reason
+                // LfpLatencySpectrogramControlPanel::loadParameters(customParameters);
 			}
 		}
 		if (loaded == false)
@@ -417,35 +415,34 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 
 void LfpLatencyProcessor::loadCustomParametersFromXml()
 {
-	printf("Trying to load\n");
-	if (parametersAsXml == nullptr) // prevent double-loading
-	{
-		return;
-	}
-	
-	forEachXmlChildElement(*parametersAsXml, mainNode)
-	{
-		if (mainNode->hasTagName("LfpLatencyProcessor"))
-		{
-			int parameterIdx = -1;
+    if (parametersAsXml == nullptr) // prevent double-loading
+        return;
 
-			forEachXmlChildElement(*mainNode, parameterNode)
-			{
-				if (parameterNode->hasTagName("Parameter"))
-				{
-					++parameterIdx;
+    // use parametersAsXml to restore state
 
-					String parameterType = parameterNode->getStringAttribute("type");
-					if (parameterType == "Boolean")
-						setParameter(parameterIdx, parameterNode->getBoolAttribute("value"));
-					else if (parameterType == "Continuous" || parameterType == "Numerical")
-						setParameter(parameterIdx, parameterNode->getDoubleAttribute("value"));
-					else if (parameterType == "Discrete")
-						setParameter(parameterIdx, parameterNode->getIntAttribute("value"));
-				}
-			}
-		}
-	}
+    forEachXmlChildElement(*parametersAsXml, mainNode)
+    {
+        if (mainNode->hasTagName("LfpLatencyProcessor"))
+        {
+            int parameterIdx = -1;
+
+            forEachXmlChildElement(*mainNode, parameterNode)
+            {
+                if (parameterNode->hasTagName("Parameter"))
+                {
+                    ++parameterIdx;
+
+                    String parameterType = parameterNode->getStringAttribute("type");
+                    if (parameterType == "Boolean")
+                        setParameter(parameterIdx, parameterNode->getBoolAttribute("value"));
+                    else if (parameterType == "Continuous" || parameterType == "Numerical")
+                        setParameter(parameterIdx, parameterNode->getDoubleAttribute("value"));
+                    else if (parameterType == "Discrete")
+                        setParameter(parameterIdx, parameterNode->getIntAttribute("value"));
+                }
+            }
+        }
+    }
 }
 
 bool LfpLatencyProcessor::checkEventReceived()

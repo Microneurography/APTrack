@@ -24,7 +24,6 @@
 #define LFPLATENCYPROCESSORVISUALIZER_H_INCLUDED
 
 #include <VisualizerEditorHeaders.h>
-#include <AllLookAndFeels.h>
 
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
@@ -114,8 +113,6 @@ private:
     
     friend class LfpLatencyProcessorVisualizerContentComponent;
     
-    // This component contains all components and graphics that were added using Projucer.
-    // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
     //
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
