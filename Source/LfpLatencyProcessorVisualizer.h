@@ -151,6 +151,7 @@ private:
     // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
     TableContent tc;
+
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
     // ========================================================================

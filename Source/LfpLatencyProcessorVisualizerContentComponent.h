@@ -8,6 +8,7 @@
 
 #include "LfpLatencySpectrogram.h"
 
+
 class TableContent : public TableListBoxModel
                      
 {
@@ -50,12 +51,12 @@ public:
         int row, columnId;
 
     };
-    class UpdatingTextColumnComponent : public juce::Label
+    class UpdatingTextColumnComponent : public juce::TextEditor
     {
     public:
         UpdatingTextColumnComponent(TableContent& tcon, int rowNumber) : owner(tcon)
         {
-            setText(to_string(tcon.tableSpikeLocations[rowNumber]), dontSendNotification);
+            addAndMakeVisible(spike = new TextEditor);
         }
         void setRowAndColumn(const int newRow, const int newColumn)
         {
@@ -63,22 +64,31 @@ public:
             columnId = newColumn;
 
         }
+        void changeText(String value)
+        {
+            
+            spike->setText(value);
+
+        }
         private:
             TableContent& owner;
             int row, columnId;
             juce::Colour textColour;
+            ScopedPointer<TextEditor> spike;
+            
     };
 
 private:    
     
     friend class LfpLatencyProcessorVisualizer;
     
-    int tableSpikeLocations[4] = { 0, 0, 0, 0 };
-    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
-    int buttonSelected = 0;
-
+    Array<int> tableSpikeLocations;
+    //int tableSpikeLocations[4] { 0, 0, 0, 0 };
+    int randomSpikeLocations[4] { 0, 0, 0, 0 };
+    int buttonSelected = 5;
 
     bool spikeFound = false;
+
 
 };
 

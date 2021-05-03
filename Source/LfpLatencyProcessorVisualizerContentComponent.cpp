@@ -441,15 +441,16 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 		g.setColour(Colours::lightyellow);
 	}
 	//Paint is called constatnly, so the cells should be paiting the new number in them
-	spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
 
 	
-	spikeTracker->autoSizeAllColumns();
-	spikeTracker->updateContent();
+	//spikeTracker->autoSizeAllColumns();
+	//spikeTracker->updateContent();
 	g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
+	spikeTracker->updateContent();
 }
 
 // If you want to move something down, you have to increase the y value
@@ -872,12 +873,6 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
 	}
-	if (columnId == 2) {
-		
-		auto text = to_string(tableSpikeLocations[rowNumber]);
-		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
-
-	}
 
 	g.setColour(Colours::transparentWhite);
 	g.fillRect(width - 1, 0, 1, height);
@@ -905,24 +900,32 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 		selectionBox->setRowAndColumn(rowNumber, columnId);
 
 		if (selectionBox->getTState() == true) {
+			cout << "noticed" << endl;
+			cout << rowNumber << endl;
 			buttonSelected = rowNumber;
 		}
 		return selectionBox;
 	}
 	if (columnId == 2) {
-		auto* textLabel = static_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+		auto* textLabel_0 = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
 
-		if (textLabel == nullptr)
-			textLabel = new UpdatingTextColumnComponent(*this, rowNumber);
+		if (textLabel_0 == nullptr)
+			textLabel_0 = new UpdatingTextColumnComponent(*this, rowNumber);
 
-		textLabel->setRowAndColumn(rowNumber, columnId);
-		return textLabel;
+
+		textLabel_0->setRowAndColumn(rowNumber, columnId);
+
+		textLabel_0->setText(String(tableSpikeLocations[rowNumber]));
+
+
+		return textLabel_0;
+
+		
 	}
 	jassert(existingComponentToUpdate == nullptr);
 	return nullptr;
 
 }
-
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
 {
