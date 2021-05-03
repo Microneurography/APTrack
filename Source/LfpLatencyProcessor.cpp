@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 #include <string>
-
+#include <mutex>
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorEditor.h"
 #include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\files\\juce_File.h"
@@ -33,6 +33,31 @@
 
 //If the processor uses a custom editor, it needs its header to instantiate it
 //#include "ExampleEditor.h"
+
+// declaring the variables for the saving and loading stuff
+// loading
+std::map<String, String> LfpLatencyProcessor::customParameters;
+bool LfpLatencyProcessor::loadRecovery = false;
+bool LfpLatencyProcessor::loaded = false;
+int LfpLatencyProcessor::j = 0;
+
+// saving
+int LfpLatencyProcessor::i = 0;
+bool LfpLatencyProcessor::foundCustomParams = false;
+bool  LfpLatencyProcessor::docExisted = false;
+bool LfpLatencyProcessor::fileOK = false;
+bool LfpLatencyProcessor::writtenOK = false;
+File LfpLatencyProcessor::recoveryConfigFile;
+String LfpLatencyProcessor::workingDirectory;
+String LfpLatencyProcessor::value;
+String LfpLatencyProcessor::name;
+String LfpLatencyProcessor::elementName;
+ScopedPointer<XmlElement> LfpLatencyProcessor::recoveryConfig;
+ScopedPointer<XmlElement> LfpLatencyProcessor::processor;
+ScopedPointer<XmlElement> LfpLatencyProcessor::customParams;
+
+std::mutex savingAndLoadingLock;
+
 
 LfpLatencyProcessor::LfpLatencyProcessor()
     : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0)
@@ -219,12 +244,11 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     }
 }
 
-
 void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 {
 	// If a second thread comes in, it will corrupt the file
 	// This should line should stop that from happening, and automatically unlocks out of scope
-	const ScopedLock sl (fileAccess); // However, I really do not know what sl is, Visual Studio can't find it but all the other examples in the code base use it
+	savingAndLoadingLock.lock();
 	name = parentElement->getAttributeName(0);
 	value = parentElement->getAttributeValue(0);
 	elementName = parentElement->getTagName();
@@ -322,6 +346,7 @@ void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 	value.~String();
 	name.~String();
 	elementName.~String();
+	savingAndLoadingLock.unlock();
 }
 
 void LfpLatencyProcessor::loadRecoveryData()
@@ -334,7 +359,7 @@ void LfpLatencyProcessor::loadRecoveryData()
 	// it doesn't make sense to create new things when you're trying to load them in
 	if (loadRecovery)
 	{
-		const ScopedLock sl(fileAccess);
+		savingAndLoadingLock.lock();
 		workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
 		workingDirectory += "\\LastLfpLatencyPluginComponents.xml";
 		recoveryConfigFile = File(workingDirectory);
@@ -364,6 +389,7 @@ void LfpLatencyProcessor::loadRecoveryData()
 		{
 			AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon, "Error Loading LfpLatency Configurations", "Could not open the file due to unknown reasons. Configurations could not be loaded.", "OK");
 		}
+		savingAndLoadingLock.unlock();
 	}
 }
 

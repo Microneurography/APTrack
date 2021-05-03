@@ -631,7 +631,6 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* sliderThatWasMoved)
 {
-	process = new LfpLatencyProcessor(); // to save the new value to xml
 	XmlValue = new XmlElement("Components"); 
 	// pass it by reference instead?
 	// juce::XMLElement var("Components");
@@ -746,7 +745,8 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
 	printf("running save custom params to XML\n");
-	process->saveRecoveryData(XmlValue);
+	LfpLatencyProcessor::saveRecoveryData(XmlValue);
+	XmlValue->~XmlElement();
 	printf("tidying up\n");
 	// Shouldn't need to delete things anymore because Scoped Pointers remove themselves
 	// delete process; // THIS IS IT!!!!!!!! THIS IS WHERE MY PROBLEMS ARE COMING FROM!! This is leaking memory

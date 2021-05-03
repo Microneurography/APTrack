@@ -205,8 +205,8 @@ private:
 	ScopedPointer<Label> trigger_threshold_Slider_Label;
 
 	// In order to save values
-	ScopedPointer<LfpLatencyProcessor> process;
-	ScopedPointer<XmlElement> XmlValue;
+	// This can't be a scoped pointer because scoped pointer actually deals with it badly because we redeclare it every time
+	XmlElement *XmlValue;
     //DEBUG
 
     //==============================================================================

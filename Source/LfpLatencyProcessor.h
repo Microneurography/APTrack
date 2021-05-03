@@ -103,12 +103,13 @@ public:
         are modified only through this method while data acquisition is active. */
     void setParameter (int parameterIndex, float newValue) override;
 
-	/** This method is a critical section protected with a semaphore. Allows you to save slider values, and maybe
-	some data if you wanted. */
-	virtual void saveRecoveryData(XmlElement* parentElement);
+	/** This method is a critical section, protected a mutex lock. Allows you to save slider values, and maybe
+	some data if you wanted in a file called LastLfpLatencyPluginComponents */
+	static void saveRecoveryData(XmlElement* parentElement);
 
-	/** Starts by asking the user if they would like to load data, the rest is a critical section. */
-	virtual void loadRecoveryData();
+	/** Starts by asking the user if they would like to load data from LastLfpLatencyPluginComponents, 
+	the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
+	static void loadRecoveryData();
 
     /** Saving custom settings to XML. */
     virtual void saveCustomParametersToXml (XmlElement* parentElement) override;
@@ -177,32 +178,29 @@ public:
 	float getParameterFloat(int parameterID);
 	//Result makingFile;
 
-	std::map<String, String> customParameters;
+	static std::map<String, String> customParameters;
 
 private:
 	// loading
-	bool loadRecovery;
-	bool loaded;
+	static bool loadRecovery;
+	static bool loaded;
 
 	// saving
-	int i;
-	bool foundCustomParams;
-	bool docExisted;
-	bool fileOK;
-	bool writtenOK;
-	File recoveryConfigFile;
-	String workingDirectory;
-	String value;
-	String name;
-	String elementName;
-	ScopedPointer<XmlElement> recoveryConfig;
-	ScopedPointer<XmlElement> signalchain;
-	ScopedPointer<XmlElement> processor;
-	ScopedPointer<XmlElement> customParams;
+	static int i;
+	static bool foundCustomParams;
+	static bool docExisted;
+	static bool fileOK;
+	static bool writtenOK;
+	static File recoveryConfigFile;
+	static String workingDirectory;
+	static String value;
+	static String name;
+	static String elementName;
+	static ScopedPointer<XmlElement> recoveryConfig;
+	static ScopedPointer<XmlElement> processor;
+	static ScopedPointer<XmlElement> customParams;
 
-	CriticalSection fileAccess;
-
-	int j;
+	static int j;
 	//debug
 	float lastReceivedDACPulse;
 
