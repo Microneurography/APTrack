@@ -195,10 +195,10 @@ private:
 	String value;
 	String name;
 	String elementName;
-	XmlElement *recoveryConfig;
-	XmlElement *signalchain;
-	XmlElement *processor;
-	XmlElement *customParams;
+	ScopedPointer<XmlElement> recoveryConfig;
+	ScopedPointer<XmlElement> signalchain;
+	ScopedPointer<XmlElement> processor;
+	ScopedPointer<XmlElement> customParams;
 
 	CriticalSection fileAccess;
 

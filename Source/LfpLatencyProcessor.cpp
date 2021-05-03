@@ -223,7 +223,8 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 {
 	// If a second thread comes in, it will corrupt the file
-	ScopedLock s1(fileAccess); // I think, I hope, this is enough to protect it
+	// This should line should stop that from happening, and automatically unlocks out of scope
+	const ScopedLock sl (fileAccess); // However, I really do not know what sl is, Visual Studio can't find it but all the other examples in the code base use it
 	name = parentElement->getAttributeName(0);
 	value = parentElement->getAttributeValue(0);
 	elementName = parentElement->getTagName();
@@ -315,8 +316,7 @@ void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 	//TracksToXML->setAttribute("Track1", timeStamp)
 
 	// deleting everything
-	// If I make everything a ScopedPointer instead, it'll be fine and won't need this
-	recoveryConfig->~XmlElement(); // deleting an element deletes all its children
+	// Don't need to delete the XmlElements because they're ScopedPointers 
 	//recoveryConfigFile.~File();
 	workingDirectory.~String();
 	value.~String();
@@ -334,7 +334,7 @@ void LfpLatencyProcessor::loadRecoveryData()
 	// it doesn't make sense to create new things when you're trying to load them in
 	if (loadRecovery)
 	{
-		ScopedLock s1(fileAccess); // I think, I hope, this is enough to protect it
+		const ScopedLock sl(fileAccess);
 		workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
 		workingDirectory += "\\LastLfpLatencyPluginComponents.xml";
 		recoveryConfigFile = File(workingDirectory);
@@ -357,7 +357,7 @@ void LfpLatencyProcessor::loadRecoveryData()
 						j++;
 					}
 				}
-				// then call the other function that updates the slider values
+				// then call the other function that updates the slider values - this function is in the refacotred version already, see LfpLatencySpectrogramControlPanel::loadParameters
 			}
 		}
 		if (loaded == false)
