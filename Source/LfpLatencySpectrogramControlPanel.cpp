@@ -141,3 +141,11 @@ void LfpLatencySpectrogramControlPanel::setDetectionThresholdText(const String& 
 void LfpLatencySpectrogramControlPanel::setLowImageThresholdText(const String& newText) {
     lowImageThreshold->setTextEditorText(newText);
 }
+
+void LfpLatencySpectrogramControlPanel::loadParameters(const std::map<String, String>& newParameters)
+{
+    imageThreshold->setSliderValue(newParameters.at("Image Threshold").getDoubleValue());
+    subsamplesPerWindow->setSliderValue(newParameters.at("Subsamples Per Window").getDoubleValue());
+    startingSample->setSliderValue(newParameters.at("Starting Sample").getDoubleValue());
+    conductionDistance->setSliderValue(newParameters.at("Conduction Distance").getDoubleValue());
+}
