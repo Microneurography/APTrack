@@ -85,8 +85,6 @@ public:
     /*Set settings to right level to find spike*/
     void setConfig(int i);
 
-    /*Update info in the table*/
-    void updateTable();
 
 
     /** Fill in rightmost edge of spectrogram with up to date data*/
@@ -134,6 +132,8 @@ private:
     
     spikeinfo spikeLocations[4];
 
+    int lastSearchBoxLocation;
+
     int randomSpikeLocations[4] = { 0, 0, 0, 0 };
     
     int i = 0;
@@ -151,6 +151,7 @@ private:
     // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
     TableContent tc;
+
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
     // ========================================================================

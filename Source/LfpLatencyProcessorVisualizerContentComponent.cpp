@@ -319,16 +319,67 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
 	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
-	spikeTracker->getHeader().addColumn("Select Spike", 4, 140);
+	spikeTracker->getHeader().addColumn("Select Spike", 4, 100);
+	spikeTracker->getHeader().addColumn("Delete Track", 5, 100);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
-
-	//NOTE TO SELF: Graphics class only usually used in paint function. Is that where the code should go??
 
 	addAndMakeVisible(spikeTestButton = new TextButton("spikeTest"));
 	spikeTestButton->setButtonText("TEST SPIKES");
 	spikeTestButton->addListener(this);
 	spikeTestButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
+
+	addAndMakeVisible(location0 = new TextEditor("Location 0"));
+	location0->setText("0");
+	addAndMakeVisible(location1 = new TextEditor("Location 1"));
+	location1->setText("0");
+	addAndMakeVisible(location2 = new TextEditor("Location 2"));
+	location2->setText("0");
+	addAndMakeVisible(location3 = new TextEditor("Location 3"));
+	location3->setText("0");
+
+	addAndMakeVisible(fp0 = new TextEditor("Firing Proabability 0"));
+	fp0->setText("0");
+	addAndMakeVisible(fp1 = new TextEditor("Firing Proabability 1"));
+	fp1->setText("0");
+	addAndMakeVisible(fp2 = new TextEditor("Firing Proabability 2"));
+	fp2->setText("0");
+	addAndMakeVisible(fp3 = new TextEditor("Firing Proabability 3"));
+	fp3->setText("0");
+
+	addAndMakeVisible(follow0 = new ToggleButton(""));
+	follow0->addListener(this);
+	follow0->setToggleState(false, sendNotification);
+	follow0->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(follow1 = new ToggleButton(""));
+	follow1->addListener(this);
+	follow1->setToggleState(false, sendNotification);
+	follow1->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(follow2 = new ToggleButton(""));
+	follow2->addListener(this);
+	follow2->setToggleState(false, sendNotification);
+	follow2->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(follow3 = new ToggleButton(""));
+	follow3->addListener(this);
+	follow3->setToggleState(false, sendNotification);
+	follow3->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+
+	addAndMakeVisible(del0 = new TextButton(""));
+	del0->addListener(this);
+	del0->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del0->setToggleState(false, sendNotification);
+	addAndMakeVisible(del1 = new TextButton(""));
+	del1->addListener(this);
+	del1->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del1->setToggleState(false, sendNotification);
+	addAndMakeVisible(del2 = new TextButton(""));
+	del2->addListener(this);
+	del2->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del2->setToggleState(false, sendNotification);
+	addAndMakeVisible(del3 = new TextButton(""));
+	del3->addListener(this);
+	del3->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del3->setToggleState(false, sendNotification);
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -441,15 +492,16 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 		g.setColour(Colours::lightyellow);
 	}
 	//Paint is called constatnly, so the cells should be paiting the new number in them
-	spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
-	spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
 
 	
-	spikeTracker->autoSizeAllColumns();
-	spikeTracker->updateContent();
+	//spikeTracker->autoSizeAllColumns();
+	//spikeTracker->updateContent();
 	g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
+	spikeTracker->updateContent();
 }
 
 // If you want to move something down, you have to increase the y value
@@ -523,7 +575,28 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	dataChannelComboBoxLabel->setBounds(665, 97, 120, 24); // fine
 
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
-	spikeTracker->setBounds(665, 40, 410, 200);
+	spikeTracker->setBounds(665, 40, 470, 200);
+
+	location0->setBounds(715, 69, 100, 20);
+	location1->setBounds(715, 90, 100, 20);
+	location2->setBounds(715, 111, 100, 20);
+	location3->setBounds(715, 132, 100, 20);
+
+	fp0->setBounds(815, 69, 120, 20);
+	fp1->setBounds(815, 90, 120, 20);
+	fp2->setBounds(815, 111, 120, 20);
+	fp3->setBounds(815, 132, 120, 20);
+
+	follow0->setBounds(935, 69, 120, 20);
+	follow1->setBounds(935, 91, 120, 20);
+	follow2->setBounds(935, 112, 120, 20);
+	follow3->setBounds(935, 134, 120, 20);
+
+	del0->setBounds(1050, 68, 60, 18);
+	del1->setBounds(1050, 89, 60, 18);
+	del2->setBounds(1050, 110, 60, 18);
+	del3->setBounds(1050, 131, 60, 18);
+
 
 	trackThreshold_button->setBounds(780, 155, 120, 24);
 	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
@@ -872,12 +945,6 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
 	}
-	if (columnId == 2) {
-		
-		auto text = to_string(tableSpikeLocations[rowNumber]);
-		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
-
-	}
 
 	g.setColour(Colours::transparentWhite);
 	g.fillRect(width - 1, 0, 1, height);
@@ -896,33 +963,16 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 }
 
 Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
-	if (columnId == 4) {
-		auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
-	
-		if (selectionBox == nullptr)
-			selectionBox = new SelectableColumnComponent(*this);
-
-		selectionBox->setRowAndColumn(rowNumber, columnId);
-
-		if (selectionBox->getTState() == true) {
-			buttonSelected = rowNumber;
-		}
-		return selectionBox;
-	}
-	if (columnId == 2) {
-		auto* textLabel = static_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
-
-		if (textLabel == nullptr)
-			textLabel = new UpdatingTextColumnComponent(*this, rowNumber);
-
-		textLabel->setRowAndColumn(rowNumber, columnId);
-		return textLabel;
-	}
 	jassert(existingComponentToUpdate == nullptr);
 	return nullptr;
 
 }
 
+void TableContent::setButtonSelected(int rowNumber) {
+
+	buttonSelected = rowNumber;
+
+}
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
 {

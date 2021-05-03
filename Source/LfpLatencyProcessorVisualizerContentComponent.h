@@ -8,6 +8,7 @@
 
 #include "LfpLatencySpectrogram.h"
 
+
 class TableContent : public TableListBoxModel
                      
 {
@@ -20,65 +21,16 @@ public:
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
     Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
-
-    class SelectableColumnComponent : public Component
-    {
-    public:
-        SelectableColumnComponent(TableContent& tcon) : owner(tcon)
-        {
-            addAndMakeVisible(toggleButton = new ToggleButton);
-
-        }
-
-        void resized() override
-        {
-            toggleButton->setBoundsInset(juce::BorderSize<int>(1));
-        }
-
-        void setRowAndColumn(int newRow, int newColumn)
-        {
-            row = newRow;
-            columnId = newColumn;
-        }
-        bool getTState()
-        {
-            return toggleButton->getToggleState();
-        }
-    private:
-        TableContent& owner;
-        ScopedPointer<ToggleButton> toggleButton;
-        int row, columnId;
-
-    };
-    class UpdatingTextColumnComponent : public juce::Label
-    {
-    public:
-        UpdatingTextColumnComponent(TableContent& tcon, int rowNumber) : owner(tcon)
-        {
-            setText(to_string(tcon.tableSpikeLocations[rowNumber]), dontSendNotification);
-        }
-        void setRowAndColumn(const int newRow, const int newColumn)
-        {
-            row = newRow;
-            columnId = newColumn;
-
-        }
-        private:
-            TableContent& owner;
-            int row, columnId;
-            juce::Colour textColour;
-    };
+    void setButtonSelected(int rowNumber);
 
 private:    
     
     friend class LfpLatencyProcessorVisualizer;
     
-    int tableSpikeLocations[4] = { 0, 0, 0, 0 };
-    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
-    int buttonSelected = 0;
-
-
+    int buttonSelected;
+    
     bool spikeFound = false;
+
 
 };
 
@@ -246,6 +198,26 @@ private:
     //ScopedPointer<ComboBox> trackSpikeComboBox;
     ScopedPointer<TableListBox> spikeTracker;
     ScopedPointer<TextButton> spikeTestButton;
+    
+    ScopedPointer<TextEditor> location0;
+    ScopedPointer<TextEditor> location1;
+    ScopedPointer<TextEditor> location2;
+    ScopedPointer<TextEditor> location3;
+
+    ScopedPointer<TextEditor> fp0;
+    ScopedPointer<TextEditor> fp1;
+    ScopedPointer<TextEditor> fp2;
+    ScopedPointer<TextEditor> fp3;
+    
+    ScopedPointer<ToggleButton> follow0;
+    ScopedPointer<ToggleButton> follow1;
+    ScopedPointer<ToggleButton> follow2;
+    ScopedPointer<ToggleButton> follow3;
+
+    ScopedPointer<TextButton> del0;
+    ScopedPointer<TextButton> del1;
+    ScopedPointer<TextButton> del2;
+    ScopedPointer<TextButton> del3;
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;

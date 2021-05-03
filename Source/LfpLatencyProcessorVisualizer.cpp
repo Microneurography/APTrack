@@ -136,6 +136,7 @@ void LfpLatencyProcessorVisualizer::update()
 	{
 		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
 	}
+	
 }
 
 
@@ -177,7 +178,6 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		processor->resetEventFlag();
 
 		processTrack();
-		//updateTable();
 
 	}
 
@@ -214,6 +214,81 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 	int SpikeLocationRel= (SpikeLocationAbs - content.startingSample) / content.subsamplesPerWindow;
 
+	//Keep the spike location values updated
+	for (int q = 0; q < 4; q++) {
+		if (spikeLocations[q].isFull == true) {
+			updateSpikeInfo(q);
+			if (q == 0)
+				content.location0->setText(String(spikeLocations[q].SLR));
+			if (q == 1)
+				content.location1->setText(String(spikeLocations[q].SLR));
+			if (q == 2)
+				content.location2->setText(String(spikeLocations[q].SLR));
+			if (q == 3)
+				content.location3->setText(String(spikeLocations[q].SLR));
+		}
+	}
+
+	//Delete spike information
+	if (content.del0->getToggleState() == true) {
+		spikeLocations[0] = {};
+		content.location0->setText("0");
+		content.fp0->setText("0");
+		content.follow0->setToggleState(false, sendNotification);
+		content.del0->setToggleState(false, sendNotification);
+		std::cout << "Spike 1 Deleted" << endl;
+	}
+	if (content.del1->getToggleState() == true) {
+		spikeLocations[1] = {};
+		content.location1->setText("0");
+		content.fp1->setText("0");
+		content.follow1->setToggleState(false, sendNotification);
+		content.del1->setToggleState(false, sendNotification);
+		std::cout << "Spike 2 Deleted" << endl;
+	}
+	if (content.del2->getToggleState() == true) {
+		spikeLocations[2] = {};
+		content.location2->setText("0");
+		content.fp2->setText("0");
+		content.follow2->setToggleState(false, sendNotification);
+		content.del2->setToggleState(false, sendNotification);
+		std::cout << "Spike 3 Deleted" << endl;
+	}
+	if (content.del3->getToggleState() == true) {
+		spikeLocations[3] = {};
+		content.location3->setText("0");
+		content.fp3->setText("0");
+		content.follow3->setToggleState(false, sendNotification);
+		content.del3->setToggleState(false, sendNotification);
+		std::cout << "Spike 4 Deleted" << endl;
+	}
+
+	//Check if a spike is being tracked
+	if (content.follow0->getToggleState() == true) {
+		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
+		setConfig(0);
+		updateSpikeInfo(0);
+		content.searchBoxSlider->setValue(spikeLocations[0].SLR, sendNotificationAsync);
+	}
+	if (content.follow1->getToggleState() == true) {
+		content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
+		setConfig(1);
+		updateSpikeInfo(1);
+		content.searchBoxSlider->setValue(spikeLocations[1].SLR, sendNotificationAsync);
+	}
+	if (content.follow2->getToggleState() == true) {
+		content.follow1->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
+		setConfig(2);
+		updateSpikeInfo(2);
+		content.searchBoxSlider->setValue(spikeLocations[2].SLR, sendNotificationAsync);
+	}
+	if (content.follow3->getToggleState() == true) {
+		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
+		setConfig(3);
+		updateSpikeInfo(3);
+		content.searchBoxSlider->setValue(spikeLocations[3].SLR, sendNotificationAsync);
+	}
+
 	//display values
 	content.ROISpikeMagnitude->setText(String(maxLevel,1) + " uV");
 	content.ROISpikeLatency->setText(String(SpikeLocationAbs/30.0f,1)+" ms"); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
@@ -227,39 +302,23 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.spikeDetected = true;
 			
 
-			if (spikeLocations[i - 1].searchBoxLocation == content.searchBoxLocation) {
+			if (lastSearchBoxLocation == content.searchBoxLocation) {
 				content.newSpikeDetected = false;
 			}
 			else {
 				content.newSpikeDetected = true;
-				cout << "Spiked Found" << endl;
+				cout << "Spike Found" << endl;
 				spikeLocations[i].startingSample = content.startingSample;
 				spikeLocations[i].searchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].subsamples = content.subsamplesPerWindow;
 				spikeLocations[i].searchBoxWidth = content.searchBoxWidth;
 				spikeLocations[i].lastRowData = lastRowData;
 				spikeLocations[i].isFull = true;
-				cout << "Did i get here" << endl;
+				lastSearchBoxLocation = content.searchBoxLocation;
+				i++;
 			}
 
-			i++;
-			
-			
-			switch (tc.buttonSelected) {
-				case 0:
-					setConfig(0);
-					updateSpikeInfo(0);
-					content.searchBoxSlider->setValue(spikeLocations[0].SLR);
-				case 1:
-					updateSpikeInfo(1);
-					content.searchBoxSlider->setValue(spikeLocations[1].SLR);
-				case 2:
-					updateSpikeInfo(2);
-					content.searchBoxSlider->setValue(spikeLocations[2].SLR);
-				case 3:
-					updateSpikeInfo(3);
-					content.searchBoxSlider->setValue(spikeLocations[3].SLR);
-			}
+
 			
 			// This is a new struct that I'm gonna fill with all the info about the spike, so essentially I can recreate the spike tracking muddle elsewhere
 			
@@ -314,7 +373,7 @@ void LfpLatencyProcessorVisualizer::spikeTest() {
 	//load up array with randomly generated spikes
 	for (int i = 0; i < 4; i++) {
 		//spikeLocations[i] = randomSpikeLocations[i];
-		tc.tableSpikeLocations[i] = randomSpikeLocations[i];
+		//tc.tableSpikeLocations[i] = randomSpikeLocations[i];
 		//std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
 		updateSpectrogram();
 		processTrack();
@@ -324,33 +383,26 @@ void LfpLatencyProcessorVisualizer::spikeTest() {
 
 void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 	
-	spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
-	spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
-	spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
-	spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
-	spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+	if (spikeLocations[i].isFull) {
+		spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
+		spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
+		spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
+		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
+		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+	}
 
 }
 
 void LfpLatencyProcessorVisualizer::setConfig(int i) {
-
-}
-
-void LfpLatencyProcessorVisualizer::updateTable() {
-
-	if (content.spikeDetected) {
-		for (int q = 0; q < 4; q++) {
-			if (spikeLocations[i].isFull == true) {
-				updateSpikeInfo(q);
-				tc.tableSpikeLocations[q] = spikeLocations[q].SLR;
-			}
-			else {
-				continue;
-			}
-		}
+	
+	if (spikeLocations[i].isFull) {
+		content.startingSampleSlider->setValue(spikeLocations[i].startingSample);
+		content.subsamplesPerWindowSlider->setValue(spikeLocations[i].subsamples);
+		content.searchBoxWidthSlider->setValue(spikeLocations[i].searchBoxWidth);
 	}
 
 }
+
 
 void LfpLatencyProcessorVisualizer::setParameter (int parameter, float newValue)
 {
@@ -360,3 +412,4 @@ void LfpLatencyProcessorVisualizer::setParameter (int parameter, float newValue)
 void LfpLatencyProcessorVisualizer::setParameter (int parameter, int val1, int val2, float newValue)
 {
 }
+
