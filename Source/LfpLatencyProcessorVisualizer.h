@@ -76,9 +76,6 @@ public:
     /** Process new track*/
     void processTrack();
 
-    /**Test Multi Spike Tracking*/
-    void spikeTest();
-
     /*Update spike info structs*/
     void updateSpikeInfo(int i);
 

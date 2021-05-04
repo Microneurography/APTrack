@@ -302,17 +302,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	
 	//MULTI SPIKE TRACKING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-	//Legacy Code for spike track combo box
-	//addAndMakeVisible(trackSpikeComboBox = new ComboBox("Spikes Tracked"));
-	//trackSpikeComboBox->setEditableText(false);
-	//trackSpikeComboBox->setJustificationType(Justification::centredLeft);
-	//trackSpikeComboBox->setTextWhenNothingSelected(TRANS("SPIKES"));
-	//trackSpikeComboBox->addItem("Spike 1", 1);
-	//trackSpikeComboBox->addItem("Spike 2", 2);
-	//trackSpikeComboBox->addItem("Spike 3", 3);
-	//trackSpikeComboBox->addItem("Spike 4", 4);
-
-	/* code from old version of table*/
 	spikeTrackerContent = new TableContent();
 	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes", spikeTrackerContent));
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
@@ -323,11 +312,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Delete Track", 5, 100);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
-
-	addAndMakeVisible(spikeTestButton = new TextButton("spikeTest"));
-	spikeTestButton->setButtonText("TEST SPIKES");
-	spikeTestButton->addListener(this);
-	spikeTestButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
 	addAndMakeVisible(location0 = new TextEditor("Location 0"));
 	location0->setText("0");
@@ -457,9 +441,12 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	trackThreshold_button = nullptr;
 	trackSpike_button = nullptr;
-	spikeTestButton = nullptr;
+	
 	spikeTracker = nullptr;
 	spikeTrackerContent = nullptr;
+	location0 = nullptr; location1 = nullptr; location2 = nullptr; location3 = nullptr;
+	follow0 = nullptr; follow1 = nullptr; follow2 = nullptr; follow3 = nullptr;
+	del0 = nullptr; del1 = nullptr; del2 = nullptr; del3 = nullptr;
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -557,7 +544,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	setupButton->setBounds(955, 10, 120, 24);
 	optionsButton->setBounds(665, 10, 120, 24);
-	spikeTestButton->setBounds(815, 10, 120, 24);
 	// Stimulus
 	ppControllerComponent->setBounds(667, 260, 402, 350);
 
@@ -822,6 +808,14 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 		}
 	}
+	if (buttonThatWasClicked == del0)
+		del_0 = true;
+	if (buttonThatWasClicked == del1)
+		del_1 = true;
+	if (buttonThatWasClicked == del2)
+		del_2 = true;
+	if (buttonThatWasClicked == del3)
+		del_3 = true;
 	if (buttonThatWasClicked == setupButton) {
 
 		Viewport* view = new Viewport("viewTest");
@@ -965,12 +959,6 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
 	jassert(existingComponentToUpdate == nullptr);
 	return nullptr;
-
-}
-
-void TableContent::setButtonSelected(int rowNumber) {
-
-	buttonSelected = rowNumber;
 
 }
 

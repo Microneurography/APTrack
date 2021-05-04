@@ -230,40 +230,48 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	}
 
 	//Delete spike information
-	if (content.del0->getToggleState() == true) {
+	if (content.del_0 == true) {
 		spikeLocations[0] = {};
+		spikeLocations[0].isFull = false;
 		content.location0->setText("0");
 		content.fp0->setText("0");
 		content.follow0->setToggleState(false, sendNotification);
 		content.del0->setToggleState(false, sendNotification);
 		std::cout << "Spike 1 Deleted" << endl;
+		content.del_0 = false;
 	}
-	if (content.del1->getToggleState() == true) {
+	if (content.del_1 == true) {
 		spikeLocations[1] = {};
+		spikeLocations[1].isFull = false;
 		content.location1->setText("0");
 		content.fp1->setText("0");
 		content.follow1->setToggleState(false, sendNotification);
 		content.del1->setToggleState(false, sendNotification);
 		std::cout << "Spike 2 Deleted" << endl;
+		content.del_1 = false;
 	}
-	if (content.del2->getToggleState() == true) {
+	if (content.del_2 == true) {
 		spikeLocations[2] = {};
+		spikeLocations[2].isFull = false;
 		content.location2->setText("0");
 		content.fp2->setText("0");
 		content.follow2->setToggleState(false, sendNotification);
 		content.del2->setToggleState(false, sendNotification);
 		std::cout << "Spike 3 Deleted" << endl;
+		content.del_2 = false;
 	}
-	if (content.del3->getToggleState() == true) {
+	if (content.del_3 == true) {
 		spikeLocations[3] = {};
+		spikeLocations[3].isFull = false;
 		content.location3->setText("0");
 		content.fp3->setText("0");
 		content.follow3->setToggleState(false, sendNotification);
 		content.del3->setToggleState(false, sendNotification);
 		std::cout << "Spike 4 Deleted" << endl;
+		content.del_3 = false;
 	}
 
-	//Check if a spike is being tracked
+	//Track spikes!
 	if (content.follow0->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
 		setConfig(0);
@@ -289,12 +297,13 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		content.searchBoxSlider->setValue(spikeLocations[3].SLR, sendNotificationAsync);
 	}
 
+
 	//display values
 	content.ROISpikeMagnitude->setText(String(maxLevel,1) + " uV");
 	content.ROISpikeLatency->setText(String(SpikeLocationAbs/30.0f,1)+" ms"); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
 
 	// If we have enabled spike tracking the track spike
-	if (content.trackSpike_button->getToggleState() == true && i < 4) {
+	if (content.trackSpike_button->getToggleState() == true) {
 
 		// Check for spike inside ROI box
 		if (maxLevel > content.detectionThreshold)
@@ -302,7 +311,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.spikeDetected = true;
 			
 
-			if (lastSearchBoxLocation == content.searchBoxLocation) {
+			//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
+			if (lastSearchBoxLocation == content.searchBoxLocation || spikeLocations[i].isFull == true) {
 				content.newSpikeDetected = false;
 			}
 			else {
@@ -317,6 +327,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				lastSearchBoxLocation = content.searchBoxLocation;
 				i++;
 			}
+			//Reset spike array counter when it reaches four, allows for new spikes to be found once old ones are deleted
+			if (i == 4)
+				i = 0;
 
 
 			
@@ -357,28 +370,6 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	}
 
 	
-}
-void LfpLatencyProcessorVisualizer::spikeTest() {
-
-	//clear the spike array
-	//std::fill_n(spikeLocations, 4, 0);
-
-	//if not enabled, enable spike tracking
-	if (content.trackSpike_button->getToggleState() == false) {
-
-		content.trackSpike_button->triggerClick();
-
-	}
-
-	//load up array with randomly generated spikes
-	for (int i = 0; i < 4; i++) {
-		//spikeLocations[i] = randomSpikeLocations[i];
-		//tc.tableSpikeLocations[i] = randomSpikeLocations[i];
-		//std::cout << spikeLocations[i] << randomSpikeLocations[i] << std::endl;
-		updateSpectrogram();
-		processTrack();
-	}
-
 }
 
 void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {

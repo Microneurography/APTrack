@@ -21,13 +21,10 @@ public:
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
     Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
-    void setButtonSelected(int rowNumber);
 
 private:    
     
     friend class LfpLatencyProcessorVisualizer;
-    
-    int buttonSelected;
     
     bool spikeFound = false;
 
@@ -102,6 +99,11 @@ private:
 	bool voltageTooHighOkay;
 	bool alreadyAlerted = false;
     bool testSpikePls = false;
+
+    bool del_0 = false;
+    bool del_1 = false;
+    bool del_2 = false;
+    bool del_3 = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
@@ -197,7 +199,6 @@ private:
 
     //ScopedPointer<ComboBox> trackSpikeComboBox;
     ScopedPointer<TableListBox> spikeTracker;
-    ScopedPointer<TextButton> spikeTestButton;
     
     ScopedPointer<TextEditor> location0;
     ScopedPointer<TextEditor> location1;
