@@ -24,7 +24,6 @@
 #define LFPLATENCYPROCESSORVISUALIZER_H_INCLUDED
 
 #include <VisualizerEditorHeaders.h>
-#include <AllLookAndFeels.h>
 
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
@@ -113,7 +112,6 @@ private:
     int pixelsPerTrack;
 
     int tracksAmount;
-
     int imageLinePoint;
 
     int samplesAfterStimulus;
