@@ -1,17 +1,2 @@
 ﻿  -- Install configuration: "Release"
-  CMake Error at cmake_install.cmake:55 (file):
-    file INSTALL cannot find
-    "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/Release/OE-plugin-latency-tracker.dll":
-    No error.
-  
-  
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: The command "setlocal
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: "E:\Program Files (x86)\Cmake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: :cmEnd
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: :cmErrorLevel
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: exit /b %1
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: :cmDone
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd
-E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: :VCEnd" exited with code 1.
+  -- Installing: C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Release/plugins/OE-plugin-latency-tracker.dll

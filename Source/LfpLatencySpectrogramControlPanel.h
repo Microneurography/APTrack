@@ -4,8 +4,8 @@
 #define LFPLATENCYSPECTROGRAMCONTROLPANEL_H
 
 #include <EditorHeaders.h>
-#include "LfpLatencyProcessorVisualizerContentComponent.h"
 
+class LfpLatencyProcessorVisualizerContentComponent;
 class LfpLatencyLabelTextEditor;
 class LfpLatencyLabelSlider;
 class LfpLatencyLabelVerticalSlider;
@@ -27,15 +27,15 @@ public:
 private:
     ScopedPointer<GroupComponent> outline;
 
-    ScopedPointer<LfpLatencyLabelVerticalSlider> imageThreshold;
+    static ScopedPointer<LfpLatencyLabelVerticalSlider> imageThreshold;
 
-    ScopedPointer<LfpLatencyLabelTextEditor> highImageThreshold;
-    ScopedPointer<LfpLatencyLabelTextEditor> detectionThreshold;
-    ScopedPointer<LfpLatencyLabelTextEditor> lowImageThreshold;
+    static ScopedPointer<LfpLatencyLabelTextEditor> highImageThreshold;
+    static ScopedPointer<LfpLatencyLabelTextEditor> detectionThreshold;
+    static ScopedPointer<LfpLatencyLabelTextEditor> lowImageThreshold;
 
-    ScopedPointer<LfpLatencyLabelSlider> subsamplesPerWindow;
-    ScopedPointer<LfpLatencyLabelSlider> startingSample;
-    ScopedPointer<LfpLatencyLabelSlider> conductionDistance;
+    static ScopedPointer<LfpLatencyLabelSlider> subsamplesPerWindow;
+    static ScopedPointer<LfpLatencyLabelSlider> startingSample;
+    static ScopedPointer<LfpLatencyLabelSlider> conductionDistance;
 };
 
 #endif
