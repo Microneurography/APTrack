@@ -4,6 +4,7 @@
 #define LFPLATENCYSPECTROGRAMCONTROLPANEL_H
 
 #include <EditorHeaders.h>
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
 
 class LfpLatencyLabelTextEditor;
 class LfpLatencyLabelSlider;
@@ -21,7 +22,7 @@ public:
     void setHighImageThresholdText(const String& newText);
     void setDetectionThresholdText(const String& newText);
     void setLowImageThresholdText(const String& newText);
-    void loadParameters(const std::map<String, String>& newParameters);
+    static void loadParameters(const std::map<String, String>& newParameters);
 
 private:
     ScopedPointer<GroupComponent> outline;

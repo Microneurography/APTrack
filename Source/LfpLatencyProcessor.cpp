@@ -26,9 +26,9 @@
 #include <mutex>
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorEditor.h"
-#include "LfpLatencySpectrogramControlPanel"
-#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\files\\juce_File.h"
-#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
+#include "LfpLatencySpectrogramControlPanel.h"
+//#include "/modules/juce_core/files/juce_File.h"
+//#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
 #include <map>
 #include "semaphore.hpp"
 

@@ -74,7 +74,7 @@ CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files/OE_PLUGIN_OE-plugin-latency-tracker
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/OE_PLUGIN_OE-plugin-latency-tracker
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=E:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x64/link.exe
@@ -246,11 +246,11 @@ CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //Name of external makefile project generator.
 CMAKE_EXTRA_GENERATOR:INTERNAL=
 //Name of generator.
-CMAKE_GENERATOR:INTERNAL=Visual Studio 15 2017 Win64
+CMAKE_GENERATOR:INTERNAL=Visual Studio 15 2017
 //Generator instance identifier.
 CMAKE_GENERATOR_INSTANCE:INTERNAL=E:/Program Files (x86)/Microsoft Visual Studio/2017/Community
 //Name of generator platform.
-CMAKE_GENERATOR_PLATFORM:INTERNAL=
+CMAKE_GENERATOR_PLATFORM:INTERNAL=x64
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
 //Source directory with the top level CMakeLists.txt file for this

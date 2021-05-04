@@ -3,7 +3,7 @@
 
 #include <EditorHeaders.h>
 #include "LfpLatencyProcessor.h"
-
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
 #include "pulsePalController/ppController.h"
 
 #include "LfpLatencySpectrogram.h"

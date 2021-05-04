@@ -2266,11 +2266,29 @@ c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/E
   c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Editors/VisualizerEditor.h(125): note: see declaration of 'juce::ScopedPointer<DataWindow>'
 c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Editors/VisualizerEditor.h(126): warning C4251: 'VisualizerEditor::canvas': class 'juce::ScopedPointer<Visualizer>' needs to have dll-interface to be used by clients of class 'VisualizerEditor'
   c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Editors/VisualizerEditor.h(126): note: see declaration of 'juce::ScopedPointer<Visualizer>'
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(56): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(105): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(258): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(260): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(340): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Serial/ofSerial.h(67): warning C4251: 'ofSerialDeviceInfo::devicePath': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'ofSerialDeviceInfo'
+  E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include\xstring(4373): note: see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Serial/ofSerial.h(68): warning C4251: 'ofSerialDeviceInfo::deviceName': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'ofSerialDeviceInfo'
+  E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include\xstring(4373): note: see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Serial/ofSerial.h(111): warning C4251: 'ofSerial::deviceType': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'ofSerial'
+  E:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include\xstring(4373): note: see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Serial/ofSerial.h(112): warning C4251: 'ofSerial::devices': class 'std::vector<ofSerialDeviceInfo,std::allocator<_Ty>>' needs to have dll-interface to be used by clients of class 'ofSerial'
+          with
+          [
+              _Ty=ofSerialDeviceInfo
+          ]
+  c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/Serial/ofSerial.h(89): note: see declaration of 'std::vector<ofSerialDeviceInfo,std::allocator<_Ty>>'
+          with
+          [
+              _Ty=ofSerialDeviceInfo
+          ]
+c:\users\gsboo\source\repos\oeplugins\oe-plugin-latency-tracker\source\LfpLatencyProcessorVisualizerContentComponent.h(40): error C2065: 'LfpLatencySpectrogramControlPanel': undeclared identifier
+c:\users\gsboo\source\repos\oeplugins\oe-plugin-latency-tracker\source\LfpLatencyProcessorVisualizerContentComponent.h(40): error C2923: 'juce::ScopedPointer': 'LfpLatencySpectrogramControlPanel' is not a valid template type argument for parameter 'ObjectType'
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(87): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(136): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(438): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(440): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessor.cpp(520): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   LfpLatencyProcessorEditor.cpp
 c:\users\gsboo\source\repos\plugin-gui\jucelibrarycode\modules\juce_audio_basics\effects/juce_FFT.h(88): warning C4251: 'juce::FFT::config': class 'juce::ScopedPointer<juce::FFT::FFTConfig>' needs to have dll-interface to be used by clients of class 'juce::FFT'
   c:\users\gsboo\source\repos\plugin-gui\jucelibrarycode\modules\juce_audio_basics\effects/juce_FFT.h(88): note: see declaration of 'juce::ScopedPointer<juce::FFT::FFTConfig>'
@@ -5725,26 +5743,26 @@ c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/S
           [
               _Ty=ofSerialDeviceInfo
           ]
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(85): warning C4305: '=': truncation from 'double' to 'float'
 C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(86): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(339): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(400): warning C4244: 'argument': conversion from 'double' to 'ValueType', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(87): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(340): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(401): warning C4244: 'argument': conversion from 'double' to 'ValueType', possible loss of data
           with
           [
               ValueType=int
           ]
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(427): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(431): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(435): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(461): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(466): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(471): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(480): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(488): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(495): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(502): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(509): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(515): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(436): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(441): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(446): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(472): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(477): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(482): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(491): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(499): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(506): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(514): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(522): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencyProcessorVisualizerContentComponent.cpp(529): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   LfpLatencySpectrogram.cpp
 c:\users\gsboo\source\repos\plugin-gui\jucelibrarycode\modules\juce_audio_basics\effects/juce_FFT.h(88): warning C4251: 'juce::FFT::config': class 'juce::ScopedPointer<juce::FFT::FFTConfig>' needs to have dll-interface to be used by clients of class 'juce::FFT'
   c:\users\gsboo\source\repos\plugin-gui\jucelibrarycode\modules\juce_audio_basics\effects/juce_FFT.h(88): note: see declaration of 'juce::ScopedPointer<juce::FFT::FFTConfig>'
@@ -8038,6 +8056,7 @@ c:\users\gsboo\source\repos\plugin-gui\plugins\headers\../../Source/Processors/S
               _Ty=ofSerialDeviceInfo
           ]
 C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencySpectrogramControlPanel.cpp(26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\LfpLatencySpectrogramControlPanel.cpp(147): error C2227: left of '->setSliderValue' must point to class/struct/union/generic type
   OpenEphysLib.cpp
 c:\users\gsboo\source\repos\plugin-gui\jucelibrarycode\modules\juce_audio_basics\effects/juce_FFT.h(88): warning C4251: 'juce::FFT::config': class 'juce::ScopedPointer<juce::FFT::FFTConfig>' needs to have dll-interface to be used by clients of class 'juce::FFT'
   c:\users\gsboo\source\repos\plugin-gui\jucelibrarycode\modules\juce_audio_basics\effects/juce_FFT.h(88): note: see declaration of 'juce::ScopedPointer<juce::FFT::FFTConfig>'
@@ -11245,5 +11264,3 @@ C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\pulsePalC
 C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\pulsePalController\serial\PulsePal.cpp(473): warning C4333: '>>': right shift by too large amount, data loss
 C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Source\pulsePalController\serial\PulsePal.cpp(474): warning C4333: '>>': right shift by too large amount, data loss
   Generating Code...
-     Creating library C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/Release/OE-plugin-latency-tracker.lib and object C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/Release/OE-plugin-latency-tracker.exp
-  OE-plugin-latency-tracker.vcxproj -> C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Build\Release\OE-plugin-latency-tracker.dll
