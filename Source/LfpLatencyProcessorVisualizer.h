@@ -104,6 +104,7 @@ private:
         int searchBoxLocation;
         int subsamples;
         int searchBoxWidth;
+        int firingNumber = 0;
         bool isFull = false;
     };
     
@@ -128,6 +129,10 @@ private:
     int windowSampleCount;
     
     spikeinfo spikeLocations[4];
+
+    int probabilityTimer = 0;
+
+    bool resetFirings = false;
 
     int lastSearchBoxLocation;
 

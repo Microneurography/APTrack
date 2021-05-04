@@ -176,7 +176,6 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	if (processor->checkEventReceived())
 	{
 		processor->resetEventFlag();
-
 		processTrack();
 
 	}
@@ -184,6 +183,13 @@ void LfpLatencyProcessorVisualizer::timerCallback()
     
    //Refresh canvas (redraw)
     refresh();
+	//Used to calculate the number of times fired in 5 seconds
+	probabilityTimer++;
+
+	if (probabilityTimer == 25) {
+		resetFirings = true;
+		probabilityTimer = 0;
+	}
 }
 
 
@@ -218,14 +224,22 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	for (int q = 0; q < 4; q++) {
 		if (spikeLocations[q].isFull == true) {
 			updateSpikeInfo(q);
-			if (q == 0)
+			if (q == 0) {
 				content.location0->setText(String(spikeLocations[q].SLR));
-			if (q == 1)
+				content.fp0->setText(String(spikeLocations[q].firingNumber));
+			}
+			if (q == 1) {
 				content.location1->setText(String(spikeLocations[q].SLR));
-			if (q == 2)
+				content.fp1->setText(String(spikeLocations[q].firingNumber));
+			}
+			if (q == 2) {
 				content.location2->setText(String(spikeLocations[q].SLR));
-			if (q == 3)
+				content.fp2->setText(String(spikeLocations[q].firingNumber));
+			}
+			if (q == 3) {
 				content.location3->setText(String(spikeLocations[q].SLR));
+				content.fp3->setText(String(spikeLocations[q].firingNumber));
+			}
 		}
 	}
 
@@ -274,24 +288,28 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	//Track spikes!
 	if (content.follow0->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
 		setConfig(0);
 		updateSpikeInfo(0);
 		content.searchBoxSlider->setValue(spikeLocations[0].SLR, sendNotificationAsync);
 	}
 	if (content.follow1->getToggleState() == true) {
 		content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
 		setConfig(1);
 		updateSpikeInfo(1);
 		content.searchBoxSlider->setValue(spikeLocations[1].SLR, sendNotificationAsync);
 	}
 	if (content.follow2->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
 		setConfig(2);
 		updateSpikeInfo(2);
 		content.searchBoxSlider->setValue(spikeLocations[2].SLR, sendNotificationAsync);
 	}
 	if (content.follow3->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
 		setConfig(3);
 		updateSpikeInfo(3);
 		content.searchBoxSlider->setValue(spikeLocations[3].SLR, sendNotificationAsync);
@@ -325,6 +343,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].lastRowData = lastRowData;
 				spikeLocations[i].isFull = true;
 				lastSearchBoxLocation = content.searchBoxLocation;
+				spikeLocations[i].firingNumber++;
 				i++;
 			}
 			//Reset spike array counter when it reaches four, allows for new spikes to be found once old ones are deleted
@@ -375,9 +394,16 @@ void LfpLatencyProcessorVisualizer::processTrack()
 void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 	
 	if (spikeLocations[i].isFull) {
+		spikeLocations[i].lastRowData = processor->getdataCacheRow(1);
 		spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
 		spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
 		spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
+		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold && resetFirings == false)
+			spikeLocations[i].firingNumber++;
+		if (resetFirings == true) {
+			spikeLocations[i].firingNumber = 0;
+			resetFirings = false;
+		}
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
 	}
