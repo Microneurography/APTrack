@@ -826,12 +826,6 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 	}
 }
 
-int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
-{
-	return startingSample;
-}
-
-
 int TableContent::getNumRows() {
 	return 4;
 }
