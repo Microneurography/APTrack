@@ -142,3 +142,99 @@ double LfpLatencyLabelVerticalSlider::getSliderMinValue() const
 {
     return slider->getMinValue();
 }
+
+// -------------------------------------------------------------
+LfpLatencyLabelComboBox::LfpLatencyLabelComboBox(const String& labelText)
+{
+    label = new Label("Label", labelText);
+    comboBox = new ComboBox("ComboBox");
+
+    label->setJustificationType(juce::Justification::centred);
+    label->attachToComponent(comboBox, true);
+
+    comboBox->setEditableText(false);
+    comboBox->setJustificationType(Justification::centredLeft);
+
+    comboBox->setSelectedId(1);
+
+    addAndMakeVisible(label);
+    addAndMakeVisible(comboBox);
+}
+
+void LfpLatencyLabelComboBox::resized()
+{
+    auto comboBoxLeft = getWidth() * 2 / 3;
+    comboBox->setBounds(getLocalBounds().withTrimmedLeft(comboBoxLeft));
+}
+
+int LfpLatencyLabelComboBox::getComboBoxSelectedId() const
+{
+    return comboBox->getSelectedId();
+}
+
+void LfpLatencyLabelComboBox::setComboBoxSelectedId(int newItemId)
+{
+    comboBox->setSelectedId(newItemId);
+}
+
+void LfpLatencyLabelComboBox::setComboBoxTextWhenNothingSelected(const String& newMessage)
+{
+    comboBox->setTextWhenNothingSelected(newMessage);
+}
+
+int LfpLatencyLabelComboBox::getComboBoxNumItems() const
+{
+    return comboBox->getNumItems();
+}
+
+void LfpLatencyLabelComboBox::addComboBoxItem(const String& newItemText, int newItemId)
+{
+    comboBox->addItem(newItemText, newItemId);
+}
+
+void LfpLatencyLabelComboBox::addComboBoxSectionHeading(const String& headingName)
+{
+    comboBox->addSectionHeading(headingName);
+}
+
+void LfpLatencyLabelComboBox::clearComboBox()
+{
+    comboBox->clear();
+}
+
+// -------------------------------------------------------------
+LfpLatencyLabelToggleButton::LfpLatencyLabelToggleButton(const String& labelText)
+{
+    label = new Label("Label", labelText);
+    toggleButton = new ToggleButton("");
+
+    label->setJustificationType(juce::Justification::centred);
+    label->attachToComponent(toggleButton, true);
+
+    toggleButton->setName(labelText);
+    toggleButton->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
+
+    addAndMakeVisible(label);
+    addAndMakeVisible(toggleButton);
+}
+
+void LfpLatencyLabelToggleButton::resized()
+{
+    auto toggleButtonLeft = getWidth() * 2 / 3;
+    toggleButton->setBounds(getLocalBounds().withTrimmedLeft(toggleButtonLeft));
+}
+
+void LfpLatencyLabelToggleButton::addToggleButtonListener(Button::Listener* listener)
+{
+    toggleButton->addListener(listener);
+}
+
+bool LfpLatencyLabelToggleButton::getToggleButtonState() const
+{
+    return toggleButton->getToggleState();
+}
+
+void LfpLatencyLabelToggleButton::setToggleButtonState(bool shouldBeOn, NotificationType notification)
+{
+    toggleButton->setToggleState(shouldBeOn, notification);
+}
