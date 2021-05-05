@@ -57,6 +57,7 @@ public:
     float getDetectionThreshold() const;
     int getColorStyleComboBoxSelectedId() const;
 
+    std::tuple<float, float, float, float, Colour> getSearchBoxInfo() const;
 private:
     LfpLatencySpectrogram spectrogram; // Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,

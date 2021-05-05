@@ -996,3 +996,44 @@ int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelected
 {
 	return colorStyleComboBox->getSelectedId();
 }
+
+std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerContentComponent::getSearchBoxInfo() const
+{
+	Colour colour;
+	if (trackSpike_button->getToggleState() == true)
+	{
+		if (spikeDetected) {
+			colour = Colours::green;
+		}
+		else {
+			colour = Colours::red;
+		}
+	}
+	else if (follow0->getToggleState() == true) 
+	{
+		colour = Colours::lightsteelblue
+	}
+	else if (follow1->getToggleState() == true) 
+	{
+		colour = Colours::lightskyblue;
+	}
+	else if (follow2->getToggleState() == true)
+	{
+		colour = Colours::darkgreen;
+	}
+	else if (follow3->getToggleState() == true)
+	{
+		colour = Colours::orange;
+	}
+	else
+	{
+		colour = Colours::lightyellow;
+	}
+	
+	auto width = 8;
+	auto x = spectrogramPanel->getImageWidth() - width;
+	auto y = spectrogramPanel->getImageHeight() - (searchBoxLocation + searchBoxWidth);
+	auto height = searchBoxWidth * 2 + 1;
+
+	return {x, y, width, height, colour};
+}
