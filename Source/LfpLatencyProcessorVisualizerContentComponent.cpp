@@ -599,7 +599,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {
 	//Lucy's style of keybind was much better than mine as it allowed to adjust value and slider position and send a notification in one single line, so thank you <3, from James
 	//Increase search box location
-	if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < 600)) {
+	if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < SPECTROGRAM_HEIGHT)) {
 		searchBoxSlider->setValue(searchBoxSlider->getValue() + 5, sendNotificationAsync);
 		return true;
 	}
