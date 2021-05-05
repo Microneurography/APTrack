@@ -21,6 +21,9 @@ public:
     void setHighImageThresholdText(const String& newText);
     void setDetectionThresholdText(const String& newText);
     void setLowImageThresholdText(const String& newText);
+
+    void setStartingSampleValue(double newValue);
+    void setSubsamplesPerWindowValue(double newValue);
 private:
     ScopedPointer<GroupComponent> outline;
 

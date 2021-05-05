@@ -141,3 +141,13 @@ void LfpLatencySpectrogramControlPanel::setDetectionThresholdText(const String& 
 void LfpLatencySpectrogramControlPanel::setLowImageThresholdText(const String& newText) {
     lowImageThreshold->setTextEditorText(newText);
 }
+
+void LfpLatencySpectrogramControlPanel::setStartingSampleValue(double newValue)
+{
+    startingSample->setSliderValue(newValue);
+}
+
+void LfpLatencySpectrogramControlPanel::setSubsamplesPerWindowValue(double newValue)
+{
+    subsamplesPerWindow->setSliderValue(newValue);
+}

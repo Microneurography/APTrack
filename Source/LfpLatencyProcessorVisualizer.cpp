@@ -413,8 +413,8 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 void LfpLatencyProcessorVisualizer::setConfig(int i) {
 	
 	if (spikeLocations[i].isFull) {
-		content.startingSampleSlider->setValue(spikeLocations[i].startingSample);
-		content.subsamplesPerWindowSlider->setValue(spikeLocations[i].subsamples);
+		content.spectrogramControlPanel->setStartingSampleValue(spikeLocations[i].startingSample);
+		content.spectrogramControlPanel->setSubsamplesPerWindowValue(spikeLocations[i].subsamples);
 		content.searchBoxWidthSlider->setValue(spikeLocations[i].searchBoxWidth);
 	}
 
