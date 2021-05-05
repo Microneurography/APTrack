@@ -9,14 +9,14 @@ The Open Ephys team is moving their documentation from [atlassian](https://open-
 **Pre-requisities: cmake, git, (git bash for Windows), (Virtual Studio 2019 for Windows)**
 We recommend compiling on Windows.
 
-	1. Go to a place in your local directory. For ease of communication, I’ll call this directory ~/home
+	1. Go to a place in your local directory. For ease of communication, Iï¿½ll call this directory ~/home
 	2. Open a terminal in ~/home, type git clone https://github.com/open-ephys/plugin-GUI.git
 ##### For Windows Users:
 	3. Go to ~home/plugin-GUI/Build folder
 	4. Type cmake -G "Visual Studio 16 2019" -A x64 ..
 	5. In Visual Studio, select the open-ephys.sln file from the Build folder.
 	6. Optional: From the Build menu, select Configuration Manager, then select Release
-	7. Select Build/Build Solution (or press F6) to build the GUI from source or hit the "Debug"/”Release” button to build and run. 
+	7. Select Build/Build Solution (or press F6) to build the GUI from source or hit the "Debug"/ï¿½Releaseï¿½ button to build and run. 
 	
 ***N.B. The Release version runs significantly better than debug, but will take longer.***
 ##### For Linux Users:
@@ -83,9 +83,13 @@ Visualiser for the plugin:
 
 
 #### Spike Tracking  
-The Threshold Values are used to detect spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box.  
-**Multiple Spike Tracking in Development**
+The Threshold Values are used to detect spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box, with the search box turning green.
 
+<p align="center">
+	<img src="./Resources/table.png" alt="table.png" title="table">
+<>
+
+The table above can be used to track multiple spikes. Any spikes found will be added to the table. They can be tracked and deleted from the table.
 
 #### Stimulus Voltage  
 
