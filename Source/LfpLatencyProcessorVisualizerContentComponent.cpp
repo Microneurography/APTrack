@@ -867,12 +867,6 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 
 }
 
-Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
-	jassert(existingComponentToUpdate == nullptr);
-	return nullptr;
-
-}
-
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
 {
 	return startingSample;

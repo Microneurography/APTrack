@@ -186,7 +186,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	//Used to calculate the number of times fired in 5 seconds
 	probabilityTimer++;
 
-	if (probabilityTimer == 25) {
+	if (probabilityTimer == 250) {
 		resetFirings = true;
 		probabilityTimer = 0;
 	}
@@ -245,6 +245,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 	//Delete spike information
 	if (content.del_0 == true) {
+		content.follow0->setToggleState(false, sendNotification);
 		spikeLocations[0] = {};
 		spikeLocations[0].isFull = false;
 		content.location0->setText("0");
@@ -255,6 +256,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		content.del_0 = false;
 	}
 	if (content.del_1 == true) {
+		content.follow1->setToggleState(false, sendNotification);
 		spikeLocations[1] = {};
 		spikeLocations[1].isFull = false;
 		content.location1->setText("0");
@@ -265,6 +267,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		content.del_1 = false;
 	}
 	if (content.del_2 == true) {
+		content.follow2->setToggleState(false, sendNotification);
 		spikeLocations[2] = {};
 		spikeLocations[2].isFull = false;
 		content.location2->setText("0");
@@ -275,6 +278,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		content.del_2 = false;
 	}
 	if (content.del_3 == true) {
+		content.follow3->setToggleState(false, sendNotification);
 		spikeLocations[3] = {};
 		spikeLocations[3].isFull = false;
 		content.location3->setText("0");

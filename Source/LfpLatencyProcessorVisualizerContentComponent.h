@@ -21,7 +21,7 @@ public:
     int getNumRows();
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
-    Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
+    //Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
 
 private:    
     
