@@ -48,9 +48,9 @@
 
 //Width in pixels of spectrogram image
 //300 pixels = 300 tracks approx 5 min
-#define SPECTROGRAM_WIDTH 600
+#define SPECTROGRAM_WIDTH 300
 
-#define SPECTROGRAM_HEIGHT 600
+#define SPECTROGRAM_HEIGHT 300
 
 #define EVENT_DETECTION_THRESHOLD 1500
 
