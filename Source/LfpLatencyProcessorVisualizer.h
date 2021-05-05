@@ -37,7 +37,7 @@ class LfpLatencyProcessorVisualizer : public Visualizer
 {
 public:
     /** The class constructor, used to initialize any members. */
-    LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor);
+    LfpLatencyProcessorVisualizer(LfpLatencyProcessor* processor);
 
     /** The class destructor, used to deallocate memory */
     ~LfpLatencyProcessorVisualizer();
@@ -61,64 +61,101 @@ public:
     void endAnimation() override;
 
     /** Called by an editor to initiate a parameter change.*/
-    void setParameter (int, float) override;
+    void setParameter(int, float) override;
 
     /** Called by an editor to initiate a parameter change.*/
-    void setParameter (int, int, int, float) override;
-    
+    void setParameter(int, int, int, float) override;
+
     /** Updates spectrogram*/
     void timerCallback() override;
-    
-    /** Shuffle spectrogram to left*/ 
-    void updateSpectrogram(); 
 
-	/** Process new track*/
-	void processTrack();
-    
-    
+    /** Shuffle spectrogram to left*/
+    void updateSpectrogram();
+
+    /** Process new track*/
+    void processTrack();
+
+    /*Update spike info structs*/
+    void updateSpikeInfo(int i);
+
+    /*Set settings to right level to find spike*/
+    void setConfig(int i);
+
+
+
     /** Fill in rightmost edge of spectrogram with up to date data*/
     /*
      //DEPRECATED
     void newLineOfSpectrogram();
     */
-    
-    
+
+
 private:
 
+    struct spikeinfo {
+        float* lastRowData;
+        int SBLA;
+        int SBWA;
+        float MAXLEVEL;
+        int SLA;
+        int SLR;
+        int startingSample;
+        int searchBoxLocation;
+        int subsamples;
+        int searchBoxWidth;
+        int firingNumber = 0;
+        bool isFull = false;
+    };
     
     float level;
-    
+
     int pixelsPerTrack;
 
     int tracksAmount;
-    
     int imageLinePoint;
-    
+
     int samplesAfterStimulus;
-    
+
     int missCounter;
-    
+
     int hitCounter;
-    
+
     int prevLocation;
     
     float lastWindowPeak;
+
     int windowSampleCount;
+    
+    spikeinfo spikeLocations[4];
+
+    int probabilityTimer = 0;
+
+    bool resetFirings = false;
+
+    int lastSearchBoxLocation;
+
+    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
+    
+    int i = 0;
     
     int draw_imageHeight;
     int draw_rightHandEdge;
-    
+
     //Pointer to processor
     LfpLatencyProcessor* processor;
-    
+
     friend class LfpLatencyProcessorVisualizerContentComponent;
-    
+    friend class TableContent;
+
+    // This component contains all components and graphics that were added using Projucer.
+    // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
-    //
+    TableContent tc;
+
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
     // ========================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessorVisualizer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorVisualizer);
 };
 
 

@@ -9,9 +9,34 @@
 #include "LfpLatencySpectrogram.h"
 #include "LfpLatencySpectrogramControlPanel.h"
 
+
+class TableContent : public TableListBoxModel
+                     
+{
+public:
+   
+    TableContent();
+    ~TableContent();
+    
+    int getNumRows();
+    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
+    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
+    //Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
+
+private:    
+    
+    friend class LfpLatencyProcessorVisualizer;
+    
+    bool spikeFound = false;
+
+
+};
+
+
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
                                                       public ButtonListener
+                                                 
 {
 public:
     LfpLatencyProcessorVisualizerContentComponent();
@@ -37,6 +62,7 @@ private:
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
 
+    ScopedPointer<TableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
 
     //Image thresholds
@@ -54,7 +80,8 @@ private:
 
     int searchBoxWidth;
 
-    bool spikeDetected;
+    bool spikeDetected = false;
+    bool newSpikeDetected = false;
     float detectionThreshold;
     int subsamplesPerWindow;
     int startingSample;
@@ -73,6 +100,12 @@ private:
 
 	bool voltageTooHighOkay;
 	bool alreadyAlerted = false;
+    bool testSpikePls = false;
+
+    bool del_0 = false;
+    bool del_1 = false;
+    bool del_2 = false;
+    bool del_3 = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
@@ -101,6 +134,7 @@ private:
 	
 	// main GUI
     ScopedPointer<TextButton> setupButton;
+    ScopedPointer<TextButton> optionsButton;
 
     ScopedPointer<Slider> searchBoxSlider;
 	ScopedPointer<Label> searchBoxSliderLabel;
@@ -139,9 +173,31 @@ private:
 	ScopedPointer<Label> dataChannelComboBoxLabel;
 
     ScopedPointer<Slider> Trigger_threshold; //TODO
-
     ScopedPointer<ToggleButton> trackSpike_button;
     ScopedPointer<Label> trackSpike_button_Label;
+
+    //ScopedPointer<ComboBox> trackSpikeComboBox;
+    ScopedPointer<TableListBox> spikeTracker;
+    
+    ScopedPointer<TextEditor> location0;
+    ScopedPointer<TextEditor> location1;
+    ScopedPointer<TextEditor> location2;
+    ScopedPointer<TextEditor> location3;
+
+    ScopedPointer<TextEditor> fp0;
+    ScopedPointer<TextEditor> fp1;
+    ScopedPointer<TextEditor> fp2;
+    ScopedPointer<TextEditor> fp3;
+    
+    ScopedPointer<ToggleButton> follow0;
+    ScopedPointer<ToggleButton> follow1;
+    ScopedPointer<ToggleButton> follow2;
+    ScopedPointer<ToggleButton> follow3;
+
+    ScopedPointer<TextButton> del0;
+    ScopedPointer<TextButton> del1;
+    ScopedPointer<TextButton> del2;
+    ScopedPointer<TextButton> del3;
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
