@@ -69,10 +69,6 @@ Visualiser for the plugin:
     <img src="./Resources/mainui.png" alt="ui.png" title="UI">
 </p>
 
-**The GUI is currently under refurbishment, bear with us!**
-
-> Trigger Channel and Data Channel: Used to set the corresponding channels on Pulse Pal and Recording Device.
-
 > Trigger Threshold: If exceeded in the trigger channel, a new will be added.
 
 > Subsamples Per Window: Number of samples used per 'track' displayed on the plot. It can be thought of as an inverse 'zoom' scale - As the number of values plotted in a given space increases the figure zooms out.
@@ -81,13 +77,30 @@ Visualiser for the plugin:
 
 > Image Threshold Values: These are the limits for the colour scale on the plot
 
+There are two additional drop down tabs: Setup and Options
+
+Options:
+<p align="center">
+	<img src="./Resources/options.png" alt="options.png" title="Options">
+</p>
+
+> Trigger Channel and Data Channel: Used to set the corresponding channels on Pulse Pal and Recording Device.
+
+> Colour Style Combination: Used to adjust the graphics displayed in the search window.
+
+Setup:
+<p align="center">
+	<img src="./Resources/setup.png" alt="setup.png" title="Setup">
+</p>
+
+This is where the stimulus voltage and rates of spike tracking can be adjusted.
 
 #### Spike Tracking  
 The Threshold Values are used to detect spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box, with the search box turning green.
 
 <p align="center">
-	<img src="./Resources/table.png" alt="table.png" title="table">
-<>
+	<img src="./Resources/table.png" alt="table.png" title="Table">
+</p>
 
 The table above can be used to track multiple spikes. Any spikes found will be added to the table. They can be tracked and deleted from the table.
 
