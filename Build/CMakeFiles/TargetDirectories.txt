@@ -1,4 +1,0 @@
-C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/CMakeFiles/ChronicPainRepo.dir
-C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/CMakeFiles/INSTALL.dir
-C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/CMakeFiles/ALL_BUILD.dir
-C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/CMakeFiles/ZERO_CHECK.dir
