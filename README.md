@@ -13,7 +13,7 @@ We recommend compiling on Windows.
 	2. Open a terminal in ~/home, type git clone https://github.com/open-ephys/plugin-GUI.git
 ##### For Windows Users:
 	3. Navigate to ~home/plugin-GUI/Build via command prompt
-	4. Type cmake -G "Visual Studio 16 2019" -A x64 ..
+	4. Enter the following command: cmake -G "Visual Studio 16 2019" -A x64 ..
 	5. In Visual Studio, select the open-ephys.sln file from the Build folder.
 	6. Optional: From the Build menu, select Configuration Manager, then select Release
 	7. Select Build/Build Solution (or press F6) to build the GUI from source or hit the Debug/Release button to build and run. 
@@ -22,15 +22,15 @@ We recommend compiling on Windows.
 
 ##### For Mac Users:
 	3. Navigate to ~home/plugin-GUI/Build via command prompt
-	4. Enter cmake -G "Xcode" ..
+	4. Enter the following command: cmake -G "Xcode" ..
 	5. In Xcode, select the open-ephys code project file.
 	6. Set the active scheme to install
 	7. Build the current scheme by pressing the play button
 
 ##### For Linux Users:
 	3. Install the Linux dependencies by running sudo ./install_linux_dependencies.sh in the Resources/Scripts folder.
-	4. From the same directory, type sudo cp 40-open-ephys.rules /etc/udev/rules.d
-	5. Type sudo service udev restart on Ubuntu/Debian or sudo udevadm control --reload-rules on Fedora/CentOS. These last two steps will allow your computer to communicate with the Open Ephys acquisition board.
+	4. From the same directory, enter: sudo cp 40-open-ephys.rules /etc/udev/rules.d
+	5. Enter: sudo service udev restart on Ubuntu/Debian or sudo udevadm control --reload-rules on Fedora/CentOS. These last two steps will allow your computer to communicate with the Open Ephys acquisition board.
 	6. Navigate to ~/home/plugin-GUI/Build via command prompt
 	7. Type cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. to create the build files.
 	8. Type make to build the main application. If this fails, you are probably missing dependencies (see above, and please let us know if any dependencies are missing from the instructions). 
