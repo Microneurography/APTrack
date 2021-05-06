@@ -566,9 +566,55 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 			return true;
 		}
 	}
-	else {
-		return false;
+
+	auto subsamplesPerWindowValue = spectrogramControlPanel->getSubsamplesPerWindowValue();
+	//Increase subsamplesperwindow
+	if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindowValue < spectrogramControlPanel->getSubsamplesPerWindowMaximum())) {
+		spectrogramControlPanel->changeSubsamplesPerWindowValue(5);
+		return true;
 	}
+	//Decrease subsamplesperwindow
+	else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindowValue > spectrogramControlPanel->getSubsamplesPerWindowMinimum())) {
+		spectrogramControlPanel->changeSubsamplesPerWindowValue(-5);
+		return true;
+	}
+
+	auto startingSampleValue = spectrogramControlPanel->getStartingSampleValue();
+	//Increase starting sample
+	if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSampleValue < spectrogramControlPanel->getStartingSampleMaximum())) {
+		spectrogramControlPanel->changeStartingSampleValue(100);
+		return true;
+	}
+	//Decrease starting sample
+	else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSampleValue > spectrogramControlPanel->getStartingSampleMinimum())) {
+		spectrogramControlPanel->changeStartingSampleValue(-100);
+		return true;
+	}
+
+	auto highImageThreshold = spectrogramControlPanel->getImageThresholdMaxValue();
+	auto lowImageThreshold = spectrogramControlPanel->getImageThresholdMinValue();
+	//Increase highImageThreshold
+	if ((k == KeyPress::pageUpKey || k == KeyPress::numberPad9) && (highImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) {
+		spectrogramControlPanel->changeImageThresholdMaxValue(2);
+		return true;
+	}
+	//Decrease highImageThreshold
+	else if ((k == KeyPress::pageDownKey || k == KeyPress::numberPad3) && (highImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) {
+		spectrogramControlPanel->changeImageThresholdMaxValue(-2);
+		return true;
+	}
+	//Increase lowImageThreshold
+	else if ((k == KeyPress::homeKey || k == KeyPress::numberPad7) && (lowImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) {
+		spectrogramControlPanel->changeImageThresholdMinValue(2);
+		return true;
+	}
+	//Decrease lowImageThreshold
+	else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) {
+		spectrogramControlPanel->changeImageThresholdMinValue(-2);
+		return true;
+	}
+
+	return false;
 }
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)

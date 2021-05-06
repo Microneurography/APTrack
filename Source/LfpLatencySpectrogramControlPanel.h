@@ -15,7 +15,6 @@ public:
     LfpLatencySpectrogramControlPanel(LfpLatencyProcessorVisualizerContentComponent* content);
 
     void resized() override;
-    bool keyPressed(const KeyPress& k) override;
 
     void setImageThresholdRange(double newMinimum, double newMaximum, double newInterval = 0);
     void setHighImageThresholdText(const String& newText);

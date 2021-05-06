@@ -75,57 +75,6 @@ void LfpLatencySpectrogramControlPanel::resized()
     conductionDistance->setBounds(area.removeFromTop(sliderItemHeight));
 }
 
-bool LfpLatencySpectrogramControlPanel::keyPressed(const KeyPress& k) {
-    auto subsamplesPerWindowValue = subsamplesPerWindow->getSliderValue();
-    //Increase subsamplesperwindow
-    if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindowValue < subsamplesPerWindow->getSliderMaximum())) {
-        subsamplesPerWindow->setSliderValue(subsamplesPerWindowValue + 5);
-        return true;
-    }
-    //Decrease subsamplesperwindow
-    else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindowValue > subsamplesPerWindow->getSliderMinimum())) {
-        subsamplesPerWindow->setSliderValue(subsamplesPerWindowValue - 5);
-        return true;
-    }
-
-    auto startingSampleValue = startingSample->getSliderValue();
-    //Increase starting sample
-    if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSampleValue < startingSample->getSliderMaximum())) {
-        startingSample->setSliderValue(startingSample->getSliderValue() + 100);
-        return true;
-    }
-    //Decrease starting sample
-    else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSampleValue > startingSample->getSliderMinimum())) {
-        startingSample->setSliderValue(startingSample->getSliderValue() - 100);
-        return true;
-    }
-
-    auto highImageThreshold = imageThreshold->getSliderMaxValue();
-    auto lowImageThreshold = imageThreshold->getSliderMinValue();
-    //Increase highImageThreshold
-    if ((k == KeyPress::pageUpKey || k == KeyPress::numberPad9) && (highImageThreshold < imageThreshold->getSliderMaximum())) {
-        imageThreshold->setSliderMaxValue(highImageThreshold + 2);
-        return true;
-    }
-    //Decrease highImageThreshold
-    else if ((k == KeyPress::pageDownKey || k == KeyPress::numberPad3) && (highImageThreshold > imageThreshold->getSliderMinimum())) {
-        imageThreshold->setSliderMaxValue(highImageThreshold - 2);
-        return true;
-    }
-    //Increase lowImageThreshold
-    else if ((k == KeyPress::homeKey || k == KeyPress::numberPad7) && (lowImageThreshold < imageThreshold->getSliderMaximum())) {
-        imageThreshold->setSliderMinValue(lowImageThreshold + 2);
-        return true;
-    }
-    //Decrease lowImageThreshold
-    else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > imageThreshold->getSliderMinimum())) {
-        imageThreshold->setSliderMinValue(lowImageThreshold - 2);
-        return true;
-    }
-    
-    return false;
-}
-
 void LfpLatencySpectrogramControlPanel::setImageThresholdRange(double newMinimum, double newMaximum, double newInterval) {
     imageThreshold->setSliderRange(newMinimum, newMaximum, newInterval);
 }
