@@ -18,7 +18,7 @@ LfpLatencyLabelTextEditor::LfpLatencyLabelTextEditor(const String& labelText)
 
 void LfpLatencyLabelTextEditor::resized()
 {
-    auto textEditorLeft = getWidth() * 2 / 3;
+    auto textEditorLeft = getWidth() / 3;
     textEditor->setBounds(textEditorLeft, 0, getWidth() - textEditorLeft, getHeight());
 }
 
