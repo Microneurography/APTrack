@@ -608,6 +608,50 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 		searchBoxSlider->setValue(searchBoxSlider->getValue() - 5, sendNotificationAsync);
 		return true;
 	}
+	else if (k == KeyPress::F1Key) {
+		if (follow0->getToggleState() == true) {
+			follow0->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(0);
+			return true;
+		}
+		else if (follow0->getToggleState() == false) {
+			follow0->setToggleState(true, sendNotification);
+			return true;
+		}
+	}
+	else if (k == KeyPress::F2Key) {
+		if (follow1->getToggleState() == true) {
+			follow1->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(1);
+			return true;
+		}
+		else if (follow1->getToggleState() == false) {
+			follow1->setToggleState(true, sendNotification);
+			return true;
+		}
+	}
+	else if (k == KeyPress::F3Key) {
+		if (follow2->getToggleState() == true) {
+			follow2->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(2);
+			return true;
+		}
+		else if (follow2->getToggleState() == false) {
+			follow2->setToggleState(true, sendNotification);
+			return true;
+		}
+	}
+	else if (k == KeyPress::F4Key) {
+		if (follow3->getToggleState() == true) {
+			follow3->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(3);
+			return true;
+		}
+		else if (follow3->getToggleState() == false) {
+			follow3->setToggleState(true, sendNotification);
+			return true;
+		}
+	}
 	else {
 		return false;
 	}
