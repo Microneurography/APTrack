@@ -1,7 +1,6 @@
 // LfpLatencySpectrogramPanel.cpp
 
 #include "LfpLatencySpectrogramPanel.h"
-#include "LfpLatencyElements.h"
 #include "LfpLatencySpectrogram.h"
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
 

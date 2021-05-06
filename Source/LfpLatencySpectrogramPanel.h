@@ -6,12 +6,10 @@
 #include <EditorHeaders.h>
 
 #include "LfpLatencyProcessor.h"
+#include "LfpLatencyElements.h"
 
-class LfpLatencyLabelSliderNoTextBox;
 class LfpLatencySpectrogram;
 class LfpLatencyProcessorVisualizerContentComponent;
-class LfpLatencyLabelLinearVerticalSliderNoTextBox;
-class LfpLatencySearchBox;
 
 class LfpLatencySpectrogramPanel : public Component
 {

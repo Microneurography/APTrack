@@ -12,10 +12,11 @@ jobs:
       - name: Build plugin
         run: |
           cd ..
-          cp -R OE-plugin-latency-tracker/ /OE-plugin-latency-tracker/ # Not use mv to remove the error in Post Checkout and Stop containers
-          cd /OE-plugin-latency-tracker/Build 
+          mkdir /OEPlugins
+          cp -R OE-plugin-latency-tracker/ /OEPlugins/OE-plugin-latency-tracker/ # Not use mv to remove the error in Post Checkout and Stop containers
+          cd /OEPlugins/OE-plugin-latency-tracker/Build 
           export CC=gcc-8 CXX=g++-8 
-          cmake .. 
+          cmake -G "Unix Makefiles" ..
           make
       
       # Tried download artifact, but download from another workflow is not supported
