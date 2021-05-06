@@ -536,6 +536,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
+
 	printf("running save custom params\n");
 	// LfpLatencyProcessor::saveRecoveryData(XmlValue);
 }
@@ -580,10 +581,12 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
         if (buttonThatWasClicked->getToggleState() == true) {
             // If using extended scale (eg when using file reader)
             spectrogramControlPanel->setImageThresholdRange(0, 1000, 0);
+			(*valuesMap)["extendedColorScale"] = "1";
         }
         else {
             // If using regular scale (eg when using FPGA real time data)
             spectrogramControlPanel->setImageThresholdRange(0, 100, 0);
+			(*valuesMap)["extendedColorScale"] = "0";
         }
     }
 	if (buttonThatWasClicked == trackSpike_button)
@@ -591,12 +594,14 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		if (buttonThatWasClicked->getToggleState() == true) {
 			trackThreshold_button->setEnabled(true);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::black);
+			(*valuesMap)["trackThreshold"] = "1";
 		}
 		else if (buttonThatWasClicked->getToggleState() == false)
 		{
 			trackThreshold_button->setEnabled(false);
 			trackThreshold_button->setToggleState(false, sendNotification);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
+			(*valuesMap)["trackThreshold"] = "0";
 		}
 	}
 	if (buttonThatWasClicked == setupButton) {
@@ -648,6 +653,9 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, setupButton->getBounds(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
+
+	printf("running save custom params\n");
+	// LfpLatencyProcessor::saveRecoveryData(XmlValue);
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
