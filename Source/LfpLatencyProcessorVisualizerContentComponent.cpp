@@ -955,7 +955,7 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 	}
 	else if (follow0->getToggleState() == true) 
 	{
-		colour = Colours::lightsteelblue
+		colour = Colours::lightsteelblue;
 	}
 	else if (follow1->getToggleState() == true) 
 	{
