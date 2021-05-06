@@ -26,7 +26,7 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     int maxSubsample = std::round(DATA_CACHE_SIZE_SAMPLES / SPECTROGRAM_HEIGHT); // TODO: remove constants
     subsamplesPerWindow->setSliderRange(1, maxSubsample, 1);
     subsamplesPerWindow->addSliderListener(content);
-    subsamplesPerWindow->setSliderValue(1); // TODO: not sure we need this for initialisation
+    subsamplesPerWindow->setSliderValue(content->getSubsamplesPerWindow()); // TODO: not sure we need this for initialisation
 
     startingSample = new LfpLatencyLabelSlider("Starting Sample");
     startingSample->setSliderRange(0, 30000, 1);
