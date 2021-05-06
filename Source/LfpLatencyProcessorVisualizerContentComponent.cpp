@@ -89,15 +89,15 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
 
-	addAndMakeVisible(setupButton = new TextButton("setupButton"));
-	setupButton->setButtonText("Setup");
-	setupButton->addListener(this);
-	setupButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
+	// addAndMakeVisible(setupButton = new TextButton("setupButton"));
+	// setupButton->setButtonText("Setup");
+	// setupButton->addListener(this);
+	// setupButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
-	addAndMakeVisible(optionsButton = new TextButton("optionsButton"));
-	optionsButton->setButtonText("Options");
-	optionsButton->addListener(this);
-	optionsButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
+	// addAndMakeVisible(optionsButton = new TextButton("optionsButton"));
+	// optionsButton->setButtonText("Options");
+	// optionsButton->addListener(this);
+	// optionsButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
 	// Stimulus control - setup components
 	addAndMakeVisible(ppControllerComponent = new ppController());
@@ -503,8 +503,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 
 	// Lucy's Group
-	setupButton->setBounds(955, 10, 120, 24);
-	optionsButton->setBounds(665, 10, 120, 24);
+	// setupButton->setBounds(955, 10, 120, 24);
+	// optionsButton->setBounds(665, 10, 120, 24);
 	// Stimulus
 	ppControllerComponent->setBounds(667, 260, 402, 350);
 
@@ -763,7 +763,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		del_2 = true;
 	if (buttonThatWasClicked == del3)
 		del_3 = true;
-	if (buttonThatWasClicked == setupButton) {
+	if (buttonThatWasClicked->getName() == "Setup") {
 
 		Viewport* view = new Viewport("viewTest");
 		view->setLookAndFeel(&this->getLookAndFeel());
@@ -809,10 +809,10 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 
 		view->setSize(270, 325);
 
-		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, setupButton->getBounds(), this);
+		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getSetupBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
-	if (buttonThatWasClicked == optionsButton) {
+	if (buttonThatWasClicked->getName() == "Options") {
 
 		Viewport* view = new Viewport("viewTest");
 		view->setLookAndFeel(&this->getLookAndFeel());
@@ -855,7 +855,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 
 		view->setSize(300, 200);
 
-		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, optionsButton->getBounds(), this);
+		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 }

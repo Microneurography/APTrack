@@ -135,8 +135,8 @@ private:
 	ScopedPointer<Label> stimulusVoltageMin_textLabel;
 	
 	// main GUI
-    ScopedPointer<TextButton> setupButton;
-    ScopedPointer<TextButton> optionsButton;
+    // ScopedPointer<TextButton> setupButton;
+    // ScopedPointer<TextButton> optionsButton;
 
     ScopedPointer<Slider> searchBoxSlider;
 	ScopedPointer<Label> searchBoxSliderLabel;
