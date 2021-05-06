@@ -43,6 +43,7 @@
 #include <ProcessorHeaders.h>
 #include <functional>
 #include <map>
+#include <unordered_map>
 
 //fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
@@ -105,7 +106,7 @@ public:
 
 	/** This method is a critical section, protected a mutex lock. Allows you to save slider values, and maybe
 	some data if you wanted in a file called LastLfpLatencyPluginComponents */
-	static void saveRecoveryData(XmlElement* parentElement);
+	static void saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap);
 
 	/** Starts by asking the user if they would like to load data from LastLfpLatencyPluginComponents, 
 	the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
@@ -178,29 +179,7 @@ public:
 	float getParameterFloat(int parameterID);
 	//Result makingFile;
 
-	static std::map<String, String> customParameters;
-
 private:
-	// loading
-	static bool loadRecovery;
-	static bool loaded;
-
-	// saving
-	static int i;
-	static bool foundCustomParams;
-	static bool docExisted;
-	static bool fileOK;
-	static bool writtenOK;
-	static File recoveryConfigFile;
-	static String workingDirectory;
-	static String value;
-	static String name;
-	static String elementName;
-	static ScopedPointer<XmlElement> recoveryConfig;
-	static ScopedPointer<XmlElement> processor;
-	static ScopedPointer<XmlElement> customParams;
-
-	static int j;
 	//debug
 	float lastReceivedDACPulse;
 

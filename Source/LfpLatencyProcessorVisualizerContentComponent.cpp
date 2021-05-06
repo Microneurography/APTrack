@@ -288,6 +288,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
     spikeDetected = false;
 
+	isSaving = false;
+
 	valuesMap = new unordered_map<string, juce::String>;
 }
 
@@ -538,7 +540,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 	}
 
 	printf("running save custom params\n");
-	// LfpLatencyProcessor::saveRecoveryData(XmlValue);
+	tryToSave();
 }
 
 /*
@@ -594,14 +596,14 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		if (buttonThatWasClicked->getToggleState() == true) {
 			trackThreshold_button->setEnabled(true);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::black);
-			(*valuesMap)["trackThreshold"] = "1";
+			(*valuesMap)["trackSpike"] = "1";
 		}
 		else if (buttonThatWasClicked->getToggleState() == false)
 		{
 			trackThreshold_button->setEnabled(false);
 			trackThreshold_button->setToggleState(false, sendNotification);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
-			(*valuesMap)["trackThreshold"] = "0";
+			(*valuesMap)["trackSpike"] = "0";
 		}
 	}
 	if (buttonThatWasClicked == setupButton) {
@@ -655,7 +657,18 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 	}
 
 	printf("running save custom params\n");
-	// LfpLatencyProcessor::saveRecoveryData(XmlValue);
+	tryToSave();
+}
+
+void LfpLatencyProcessorVisualizerContentComponent::tryToSave()
+{
+	if (!isSaving)
+	{
+		isSaving = true;
+		LfpLatencyProcessor::saveRecoveryData(valuesMap);
+		isSaving = false;
+	}
+	
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const

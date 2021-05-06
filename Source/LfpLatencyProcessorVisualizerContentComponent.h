@@ -30,6 +30,7 @@ public:
     float getHighImageThreshold() const;
     float getDetectionThreshold() const;
     int getColorStyleComboBoxSelectedId() const;
+    void tryToSave();
 
 private:
     LfpLatencySpectrogram spectrogram; // Will contain the spectrogram image.
@@ -77,6 +78,7 @@ private:
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
 
+    bool isSaving;
     unordered_map<string, juce::String> *valuesMap;
 
 	// setup
@@ -157,9 +159,6 @@ private:
     ScopedPointer<Slider> trigger_threshold_Slider;
 	ScopedPointer<Label> trigger_threshold_Slider_Label;
 
-	// In order to save values
-	// This can't be a scoped pointer because scoped pointer actually deals with it badly because we redeclare it every time
-	XmlElement *XmlValue;
     //DEBUG
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorVisualizerContentComponent)
