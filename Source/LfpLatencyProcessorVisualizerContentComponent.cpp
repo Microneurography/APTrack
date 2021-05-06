@@ -92,6 +92,66 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	LfpLatencyProcessor::loadRecoveryData(valuesMap);
 
+	if (valuesMap->find("trackSpike_IncreaseRate") != valuesMap->end())
+	{
+		trackSpike_IncreaseRate = stof((*valuesMap)["trackSpike_IncreaseRate"].toStdString());
+	}
+
+	if (valuesMap->find("trackSpike_DecreaseRate") != valuesMap->end())
+	{
+		trackSpike_DecreaseRate = stof((*valuesMap)["trackSpike_DecreaseRate"].toStdString());
+	}
+
+	if (valuesMap->find("stimulusVoltageMax") != valuesMap->end())
+	{
+		stimulusVoltageMax = stof((*valuesMap)["stimulusVoltageMax"].toStdString());
+	}
+
+	if (valuesMap->find("stimulusVoltageMin") != valuesMap->end())
+	{
+		stimulusVoltageMin = stof((*valuesMap)["stimulusVoltageMin"].toStdString());
+	}
+
+	if (valuesMap->find("stimulusVoltage") != valuesMap->end())
+	{
+		stimulusVoltage = stof((*valuesMap)["stimulusVoltage"].toStdString());
+	}
+
+	if (valuesMap->find("highImageThreshold") != valuesMap->end())
+	{
+		highImageThreshold = stof((*valuesMap)["highImageThreshold"].toStdString());
+	}
+
+	if (valuesMap->find("lowImageThreshold") != valuesMap->end())
+	{
+		lowImageThreshold = stof((*valuesMap)["lowImageThreshold"].toStdString());
+	}
+
+	if (valuesMap->find("detectionThreshold") != valuesMap->end())
+	{
+		detectionThreshold = stof((*valuesMap)["detectionThreshold"].toStdString());
+	}
+
+	if (valuesMap->find("searchBoxLocation") != valuesMap->end())
+	{
+		searchBoxLocation = stoi((*valuesMap)["searchBoxLocation"].toStdString());
+	}
+
+	if (valuesMap->find("searchBoxWidth") != valuesMap->end())
+	{
+		searchBoxWidth = stoi((*valuesMap)["searchBoxWidth"].toStdString());
+	}
+
+	if (valuesMap->find("subsamplesPerWindow") != valuesMap->end())
+	{
+		subsamplesPerWindow = stoi((*valuesMap)["subsamplesPerWindow"].toStdString());
+	}
+
+	if (valuesMap->find("startingSample") != valuesMap->end())
+	{
+		startingSample = stoi((*valuesMap)["startingSample"].toStdString());
+	}
+
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
 
@@ -207,7 +267,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	addAndMakeVisible(trackSpike_button = new ToggleButton(""));
 	trackSpike_button->addListener(this);
-	trackSpike_button->setToggleState(false, sendNotification);
 	trackSpike_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
 	addAndMakeVisible(trackSpike_button_Label = new Label("track_spike_button_label"));
 	trackSpike_button_Label->setText("Track Spike", sendNotification);
@@ -224,22 +283,22 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	// Increase/Decrease rate of spike tracking
 	// Not added here as they are in the setup box.
-	trackSpike_IncreaseRate_Slider = new Slider("searchBoxWidthSlider");
+	trackSpike_IncreaseRate_Slider = new Slider("trackSpike_IncreaseRate_Slider");
 	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
 	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_IncreaseRate_Slider->addListener(this);
-	trackSpike_IncreaseRate_Slider->setValue(0.01f);
+	trackSpike_IncreaseRate_Slider->setValue(trackSpike_IncreaseRate);
 	trackSpike_IncreaseRate_Slider_Label = new Label("Track_Spike_Increase_Rate_Slider_Label");
 	trackSpike_IncreaseRate_Slider_Label->setText("Increase Rate of Spike Tracking", sendNotification);
 	trackSpike_IncreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
 
-	trackSpike_DecreaseRate_Slider = new Slider("searchBoxWidthSlider");
+	trackSpike_DecreaseRate_Slider = new Slider("trackSpike_DecreaseRate_Slider");
 	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
 	trackSpike_DecreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_DecreaseRate_Slider->addListener(this);
-	trackSpike_DecreaseRate_Slider->setValue(0.01f);
+	trackSpike_DecreaseRate_Slider->setValue(trackSpike_DecreaseRate);
 	trackSpike_DecreaseRate_Slider_Label = new Label("Track_Spike_Decrease_Rate_Slider_Label");
 	trackSpike_DecreaseRate_Slider_Label->setText("Decrease Rate of Spike Tracking", sendNotification);
 	trackSpike_DecreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
@@ -280,15 +339,45 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
 	stimulusVoltageSlider->setValue(stimulusVoltage);
 
-	searchBoxSlider->setValue(10.0f);
+	searchBoxSlider->setValue(searchBoxLocation);
 
     colorStyleComboBox->setSelectedId(1);
-    searchBoxWidthSlider->setValue(3);
-    
-    extendedColorScaleToggleButton->setToggleState(false,sendNotification);
+    searchBoxWidthSlider->setValue(searchBoxWidth);
 
     spectrogramControlPanel = new LfpLatencySpectrogramControlPanel(this);
     addAndMakeVisible(spectrogramControlPanel);
+
+	if (valuesMap->find("extendedColorScale") != valuesMap->end())
+	{
+		if ((*valuesMap)["extendedColorScale"] == "1")
+		{
+			extendedColorScaleToggleButton->setToggleState(true, sendNotification);
+		}
+		else
+		{
+			extendedColorScaleToggleButton->setToggleState(false, sendNotification);
+		}
+	}
+	else
+	{
+		extendedColorScaleToggleButton->setToggleState(false, sendNotification);
+	}
+
+	if (valuesMap->find("trackSpike") != valuesMap->end())
+	{
+		if ((*valuesMap)["trackSpike"] == "1")
+		{
+			trackSpike_button->setToggleState(true, sendNotification);
+		}
+		else
+		{
+			trackSpike_button->setToggleState(false, sendNotification);
+		}
+	}
+	else
+	{
+		trackSpike_button->setToggleState(false, sendNotification);
+	}
 
     setSize (700, 900);
     
@@ -298,7 +387,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerContentComponent()
 {
     searchBoxSlider = nullptr;
-    searchBoxWidthSlider=nullptr;
+    searchBoxWidthSlider = nullptr;
     colorStyleComboBox = nullptr;
 	stimulusVoltageSlider = nullptr;
 

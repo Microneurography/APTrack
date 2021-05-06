@@ -20,9 +20,9 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     imageThreshold = new LfpLatencyLabelVerticalSlider("Image Threshold");
     imageThreshold->setSliderRange(0, 100, 0);
     imageThreshold->addSliderListener(content);
-    imageThreshold->setSliderMinValue(0);
-    imageThreshold->setSliderMaxValue(90);
-    imageThreshold->setSliderValue(50);
+    imageThreshold->setSliderMinValue(content->getLowImageThreshold());
+    imageThreshold->setSliderMaxValue(content->getHighImageThreshold());
+    imageThreshold->setSliderValue(content->getDetectionThreshold());
     
     highImageThreshold = new LfpLatencyLabelTextEditor("High Image Threshold");
     highImageThreshold->setTextEditorText(String(imageThreshold->getSliderMaximum()) + " uV");
@@ -35,12 +35,12 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     int maxSubsample = std::round(DATA_CACHE_SIZE_SAMPLES / SPECTROGRAM_HEIGHT); // TODO: remove constants
     subsamplesPerWindow->setSliderRange(1, maxSubsample, 1);
     subsamplesPerWindow->addSliderListener(content);
-    subsamplesPerWindow->setSliderValue(1); // TODO: not sure we need this for initialisation
+    subsamplesPerWindow->setSliderValue(content->getSubsamplesPerWindow());
 
     startingSample = new LfpLatencyLabelSlider("Starting Sample");
     startingSample->setSliderRange(0, 30000, 1);
     startingSample->addSliderListener(content);
-    startingSample->setSliderValue(0); // TODO: not sure we need this for initialisation
+    startingSample->setSliderValue(content->getStartingSample());
 
     // TODO: conduction distance not used?
     conductionDistance = new LfpLatencyLabelSlider("Conduction Distance");
