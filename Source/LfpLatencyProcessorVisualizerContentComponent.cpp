@@ -388,6 +388,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     spectrogramControlPanel = new LfpLatencySpectrogramControlPanel(this);
     addAndMakeVisible(spectrogramControlPanel);
 
+	otherControlPanel = new LfpLatencyOtherControlPanel(this);
+	addAndMakeVisible(otherControlPanel);
+	otherControlPanel->toBack();
+
     setSize (700, 900);
     
     spikeDetected = false;
@@ -468,6 +472,12 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 // set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
+	auto area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedTop(getHeight() * 0.60);
+	spectrogramControlPanel->setBounds(area);
+
+	area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedBottom(getHeight() * 0.60);
+	otherControlPanel->setBounds(area);
+
 	// Diana's Group
     searchBoxSlider->setBounds (SPECTROGRAM_WIDTH-5, 0, 15, SPECTROGRAM_HEIGHT);
 	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH-35, SPECTROGRAM_HEIGHT-17, 80, 50); // x value is inverted
@@ -513,37 +523,61 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	dataChannelComboBox->setBounds(785, 97, 120, 24);
 	dataChannelComboBoxLabel->setBounds(665, 97, 120, 24); // fine
 
+	auto boundsMap = otherControlPanel->getTableBounds();
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
-	spikeTracker->setBounds(665, 40, 470, 200);
+	spikeTracker->setBounds(boundsMap["spikeTracker"]);
+	//spikeTracker->setBounds(665, 40, 470, 200);
 
-	location0->setBounds(715, 69, 100, 20);
-	location1->setBounds(715, 90, 100, 20);
-	location2->setBounds(715, 111, 100, 20);
-	location3->setBounds(715, 132, 100, 20);
+	auto tableX = boundsMap["spikeTracker"].getX();
+	auto tableY = boundsMap["spikeTracker"].getY();
 
-	fp0->setBounds(815, 69, 120, 20);
-	fp1->setBounds(815, 90, 120, 20);
-	fp2->setBounds(815, 111, 120, 20);
-	fp3->setBounds(815, 132, 120, 20);
+	vector<vector<Component*>> tableCells{ 
+		{location0, location1, location2, location3},
+		{fp0, fp1, fp2, fp3},
+		{follow0, follow1, follow2, follow3},
+		{del0, del1, del2, del3}
+	};
 
-	follow0->setBounds(935, 69, 120, 20);
-	follow1->setBounds(935, 91, 120, 20);
-	follow2->setBounds(935, 112, 120, 20);
-	follow3->setBounds(935, 134, 120, 20);
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 2, j, false).translated(tableX, tableY));
+		}
+	}
 
-	del0->setBounds(1050, 68, 60, 18);
-	del1->setBounds(1050, 89, 60, 18);
-	del2->setBounds(1050, 110, 60, 18);
-	del3->setBounds(1050, 131, 60, 18);
+	for (int i = 0; i < 4; i++)
+	{
+		auto cellArea = spikeTracker->getCellPosition(3 + 2, i, false).translated(tableX, tableY);
+		cellArea = cellArea.withSizeKeepingCentre(60, 18);
+		tableCells[3][i]->setBounds(cellArea);
+	}
+
+	//location0->setBounds(715, 69, 100, 20);
+	//location1->setBounds(715, 90, 100, 20);
+	//location2->setBounds(715, 111, 100, 20);
+	//location3->setBounds(715, 132, 100, 20);
+
+	//fp0->setBounds(815, 69, 120, 20);
+	//fp1->setBounds(815, 90, 120, 20);
+	//fp2->setBounds(815, 111, 120, 20);
+	//fp3->setBounds(815, 132, 120, 20);
+
+	//follow0->setBounds(935, 69, 120, 20);
+	//follow1->setBounds(935, 91, 120, 20);
+	//follow2->setBounds(935, 112, 120, 20);
+	//follow3->setBounds(935, 134, 120, 20);
+
+	//del0->setBounds(1050, 68, 60, 18);
+	//del1->setBounds(1050, 89, 60, 18);
+	//del2->setBounds(1050, 110, 60, 18);
+	//del3->setBounds(1050, 131, 60, 18);
 
 	trackSpike_button->setBounds(780, 126, 120, 24);
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
 
 	trackThreshold_button->setBounds(780, 155, 120, 24);
 	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
-
-    auto area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedTop(getHeight() * 0.60);
-    spectrogramControlPanel->setBounds(area);
 }
 
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {

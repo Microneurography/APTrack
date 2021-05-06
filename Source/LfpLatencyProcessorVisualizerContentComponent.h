@@ -8,6 +8,7 @@
 
 #include "LfpLatencySpectrogram.h"
 #include "LfpLatencySpectrogramControlPanel.h"
+#include "LfpLatencyOtherControlPanel.h"
 
 
 class TableContent : public TableListBoxModel
@@ -64,6 +65,7 @@ private:
 
     ScopedPointer<TableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
+    ScopedPointer<LfpLatencyOtherControlPanel> otherControlPanel;
 
     //Image thresholds
     float lowImageThreshold;
