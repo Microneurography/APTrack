@@ -8,6 +8,7 @@
 
 #include "LfpLatencySpectrogram.h"
 #include "LfpLatencySpectrogramControlPanel.h"
+#include "LfpLatencyOtherControlPanel.h"
 
 
 class TableContent : public TableListBoxModel
@@ -64,6 +65,7 @@ private:
 
     ScopedPointer<TableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
+    ScopedPointer<LfpLatencyOtherControlPanel> otherControlPanel;
 
     //Image thresholds
     float lowImageThreshold;
@@ -133,8 +135,8 @@ private:
 	ScopedPointer<Label> stimulusVoltageMin_textLabel;
 	
 	// main GUI
-    ScopedPointer<TextButton> setupButton;
-    ScopedPointer<TextButton> optionsButton;
+    // ScopedPointer<TextButton> setupButton;
+    // ScopedPointer<TextButton> optionsButton;
 
     ScopedPointer<Slider> searchBoxSlider;
 	ScopedPointer<Label> searchBoxSliderLabel;

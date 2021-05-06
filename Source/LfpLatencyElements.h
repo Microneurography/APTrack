@@ -57,4 +57,36 @@ private:
     ScopedPointer<Slider> slider;
 };
 
+class LfpLatencyLabelComboBox : public Component
+{
+public:
+    LfpLatencyLabelComboBox(const String& labelText);
+    void resized() override;
+
+    int getComboBoxSelectedId() const;
+    void setComboBoxSelectedId(int newItemId);
+    void setComboBoxTextWhenNothingSelected(const String& newMessage);
+    int getComboBoxNumItems() const;
+    void addComboBoxItem(const String& newItemText, int newItemId);
+    void addComboBoxSectionHeading(const String& headingName);
+    void clearComboBox();
+private:
+    ScopedPointer<Label> label;
+    ScopedPointer<ComboBox> comboBox;
+};
+
+class LfpLatencyLabelToggleButton : public Component
+{
+public:
+    LfpLatencyLabelToggleButton(const String& labelText);
+    void resized() override;
+
+    void addToggleButtonListener(Button::Listener* listener);
+    bool getToggleButtonState() const;
+    void setToggleButtonState(bool shouldBeOn, NotificationType notification);
+private:
+    ScopedPointer<Label> label;
+    ScopedPointer<ToggleButton> toggleButton;
+};
+
 #endif
