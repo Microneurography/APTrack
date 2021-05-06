@@ -10,7 +10,7 @@
 #include "LfpLatencySpectrogramPanel.h"
 #include "LfpLatencySpectrogramControlPanel.h"
 #include "LfpLatencyOtherControlPanel.h"
-
+#include "LfpLatencyRightMiddlePanel.h"
 
 class TableContent : public TableListBoxModel
                      
@@ -68,6 +68,7 @@ private:
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
     ScopedPointer<LfpLatencyOtherControlPanel> otherControlPanel;
     ScopedPointer<LfpLatencySpectrogramPanel> spectrogramPanel;
+    ScopedPointer<LfpLatencyRightMiddlePanel> rightMiddlePanel;
 
     //Image thresholds
     float lowImageThreshold;
@@ -140,14 +141,6 @@ private:
     // ScopedPointer<TextButton> setupButton;
     // ScopedPointer<TextButton> optionsButton;
 
-	ScopedPointer<Label> ROIspikeLocationLabel;
-    ScopedPointer<TextEditor> ROIspikeLocation;
-	ScopedPointer<Label> msLabel;
-
-	ScopedPointer<Label> ROIspikeValueLabel;
-    ScopedPointer<TextEditor> ROIspikeValue;
-	ScopedPointer<Label> mpersLabel;
-    
     ScopedPointer<ComboBox> colorStyleComboBox;
 	ScopedPointer<Label> colorStyleComboBoxLabel;
     
@@ -199,16 +192,6 @@ private:
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
-
-    ScopedPointer<TextEditor> ROISpikeLatency;
-	ScopedPointer<Label> ROISpikeLatencyLabel;
-
-    ScopedPointer<TextEditor> ROISpikeMagnitude;
-	ScopedPointer<Label> ROISpikeMagnitudeLabel;
-
-    ScopedPointer<Slider> trigger_threshold_Slider;
-	ScopedPointer<Label> trigger_threshold_Slider_Label;
-
 
     //DEBUG
 
