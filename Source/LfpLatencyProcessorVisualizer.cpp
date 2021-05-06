@@ -168,7 +168,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
     processor->changeParameter(2, content.startingSample);
 	processor->changeParameter(3, content.triggerChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
 	processor->changeParameter(4, content.dataChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
-	processor->changeParameter(5, content.trigger_threshold_Slider->getValue()); // pass channel Id -1 = channel index
+	processor->changeParameter(5, content.rightMiddlePanel->getTriggerThresholdValue()); // pass channel Id -1 = channel index
 	
 	//Update spectrogram image
 	updateSpectrogram();
@@ -325,8 +325,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 
 	//display values
-	content.ROISpikeMagnitude->setText(String(maxLevel,1) + " uV");
-	content.ROISpikeLatency->setText(String(SpikeLocationAbs/30.0f,1)+" ms"); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
+	content.rightMiddlePanel->setROISpikeValueText(String(maxLevel, 1));
+	content.rightMiddlePanel->setROISpikeLatencyText(String(SpikeLocationAbs / 30.0f, 1)); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
 
 	// If we have enabled spike tracking the track spike
 	if (content.trackSpike_button->getToggleState() == true) {

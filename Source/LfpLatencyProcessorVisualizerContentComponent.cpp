@@ -134,17 +134,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	//
 
-    
-    addAndMakeVisible(ROISpikeLatency = new TextEditor("SearchBoxLocationLatency"));
-    ROISpikeLatency->setText(String(searchBoxLocation));
-	addAndMakeVisible(ROISpikeLatencyLabel = new Label("ROI_Spike_Location_Label"));
-	ROISpikeLatencyLabel->setText("ROI Spike Location", sendNotification);
-    
-    addAndMakeVisible(ROISpikeMagnitude = new TextEditor("SearchBoxLocationSpeed"));
-    ROISpikeMagnitude->setText("NaN");
-	addAndMakeVisible(ROISpikeMagnitudeLabel = new Label("ROI_Spike_Value_Label"));
-	ROISpikeMagnitudeLabel->setText("ROI Spike Value", sendNotification);
-
     //buffer/window = ssp
     
     //OPTIONS BUTTON-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -330,29 +319,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	//Debug
-	addAndMakeVisible(trigger_threshold_Slider = new Slider("trigger_threshold_Slider"));
-	trigger_threshold_Slider->setRange(0.1f, 150.0f, 0);
-	trigger_threshold_Slider->setSliderStyle(Slider::Rotary);
-	trigger_threshold_Slider->setTextBoxStyle(Slider::TextBoxRight, false, 80, 20);
-	trigger_threshold_Slider->addListener(this);
-	trigger_threshold_Slider->setValue(2.5f);
-	addAndMakeVisible(trigger_threshold_Slider_Label = new Label("Trigger_Threshold_Slider_Label"));
-	trigger_threshold_Slider_Label->setText("Trigger Threshold", sendNotification);
-
-
-    
-    addAndMakeVisible(msLabel = new Label("ms_label"));
-    msLabel->setText ("ms", dontSendNotification);
-    
-    addAndMakeVisible(msLabel = new Label("ms_label"));
-    msLabel->setText ("ms", dontSendNotification);
     
     addAndMakeVisible(cmLabel = new Label("cm_label"));
     cmLabel->setText ("cm", dontSendNotification);
     
-    addAndMakeVisible(mpersLabel = new Label("mpers_label"));
-    mpersLabel->setText ("m/s", dontSendNotification);
-   
 	addAndMakeVisible(textBox2 = new TextEditor("selectedDataChanText"));
 	textBox2->setText("Data");
 
@@ -376,6 +346,12 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	spectrogramPanel = new LfpLatencySpectrogramPanel(this);
 	addAndMakeVisible(spectrogramPanel);
+
+	rightMiddlePanel = new LfpLatencyRightMiddlePanel(this);
+	addAndMakeVisible(rightMiddlePanel);
+
+	rightMiddlePanel->setROISpikeLatencyText(String(searchBoxLocation));
+	rightMiddlePanel->setROISpikeValueText("NaN");
 
     setSize (700, 900);
     
@@ -437,15 +413,25 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 // set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
-	auto area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedTop(getHeight() * 0.60);
+	auto area = getLocalBounds();
+
+	auto spectrogramPanelWidth = getWidth() * 0.5;
+	spectrogramPanel->setBounds(area.removeFromLeft(spectrogramPanelWidth));
+
+	// TODO: these numbers were found in ppController.cpp. Need to change to dynamic;
+	auto ppControllerWidth = 305;
+	auto ppControllerHeight = 130;
+
+	auto panelHeight = (getHeight() - ppControllerHeight) * 0.5;
+
+	otherControlPanel->setBounds(area.removeFromTop(panelHeight));
+
+	auto middleArea = area.removeFromTop(ppControllerHeight);
+	ppControllerComponent->setBounds(middleArea.removeFromLeft(ppControllerWidth));
+	rightMiddlePanel->setBounds(middleArea);
+
 	spectrogramControlPanel->setBounds(area);
 
-	area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedBottom(getHeight() * 0.60);
-	otherControlPanel->setBounds(area);
-
-	area = getLocalBounds().withTrimmedRight(getWidth() * 0.4);
-	spectrogramPanel->setBounds(area);
-    
 	// Grace's group
     colorStyleComboBox->setBounds(785, 10, 120, 24);
 	colorStyleComboBoxLabel->setBounds(665, 10, 120, 24); 
@@ -453,25 +439,9 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     extendedColorScaleToggleButton->setBounds(780, 39, 24, 24); 
     extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24); 
 
-	ROISpikeLatencyLabel->setBounds(980, 260, 120, 24);  // 192 difference
-	ROISpikeLatency->setBounds(1110, 260, 72, 24);
-	msLabel->setBounds(1190, 260, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
-	// latency is 24 less on the y
-	ROISpikeMagnitudeLabel->setBounds(980, 290, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
-	ROISpikeMagnitude->setBounds(1110, 290, 72, 24); // 72 difference
-	mpersLabel->setBounds(1190, 290, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
-
-
 	// Lucy's Group
 	// setupButton->setBounds(955, 10, 120, 24);
 	// optionsButton->setBounds(665, 10, 120, 24);
-	// Stimulus
-	ppControllerComponent->setBounds(667, 260, 402, 350);
-
-	// Threshold trigger control
-	trigger_threshold_Slider->setBounds(1110, 320, 159, 64);
-	trigger_threshold_Slider_Label->setBounds(980, 340, 120, 24); // in a good place, the slider itself needs to move
-
 
 	// channel control
 	//textBox1->setBounds(10, 320, 72, 24);
