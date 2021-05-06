@@ -428,7 +428,7 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* sliderThatWasMoved)
 {
 	XmlValue = new XmlElement("Components"); 
-	// pass it by reference instead?
+	// The XmlValue is becoming unreadable occasionally, which is causing a crash. 
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
 		cout << "Stuck here 1\n";

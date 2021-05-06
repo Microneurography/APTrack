@@ -243,8 +243,11 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
 void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 {
-	// If a second thread comes in, it will corrupt the file
-	// This should line should stop that from happening, and automatically unlocks out of scope
+	// Sometimes the XML file becomes blank. I thought originally it was because of threads,
+	// i.e. if two second threads accessed the file at the same time, the file would get corrupted.
+	// I thought the mutex lock would fix it, but it didn't.
+	// Due to safeguarding written in this function, a blank xml file does not cause a crash,
+	// but it's still loosing data, which is a problem when it's whole purpose is to save data
 	savingAndLoadingLock.lock();
 	name = parentElement->getAttributeName(0);
 	value = parentElement->getAttributeValue(0);
@@ -309,6 +312,7 @@ void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 		}
 	}
 
+	// This is commented out because I changed the hierarchy when I switched xml files, but I didn't want to delete it just yet
 	//// if thisPlugin wasn't found but we managed to make the file or it existed, we need to make it.
 	//if (foundPlugin == false && (fileOK || docExisted)) // need to do the or first otherwise logic doesn't work
 	//{ 
@@ -379,7 +383,14 @@ void LfpLatencyProcessor::loadRecoveryData()
 						j++;
 					}
 				}
-                LfpLatencySpectrogramControlPanel::loadParameters(customParameters);
+				LfpLatencySpectrogramControlPanel::loadParameters(customParameters);
+				// This section of comments is what you would need to change here in order to implement data saving
+				// see https://stackoverflow.com/questions/4599792/accessing-stdmap-keys-and-values 
+				// as my reason for doing it this way
+				// for (map<K, V>::iterator itr = customParameters.begin(); itr != customParameters.end(); ++itr) {
+					// spectrogramAsVecor.append(itr->second);
+				// }
+				// LfpLatencySpectrogram::loadImage(spectrogramAsVecor);
 			}
 		}
 		if (loaded == false)
