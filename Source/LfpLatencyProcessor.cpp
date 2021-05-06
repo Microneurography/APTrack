@@ -235,7 +235,7 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
         it++;
     }
 
-    FileOutputStream output(recoveryConfigFile);
+    FileOutputStream output (recoveryConfigFile);
 
     if (!output.openedOk()) {
         std::cout << "recoveryConfigFile didnt open corectly" << std::endl;
@@ -257,9 +257,56 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
     savingAndLoadingLock.unlock();
 }
 
-void LfpLatencyProcessor::loadRecoveryData()
+void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)
 {
-    return;
+    bool load = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Load LfpLatency Configurations?", "Would you like to load previous Lfp Latency Configurations?", "Yes", "No");
+
+    if (!load)
+    {
+        return;
+    }
+
+    savingAndLoadingLock.lock();
+    std::cout << "Trying to load " << std::endl;
+
+    juce::String workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
+    workingDirectory += "\\LastLfpLatencyPluginComponents.cfg";
+    File recoveryConfigFile = File(workingDirectory);
+
+    if (recoveryConfigFile.existsAsFile())
+    {
+        FileInputStream input (recoveryConfigFile);
+
+        if (!input.openedOk())
+        {
+            std::cout << "LastLfpLatencyPluginComponents failed to open" << std::endl;
+        }
+        else
+        {
+            while (!input.isExhausted())
+            {
+                juce::String line = input.readNextLine();
+
+                int firstBracket = line.indexOf("[");
+                int secondBracket = line.indexOf("]");
+
+                if (!(firstBracket <= 0 || secondBracket <= 0 || firstBracket > secondBracket))
+                {
+                    std::string itemName = line.substring(0, firstBracket).toStdString();
+                    juce::String value = line.substring(firstBracket+1, secondBracket);
+
+                    (*valuesMap)[itemName] = value;
+                }
+                
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Failed to find LastLfpLatencyPluginComponents" << std::endl;
+    }
+
+    savingAndLoadingLock.unlock();
 }
 
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)

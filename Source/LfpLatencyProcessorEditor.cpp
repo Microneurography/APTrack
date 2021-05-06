@@ -34,7 +34,6 @@ LfpLatencyProcessorEditor::LfpLatencyProcessorEditor (GenericProcessor* parentNo
 
     // why not use processor = static_cast<LfpLatencyProcessor*>(parentNode);?
     processor = (LfpLatencyProcessor*) this->getProcessor();
-	processor->loadRecoveryData(); // load old stuff in
 
     //m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
     //content.setLookAndFeel (m_contentLookAndFeel);

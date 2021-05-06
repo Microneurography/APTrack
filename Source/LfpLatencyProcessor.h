@@ -110,7 +110,7 @@ public:
 
 	/** Starts by asking the user if they would like to load data from LastLfpLatencyPluginComponents, 
 	the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
-	static void loadRecoveryData();
+	static void loadRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap);
 
     /** Saving custom settings to XML. */
     virtual void saveCustomParametersToXml (XmlElement* parentElement) override;

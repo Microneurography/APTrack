@@ -73,6 +73,10 @@ public:
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
 : spectrogram(SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
 {
+	isSaving = false;
+
+	valuesMap = new unordered_map<string, juce::String>;
+
     searchBoxLocation = 150;
     conductionDistance = 100;
 
@@ -85,6 +89,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	trackSpike_IncreaseRate = 0.01;
 	trackSpike_DecreaseRate = 0.01;
+
+	LfpLatencyProcessor::loadRecoveryData(valuesMap);
 
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
@@ -287,10 +293,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     setSize (700, 900);
     
     spikeDetected = false;
-
-	isSaving = false;
-
-	valuesMap = new unordered_map<string, juce::String>;
 }
 
 LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerContentComponent()
