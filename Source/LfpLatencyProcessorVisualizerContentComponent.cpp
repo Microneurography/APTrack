@@ -78,7 +78,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	valuesMap = new unordered_map<string, juce::String>;
 
     searchBoxLocation = 150;
+	searchBoxWidth = 25;
     conductionDistance = 100;
+	subsamplesPerWindow = 60;
 
 	setWantsKeyboardFocus(true);
 
@@ -86,6 +88,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltage = 0.0f;
 	stimulusVoltageMax = 10.0f; // you also have to change the range of the slider on line 87
 	stimulusVoltageMin = 0.5f;
+
+	lowImageThreshold = 5.0f;
+	highImageThreshold = 80.0f;
+	detectionThreshold = 20.0f;
 
 	trackSpike_IncreaseRate = 0.01;
 	trackSpike_DecreaseRate = 0.01;
@@ -150,6 +156,22 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	if (valuesMap->find("startingSample") != valuesMap->end())
 	{
 		startingSample = stoi((*valuesMap)["startingSample"].toStdString());
+	}
+
+	if (valuesMap->find("extendedColorScale") != valuesMap->end())
+	{
+		if ((*valuesMap)["extendedColorScale"] == "1")
+		{
+			extendedColorScale = true;
+		}
+		else
+		{
+			extendedColorScale = false;
+		}
+	}
+	else
+	{
+		extendedColorScale = false;
 	}
 
 	// The code for the descriptions is below
@@ -335,9 +357,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     addAndMakeVisible(mpersLabel = new Label("mpers_label"));
     mpersLabel->setText ("m/s", dontSendNotification);
    
-	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 	stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
 	stimulusVoltageSlider->setValue(stimulusVoltage);
+	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 
 	searchBoxSlider->setValue(searchBoxLocation);
 
@@ -765,6 +787,11 @@ void LfpLatencyProcessorVisualizerContentComponent::tryToSave()
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
 {
 	return startingSample;
+}
+
+bool LfpLatencyProcessorVisualizerContentComponent::getExtendedColorScale() const
+{
+	return extendedColorScale;
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getSubsamplesPerWindow() const

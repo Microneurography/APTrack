@@ -18,11 +18,17 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     outline = new GroupComponent("Color control");
 
     imageThreshold = new LfpLatencyLabelVerticalSlider("Image Threshold");
-    imageThreshold->setSliderRange(0, 100, 0);
+    if (content->getExtendedColorScale()) {
+        imageThreshold->setSliderRange(0, 1000, 0);
+    }
+    else
+    {
+        imageThreshold->setSliderRange(0, 100, 0);
+    }
     imageThreshold->addSliderListener(content);
-    imageThreshold->setSliderMinValue(content->getLowImageThreshold());
     imageThreshold->setSliderMaxValue(content->getHighImageThreshold());
     imageThreshold->setSliderValue(content->getDetectionThreshold());
+    imageThreshold->setSliderMinValue(content->getLowImageThreshold());
     
     highImageThreshold = new LfpLatencyLabelTextEditor("High Image Threshold");
     highImageThreshold->setTextEditorText(String(imageThreshold->getSliderMaximum()) + " uV");
