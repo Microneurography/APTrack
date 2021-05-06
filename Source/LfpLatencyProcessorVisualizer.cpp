@@ -293,6 +293,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	if (content.follow0->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
 		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(0);
 		setConfig(0);
 		updateSpikeInfo(0);
 		content.searchBoxSlider->setValue(spikeLocations[0].SLR, sendNotificationAsync);
@@ -300,6 +301,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	if (content.follow1->getToggleState() == true) {
 		content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
 		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(1);
 		setConfig(1);
 		updateSpikeInfo(1);
 		content.searchBoxSlider->setValue(spikeLocations[1].SLR, sendNotificationAsync);
@@ -307,6 +309,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	if (content.follow2->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
 		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(2);
 		setConfig(2);
 		updateSpikeInfo(2);
 		content.searchBoxSlider->setValue(spikeLocations[2].SLR, sendNotificationAsync);
@@ -314,6 +317,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	if (content.follow3->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
 		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(3);
 		setConfig(3);
 		updateSpikeInfo(3);
 		content.searchBoxSlider->setValue(spikeLocations[3].SLR, sendNotificationAsync);

@@ -442,6 +442,22 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 			g.setColour(Colours::red);
 		}
 	}
+	else if (follow0->getToggleState() == true) 
+	{
+		g.setColour(Colours::lightsteelblue);
+	}
+	else if (follow1->getToggleState() == true) 
+	{
+		g.setColour(Colours::lightskyblue);
+	}
+	else if (follow2->getToggleState() == true)
+	{
+		g.setColour(Colours::darkgreen);
+	}
+	else if (follow3->getToggleState() == true)
+	{
+		g.setColour(Colours::orange);
+	}
 	else
 	{
 		g.setColour(Colours::lightyellow);
@@ -516,25 +532,25 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
 	spikeTracker->setBounds(665, 40, 470, 200);
 
-	location0->setBounds(715, 69, 100, 20);
+	location0->setBounds(715, 68, 100, 20);
 	location1->setBounds(715, 90, 100, 20);
-	location2->setBounds(715, 111, 100, 20);
-	location3->setBounds(715, 132, 100, 20);
+	location2->setBounds(715, 112, 100, 20);
+	location3->setBounds(715, 134, 100, 20);
 
-	fp0->setBounds(815, 69, 120, 20);
+	fp0->setBounds(815, 68, 120, 20);
 	fp1->setBounds(815, 90, 120, 20);
-	fp2->setBounds(815, 111, 120, 20);
-	fp3->setBounds(815, 132, 120, 20);
+	fp2->setBounds(815, 112, 120, 20);
+	fp3->setBounds(815, 134, 120, 20);
 
-	follow0->setBounds(935, 69, 120, 20);
-	follow1->setBounds(935, 91, 120, 20);
+	follow0->setBounds(935, 68, 120, 20);
+	follow1->setBounds(935, 90, 120, 20);
 	follow2->setBounds(935, 112, 120, 20);
 	follow3->setBounds(935, 134, 120, 20);
 
 	del0->setBounds(1050, 68, 60, 18);
-	del1->setBounds(1050, 89, 60, 18);
-	del2->setBounds(1050, 110, 60, 18);
-	del3->setBounds(1050, 131, 60, 18);
+	del1->setBounds(1050, 90, 60, 18);
+	del2->setBounds(1050, 112, 60, 18);
+	del3->setBounds(1050, 134, 60, 18);
 
 	trackSpike_button->setBounds(780, 126, 120, 24);
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
@@ -859,12 +875,18 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
 
 	if (rowIsSelected) {
-		g.fillAll(Colours::darkgrey);
+		if (rowNumber == 0)
+			g.fillAll(Colours::lightsteelblue);
+		if (rowNumber == 1)
+			g.fillAll(Colours::lightskyblue);
+		if (rowNumber == 2)
+			g.fillAll(Colours::darkgreen);
+		if (rowNumber == 3)
+			g.fillAll(Colours::orange);
 	}
 	else {
 		g.fillAll(Colours::lightgrey);
 	}
-
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
