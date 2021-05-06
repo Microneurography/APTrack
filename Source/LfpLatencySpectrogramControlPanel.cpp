@@ -64,12 +64,12 @@ void LfpLatencySpectrogramControlPanel::resized()
     auto sliderWidth = getWidth()/3;
     imageThreshold->setBounds(area.removeFromRight(sliderWidth));
 
-    auto textItemHeight = 24;
+    auto textItemHeight = area.getHeight() * 0.1;
     highImageThreshold->setBounds(area.removeFromTop(textItemHeight));
     detectionThreshold->setBounds(area.removeFromTop(textItemHeight));
     lowImageThreshold->setBounds(area.removeFromTop(textItemHeight));
 
-    auto sliderItemHeight = 64;
+    auto sliderItemHeight = area.getHeight() / 3.0;
     subsamplesPerWindow->setBounds(area.removeFromTop(sliderItemHeight));
     startingSample->setBounds(area.removeFromTop(sliderItemHeight));
     conductionDistance->setBounds(area.removeFromTop(sliderItemHeight));
