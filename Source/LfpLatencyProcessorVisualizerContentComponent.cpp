@@ -437,15 +437,25 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 // set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
-	auto area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedTop(getHeight() * 0.60);
+	auto area = getLocalBounds();
+
+	auto spectrogramPanelWidth = getWidth() * 0.5;
+	spectrogramPanel->setBounds(area.removeFromLeft(spectrogramPanelWidth));
+
+	// TODO: these numbers were found in ppController.cpp. Need to change to dynamic;
+	auto ppControllerWidth = 305;
+	auto ppControllerHeight = 130;
+
+	auto panelHeight = (getHeight() - ppControllerHeight) * 0.5;
+
+	otherControlPanel->setBounds(area.removeFromTop(panelHeight));
+
+	auto middleArea = area.removeFromTop(ppControllerHeight);
+	ppControllerComponent->setBounds(middleArea.removeFromLeft(ppControllerWidth));
+	rightMiddlePanel->setBounds(middleArea);
+
 	spectrogramControlPanel->setBounds(area);
 
-	area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedBottom(getHeight() * 0.60);
-	otherControlPanel->setBounds(area);
-
-	area = getLocalBounds().withTrimmedRight(getWidth() * 0.4);
-	spectrogramPanel->setBounds(area);
-    
 	// Grace's group
     colorStyleComboBox->setBounds(785, 10, 120, 24);
 	colorStyleComboBoxLabel->setBounds(665, 10, 120, 24); 
