@@ -89,4 +89,47 @@ private:
     ScopedPointer<ToggleButton> toggleButton;
 };
 
+class LfpLatencyLabelSliderNoTextBox : public Component
+{
+public:
+    LfpLatencyLabelSliderNoTextBox(const String& labelText);
+    void resized() override;
+
+    void setSliderRange(double newMinimum, double newMaximum, double newInterval = 0);
+    void addSliderListener(Slider::Listener* listener);
+    void setSliderValue(double newValue);
+    double getSliderValue() const;
+private:
+    ScopedPointer<Label> label;
+    ScopedPointer<Slider> slider;
+};
+
+class LfpLatencyLabelLinearVerticalSliderNoTextBox : public Component
+{
+public:
+    LfpLatencyLabelLinearVerticalSliderNoTextBox(const String& labelText);
+    void resized() override;
+
+    void setSliderRange(double newMinimum, double newMaximum, double newInterval = 0);
+    void addSliderListener(Slider::Listener* listener);
+    void setSliderValue(double newValue);
+    double getSliderValue() const;
+private:
+    ScopedPointer<Label> label;
+    ScopedPointer<Slider> slider;
+};
+
+class LfpLatencyProcessorVisualizerContentComponent;
+class LfpLatencySpectrogram;
+class LfpLatencySearchBox : public Component
+{
+public:
+    /* LfpLatencySearchBox must have the same bounds as the spectrogram image for correct positioning*/
+    LfpLatencySearchBox(const LfpLatencyProcessorVisualizerContentComponent& content, const LfpLatencySpectrogram& spectrogram);
+    void paint(Graphics& g) override;
+private:
+    const LfpLatencyProcessorVisualizerContentComponent& content;
+    const LfpLatencySpectrogram& spectrogram;
+};
+
 #endif

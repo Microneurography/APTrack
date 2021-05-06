@@ -7,6 +7,7 @@
 #include "pulsePalController/ppController.h"
 
 #include "LfpLatencySpectrogram.h"
+#include "LfpLatencySpectrogramPanel.h"
 #include "LfpLatencySpectrogramControlPanel.h"
 #include "LfpLatencyOtherControlPanel.h"
 
@@ -57,8 +58,8 @@ public:
     float getDetectionThreshold() const;
     int getColorStyleComboBoxSelectedId() const;
 
+    std::tuple<float, float, float, float, Colour> getSearchBoxInfo() const;
 private:
-    LfpLatencySpectrogram spectrogram; // Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
@@ -66,6 +67,7 @@ private:
     ScopedPointer<TableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
     ScopedPointer<LfpLatencyOtherControlPanel> otherControlPanel;
+    ScopedPointer<LfpLatencySpectrogramPanel> spectrogramPanel;
 
     //Image thresholds
     float lowImageThreshold;
@@ -138,9 +140,6 @@ private:
     // ScopedPointer<TextButton> setupButton;
     // ScopedPointer<TextButton> optionsButton;
 
-    ScopedPointer<Slider> searchBoxSlider;
-	ScopedPointer<Label> searchBoxSliderLabel;
-
 	ScopedPointer<Label> ROIspikeLocationLabel;
     ScopedPointer<TextEditor> ROIspikeLocation;
 	ScopedPointer<Label> msLabel;
@@ -148,9 +147,6 @@ private:
 	ScopedPointer<Label> ROIspikeValueLabel;
     ScopedPointer<TextEditor> ROIspikeValue;
 	ScopedPointer<Label> mpersLabel;
-    
-    ScopedPointer<Slider> searchBoxWidthSlider;
-	ScopedPointer<Label> searchBoxWidthSliderLabel;
     
     ScopedPointer<ComboBox> colorStyleComboBox;
 	ScopedPointer<Label> colorStyleComboBoxLabel;

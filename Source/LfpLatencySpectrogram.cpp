@@ -6,36 +6,25 @@
 LfpLatencySpectrogram::LfpLatencySpectrogram(int imageWidth, int imageHeight)
 : image(Image::RGB, imageWidth, imageHeight, true)
 {
-    std::cout << "Pre" << std::endl;
-    std::cout << "Med" << std::endl;
-
     //Paint image
     paintAll(Colours::yellowgreen);
-
-    std::cout << "Post" << std::endl;
-}
-
-LfpLatencySpectrogram::~LfpLatencySpectrogram()
-{
-
 }
 
 void LfpLatencySpectrogram::paint(Graphics& g)
 {
-
+    auto area = getLocalBounds();
+    g.drawImageWithin(image, 
+        area.getX(), area.getY(), 
+        area.getWidth(), area.getHeight(), 
+        RectanglePlacement(RectanglePlacement::stretchToFit));
 }
 
-void LfpLatencySpectrogram::resized()
-{
-
-}
-
-int LfpLatencySpectrogram::getImageHeight()
+int LfpLatencySpectrogram::getImageHeight() const
 {
     return image.getHeight();
 }
 
-int LfpLatencySpectrogram::getImageWidth()
+int LfpLatencySpectrogram::getImageWidth() const
 {
     return image.getWidth();
 }
@@ -52,7 +41,7 @@ void LfpLatencySpectrogram::paintAll(Colour colour)
     std::cout << "finished paint" << std::endl;
 }
 
-const Image& LfpLatencySpectrogram::getImage()
+const Image& LfpLatencySpectrogram::getImage() const
 {
     return image;
 }
