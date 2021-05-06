@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\gsboo\source\repos\OEPlugins\OE-plugin-latency-tracker\Build\CMakeFiles\53337fa1b8bc972b1f9412d3f2ed5093\INSTALL_force.rule">
+    <CustomBuild Include="C:\coms\year2\SPE\OEPlugins\ChronicPainRepo\Build\CMakeFiles\7c037a22f3b5a41fe4713f936006d951\INSTALL_force.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{2B5FD9CF-7ACC-353E-99C1-3D6C11C141CE}</UniqueIdentifier>
+      <UniqueIdentifier>{A1CC7700-54BB-39B3-AC7F-8157B6FBEFAB}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

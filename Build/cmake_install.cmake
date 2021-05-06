@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker
+# Install script for directory: C:/coms/year2/SPE/OEPlugins/ChronicPainRepo
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/OE_PLUGIN_OE-plugin-latency-tracker")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files/OE_PLUGIN_ChronicPainRepo")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -35,44 +35,44 @@ endif()
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   if("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
     list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-     "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Debug/plugins/OE-plugin-latency-tracker.dll")
+     "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Debug/plugins/ChronicPainRepo.dll")
     if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
     if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
-file(INSTALL DESTINATION "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Debug/plugins" TYPE SHARED_LIBRARY FILES "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/Debug/OE-plugin-latency-tracker.dll")
+file(INSTALL DESTINATION "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Debug/plugins" TYPE SHARED_LIBRARY FILES "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/Debug/ChronicPainRepo.dll")
   elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
     list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-     "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Release/plugins/OE-plugin-latency-tracker.dll")
+     "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Release/plugins/ChronicPainRepo.dll")
     if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
     if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
-file(INSTALL DESTINATION "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Release/plugins" TYPE SHARED_LIBRARY FILES "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/Release/OE-plugin-latency-tracker.dll")
+file(INSTALL DESTINATION "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Release/plugins" TYPE SHARED_LIBRARY FILES "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/Release/ChronicPainRepo.dll")
   elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Mm][Ii][Nn][Ss][Ii][Zz][Ee][Rr][Ee][Ll])$")
     list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-     "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Release/plugins/OE-plugin-latency-tracker.dll")
+     "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Release/plugins/ChronicPainRepo.dll")
     if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
     if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
-file(INSTALL DESTINATION "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Release/plugins" TYPE SHARED_LIBRARY FILES "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/MinSizeRel/OE-plugin-latency-tracker.dll")
+file(INSTALL DESTINATION "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Release/plugins" TYPE SHARED_LIBRARY FILES "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/MinSizeRel/ChronicPainRepo.dll")
   elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
     list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-     "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Release/plugins/OE-plugin-latency-tracker.dll")
+     "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Release/plugins/ChronicPainRepo.dll")
     if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
     if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
         message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
     endif()
-file(INSTALL DESTINATION "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/../../plugin-GUI/Build/Release/plugins" TYPE SHARED_LIBRARY FILES "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/RelWithDebInfo/OE-plugin-latency-tracker.dll")
+file(INSTALL DESTINATION "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/../../plugin-GUI/Build/Release/plugins" TYPE SHARED_LIBRARY FILES "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/RelWithDebInfo/ChronicPainRepo.dll")
   endif()
 endif()
 
@@ -84,5 +84,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/gsboo/source/repos/OEPlugins/OE-plugin-latency-tracker/Build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/coms/year2/SPE/OEPlugins/ChronicPainRepo/Build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
