@@ -71,7 +71,7 @@ public:
 
 //==============================================================================
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
-: spectrogram(SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
+: searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
 {
     searchBoxLocation = 150;
     conductionDistance = 100;
@@ -134,13 +134,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	//
 
-    addAndMakeVisible (searchBoxSlider = new Slider ("searchBox"));
-    searchBoxSlider->setRange(0, SPECTROGRAM_HEIGHT, 1);
-    searchBoxSlider->setSliderStyle (Slider::LinearVertical);
-    searchBoxSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
-    searchBoxSlider->addListener (this);
-	addAndMakeVisible(searchBoxSliderLabel = new Label("Search_Box_Slider_Label"));
-	searchBoxSliderLabel->setText("Search Box", sendNotification);
     
     addAndMakeVisible(ROISpikeLatency = new TextEditor("SearchBoxLocationLatency"));
     ROISpikeLatency->setText(String(searchBoxLocation));
@@ -153,14 +146,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	ROISpikeMagnitudeLabel->setText("ROI Spike Value", sendNotification);
 
     //buffer/window = ssp
-    
-    addAndMakeVisible (searchBoxWidthSlider = new Slider ("searchBoxWidthSlider"));
-    searchBoxWidthSlider->setRange (1, 63, 1);
-    searchBoxWidthSlider->setSliderStyle (Slider::Rotary);
-    searchBoxWidthSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
-    searchBoxWidthSlider->addListener (this);
-	addAndMakeVisible(searchBoxWidthSliderLabel = new Label("search_Box_Width_Slider_Label"));
-	searchBoxWidthSliderLabel->setText("Search Box Width", sendNotification);
     
     //OPTIONS BUTTON-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
@@ -378,10 +363,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
 	stimulusVoltageSlider->setValue(stimulusVoltage);
 
-	searchBoxSlider->setValue(10.0f);
-
     colorStyleComboBox->setSelectedId(1);
-    searchBoxWidthSlider->setValue(3);
     
     extendedColorScaleToggleButton->setToggleState(false,sendNotification);
 
@@ -392,6 +374,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(otherControlPanel);
 	otherControlPanel->toBack();
 
+	spectrogramPanel = new LfpLatencySpectrogramPanel(this);
+	addAndMakeVisible(spectrogramPanel);
+
     setSize (700, 900);
     
     spikeDetected = false;
@@ -400,8 +385,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerContentComponent()
 {
-    searchBoxSlider = nullptr;
-    searchBoxWidthSlider=nullptr;
     colorStyleComboBox = nullptr;
 	stimulusVoltageSlider = nullptr;
 
@@ -432,40 +415,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 {
     g.fillAll (Colours::grey);
     g.setOpacity (1.0f);
-    g.drawImage(spectrogram.getImage(),
-		0,0,spectrogram.getImageWidth(),spectrogram.getImageHeight(),
-		0,0,spectrogram.getImageWidth(),spectrogram.getImageHeight());
-    //Note, drawImage handles rescaling!
-    
-	if (trackSpike_button->getToggleState() == true)
-	{
-		if (spikeDetected) {
-			g.setColour(Colours::green);
-		}
-		else {
-			g.setColour(Colours::red);
-		}
-	}
-	else if (follow0->getToggleState() == true) 
-	{
-		g.setColour(Colours::lightsteelblue);
-	}
-	else if (follow1->getToggleState() == true) 
-	{
-		g.setColour(Colours::lightskyblue);
-	}
-	else if (follow2->getToggleState() == true)
-	{
-		g.setColour(Colours::darkgreen);
-	}
-	else if (follow3->getToggleState() == true)
-	{
-		g.setColour(Colours::orange);
-	}
-	else
-	{
-		g.setColour(Colours::lightyellow);
-	}
+
 	//Paint is called constatnly, so the cells should be paiting the new number in them
 	//spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
 	//spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
@@ -475,7 +425,6 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	
 	//spikeTracker->autoSizeAllColumns();
 	//spikeTracker->updateContent();
-	g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
 	spikeTracker->updateContent();
 }
 
@@ -494,9 +443,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedBottom(getHeight() * 0.60);
 	otherControlPanel->setBounds(area);
 
-	// Diana's Group
-    searchBoxSlider->setBounds (SPECTROGRAM_WIDTH-5, 0, 15, SPECTROGRAM_HEIGHT);
-	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH-35, SPECTROGRAM_HEIGHT-17, 80, 50); // x value is inverted
+	area = getLocalBounds().withTrimmedRight(getWidth() * 0.4);
+	spectrogramPanel->setBounds(area);
     
 	// Grace's group
     colorStyleComboBox->setBounds(785, 10, 120, 24);
@@ -504,10 +452,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
     extendedColorScaleToggleButton->setBounds(780, 39, 24, 24); 
     extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24); 
-
-	// x inversed on these two
-    searchBoxWidthSlider->setBounds(478, 643, 50, 64);
-	searchBoxWidthSliderLabel->setBounds(524, 664, 120, 24);
 
 	ROISpikeLatencyLabel->setBounds(980, 260, 120, 24);  // 192 difference
 	ROISpikeLatency->setBounds(1110, 260, 72, 24);
@@ -600,12 +544,12 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 	//Lucy's style of keybind was much better than mine as it allowed to adjust value and slider position and send a notification in one single line, so thank you <3, from James
 	//Increase search box location
 	if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < SPECTROGRAM_HEIGHT)) {
-		searchBoxSlider->setValue(searchBoxSlider->getValue() + 5, sendNotificationAsync);
+		spectrogramPanel->changeSearchBoxValue(5);
 		return true;
 	}
 	//Decrease search box location
 	else if ((k == KeyPress::leftKey || k == KeyPress::numberPad4) && (searchBoxLocation > 0)) {
-		searchBoxSlider->setValue(searchBoxSlider->getValue() - 5, sendNotificationAsync);
+		spectrogramPanel->changeSearchBoxValue(-5);
 		return true;
 	}
 	else if (k == KeyPress::F1Key) {
@@ -713,7 +657,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
     }
-    if (sliderThatWasMoved == searchBoxSlider)
+    if (sliderThatWasMoved->getName() == "Search Box")
     {
 		cout << "Stuck here 8\n";
         searchBoxLocation = sliderThatWasMoved->getValue();
@@ -735,7 +679,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
         std::cout << "startingSample" << startingSample << std::endl;
         
     }
-    if (sliderThatWasMoved == searchBoxWidthSlider)
+    if (sliderThatWasMoved->getName() == "Search Box Width")
     {
 		cout << "Stuck here 11\n";
         searchBoxWidth = sliderThatWasMoved->getValue();
