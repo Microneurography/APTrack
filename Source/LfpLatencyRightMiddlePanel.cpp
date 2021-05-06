@@ -1,6 +1,6 @@
 // LfpLatencyRightMiddlePanel.cpp
 
-#include "LfplatencyRightMiddlePanel.h"
+#include "LfpLatencyRightMiddlePanel.h"
 
 #include "LfpLatencyElements.h"
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
