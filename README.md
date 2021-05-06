@@ -58,6 +58,12 @@ Then press the left tab button, this will launch it into the GUI:
     <img src="./Resources/tabbutton.png" alt="Tab Button.png" title="The button you need to press to launch the plugin">
 </p>
 
+A prompt will display, which allows you to load in a previously used configuration. The file this configuration is stored in is **LastLfpLatencyPluginComponents**
+
+<p align="center">
+	<img src="./Resources/loadconfig.png" alt="lc.png" title="Load Config Option">
+</p>
+
 This plugin is intened for use alongside the Pulse Pal. However, it can be used without. If not detected, a prompt will display upon starting the plugin, as shown here:
 <p align="center">
     <img src="./Resources/pulsepalwarning.png" alt="ppw.png" title="Pulse Pal Warning">
