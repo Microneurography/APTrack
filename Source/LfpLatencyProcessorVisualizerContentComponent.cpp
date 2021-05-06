@@ -69,9 +69,10 @@ public:
 	}
 };
 
+
 //==============================================================================
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
-: spectrogram(SPECTROGRAM_WIDTH, SPECTROGRAM_HEIGHT),searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
+: searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
 {
 	isSaving = false;
 
@@ -177,11 +178,15 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
 
-	addAndMakeVisible(setupButton = new TextButton("setupButton"));
-	setupButton->setButtonText("Setup");
-	setupButton->addListener(this);
-	setupButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
+	// addAndMakeVisible(setupButton = new TextButton("setupButton"));
+	// setupButton->setButtonText("Setup");
+	// setupButton->addListener(this);
+	// setupButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
+	// addAndMakeVisible(optionsButton = new TextButton("optionsButton"));
+	// optionsButton->setButtonText("Options");
+	// optionsButton->addListener(this);
+	// optionsButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
 	// Stimulus control - setup components
 	addAndMakeVisible(ppControllerComponent = new ppController());
@@ -218,36 +223,11 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	//
 
-    
-    addAndMakeVisible (searchBoxSlider = new Slider ("searchBox"));
-    searchBoxSlider->setRange(0, SPECTROGRAM_HEIGHT, 1);
-    searchBoxSlider->setSliderStyle (Slider::LinearVertical);
-    searchBoxSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
-    searchBoxSlider->addListener (this);
-	addAndMakeVisible(searchBoxSliderLabel = new Label("Search_Box_Slider_Label"));
-	searchBoxSliderLabel->setText("Search Box", sendNotification);
-    
-    addAndMakeVisible(ROISpikeLatency = new TextEditor("SearchBoxLocationLatency"));
-    ROISpikeLatency->setText(String(searchBoxLocation));
-	addAndMakeVisible(ROISpikeLatencyLabel = new Label("ROI_Spike_Location_Label"));
-	ROISpikeLatencyLabel->setText("ROI Spike Location", sendNotification);
-    
-    addAndMakeVisible(ROISpikeMagnitude = new TextEditor("SearchBoxLocationSpeed"));
-    ROISpikeMagnitude->setText("NaN");
-	addAndMakeVisible(ROISpikeMagnitudeLabel = new Label("ROI_Spike_Value_Label"));
-	ROISpikeMagnitudeLabel->setText("ROI Spike Value", sendNotification);
-
     //buffer/window = ssp
     
-    addAndMakeVisible (searchBoxWidthSlider = new Slider ("searchBoxWidthSlider"));
-    searchBoxWidthSlider->setRange (1, 63, 1);
-    searchBoxWidthSlider->setSliderStyle (Slider::Rotary);
-    searchBoxWidthSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
-    searchBoxWidthSlider->addListener (this);
-	addAndMakeVisible(searchBoxWidthSliderLabel = new Label("search_Box_Width_Slider_Label"));
-	searchBoxWidthSliderLabel->setText("Search Box Width", sendNotification);
-    
-    addAndMakeVisible(colorStyleComboBox = new ComboBox("Color style selector"));
+    //OPTIONS BUTTON-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	colorStyleComboBox = new ComboBox("Color style selector");
     colorStyleComboBox->setEditableText(false);
     colorStyleComboBox->setJustificationType(Justification::centredLeft);
     colorStyleComboBox->setTextWhenNothingSelected(TRANS("WHOT"));
@@ -255,54 +235,49 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     colorStyleComboBox->addItem("BHOT", 2);
     colorStyleComboBox->addItem("WHOT,PLAIN", 3);
     colorStyleComboBox->addItem("BHOT,PLAIN", 4);
-	addAndMakeVisible(colorStyleComboBoxLabel = new Label("Color_Style_Combo_Box_Label"));
+	colorStyleComboBoxLabel = new Label("Color_Style_Combo_Box_Label");
 	colorStyleComboBoxLabel->setText("Color Style Combination", sendNotification);
     
-    addAndMakeVisible(extendedColorScaleToggleButton = new ToggleButton(""));
+    extendedColorScaleToggleButton = new ToggleButton("");
     extendedColorScaleToggleButton->addListener(this);
 	extendedColorScaleToggleButton->setColour(ToggleButton::ColourIds::tickDisabledColourId,Colours::lightgrey);
-	addAndMakeVisible(extendedColorScaleToggleButtonLabel = new Label("Extended_Scale_Toggle_Button_Label"));
+	extendedColorScaleToggleButtonLabel = new Label("Extended_Scale_Toggle_Button_Label");
 	extendedColorScaleToggleButtonLabel->setText("Extended Scale", sendNotification);
 
-	addAndMakeVisible(textBox2 = new TextEditor("selectedDataChanText"));
-	textBox2->setText("Data");
-
-	addAndMakeVisible(textBox1 = new TextEditor("selectedTriggerChanText"));
-	textBox1->setText("Trigger");
-
-
-	addAndMakeVisible(triggerChannelComboBox = new ComboBox("Trigger Channel"));
+	triggerChannelComboBox = new ComboBox("Trigger Channel");
 	triggerChannelComboBox->setEditableText(false);
 	triggerChannelComboBox->setJustificationType(Justification::centredLeft);
 	triggerChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
 	triggerChannelComboBox->addSectionHeading("Trigger");
-	addAndMakeVisible(triggerChannelComboBoxLabel = new Label("Trigger_Channel_Combo_Box_Label"));
+	triggerChannelComboBoxLabel = new Label("Trigger_Channel_Combo_Box_Label");
 	triggerChannelComboBoxLabel->setText("Trigger Channel", sendNotification);
 
-	addAndMakeVisible(dataChannelComboBox = new ComboBox("Data Channel"));
+	dataChannelComboBox = new ComboBox("Data Channel");
 	dataChannelComboBox->setEditableText(false);
 	dataChannelComboBox->setJustificationType(Justification::centredLeft);
 	dataChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
 	dataChannelComboBox->addSectionHeading("Data");
-	addAndMakeVisible(dataChannelComboBoxLabel = new Label("Data_Channel_Combo_Box_Label"));
+	dataChannelComboBoxLabel = new Label("Data_Channel_Combo_Box_Label");
 	dataChannelComboBoxLabel->setText("Data Channel", sendNotification);
 
-	addAndMakeVisible(trackSpike_button = new ToggleButton(""));
+	trackSpike_button = new ToggleButton("");
 	trackSpike_button->addListener(this);
 	trackSpike_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
-	addAndMakeVisible(trackSpike_button_Label = new Label("track_spike_button_label"));
+	trackSpike_button_Label = new Label("track_spike_button_label");
 	trackSpike_button_Label->setText("Track Spike", sendNotification);
 
-	addAndMakeVisible(trackThreshold_button = new ToggleButton(""));
+	trackThreshold_button = new ToggleButton("");
 	trackThreshold_button->addListener(this);
 	trackThreshold_button->setToggleState(false, sendNotification);
 	trackThreshold_button->setEnabled(trackSpike_button->getToggleState());
 	trackThreshold_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
-	addAndMakeVisible(trackThreshold_button_Label = new Label("track_threshold_button_label"));
+	trackThreshold_button_Label = new Label("track_threshold_button_label");
 	trackThreshold_button_Label->setText("Track Threshold", sendNotification);
 	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 
-
+	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	//SETUP BUTTON -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Increase/Decrease rate of spike tracking
 	// Not added here as they are in the setup box.
 	trackSpike_IncreaseRate_Slider = new Slider("trackSpike_IncreaseRate_Slider");
@@ -333,30 +308,116 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//
 
 
+	stimulusVoltageSlider = new Slider("stimulusVoltage");
+	stimulusVoltageSlider->setRange(0.0f, 10.0f, 0);
+	stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
+	stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
+	stimulusVoltageSlider->addListener(this);
+	stimulusVoltageSlider->setLookAndFeel(new CustomLookAndFeel);
+	stimulusVoltageSlider->setColour(Slider::ColourIds::thumbColourId, Colours::darkgrey);
+	stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label");
+	stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
+	stimulusVoltageSliderLabel->setColour(Label::ColourIds::textColourId, Colours::white);
+
+	stimulusVoltageMin_text = new TextEditor("Stimulus Min");
+	stimulusVoltageMin_text->setText(String(stimulusVoltageMin) + " V");
+	stimulusVoltageMin_textLabel = new Label("Stimulus_Voltage_Min_Text_Label");
+	stimulusVoltageMin_textLabel->setText("Stimulus Voltage Min", sendNotification);
+	stimulusVoltageMin_textLabel->setColour(Label::ColourIds::textColourId, Colours::white);
+
+	stimulusVoltageMax_text = new TextEditor("Stimulus Max");
+	stimulusVoltageMax_text->setText(String(stimulusVoltageMax) + " V");
+	stimulusVoltageMax_textLabel = new Label("Stimulus_Voltage_Max_Text_Label");
+	stimulusVoltageMax_textLabel->setText("Stimulus Voltage Max", sendNotification);
+	stimulusVoltageMax_textLabel->setColour(Label::ColourIds::textColourId, Colours::white);
+
+	stimulusVoltage_text = new TextEditor("Stimulus now");
+	stimulusVoltage_text->setText(String(stimulusVoltage) + " V");
+	stimulusVoltage_textLabel = new Label("Stimulus_Voltage_Text_Label");
+	stimulusVoltage_textLabel->setText("Current Stimulus Voltage", sendNotification);
+	stimulusVoltage_textLabel->setColour(Label::ColourIds::textColourId, Colours::white);
+
+	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	//MULTI SPIKE TRACKING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	spikeTrackerContent = new TableContent();
+	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes", spikeTrackerContent));
+	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
+	spikeTracker->getHeader().addColumn("Spike", 1, 50);
+	spikeTracker->getHeader().addColumn("Location", 2, 100);
+	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
+	spikeTracker->getHeader().addColumn("Select Spike", 4, 100);
+	spikeTracker->getHeader().addColumn("Delete Track", 5, 100);
+	spikeTracker->autoSizeAllColumns();
+	spikeTracker->updateContent();
+
+	addAndMakeVisible(location0 = new TextEditor("Location 0"));
+	location0->setText("0");
+	addAndMakeVisible(location1 = new TextEditor("Location 1"));
+	location1->setText("0");
+	addAndMakeVisible(location2 = new TextEditor("Location 2"));
+	location2->setText("0");
+	addAndMakeVisible(location3 = new TextEditor("Location 3"));
+	location3->setText("0");
+
+	addAndMakeVisible(fp0 = new TextEditor("Firing Proabability 0"));
+	fp0->setText("0");
+	addAndMakeVisible(fp1 = new TextEditor("Firing Proabability 1"));
+	fp1->setText("0");
+	addAndMakeVisible(fp2 = new TextEditor("Firing Proabability 2"));
+	fp2->setText("0");
+	addAndMakeVisible(fp3 = new TextEditor("Firing Proabability 3"));
+	fp3->setText("0");
+
+	addAndMakeVisible(follow0 = new ToggleButton(""));
+	follow0->addListener(this);
+	follow0->setToggleState(false, sendNotification);
+	follow0->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(follow1 = new ToggleButton(""));
+	follow1->addListener(this);
+	follow1->setToggleState(false, sendNotification);
+	follow1->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(follow2 = new ToggleButton(""));
+	follow2->addListener(this);
+	follow2->setToggleState(false, sendNotification);
+	follow2->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(follow3 = new ToggleButton(""));
+	follow3->addListener(this);
+	follow3->setToggleState(false, sendNotification);
+	follow3->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+
+	addAndMakeVisible(del0 = new TextButton(""));
+	del0->addListener(this);
+	del0->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del0->setToggleState(false, sendNotification);
+	addAndMakeVisible(del1 = new TextButton(""));
+	del1->addListener(this);
+	del1->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del1->setToggleState(false, sendNotification);
+	addAndMakeVisible(del2 = new TextButton(""));
+	del2->addListener(this);
+	del2->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del2->setToggleState(false, sendNotification);
+	addAndMakeVisible(del3 = new TextButton(""));
+	del3->addListener(this);
+	del3->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	del3->setToggleState(false, sendNotification);
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	//Debug
-	addAndMakeVisible(trigger_threshold_Slider = new Slider("trigger_threshold_Slider"));
-	trigger_threshold_Slider->setRange(0.1f, 150.0f, 0);
-	trigger_threshold_Slider->setSliderStyle(Slider::Rotary);
-	trigger_threshold_Slider->setTextBoxStyle(Slider::TextBoxRight, false, 80, 20);
-	trigger_threshold_Slider->addListener(this);
-	trigger_threshold_Slider->setValue(2.5f);
-	addAndMakeVisible(trigger_threshold_Slider_Label = new Label("Trigger_Threshold_Slider_Label"));
-	trigger_threshold_Slider_Label->setText("Trigger Threshold", sendNotification);
-
-
-    
-    addAndMakeVisible(msLabel = new Label("ms_label"));
-    msLabel->setText ("ms", dontSendNotification);
-    
-    addAndMakeVisible(msLabel = new Label("ms_label"));
-    msLabel->setText ("ms", dontSendNotification);
     
     addAndMakeVisible(cmLabel = new Label("cm_label"));
     cmLabel->setText ("cm", dontSendNotification);
     
-    addAndMakeVisible(mpersLabel = new Label("mpers_label"));
-    mpersLabel->setText ("m/s", dontSendNotification);
-   
+	addAndMakeVisible(textBox2 = new TextEditor("selectedDataChanText"));
+	textBox2->setText("Data");
+
+	addAndMakeVisible(textBox1 = new TextEditor("selectedTriggerChanText"));
+	textBox1->setText("Trigger");
+
+	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 	stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
 	stimulusVoltageSlider->setValue(stimulusVoltage);
 	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
@@ -365,6 +426,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
     colorStyleComboBox->setSelectedId(1);
     searchBoxWidthSlider->setValue(searchBoxWidth);
+    extendedColorScaleToggleButton->setToggleState(false,sendNotification);
 
     spectrogramControlPanel = new LfpLatencySpectrogramControlPanel(this);
     addAndMakeVisible(spectrogramControlPanel);
@@ -400,6 +462,18 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	{
 		trackSpike_button->setToggleState(false, sendNotification);
 	}
+	otherControlPanel = new LfpLatencyOtherControlPanel(this);
+	addAndMakeVisible(otherControlPanel);
+	otherControlPanel->toBack();
+
+	spectrogramPanel = new LfpLatencySpectrogramPanel(this);
+	addAndMakeVisible(spectrogramPanel);
+
+	rightMiddlePanel = new LfpLatencyRightMiddlePanel(this);
+	addAndMakeVisible(rightMiddlePanel);
+
+	rightMiddlePanel->setROISpikeLatencyText(String(searchBoxLocation));
+	rightMiddlePanel->setROISpikeValueText("NaN");
 
     setSize (700, 900);
     
@@ -408,8 +482,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerContentComponent()
 {
-    searchBoxSlider = nullptr;
-    searchBoxWidthSlider = nullptr;
     colorStyleComboBox = nullptr;
 	stimulusVoltageSlider = nullptr;
 
@@ -421,6 +493,12 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	trackThreshold_button = nullptr;
 	trackSpike_button = nullptr;
+	
+	spikeTracker = nullptr;
+	spikeTrackerContent = nullptr;
+	location0 = nullptr; location1 = nullptr; location2 = nullptr; location3 = nullptr;
+	follow0 = nullptr; follow1 = nullptr; follow2 = nullptr; follow3 = nullptr;
+	del0 = nullptr; del1 = nullptr; del2 = nullptr; del3 = nullptr;
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -436,26 +514,17 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 {
     g.fillAll (Colours::grey);
     g.setOpacity (1.0f);
-    g.drawImage(spectrogram.getImage(),
-		0,0,spectrogram.getImageWidth(),spectrogram.getImageHeight(),
-		0,0,spectrogram.getImageWidth(),spectrogram.getImageHeight());
-    //Note, drawImage handles rescaling!
-    
-	if (trackSpike_button->getToggleState() == true)
-	{
-		if (spikeDetected) {
-			g.setColour(Colours::green);
-		}
-		else {
-			g.setColour(Colours::red);
-		}
-	}
-	else
-	{
-		g.setColour(Colours::lightyellow);
-	}
-    
-    g.drawRoundedRectangle(SPECTROGRAM_WIDTH-8, SPECTROGRAM_HEIGHT-(searchBoxLocation+searchBoxWidth),8, searchBoxWidth*2+1,1,2);
+
+	//Paint is called constatnly, so the cells should be paiting the new number in them
+	//spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
+	//spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+
+	
+	//spikeTracker->autoSizeAllColumns();
+	//spikeTracker->updateContent();
+	spikeTracker->updateContent();
 }
 
 // If you want to move something down, you have to increase the y value
@@ -467,38 +536,35 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 // set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
-    searchBoxSlider->setBounds (SPECTROGRAM_WIDTH-5, 0, 15, SPECTROGRAM_HEIGHT);
-	searchBoxSliderLabel->setBounds(SPECTROGRAM_WIDTH-35, SPECTROGRAM_HEIGHT-17, 80, 50); // x value is inverted
-   
+	auto area = getLocalBounds();
+
+	auto spectrogramPanelWidth = getWidth() * 0.5;
+	spectrogramPanel->setBounds(area.removeFromLeft(spectrogramPanelWidth));
+
+	// TODO: these numbers were found in ppController.cpp. Need to change to dynamic;
+	auto ppControllerWidth = 305;
+	auto ppControllerHeight = 130;
+
+	auto panelHeight = (getHeight() - ppControllerHeight) * 0.5;
+
+	otherControlPanel->setBounds(area.removeFromTop(panelHeight));
+
+	auto middleArea = area.removeFromTop(ppControllerHeight);
+	ppControllerComponent->setBounds(middleArea.removeFromLeft(ppControllerWidth));
+	rightMiddlePanel->setBounds(middleArea);
+
+	spectrogramControlPanel->setBounds(area);
+
+	// Grace's group
     colorStyleComboBox->setBounds(785, 10, 120, 24);
 	colorStyleComboBoxLabel->setBounds(665, 10, 120, 24); 
 
     extendedColorScaleToggleButton->setBounds(780, 39, 24, 24); 
     extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24); 
 
-	// x inversed on these two
-    searchBoxWidthSlider->setBounds(478, 643, 50, 64);
-	searchBoxWidthSliderLabel->setBounds(524, 664, 120, 24);
-
-	ROISpikeLatencyLabel->setBounds(866, 126, 120, 24);  // 192 difference
-	ROISpikeLatency->setBounds(980, 126, 72, 24);
-	msLabel->setBounds(1052, 126, 72, 24);	// this is a label for the units used x inverted orignially (432, 336, 72, 24)
-	// latency is 24 less on the y
-	ROISpikeMagnitudeLabel->setBounds(866, 155, 120, 24); // not in line with the label above it and this angers me greatly, but 257 is too much, 256 is too little, there is no sweet spot 16 more than the other label
-	ROISpikeMagnitude->setBounds(980, 155, 72, 24); // 72 difference
-	mpersLabel->setBounds(1052, 155, 72, 24); // this is a label for the units used x inverted orignially (432, 336, 72, 24)
-
-	//conductionDistanceSlider->setBounds(866, 625, 159, 64);
-	//conductionDistanceSliderLabel->setBounds(786, 632, 79, 64); // x inverted
-
-	setupButton->setBounds(955, 10, 120, 24);
-	// Stimulus
-	ppControllerComponent->setBounds(667, 260, 402, 350);
-
-	// Threshold trigger control
-	trigger_threshold_Slider->setBounds(780, 189, 159, 64);
-	trigger_threshold_Slider_Label->setBounds(665, 209, 120, 24); // in a good place, the slider itself needs to move
-
+	// Lucy's Group
+	// setupButton->setBounds(955, 10, 120, 24);
+	// optionsButton->setBounds(665, 10, 120, 24);
 
 	// channel control
 	//textBox1->setBounds(10, 320, 72, 24);
@@ -510,31 +576,168 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	dataChannelComboBox->setBounds(785, 97, 120, 24);
 	dataChannelComboBoxLabel->setBounds(665, 97, 120, 24); // fine
 
+	auto boundsMap = otherControlPanel->getTableBounds();
+	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
+	spikeTracker->setBounds(boundsMap["spikeTracker"]);
+	//spikeTracker->setBounds(665, 40, 470, 200);
+
+	auto tableX = boundsMap["spikeTracker"].getX();
+	auto tableY = boundsMap["spikeTracker"].getY();
+
+	vector<vector<Component*>> tableCells{ 
+		{location0, location1, location2, location3},
+		{fp0, fp1, fp2, fp3},
+		{follow0, follow1, follow2, follow3},
+		{del0, del1, del2, del3}
+	};
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 2, j, false).translated(tableX, tableY));
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		auto cellArea = spikeTracker->getCellPosition(3 + 2, i, false).translated(tableX, tableY);
+		cellArea = cellArea.withSizeKeepingCentre(60, 18);
+		tableCells[3][i]->setBounds(cellArea);
+	}
+
+	//location0->setBounds(715, 69, 100, 20);
+	//location1->setBounds(715, 90, 100, 20);
+	//location2->setBounds(715, 111, 100, 20);
+	//location3->setBounds(715, 132, 100, 20);
+
+	//fp0->setBounds(815, 69, 120, 20);
+	//fp1->setBounds(815, 90, 120, 20);
+	//fp2->setBounds(815, 111, 120, 20);
+	//fp3->setBounds(815, 132, 120, 20);
+
+	//follow0->setBounds(935, 69, 120, 20);
+	//follow1->setBounds(935, 91, 120, 20);
+	//follow2->setBounds(935, 112, 120, 20);
+	//follow3->setBounds(935, 134, 120, 20);
+
+	//del0->setBounds(1050, 68, 60, 18);
+	//del1->setBounds(1050, 89, 60, 18);
+	//del2->setBounds(1050, 110, 60, 18);
+	//del3->setBounds(1050, 131, 60, 18);
+
 	trackSpike_button->setBounds(780, 126, 120, 24);
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
 
 	trackThreshold_button->setBounds(780, 155, 120, 24);
 	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
-
-    auto area = getLocalBounds().withTrimmedLeft(getWidth() * 0.60).withTrimmedTop(getHeight() * 0.60);
-    spectrogramControlPanel->setBounds(area);
 }
 
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {
 	//Lucy's style of keybind was much better than mine as it allowed to adjust value and slider position and send a notification in one single line, so thank you <3, from James
 	//Increase search box location
-	if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < 600)) {
-		searchBoxSlider->setValue(searchBoxSlider->getValue() + 5, sendNotificationAsync);
+	if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < SPECTROGRAM_HEIGHT)) {
+		spectrogramPanel->changeSearchBoxValue(5);
 		return true;
 	}
 	//Decrease search box location
 	else if ((k == KeyPress::leftKey || k == KeyPress::numberPad4) && (searchBoxLocation > 0)) {
-		searchBoxSlider->setValue(searchBoxSlider->getValue() - 5, sendNotificationAsync);
+		spectrogramPanel->changeSearchBoxValue(-5);
 		return true;
 	}
-	else {
-		return false;
+	else if (k == KeyPress::F1Key) {
+		if (follow0->getToggleState() == true) {
+			follow0->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(0);
+			return true;
+		}
+		else if (follow0->getToggleState() == false) {
+			follow0->setToggleState(true, sendNotification);
+			return true;
+		}
 	}
+	else if (k == KeyPress::F2Key) {
+		if (follow1->getToggleState() == true) {
+			follow1->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(1);
+			return true;
+		}
+		else if (follow1->getToggleState() == false) {
+			follow1->setToggleState(true, sendNotification);
+			return true;
+		}
+	}
+	else if (k == KeyPress::F3Key) {
+		if (follow2->getToggleState() == true) {
+			follow2->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(2);
+			return true;
+		}
+		else if (follow2->getToggleState() == false) {
+			follow2->setToggleState(true, sendNotification);
+			return true;
+		}
+	}
+	else if (k == KeyPress::F4Key) {
+		if (follow3->getToggleState() == true) {
+			follow3->setToggleState(false, sendNotification);
+			spikeTracker->selectedRowsChanged(3);
+			return true;
+		}
+		else if (follow3->getToggleState() == false) {
+			follow3->setToggleState(true, sendNotification);
+			return true;
+		}
+	}
+
+	auto subsamplesPerWindowValue = spectrogramControlPanel->getSubsamplesPerWindowValue();
+	//Increase subsamplesperwindow
+	if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindowValue < spectrogramControlPanel->getSubsamplesPerWindowMaximum())) {
+		spectrogramControlPanel->changeSubsamplesPerWindowValue(5);
+		return true;
+	}
+	//Decrease subsamplesperwindow
+	else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindowValue > spectrogramControlPanel->getSubsamplesPerWindowMinimum())) {
+		spectrogramControlPanel->changeSubsamplesPerWindowValue(-5);
+		return true;
+	}
+
+	auto startingSampleValue = spectrogramControlPanel->getStartingSampleValue();
+	//Increase starting sample
+	if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSampleValue < spectrogramControlPanel->getStartingSampleMaximum())) {
+		spectrogramControlPanel->changeStartingSampleValue(100);
+		return true;
+	}
+	//Decrease starting sample
+	else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSampleValue > spectrogramControlPanel->getStartingSampleMinimum())) {
+		spectrogramControlPanel->changeStartingSampleValue(-100);
+		return true;
+	}
+
+	auto highImageThreshold = spectrogramControlPanel->getImageThresholdMaxValue();
+	auto lowImageThreshold = spectrogramControlPanel->getImageThresholdMinValue();
+	//Increase highImageThreshold
+	if ((k == KeyPress::pageUpKey || k == KeyPress::numberPad9) && (highImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) {
+		spectrogramControlPanel->changeImageThresholdMaxValue(2);
+		return true;
+	}
+	//Decrease highImageThreshold
+	else if ((k == KeyPress::pageDownKey || k == KeyPress::numberPad3) && (highImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) {
+		spectrogramControlPanel->changeImageThresholdMaxValue(-2);
+		return true;
+	}
+	//Increase lowImageThreshold
+	else if ((k == KeyPress::homeKey || k == KeyPress::numberPad7) && (lowImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) {
+		spectrogramControlPanel->changeImageThresholdMinValue(2);
+		return true;
+	}
+	//Decrease lowImageThreshold
+	else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) {
+		spectrogramControlPanel->changeImageThresholdMinValue(-2);
+		return true;
+	}
+
+	return false;
 }
 
 
@@ -604,7 +807,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
     }
-    if (sliderThatWasMoved == searchBoxSlider)
+    if (sliderThatWasMoved->getName() == "Search Box")
     {
 		cout << "Stuck here 8\n";
         searchBoxLocation = sliderThatWasMoved->getValue();
@@ -624,13 +827,13 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
     if (sliderThatWasMoved->getName() == "Starting Sample")
     {
 		cout << "Stuck here 10\n";
-		startingSample = sliderThatWasMoved->getValue();
-		(*valuesMap)["startingSample"] = String(startingSample);
-		std::cout << "startingSample" << startingSample << std::endl;
+        startingSample = sliderThatWasMoved->getValue();
+        (*valuesMap)["startingSample"] = String(startingSample);
+        std::cout << "startingSample" << startingSample << std::endl;
 
-	}
-	if (sliderThatWasMoved == searchBoxWidthSlider)
-	{
+    }
+    if (sliderThatWasMoved->getName() == "Search Box Width")
+    {
 		cout << "Stuck here 11\n";
 		searchBoxWidth = sliderThatWasMoved->getValue();
 		(*valuesMap)["searchBoxWidth"] = String(searchBoxWidth);
@@ -719,7 +922,15 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			(*valuesMap)["trackSpike"] = "0";
 		}
 	}
-	if (buttonThatWasClicked == setupButton) {
+	if (buttonThatWasClicked == del0)
+		del_0 = true;
+	if (buttonThatWasClicked == del1)
+		del_1 = true;
+	if (buttonThatWasClicked == del2)
+		del_2 = true;
+	if (buttonThatWasClicked == del3)
+		del_3 = true;
+	if (buttonThatWasClicked->getName() == "Setup") {
 
 		Viewport* view = new Viewport("viewTest");
 		view->setLookAndFeel(&this->getLookAndFeel());
@@ -765,7 +976,53 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 
 		view->setSize(270, 325);
 
-		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, setupButton->getBounds(), this);
+		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getSetupBoundsInPanelParent(), this);
+		setupBox.setLookAndFeel(new CustomLookAndFeel());
+	}
+	if (buttonThatWasClicked->getName() == "Options") {
+
+		Viewport* view = new Viewport("viewTest");
+		view->setLookAndFeel(&this->getLookAndFeel());
+
+		view->addAndMakeVisible(colorStyleComboBox);
+		view->addAndMakeVisible(colorStyleComboBoxLabel);
+
+		view->addAndMakeVisible(extendedColorScaleToggleButton);
+		view->addAndMakeVisible(extendedColorScaleToggleButtonLabel);
+
+		view->addAndMakeVisible(trackSpike_button);
+		view->addAndMakeVisible(trackSpike_button_Label);
+
+		view->addAndMakeVisible(trackThreshold_button);
+		view->addAndMakeVisible(trackThreshold_button_Label);
+
+		view->addAndMakeVisible(triggerChannelComboBox);
+		view->addAndMakeVisible(triggerChannelComboBoxLabel);
+
+		view->addAndMakeVisible(dataChannelComboBox);
+		view->addAndMakeVisible(dataChannelComboBoxLabel);
+
+		colorStyleComboBox->setBounds(135, 10, 120, 24);
+		colorStyleComboBoxLabel->setBounds(10, 10, 120, 24);
+
+		extendedColorScaleToggleButton->setBounds(135, 40, 24, 24);
+		extendedColorScaleToggleButtonLabel->setBounds(10, 40, 120, 24);
+
+		trackSpike_button->setBounds(135, 70, 120, 24);
+		trackSpike_button_Label->setBounds(10, 70, 120, 24);
+
+		trackThreshold_button->setBounds(135, 100, 120, 24);
+		trackThreshold_button_Label->setBounds(10, 100, 120, 24);
+
+		triggerChannelComboBox->setBounds(135, 130, 120, 24);
+		triggerChannelComboBoxLabel->setBounds(10, 130, 120, 24);
+
+		dataChannelComboBox->setBounds(135, 160, 120, 24);
+		dataChannelComboBoxLabel->setBounds(10, 160, 120, 24); // fine
+
+		view->setSize(300, 200);
+
+		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 
@@ -782,6 +1039,53 @@ void LfpLatencyProcessorVisualizerContentComponent::tryToSave()
 		isSaving = false;
 	}
 	
+}
+
+int TableContent::getNumRows() {
+	return 4;
+}
+
+TableContent::TableContent() {
+		
+}
+
+TableContent::~TableContent() {
+
+}
+
+void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
+
+	g.setColour(Colours::black);  // [5]
+	Font font = 12.0f;
+	g.setFont(font);
+
+	if (columnId == 1)
+	{
+		auto text = to_string(rowNumber + 1);
+
+		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true);                             // [6]
+	}
+
+	g.setColour(Colours::transparentWhite);
+	g.fillRect(width - 1, 0, 1, height);
+
+}
+
+void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
+
+	if (rowIsSelected) {
+		if (rowNumber == 0)
+			g.fillAll(Colours::lightsteelblue);
+		if (rowNumber == 1)
+			g.fillAll(Colours::lightskyblue);
+		if (rowNumber == 2)
+			g.fillAll(Colours::darkgreen);
+		if (rowNumber == 3)
+			g.fillAll(Colours::orange);
+	}
+	else {
+		g.fillAll(Colours::lightgrey);
+	}
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
@@ -817,4 +1121,45 @@ float LfpLatencyProcessorVisualizerContentComponent::getDetectionThreshold() con
 int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelectedId() const
 {
 	return colorStyleComboBox->getSelectedId();
+}
+
+std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerContentComponent::getSearchBoxInfo() const
+{
+	Colour colour;
+	if (trackSpike_button->getToggleState() == true)
+	{
+		if (spikeDetected) {
+			colour = Colours::green;
+		}
+		else {
+			colour = Colours::red;
+		}
+	}
+	else if (follow0->getToggleState() == true) 
+	{
+		colour = Colours::lightsteelblue;
+	}
+	else if (follow1->getToggleState() == true) 
+	{
+		colour = Colours::lightskyblue;
+	}
+	else if (follow2->getToggleState() == true)
+	{
+		colour = Colours::darkgreen;
+	}
+	else if (follow3->getToggleState() == true)
+	{
+		colour = Colours::orange;
+	}
+	else
+	{
+		colour = Colours::lightyellow;
+	}
+	
+	auto width = 8;
+	auto x = spectrogramPanel->getImageWidth() - width;
+	auto y = spectrogramPanel->getImageHeight() - (searchBoxLocation + searchBoxWidth);
+	auto height = searchBoxWidth * 2 + 1;
+
+	return {x, y, width, height, colour};
 }

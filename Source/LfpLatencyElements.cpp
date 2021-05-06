@@ -1,6 +1,7 @@
 // LfpLatencyElements.cpp
 
 #include "LfpLatencyElements.h"
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
 
 // -------------------------------------------------------------
 LfpLatencyLabelTextEditor::LfpLatencyLabelTextEditor(const String& labelText)
@@ -17,7 +18,7 @@ LfpLatencyLabelTextEditor::LfpLatencyLabelTextEditor(const String& labelText)
 
 void LfpLatencyLabelTextEditor::resized()
 {
-    auto textEditorLeft = getWidth() * 2 / 3;
+    auto textEditorLeft = getWidth() / 3;
     textEditor->setBounds(textEditorLeft, 0, getWidth() - textEditorLeft, getHeight());
 }
 
@@ -141,4 +142,204 @@ void LfpLatencyLabelVerticalSlider::setSliderMinValue(double newValue)
 double LfpLatencyLabelVerticalSlider::getSliderMinValue() const
 {
     return slider->getMinValue();
+}
+
+// -------------------------------------------------------------
+LfpLatencyLabelComboBox::LfpLatencyLabelComboBox(const String& labelText)
+{
+    label = new Label("Label", labelText);
+    comboBox = new ComboBox("ComboBox");
+
+    label->setJustificationType(juce::Justification::centred);
+    label->attachToComponent(comboBox, true);
+
+    comboBox->setEditableText(false);
+    comboBox->setJustificationType(Justification::centredLeft);
+
+    comboBox->setSelectedId(1);
+
+    addAndMakeVisible(label);
+    addAndMakeVisible(comboBox);
+}
+
+void LfpLatencyLabelComboBox::resized()
+{
+    auto comboBoxLeft = getWidth() * 2 / 3;
+    comboBox->setBounds(getLocalBounds().withTrimmedLeft(comboBoxLeft));
+}
+
+int LfpLatencyLabelComboBox::getComboBoxSelectedId() const
+{
+    return comboBox->getSelectedId();
+}
+
+void LfpLatencyLabelComboBox::setComboBoxSelectedId(int newItemId)
+{
+    comboBox->setSelectedId(newItemId);
+}
+
+void LfpLatencyLabelComboBox::setComboBoxTextWhenNothingSelected(const String& newMessage)
+{
+    comboBox->setTextWhenNothingSelected(newMessage);
+}
+
+int LfpLatencyLabelComboBox::getComboBoxNumItems() const
+{
+    return comboBox->getNumItems();
+}
+
+void LfpLatencyLabelComboBox::addComboBoxItem(const String& newItemText, int newItemId)
+{
+    comboBox->addItem(newItemText, newItemId);
+}
+
+void LfpLatencyLabelComboBox::addComboBoxSectionHeading(const String& headingName)
+{
+    comboBox->addSectionHeading(headingName);
+}
+
+void LfpLatencyLabelComboBox::clearComboBox()
+{
+    comboBox->clear();
+}
+
+// -------------------------------------------------------------
+LfpLatencyLabelToggleButton::LfpLatencyLabelToggleButton(const String& labelText)
+{
+    label = new Label("Label", labelText);
+    toggleButton = new ToggleButton("");
+
+    label->setJustificationType(juce::Justification::centred);
+    label->attachToComponent(toggleButton, true);
+
+    toggleButton->setName(labelText);
+    toggleButton->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
+
+    addAndMakeVisible(label);
+    addAndMakeVisible(toggleButton);
+}
+
+void LfpLatencyLabelToggleButton::resized()
+{
+    auto toggleButtonLeft = getWidth() * 2 / 3;
+    toggleButton->setBounds(getLocalBounds().withTrimmedLeft(toggleButtonLeft));
+}
+
+void LfpLatencyLabelToggleButton::addToggleButtonListener(Button::Listener* listener)
+{
+    toggleButton->addListener(listener);
+}
+
+bool LfpLatencyLabelToggleButton::getToggleButtonState() const
+{
+    return toggleButton->getToggleState();
+}
+
+void LfpLatencyLabelToggleButton::setToggleButtonState(bool shouldBeOn, NotificationType notification)
+{
+    toggleButton->setToggleState(shouldBeOn, notification);
+}
+
+// -------------------------------------------------------------
+LfpLatencyLabelSliderNoTextBox::LfpLatencyLabelSliderNoTextBox(const String& labelText)
+{
+    label = new Label("Label", labelText);
+    slider = new Slider(Slider::Rotary, Slider::NoTextBox);
+    slider->setName(labelText);
+
+    label->setJustificationType(juce::Justification::centred);
+    label->attachToComponent(slider, true);
+
+    addAndMakeVisible(label);
+    addAndMakeVisible(slider);
+}
+
+void LfpLatencyLabelSliderNoTextBox::resized()
+{
+    auto sliderWidth = 50;
+    slider->setBounds(getLocalBounds().removeFromRight(sliderWidth));
+}
+
+void LfpLatencyLabelSliderNoTextBox::setSliderRange(double newMinimum, double newMaximum, double newInterval)
+{
+    slider->setRange(newMinimum, newMaximum, newInterval);
+}
+
+void LfpLatencyLabelSliderNoTextBox::addSliderListener(Slider::Listener* listener)
+{
+    slider->addListener(listener);
+}
+
+void LfpLatencyLabelSliderNoTextBox::setSliderValue(double newValue)
+{
+    slider->setValue(newValue);
+}
+
+double LfpLatencyLabelSliderNoTextBox::getSliderValue() const
+{
+    return slider->getValue();
+}
+
+// -------------------------------------------------------------
+LfpLatencyLabelLinearVerticalSliderNoTextBox::LfpLatencyLabelLinearVerticalSliderNoTextBox(const String& labelText)
+{
+    label = new Label("Label", labelText);
+    slider = new Slider(Slider::LinearVertical, Slider::NoTextBox);
+    slider->setName(labelText);
+
+    label->setJustificationType(juce::Justification::centred);
+
+    addAndMakeVisible(label);
+    addAndMakeVisible(slider);
+}
+
+void LfpLatencyLabelLinearVerticalSliderNoTextBox::resized()
+{
+    auto area = getLocalBounds();
+    auto sliderWidth = 15;
+    slider->setBounds(area.removeFromLeft(sliderWidth));
+    auto labelHeight = 24;
+    label->setBounds(area.removeFromBottom(labelHeight));
+}
+
+void LfpLatencyLabelLinearVerticalSliderNoTextBox::setSliderRange(double newMinimum, double newMaximum, double newInterval)
+{
+    slider->setRange(newMinimum, newMaximum, newInterval);
+}
+
+void LfpLatencyLabelLinearVerticalSliderNoTextBox::addSliderListener(Slider::Listener* listener)
+{
+    slider->addListener(listener);
+}
+
+void LfpLatencyLabelLinearVerticalSliderNoTextBox::setSliderValue(double newValue)
+{
+    slider->setValue(newValue);
+}
+
+double LfpLatencyLabelLinearVerticalSliderNoTextBox::getSliderValue() const
+{
+    return slider->getValue();
+}
+
+// -------------------------------------------------------------
+LfpLatencySearchBox::LfpLatencySearchBox(const LfpLatencyProcessorVisualizerContentComponent& content, const LfpLatencySpectrogram& spectrogram)
+:content(content), spectrogram(spectrogram) {}
+
+void LfpLatencySearchBox::paint(Graphics& g)
+{
+    Colour colour;
+    float x, y, width, height;
+    std::tie(x, y, width, height, colour) = content.getSearchBoxInfo();
+    g.setColour(colour);
+
+    auto area = getLocalBounds().toFloat();
+    x = jmap(x, 0.0f, (float)spectrogram.getImageWidth(), area.getX(), area.getRight());
+    width = jmap(width, 0.0f, (float)spectrogram.getImageWidth(), area.getX(), area.getRight());
+    y = jmap(y, 0.0f, (float)spectrogram.getImageHeight(), area.getY(), area.getBottom());
+    height = jmap(height, 0.0f, (float)spectrogram.getImageHeight(), area.getY(), area.getBottom());
+
+    auto cornerSize = 1;
+    auto lineThickness = 2;
+    g.drawRoundedRectangle(x, y, width, height, cornerSize, lineThickness);
 }
