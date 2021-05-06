@@ -151,3 +151,83 @@ void LfpLatencySpectrogramControlPanel::setSubsamplesPerWindowValue(double newVa
 {
     subsamplesPerWindow->setSliderValue(newValue);
 }
+
+double LfpLatencySpectrogramControlPanel::getSubsamplesPerWindowValue() const
+{
+    return subsamplesPerWindow->getSliderValue();
+}
+
+double LfpLatencySpectrogramControlPanel::getSubsamplesPerWindowMaximum() const
+{
+    return subsamplesPerWindow->getSliderMaximum();
+}
+
+double LfpLatencySpectrogramControlPanel::getSubsamplesPerWindowMinimum() const
+{
+    return subsamplesPerWindow->getSliderMinimum();
+}
+
+void LfpLatencySpectrogramControlPanel::changeSubsamplesPerWindowValue(double deltaValue)
+{
+    setSubsamplesPerWindowValue(getSubsamplesPerWindowValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getStartingSampleValue() const
+{
+    return startingSample->getSliderValue();
+}
+
+double LfpLatencySpectrogramControlPanel::getStartingSampleMaximum() const
+{
+    return startingSample->getSliderMaximum();
+}
+
+double LfpLatencySpectrogramControlPanel::getStartingSampleMinimum() const
+{
+    return startingSample->getSliderMinimum();
+}
+
+void LfpLatencySpectrogramControlPanel::changeStartingSampleValue(double deltaValue)
+{
+    setStartingSampleValue(getStartingSampleValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMaxValue() const
+{
+    return imageThreshold->getSliderMaxValue();
+}
+
+void LfpLatencySpectrogramControlPanel::setImageThresholdMaxValue(double newValue)
+{
+    imageThreshold->setSliderMaxValue(newValue);
+}
+
+void LfpLatencySpectrogramControlPanel::changeImageThresholdMaxValue(double deltaValue)
+{
+    setImageThresholdMaxValue(getImageThresholdMaxValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMinValue() const
+{
+    return imageThreshold->getSliderMinValue();
+}
+
+void LfpLatencySpectrogramControlPanel::setImageThresholdMinValue(double newValue)
+{
+    imageThreshold->setSliderMinValue(newValue);
+}
+
+void LfpLatencySpectrogramControlPanel::changeImageThresholdMinValue(double deltaValue)
+{
+    setImageThresholdMinValue(getImageThresholdMinValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMaximum() const
+{
+    return imageThreshold->getSliderMaximum();
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMinimum() const
+{
+    return imageThreshold->getSliderMinimum();
+}
