@@ -134,7 +134,7 @@ The following key binds can be used to adjust settings:
 | Page Down         | Decrease High Image Threshold               |
 | Home              | Increase Low Image Threshold                |
 | End               | Decrease Low Image Threshold                |
-| F1, F2, F3, F4	| Track Spikes 1 - 4						  |
+| F1/F2/F3/F4		| Track Spikes 1 - 4						  |
 
 All these binds work on a number pad, except the function keys.
 
