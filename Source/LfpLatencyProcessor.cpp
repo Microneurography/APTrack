@@ -243,6 +243,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
 void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 {
+    return;
 	// Sometimes the XML file becomes blank. I thought originally it was because of threads,
 	// i.e. if two second threads accessed the file at the same time, the file would get corrupted.
 	// I thought the mutex lock would fix it, but it didn't.
@@ -352,6 +353,7 @@ void LfpLatencyProcessor::saveRecoveryData(XmlElement *parentElement)
 
 void LfpLatencyProcessor::loadRecoveryData()
 {
+    return;
 	// this function will be called from the same one that asks if pulse pal could be loaded, because I think that's the entry point
 	loaded = false;
 	loadRecovery = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Load LfpLatency Configurations?", "Would you like to load previous Lfp Latency Configurations?", "Yes", "No");

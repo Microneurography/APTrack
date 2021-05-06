@@ -288,6 +288,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     
     spikeDetected = false;
 
+	valuesMap = new unordered_map<string, juce::String>;
 }
 
 LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerContentComponent()
@@ -311,6 +312,8 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	trackSpike_IncreaseRate_Text = nullptr;
 	trackSpike_DecreaseRate_Text = nullptr;
+
+	delete valuesMap;
 }
 
 //==============================================================================
@@ -427,19 +430,17 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* sliderThatWasMoved)
 {
-	XmlValue = new XmlElement("Components"); 
-	// The XmlValue is becoming unreadable occasionally, which is causing a crash. 
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
 		cout << "Stuck here 1\n";
 		//Lower value
 		stimulusVoltageMin = sliderThatWasMoved->getMinValue();
-		XmlValue->setAttribute("stimulusVoltageMin", stimulusVoltageMin);
+		(*valuesMap)["stimulusVoltageMin"] = String(stimulusVoltageMin, 2);
 		stimulusVoltageMin_text->setText(String(stimulusVoltageMin, 2));
 		cout << "Stuck here 2\n";
 		//Upper value
 		stimulusVoltageMax = sliderThatWasMoved->getMaxValue();
-		XmlValue->setAttribute("stimulusVoltageMax", stimulusVoltageMax);
+		(*valuesMap)["stimulusVoltageMax"] = String(stimulusVoltageMax, 2);
 		stimulusVoltageMax_text->setText(String(stimulusVoltageMax, 2));
 		cout << "Stuck here 3\n";
 		//mid value
@@ -456,7 +457,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		}
 		if (voltageTooHighOkay || stimulusVoltage < 4) {
 			cout << "Made it past the 2nd if\n";
-			XmlValue->setAttribute("stimulusVoltage", stimulusVoltage);
+			(*valuesMap)["stimulusVoltage"] = String(stimulusVoltage, 2);
 			stimulusVoltage_text->setText(String(stimulusVoltage, 2));
 			ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 			cout << "Updated stimulus voltage\n";
@@ -471,16 +472,19 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		cout << "Stuck here 5\n";
         lowImageThreshold = sliderThatWasMoved->getMinValue();
         std::cout << "Slider lower: " << lowImageThreshold << std::endl;
+		(*valuesMap)["lowImageThreshold"] = String(lowImageThreshold, 1);
         spectrogramControlPanel->setLowImageThresholdText(String(lowImageThreshold, 1) + " uV");
 		cout << "Stuck here 6\n";
         //Upper value
         highImageThreshold = sliderThatWasMoved->getMaxValue();
         std::cout << "Slider upper: " << highImageThreshold << std::endl;
+		(*valuesMap)["highImageThreshold"] = String(highImageThreshold, 1);
         spectrogramControlPanel->setHighImageThresholdText(String(highImageThreshold, 1) + " uV");
 		cout << "Stuck here 7\n";
         //mid value
         detectionThreshold = sliderThatWasMoved->getValue();
         std::cout << "DetectionThehold" << detectionThreshold << std::endl;
+		(*valuesMap)["detectionThreshold"] = String(detectionThreshold, 1);
         spectrogramControlPanel->setDetectionThresholdText(String(detectionThreshold, 1) + " uV");
 
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
@@ -489,6 +493,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
     {
 		cout << "Stuck here 8\n";
         searchBoxLocation = sliderThatWasMoved->getValue();
+		(*valuesMap)["searchBoxLocation"] = String(searchBoxLocation);
         std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
         
     }
@@ -497,6 +502,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		cout << "Stuck here 9\n";
         //auto subsamplesPerWindowOld = subsamplesPerWindow;
         subsamplesPerWindow = sliderThatWasMoved->getValue();
+		(*valuesMap)["subsamplesPerWindow"] = String(subsamplesPerWindow);
         std::cout << "subsamplesPerWindow" << subsamplesPerWindow << std::endl;
       
     }
@@ -504,7 +510,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
     {
 		cout << "Stuck here 10\n";
 		startingSample = sliderThatWasMoved->getValue();
-		XmlValue->setAttribute("startingSample", startingSample);
+		(*valuesMap)["startingSample"] = String(startingSample);
 		std::cout << "startingSample" << startingSample << std::endl;
 
 	}
@@ -512,7 +518,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 	{
 		cout << "Stuck here 11\n";
 		searchBoxWidth = sliderThatWasMoved->getValue();
-		XmlValue->setAttribute("searchBoxWidth", searchBoxWidth);
+		(*valuesMap)["searchBoxWidth"] = String(searchBoxWidth);
 		std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
 
 	}
@@ -520,25 +526,18 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 	{
 		cout << "Stuck here 12\n";
 		trackSpike_IncreaseRate = sliderThatWasMoved->getValue();
-		XmlValue->setAttribute("trackSpike_IncreaseRate", trackSpike_IncreaseRate);
+		(*valuesMap)["trackSpike_IncreaseRate"] = String(trackSpike_IncreaseRate, 0);
 		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0) + " V");
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
 		cout << "Stuck here 13\n";
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
-		XmlValue->setAttribute("trackSpike_DecreaseRate", trackSpike_DecreaseRate);
+		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
-	printf("running save custom params to XML\n");
-	LfpLatencyProcessor::saveRecoveryData(XmlValue);
-	XmlValue->~XmlElement();
-	printf("tidying up\n");
-	// Shouldn't need to delete things anymore because Scoped Pointers remove themselves
-	// delete process; // THIS IS IT!!!!!!!! THIS IS WHERE MY PROBLEMS ARE COMING FROM!! This is leaking memory
-	// Always, always use ScopedPointers, OwnedArrays, ReferenceCountedObjects, etc, and avoid the 'delete' operator at all costs!
-	// XmlValue->~XmlElement(); // deleting the xml value so no leaking of memory
-	printf("all done\n");
+	printf("running save custom params\n");
+	// LfpLatencyProcessor::saveRecoveryData(XmlValue);
 }
 
 /*

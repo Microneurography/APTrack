@@ -77,6 +77,8 @@ private:
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
 
+    unordered_map<string, juce::String> *valuesMap;
+
 	// setup
 
 	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
