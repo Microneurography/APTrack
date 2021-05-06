@@ -26,7 +26,7 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     int maxSubsample = std::round(DATA_CACHE_SIZE_SAMPLES / SPECTROGRAM_HEIGHT); // TODO: remove constants
     subsamplesPerWindow->setSliderRange(1, maxSubsample, 1);
     subsamplesPerWindow->addSliderListener(content);
-    subsamplesPerWindow->setSliderValue(1); // TODO: not sure we need this for initialisation
+    subsamplesPerWindow->setSliderValue(content->getSubsamplesPerWindow()); // TODO: not sure we need this for initialisation
 
     startingSample = new LfpLatencyLabelSlider("Starting Sample");
     startingSample->setSliderRange(0, 30000, 1);
@@ -64,66 +64,15 @@ void LfpLatencySpectrogramControlPanel::resized()
     auto sliderWidth = getWidth()/3;
     imageThreshold->setBounds(area.removeFromRight(sliderWidth));
 
-    auto textItemHeight = 24;
+    auto textItemHeight = area.getHeight() * 0.1;
     highImageThreshold->setBounds(area.removeFromTop(textItemHeight));
     detectionThreshold->setBounds(area.removeFromTop(textItemHeight));
     lowImageThreshold->setBounds(area.removeFromTop(textItemHeight));
 
-    auto sliderItemHeight = 64;
+    auto sliderItemHeight = area.getHeight() / 3.0;
     subsamplesPerWindow->setBounds(area.removeFromTop(sliderItemHeight));
     startingSample->setBounds(area.removeFromTop(sliderItemHeight));
     conductionDistance->setBounds(area.removeFromTop(sliderItemHeight));
-}
-
-bool LfpLatencySpectrogramControlPanel::keyPressed(const KeyPress& k) {
-    auto subsamplesPerWindowValue = subsamplesPerWindow->getSliderValue();
-    //Increase subsamplesperwindow
-    if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindowValue < subsamplesPerWindow->getSliderMaximum())) {
-        subsamplesPerWindow->setSliderValue(subsamplesPerWindowValue + 5);
-        return true;
-    }
-    //Decrease subsamplesperwindow
-    else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindowValue > subsamplesPerWindow->getSliderMinimum())) {
-        subsamplesPerWindow->setSliderValue(subsamplesPerWindowValue - 5);
-        return true;
-    }
-
-    auto startingSampleValue = startingSample->getSliderValue();
-    //Increase starting sample
-    if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSampleValue < startingSample->getSliderMaximum())) {
-        startingSample->setSliderValue(startingSample->getSliderValue() + 100);
-        return true;
-    }
-    //Decrease starting sample
-    else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSampleValue > startingSample->getSliderMinimum())) {
-        startingSample->setSliderValue(startingSample->getSliderValue() - 100);
-        return true;
-    }
-
-    auto highImageThreshold = imageThreshold->getSliderMaxValue();
-    auto lowImageThreshold = imageThreshold->getSliderMinValue();
-    //Increase highImageThreshold
-    if ((k == KeyPress::pageUpKey || k == KeyPress::numberPad9) && (highImageThreshold < imageThreshold->getSliderMaximum())) {
-        imageThreshold->setSliderMaxValue(highImageThreshold + 2);
-        return true;
-    }
-    //Decrease highImageThreshold
-    else if ((k == KeyPress::pageDownKey || k == KeyPress::numberPad3) && (highImageThreshold > imageThreshold->getSliderMinimum())) {
-        imageThreshold->setSliderMaxValue(highImageThreshold - 2);
-        return true;
-    }
-    //Increase lowImageThreshold
-    else if ((k == KeyPress::homeKey || k == KeyPress::numberPad7) && (lowImageThreshold < imageThreshold->getSliderMaximum())) {
-        imageThreshold->setSliderMinValue(lowImageThreshold + 2);
-        return true;
-    }
-    //Decrease lowImageThreshold
-    else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > imageThreshold->getSliderMinimum())) {
-        imageThreshold->setSliderMinValue(lowImageThreshold - 2);
-        return true;
-    }
-    
-    return false;
 }
 
 void LfpLatencySpectrogramControlPanel::setImageThresholdRange(double newMinimum, double newMaximum, double newInterval) {
@@ -150,4 +99,84 @@ void LfpLatencySpectrogramControlPanel::setStartingSampleValue(double newValue)
 void LfpLatencySpectrogramControlPanel::setSubsamplesPerWindowValue(double newValue)
 {
     subsamplesPerWindow->setSliderValue(newValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getSubsamplesPerWindowValue() const
+{
+    return subsamplesPerWindow->getSliderValue();
+}
+
+double LfpLatencySpectrogramControlPanel::getSubsamplesPerWindowMaximum() const
+{
+    return subsamplesPerWindow->getSliderMaximum();
+}
+
+double LfpLatencySpectrogramControlPanel::getSubsamplesPerWindowMinimum() const
+{
+    return subsamplesPerWindow->getSliderMinimum();
+}
+
+void LfpLatencySpectrogramControlPanel::changeSubsamplesPerWindowValue(double deltaValue)
+{
+    setSubsamplesPerWindowValue(getSubsamplesPerWindowValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getStartingSampleValue() const
+{
+    return startingSample->getSliderValue();
+}
+
+double LfpLatencySpectrogramControlPanel::getStartingSampleMaximum() const
+{
+    return startingSample->getSliderMaximum();
+}
+
+double LfpLatencySpectrogramControlPanel::getStartingSampleMinimum() const
+{
+    return startingSample->getSliderMinimum();
+}
+
+void LfpLatencySpectrogramControlPanel::changeStartingSampleValue(double deltaValue)
+{
+    setStartingSampleValue(getStartingSampleValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMaxValue() const
+{
+    return imageThreshold->getSliderMaxValue();
+}
+
+void LfpLatencySpectrogramControlPanel::setImageThresholdMaxValue(double newValue)
+{
+    imageThreshold->setSliderMaxValue(newValue);
+}
+
+void LfpLatencySpectrogramControlPanel::changeImageThresholdMaxValue(double deltaValue)
+{
+    setImageThresholdMaxValue(getImageThresholdMaxValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMinValue() const
+{
+    return imageThreshold->getSliderMinValue();
+}
+
+void LfpLatencySpectrogramControlPanel::setImageThresholdMinValue(double newValue)
+{
+    imageThreshold->setSliderMinValue(newValue);
+}
+
+void LfpLatencySpectrogramControlPanel::changeImageThresholdMinValue(double deltaValue)
+{
+    setImageThresholdMinValue(getImageThresholdMinValue() + deltaValue);
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMaximum() const
+{
+    return imageThreshold->getSliderMaximum();
+}
+
+double LfpLatencySpectrogramControlPanel::getImageThresholdMinimum() const
+{
+    return imageThreshold->getSliderMinimum();
 }
