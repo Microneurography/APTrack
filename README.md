@@ -64,7 +64,9 @@ If the above steps are successful, there will be a compiled binary at Build/Debu
 
 ##### To use Github Actions
 	1. Click on Actions in this repo
-	2. On the left side, you should see several workflows. Click on "Build LfpLatency", which will test if the branch compiles on Ubuntu 20.04
+	2. On the left side, you should see several workflows. 
+      	1. To see it compiles on Ubuntu 20.04: Click on "Build LfpLatency", which will compile the plugin (approximate runtime 1.5 min).
+      	2. To see it compiles on MacOs 10.15: Click on"Build plugin-gui macos", which will compile the plugin-gui first and then the plugin (approximate runtime 5 min).
 	3. Click run workflow, and choose which branch you want to compile
 	4. Click the green button, "Run workflow"
 	5. After a few seocnds, the workflow should be in progress. You can click it to see details
