@@ -47,7 +47,7 @@ If the above steps are successful, there will be a compiled binary at Build/Debu
 	Copy all files from ~home/OE-plugin-latency-tracker/Build/Release and paste into ~home/plugin-GUI/Build/Release/plugins
 
 <p align="center">
-    <img src="./Resources/vsinstall.png" alt="virtual studio.png" title="Choose the INSTALL option">
+    <img src="./Resources/vsinstall.png" alt="virtual_studio.png" title="Choose the INSTALL option">
 </p>
 
 ##### For Linux users
@@ -59,9 +59,34 @@ If the above steps are successful, there will be a compiled binary at Build/Debu
 	4. Copy all files from ~home/OE-plugin-latency-tracker/Build/Release and paste into ~home/plugin-GUI/Build/Release/plugins
 
 <p align="center">
-	<img src="./Resources/macinstall.png" alt="mac xcode.png" title="Set the SCHEME">
+	<img src="./Resources/macinstall.png" alt="mac_xcode.png" title="Set the SCHEME">
 </p>
 
+It is also possible to use GitHub Actions to build the plugin on Linux
+
+##### To use Github Actions
+	1. Click on Actions in this repo
+	2. On the left side, you should see several workflows. Click on "Build LfpLatency", which will test if the branch compiles on Ubuntu 20.04
+	3. Click run workflow, and choose which branch you want to compile
+	4. Click the green button, "Run workflow"
+	5. After a few seocnds, the workflow should be in progress. You can click it to see details
+	6. Output information is provided on compile success/failure
+
+<p align="center">
+	<img src="./Resources/action1.png" alt="github actions.png" title="Actions steps 1 through 4">
+</p>
+
+<p align="center">
+	<img src="./Resources/action2.png" alt="workflow.png" title="Action step 5">
+</p>
+
+<p align="center">
+	<img src="./Resources/action3.png" alt="completed.png" title="Action step 6">
+</p>
+
+### To use the Docker
+We aim to get a easier deployment solution through Docker, but for now it's only used in GitHub Actions to check if a branch compiles
+The image can compile the plugin, but cannot run the plugin-GUI due to audio device issues
 
 ### Walkthrough
 You should now find an executable called open-ephys in ~home/GUI-plugin/Build/Release (Or debug if you chose that option.)
