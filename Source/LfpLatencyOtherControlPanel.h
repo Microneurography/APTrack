@@ -53,15 +53,6 @@ public:
 
     /* If shouldBeEnabled set to false, will also toggle the button to false. */
     //void setTrackThresholdEnabled(bool shouldBeEnabled);
-
-    //double getTriggerThresholdValue() const;
-
-    /* Just pass in the value string, " ms" will be auto added. */
-    //void setROISpikeLatencyText(const String& newText);
-
-    /* Just pass in the value string, " uV" will be auto added. */
-    //void setROISpikeValueText(const String& newText);
-
 private:
     ScopedPointer<GroupComponent> outline;
 
@@ -77,10 +68,6 @@ private:
     ScopedPointer<LfpLatencyLabelComboBox> dataChannel;
     ScopedPointer<LfpLatencyLabelToggleButton> trackSpike;
     ScopedPointer<LfpLatencyLabelToggleButton> trackThreshold;
-    ScopedPointer<LfpLatencyLabelSlider> triggerThreshold;
-
-    ScopedPointer<LfpLatencyLabelTextEditor> ROISpikeLatency;
-    ScopedPointer<LfpLatencyLabelTextEditor> ROISpikeValue; // or ROISpikeMagnitude in some code. TODO: make them consistent
     */
 };
 

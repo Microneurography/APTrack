@@ -15,9 +15,6 @@ LfpLatencyOtherControlPanel::LfpLatencyOtherControlPanel(LfpLatencyProcessorVisu
 	//dataChannel = new LfpLatencyLabelComboBox("Data Channel");
 	//trackSpike = new LfpLatencyLabelToggleButton("Track Spike");
 	//trackThreshold = new LfpLatencyLabelToggleButton("Track Threshold");
-	//triggerThreshold = new LfpLatencyLabelSlider("Trigger Threshold");
-	//ROISpikeLatency = new LfpLatencyLabelTextEditor("ROI Spike Location");
-	//ROISpikeValue = new LfpLatencyLabelTextEditor("ROI Spike Value");
 
 	options->addListener(content);
 	options->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
@@ -44,9 +41,6 @@ LfpLatencyOtherControlPanel::LfpLatencyOtherControlPanel(LfpLatencyProcessorVisu
 	//trackThreshold->addToggleButtonListener(content);
 	//trackThreshold->setEnabled(getTrackSpikeToggleState());
 
-	//triggerThreshold->setSliderRange(0.1, 150);
-	//triggerThreshold->addSliderListener(content);
-	//triggerThreshold->setSliderValue(2.5);
 
 	addAndMakeVisible(outline);
 	addAndMakeVisible(options);
@@ -57,9 +51,6 @@ LfpLatencyOtherControlPanel::LfpLatencyOtherControlPanel(LfpLatencyProcessorVisu
 	//addAndMakeVisible(dataChannel);
 	//addAndMakeVisible(trackSpike);
 	//addAndMakeVisible(trackThreshold);
-	//addAndMakeVisible(triggerThreshold);
-	//addAndMakeVisible(ROISpikeLatency);
-	//addAndMakeVisible(ROISpikeValue);
 }
 
 void LfpLatencyOtherControlPanel::resized()
@@ -79,9 +70,6 @@ void LfpLatencyOtherControlPanel::resized()
 	setup->setBounds(setupArea);
 
 	/*
-	auto triggerThresholdHeight = 64;
-	auto triggerThresholdArea = area.removeFromBottom(triggerThresholdHeight);
-
 	auto rightSideArea = area.removeFromRight(area.getWidth() / 2);
 
 	// Left
@@ -98,17 +86,6 @@ void LfpLatencyOtherControlPanel::resized()
 	trackSpike->setBounds(area.removeFromTop(itemHeight));
 	area.removeFromTop(itemVerticalSpace);
 	trackThreshold->setBounds(area.removeFromTop(itemHeight));
-
-	// Right
-	auto setupButtonWidth = 120;
-	setup->setBounds(rightSideArea.removeFromTop(itemHeight).withSizeKeepingCentre(setupButtonWidth, itemHeight));
-	rightSideArea.removeFromTop(3 * itemHeight + 4 * itemVerticalSpace);
-	ROISpikeLatency->setBounds(rightSideArea.removeFromTop(itemHeight));
-	rightSideArea.removeFromTop(itemVerticalSpace);
-	ROISpikeValue->setBounds(rightSideArea.removeFromTop(itemHeight));
-
-	// Bottom
-	triggerThreshold->setBounds(triggerThresholdArea.withTrimmedRight(triggerThresholdArea.getWidth() / 3));
 	*/
 }
 
@@ -238,20 +215,5 @@ void LfpLatencyOtherControlPanel::setTrackThresholdEnabled(bool shouldBeEnabled)
 	{
 		trackThreshold->setToggleButtonState(shouldBeEnabled, sendNotification);
 	}
-}
-
-double LfpLatencyOtherControlPanel::getTriggerThresholdValue() const
-{
-	return triggerThreshold->getSliderValue();
-}
-
-void LfpLatencyOtherControlPanel::setROISpikeLatencyText(const String& newText)
-{
-	ROISpikeLatency->setTextEditorText(newText + " ms");
-}
-
-void LfpLatencyOtherControlPanel::setROISpikeValueText(const String& newText)
-{
-	ROISpikeValue->setTextEditorText(newText + " uV");
 }
 */
