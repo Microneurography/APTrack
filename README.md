@@ -64,7 +64,7 @@ If the above steps are successful, there will be a compiled binary at Build/Debu
 
 ##### To use Github Actions
 	1. Click on Actions in this repo
-	2. On the left side, you should see several workflows. Click on "Build LfpLatency", which will test if the branch compiles on Ubuntu 
+	2. On the left side, you should see several workflows. Click on "Build LfpLatency", which will test if the branch compiles on Ubuntu 20.04
 	3. Click run workflow, and choose which branch you want to compile
 	4. Click the green button, "Run workflow"
 	5. After a few seocnds, the workflow should be in progress. You can click it to see details
