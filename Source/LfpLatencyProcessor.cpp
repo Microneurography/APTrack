@@ -223,9 +223,7 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
 {
 	savingAndLoadingLock.lock();
 	std::cout << "Trying to save " << std::endl;
-    juce::String workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-	workingDirectory += "\\LastLfpLatencyPluginComponents.cfg";
-	File recoveryConfigFile = File(workingDirectory);
+    File recoveryConfigFile = CoreServices::getSavedStateDirectory().getChildFile("LastLfpLatencyPluginComponents.cfg");
     std::string cfgText = "";
 
     std::unordered_map<std::string, juce::String>::iterator it = valuesMap->begin();
@@ -268,10 +266,7 @@ void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce:
 
     savingAndLoadingLock.lock();
     std::cout << "Trying to load " << std::endl;
-
-    juce::String workingDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-    workingDirectory += "\\LastLfpLatencyPluginComponents.cfg";
-    File recoveryConfigFile = File(workingDirectory);
+    File recoveryConfigFile = CoreServices::getSavedStateDirectory().getChildFile("LastLfpLatencyPluginComponents.cfg");
 
     if (recoveryConfigFile.existsAsFile())
     {
