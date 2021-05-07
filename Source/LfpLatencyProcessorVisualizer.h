@@ -141,7 +141,7 @@ private:
     int draw_rightHandEdge;
 
     //Pointer to processor
-    ScopedPointer<LfpLatencyProcessor> processor;
+    LfpLatencyProcessor* processor;
     
     friend class LfpLatencyProcessorVisualizerContentComponent;
     friend class TableContent;

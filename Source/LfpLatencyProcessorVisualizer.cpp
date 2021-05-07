@@ -61,6 +61,7 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
 
 LfpLatencyProcessorVisualizer::~LfpLatencyProcessorVisualizer()
 {
+	processor = nullptr;
     stopCallbacks(); //MM For the time being...
 }
 
