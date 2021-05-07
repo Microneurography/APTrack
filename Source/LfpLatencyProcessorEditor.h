@@ -24,7 +24,6 @@
 #define LFPLATENCYPROCESSOREDITOR_H_INCLUDED
 
 #include <VisualizerEditorHeaders.h>
-#include <AllLookAndFeels.h>
 #include "LfpLatencyProcessor.h"
 
 
