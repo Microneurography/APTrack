@@ -1,4 +1,5 @@
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
+#include "LfpLatencyProcessor.h"
 
 
 // So we can make the setup box less dark.
@@ -73,8 +74,14 @@ public:
 LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerContentComponent ()
 : searchBoxLocation(150),subsamplesPerWindow(60),startingSample(0),colorStyle(1)
 {
+	isSaving = false;
+
+	valuesMap = new unordered_map<string, juce::String>;
+
     searchBoxLocation = 150;
+	searchBoxWidth = 25;
     conductionDistance = 100;
+	subsamplesPerWindow = 60;
 
 	setWantsKeyboardFocus(true);
 
@@ -83,8 +90,90 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageMax = 10.0f; // you also have to change the range of the slider on line 87
 	stimulusVoltageMin = 0.5f;
 
+	lowImageThreshold = 5.0f;
+	highImageThreshold = 80.0f;
+	detectionThreshold = 20.0f;
+
 	trackSpike_IncreaseRate = 0.01;
 	trackSpike_DecreaseRate = 0.01;
+
+	LfpLatencyProcessor::loadRecoveryData(valuesMap);
+
+	if (valuesMap->find("trackSpike_IncreaseRate") != valuesMap->end())
+	{
+		trackSpike_IncreaseRate = stof((*valuesMap)["trackSpike_IncreaseRate"].toStdString());
+	}
+
+	if (valuesMap->find("trackSpike_DecreaseRate") != valuesMap->end())
+	{
+		trackSpike_DecreaseRate = stof((*valuesMap)["trackSpike_DecreaseRate"].toStdString());
+	}
+
+	if (valuesMap->find("stimulusVoltageMax") != valuesMap->end())
+	{
+		stimulusVoltageMax = stof((*valuesMap)["stimulusVoltageMax"].toStdString());
+	}
+
+	if (valuesMap->find("stimulusVoltageMin") != valuesMap->end())
+	{
+		stimulusVoltageMin = stof((*valuesMap)["stimulusVoltageMin"].toStdString());
+	}
+
+	if (valuesMap->find("stimulusVoltage") != valuesMap->end())
+	{
+		stimulusVoltage = stof((*valuesMap)["stimulusVoltage"].toStdString());
+	}
+
+	if (valuesMap->find("highImageThreshold") != valuesMap->end())
+	{
+		highImageThreshold = stof((*valuesMap)["highImageThreshold"].toStdString());
+	}
+
+	if (valuesMap->find("lowImageThreshold") != valuesMap->end())
+	{
+		lowImageThreshold = stof((*valuesMap)["lowImageThreshold"].toStdString());
+	}
+
+	if (valuesMap->find("detectionThreshold") != valuesMap->end())
+	{
+		detectionThreshold = stof((*valuesMap)["detectionThreshold"].toStdString());
+	}
+
+	if (valuesMap->find("searchBoxLocation") != valuesMap->end())
+	{
+		searchBoxLocation = stoi((*valuesMap)["searchBoxLocation"].toStdString());
+	}
+
+	if (valuesMap->find("searchBoxWidth") != valuesMap->end())
+	{
+		searchBoxWidth = stoi((*valuesMap)["searchBoxWidth"].toStdString());
+	}
+
+	if (valuesMap->find("subsamplesPerWindow") != valuesMap->end())
+	{
+		subsamplesPerWindow = stoi((*valuesMap)["subsamplesPerWindow"].toStdString());
+	}
+
+	if (valuesMap->find("startingSample") != valuesMap->end())
+	{
+		startingSample = stoi((*valuesMap)["startingSample"].toStdString());
+	}
+
+	if (valuesMap->find("extendedColorScale") != valuesMap->end())
+	{
+		if ((*valuesMap)["extendedColorScale"] == "1")
+		{
+			extendedColorScale = true;
+		}
+		else
+		{
+			extendedColorScale = false;
+		}
+	}
+	else
+	{
+		extendedColorScale = false;
+	}
 
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
@@ -173,7 +262,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	trackSpike_button = new ToggleButton("");
 	trackSpike_button->addListener(this);
-	trackSpike_button->setToggleState(false, sendNotification);
 	trackSpike_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
 	trackSpike_button_Label = new Label("track_spike_button_label");
 	trackSpike_button_Label->setText("Track Spike", sendNotification);
@@ -192,22 +280,22 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//SETUP BUTTON -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Increase/Decrease rate of spike tracking
 	// Not added here as they are in the setup box.
-	trackSpike_IncreaseRate_Slider = new Slider("searchBoxWidthSlider");
+	trackSpike_IncreaseRate_Slider = new Slider("trackSpike_IncreaseRate_Slider");
 	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
 	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_IncreaseRate_Slider->addListener(this);
-	trackSpike_IncreaseRate_Slider->setValue(0.01f);
+	trackSpike_IncreaseRate_Slider->setValue(trackSpike_IncreaseRate);
 	trackSpike_IncreaseRate_Slider_Label = new Label("Track_Spike_Increase_Rate_Slider_Label");
 	trackSpike_IncreaseRate_Slider_Label->setText("Increase Rate of Spike Tracking", sendNotification);
 	trackSpike_IncreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
 
-	trackSpike_DecreaseRate_Slider = new Slider("searchBoxWidthSlider");
+	trackSpike_DecreaseRate_Slider = new Slider("trackSpike_DecreaseRate_Slider");
 	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
 	trackSpike_DecreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_DecreaseRate_Slider->addListener(this);
-	trackSpike_DecreaseRate_Slider->setValue(0.01f);
+	trackSpike_DecreaseRate_Slider->setValue(trackSpike_DecreaseRate);
 	trackSpike_DecreaseRate_Slider_Label = new Label("Track_Spike_Decrease_Rate_Slider_Label");
 	trackSpike_DecreaseRate_Slider_Label->setText("Decrease Rate of Spike Tracking", sendNotification);
 	trackSpike_DecreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
@@ -332,20 +420,53 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 	stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
 	stimulusVoltageSlider->setValue(stimulusVoltage);
+	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 
     colorStyleComboBox->setSelectedId(1);
-    
     extendedColorScaleToggleButton->setToggleState(false,sendNotification);
 
     spectrogramControlPanel = new LfpLatencySpectrogramControlPanel(this);
     addAndMakeVisible(spectrogramControlPanel);
 
+	if (valuesMap->find("extendedColorScale") != valuesMap->end())
+	{
+		if ((*valuesMap)["extendedColorScale"] == "1")
+		{
+			extendedColorScaleToggleButton->setToggleState(true, sendNotification);
+		}
+		else
+		{
+			extendedColorScaleToggleButton->setToggleState(false, sendNotification);
+		}
+	}
+	else
+	{
+		extendedColorScaleToggleButton->setToggleState(false, sendNotification);
+	}
+
+	if (valuesMap->find("trackSpike") != valuesMap->end())
+	{
+		if ((*valuesMap)["trackSpike"] == "1")
+		{
+			trackSpike_button->setToggleState(true, sendNotification);
+		}
+		else
+		{
+			trackSpike_button->setToggleState(false, sendNotification);
+		}
+	}
+	else
+	{
+		trackSpike_button->setToggleState(false, sendNotification);
+	}
 	otherControlPanel = new LfpLatencyOtherControlPanel(this);
 	addAndMakeVisible(otherControlPanel);
 	otherControlPanel->toBack();
 
 	spectrogramPanel = new LfpLatencySpectrogramPanel(this);
 	addAndMakeVisible(spectrogramPanel);
+	spectrogramPanel->setSearchBoxValue(searchBoxLocation);
+	spectrogramPanel->setSearchBoxWidthValue(searchBoxWidth);
 
 	rightMiddlePanel = new LfpLatencyRightMiddlePanel(this);
 	addAndMakeVisible(rightMiddlePanel);
@@ -356,7 +477,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     setSize (700, 900);
     
     spikeDetected = false;
-
 }
 
 LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerContentComponent()
@@ -384,6 +504,8 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	trackSpike_IncreaseRate_Text = nullptr;
 	trackSpike_DecreaseRate_Text = nullptr;
+
+	delete valuesMap;
 }
 
 //==============================================================================
@@ -617,24 +739,30 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 	return false;
 }
 
-void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
+
+// could pass a bool value to this function for loading in values
+// if the bool is false, we are not loading up, run as currently written
+// if the bool is true, we are loading up, so do not update the xml
+// also need a way of passing the value and connecting to a slider, maybe as just a string and int
+
+void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* sliderThatWasMoved)
 {
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
 		cout << "Stuck here 1\n";
 		//Lower value
 		stimulusVoltageMin = sliderThatWasMoved->getMinValue();
-		stimulusVoltageMin_text->setText(String(stimulusVoltageMin,2));
+		(*valuesMap)["stimulusVoltageMin"] = String(stimulusVoltageMin, 2);
+		stimulusVoltageMin_text->setText(String(stimulusVoltageMin, 2));
 		cout << "Stuck here 2\n";
 		//Upper value
 		stimulusVoltageMax = sliderThatWasMoved->getMaxValue();
-		stimulusVoltageMax_text->setText(String(stimulusVoltageMax,2));
+		(*valuesMap)["stimulusVoltageMax"] = String(stimulusVoltageMax, 2);
+		stimulusVoltageMax_text->setText(String(stimulusVoltageMax, 2));
 		cout << "Stuck here 3\n";
 		//mid value
 		stimulusVoltage = sliderThatWasMoved->getValue();
-		stimulusVoltage_text->setText(String(stimulusVoltage,2));
 
-		// very slow for some reason
 		cout << "Got here\n";
 		if (stimulusVoltage > 4 && alreadyAlerted == false) {
 			cout << "Made it past the if\n";
@@ -644,8 +772,10 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 			alreadyAlerted = true;
 			cout << "already alterted is now true\n";
 		}
-		if (voltageTooHighOkay) {
+		if (voltageTooHighOkay || stimulusVoltage < 4) {
 			cout << "Made it past the 2nd if\n";
+			(*valuesMap)["stimulusVoltage"] = String(stimulusVoltage, 2);
+			stimulusVoltage_text->setText(String(stimulusVoltage, 2));
 			ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 			cout << "Updated stimulus voltage\n";
 		}
@@ -655,20 +785,23 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     {
 		cout << "Stuck here 4\n";
 
-        //Lower value
+		//Lower value
 		cout << "Stuck here 5\n";
         lowImageThreshold = sliderThatWasMoved->getMinValue();
         std::cout << "Slider lower: " << lowImageThreshold << std::endl;
+		(*valuesMap)["lowImageThreshold"] = String(lowImageThreshold, 1);
         spectrogramControlPanel->setLowImageThresholdText(String(lowImageThreshold, 1) + " uV");
 		cout << "Stuck here 6\n";
         //Upper value
         highImageThreshold = sliderThatWasMoved->getMaxValue();
         std::cout << "Slider upper: " << highImageThreshold << std::endl;
+		(*valuesMap)["highImageThreshold"] = String(highImageThreshold, 1);
         spectrogramControlPanel->setHighImageThresholdText(String(highImageThreshold, 1) + " uV");
 		cout << "Stuck here 7\n";
         //mid value
         detectionThreshold = sliderThatWasMoved->getValue();
         std::cout << "DetectionThehold" << detectionThreshold << std::endl;
+		(*valuesMap)["detectionThreshold"] = String(detectionThreshold, 1);
         spectrogramControlPanel->setDetectionThresholdText(String(detectionThreshold, 1) + " uV");
 
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
@@ -677,6 +810,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     {
 		cout << "Stuck here 8\n";
         searchBoxLocation = sliderThatWasMoved->getValue();
+		(*valuesMap)["searchBoxLocation"] = String(searchBoxLocation);
         std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
         
     }
@@ -685,6 +819,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
 		cout << "Stuck here 9\n";
         //auto subsamplesPerWindowOld = subsamplesPerWindow;
         subsamplesPerWindow = sliderThatWasMoved->getValue();
+		(*valuesMap)["subsamplesPerWindow"] = String(subsamplesPerWindow);
         std::cout << "subsamplesPerWindow" << subsamplesPerWindow << std::endl;
       
     }
@@ -692,28 +827,35 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged (Slider* 
     {
 		cout << "Stuck here 10\n";
         startingSample = sliderThatWasMoved->getValue();
+        (*valuesMap)["startingSample"] = String(startingSample);
         std::cout << "startingSample" << startingSample << std::endl;
-        
+
     }
     if (sliderThatWasMoved->getName() == "Search Box Width")
     {
 		cout << "Stuck here 11\n";
-        searchBoxWidth = sliderThatWasMoved->getValue();
-        std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
-        
-    }
+		searchBoxWidth = sliderThatWasMoved->getValue();
+		(*valuesMap)["searchBoxWidth"] = String(searchBoxWidth);
+		std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
+
+	}
 	if (sliderThatWasMoved == trackSpike_IncreaseRate_Slider)
 	{
 		cout << "Stuck here 12\n";
 		trackSpike_IncreaseRate = sliderThatWasMoved->getValue();
-		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0)+ " V");
+		(*valuesMap)["trackSpike_IncreaseRate"] = String(trackSpike_IncreaseRate, 0);
+		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0) + " V");
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
 		cout << "Stuck here 13\n";
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
+		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
+
+	printf("running save custom params\n");
+	tryToSave();
 }
 
 /*
@@ -756,10 +898,12 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
         if (buttonThatWasClicked->getToggleState() == true) {
             // If using extended scale (eg when using file reader)
             spectrogramControlPanel->setImageThresholdRange(0, 1000, 0);
+			(*valuesMap)["extendedColorScale"] = "1";
         }
         else {
             // If using regular scale (eg when using FPGA real time data)
             spectrogramControlPanel->setImageThresholdRange(0, 100, 0);
+			(*valuesMap)["extendedColorScale"] = "0";
         }
     }
 	if (buttonThatWasClicked == trackSpike_button)
@@ -767,12 +911,14 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		if (buttonThatWasClicked->getToggleState() == true) {
 			trackThreshold_button->setEnabled(true);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::black);
+			(*valuesMap)["trackSpike"] = "1";
 		}
 		else if (buttonThatWasClicked->getToggleState() == false)
 		{
 			trackThreshold_button->setEnabled(false);
 			trackThreshold_button->setToggleState(false, sendNotification);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
+			(*valuesMap)["trackSpike"] = "0";
 		}
 	}
 	if (buttonThatWasClicked == del0)
@@ -878,6 +1024,20 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
+
+	printf("running save custom params\n");
+	tryToSave();
+}
+
+void LfpLatencyProcessorVisualizerContentComponent::tryToSave()
+{
+	if (!isSaving)
+	{
+		isSaving = true;
+		LfpLatencyProcessor::saveRecoveryData(valuesMap);
+		isSaving = false;
+	}
+	
 }
 
 int TableContent::getNumRows() {
@@ -930,6 +1090,11 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
 {
 	return startingSample;
+}
+
+bool LfpLatencyProcessorVisualizerContentComponent::getExtendedColorScale() const
+{
+	return extendedColorScale;
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getSubsamplesPerWindow() const

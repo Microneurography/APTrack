@@ -4,16 +4,31 @@
 #include "LfpLatencySpectrogramControlPanel.h"
 #include "LfpLatencyElements.h"
 
+ScopedPointer<LfpLatencyLabelVerticalSlider> LfpLatencySpectrogramControlPanel::imageThreshold; // = new LfpLatencyLabelVerticalSlider("Image Threshold")
+ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::highImageThreshold; // = new LfpLatencyLabelTextEditor("High Image Threshold")
+ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::detectionThreshold; // = new LfpLatencyLabelTextEditor("Detection Threshold")
+ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::lowImageThreshold; // = new LfpLatencyLabelTextEditor("Low Image Threshold")
+ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::subsamplesPerWindow; // = new LfpLatencyLabelSlider("Subsamples Per Window")
+ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::startingSample; // = new LfpLatencyLabelSlider("Starting Sample")
+ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::conductionDistance; // = new LfpLatencyLabelSlider("Conduction Distance")
+
+
 LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyProcessorVisualizerContentComponent* content)
 {
     outline = new GroupComponent("Color control");
 
     imageThreshold = new LfpLatencyLabelVerticalSlider("Image Threshold");
-    imageThreshold->setSliderRange(0, 100, 0);
+    if (content->getExtendedColorScale()) {
+        imageThreshold->setSliderRange(0, 1000, 0);
+    }
+    else
+    {
+        imageThreshold->setSliderRange(0, 100, 0);
+    }
     imageThreshold->addSliderListener(content);
-    imageThreshold->setSliderMinValue(0);
-    imageThreshold->setSliderMaxValue(90);
-    imageThreshold->setSliderValue(50);
+    imageThreshold->setSliderMaxValue(content->getHighImageThreshold());
+    imageThreshold->setSliderValue(content->getDetectionThreshold());
+    imageThreshold->setSliderMinValue(content->getLowImageThreshold());
     
     highImageThreshold = new LfpLatencyLabelTextEditor("High Image Threshold");
     highImageThreshold->setTextEditorText(String(imageThreshold->getSliderMaximum()) + " uV");
@@ -31,7 +46,7 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     startingSample = new LfpLatencyLabelSlider("Starting Sample");
     startingSample->setSliderRange(0, 30000, 1);
     startingSample->addSliderListener(content);
-    startingSample->setSliderValue(0); // TODO: not sure we need this for initialisation
+    startingSample->setSliderValue(content->getStartingSample());
 
     // TODO: conduction distance not used?
     conductionDistance = new LfpLatencyLabelSlider("Conduction Distance");
@@ -179,4 +194,12 @@ double LfpLatencySpectrogramControlPanel::getImageThresholdMaximum() const
 double LfpLatencySpectrogramControlPanel::getImageThresholdMinimum() const
 {
     return imageThreshold->getSliderMinimum();
+}
+
+void LfpLatencySpectrogramControlPanel::loadParameters(const std::map<String, String>& newParameters)
+{
+	imageThreshold->setSliderValue(newParameters.at("Image Threshold").getDoubleValue());
+    subsamplesPerWindow->setSliderValue(newParameters.at("Subsamples Per Window").getDoubleValue());
+    startingSample->setSliderValue(newParameters.at("Starting Sample").getDoubleValue());
+    conductionDistance->setSliderValue(newParameters.at("Conduction Distance").getDoubleValue());
 }

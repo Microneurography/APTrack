@@ -3,7 +3,7 @@
 
 #include <EditorHeaders.h>
 #include "LfpLatencyProcessor.h"
-
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
 #include "pulsePalController/ppController.h"
 
 #include "LfpLatencySpectrogram.h"
@@ -52,11 +52,13 @@ public:
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
     int getStartingSample() const;
+    bool getExtendedColorScale() const;
     int getSubsamplesPerWindow() const;
     float getLowImageThreshold() const;
     float getHighImageThreshold() const;
     float getDetectionThreshold() const;
     int getColorStyleComboBoxSelectedId() const;
+    void tryToSave();
 
     std::tuple<float, float, float, float, Colour> getSearchBoxInfo() const;
 private:
@@ -87,6 +89,7 @@ private:
 
     bool spikeDetected = false;
     bool newSpikeDetected = false;
+    bool extendedColorScale;
     float detectionThreshold;
     int subsamplesPerWindow;
     int startingSample;
@@ -114,6 +117,9 @@ private:
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
+
+    bool isSaving;
+    unordered_map<string, juce::String> *valuesMap;
 
 	// setup
 

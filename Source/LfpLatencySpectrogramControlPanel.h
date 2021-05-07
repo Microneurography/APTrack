@@ -5,6 +5,7 @@
 
 #include <EditorHeaders.h>
 
+class LfpLatencyProcessorVisualizerContentComponent;
 class LfpLatencyLabelTextEditor;
 class LfpLatencyLabelSlider;
 class LfpLatencyLabelVerticalSlider;
@@ -39,18 +40,21 @@ public:
     void changeImageThresholdMinValue(double deltaValue);
     double getImageThresholdMaximum() const;
     double getImageThresholdMinimum() const;
+
+    static void loadParameters(const std::map<String, String>& newParameters);
+
 private:
     ScopedPointer<GroupComponent> outline;
 
-    ScopedPointer<LfpLatencyLabelVerticalSlider> imageThreshold;
+    static ScopedPointer<LfpLatencyLabelVerticalSlider> imageThreshold;
 
-    ScopedPointer<LfpLatencyLabelTextEditor> highImageThreshold;
-    ScopedPointer<LfpLatencyLabelTextEditor> detectionThreshold;
-    ScopedPointer<LfpLatencyLabelTextEditor> lowImageThreshold;
+    static ScopedPointer<LfpLatencyLabelTextEditor> highImageThreshold;
+    static ScopedPointer<LfpLatencyLabelTextEditor> detectionThreshold;
+    static ScopedPointer<LfpLatencyLabelTextEditor> lowImageThreshold;
 
-    ScopedPointer<LfpLatencyLabelSlider> subsamplesPerWindow;
-    ScopedPointer<LfpLatencyLabelSlider> startingSample;
-    ScopedPointer<LfpLatencyLabelSlider> conductionDistance;
+    static ScopedPointer<LfpLatencyLabelSlider> subsamplesPerWindow;
+    static ScopedPointer<LfpLatencyLabelSlider> startingSample;
+    static ScopedPointer<LfpLatencyLabelSlider> conductionDistance;
 };
 
 #endif

@@ -39,9 +39,11 @@
 
 #include <Windows.h>
 #endif
-
+#include <string>
 #include <ProcessorHeaders.h>
 #include <functional>
+#include <map>
+#include <unordered_map>
 
 //fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
@@ -101,6 +103,14 @@ public:
         It is recommended that any variables used by the "process" function
         are modified only through this method while data acquisition is active. */
     void setParameter (int parameterIndex, float newValue) override;
+
+	/** This method is a critical section, protected a mutex lock. Allows you to save slider values, and maybe
+	some data if you wanted in a file called LastLfpLatencyPluginComponents */
+	static void saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap);
+
+	/** Starts by asking the user if they would like to load data from LastLfpLatencyPluginComponents, 
+	the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
+	static void loadRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap);
 
     /** Saving custom settings to XML. */
     virtual void saveCustomParametersToXml (XmlElement* parentElement) override;
@@ -167,10 +177,9 @@ public:
 
 	//debug
 	float getParameterFloat(int parameterID);
-
+	//Result makingFile;
 
 private:
-
 	//debug
 	float lastReceivedDACPulse;
 

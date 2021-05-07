@@ -142,7 +142,7 @@ private:
 
     //Pointer to processor
     LfpLatencyProcessor* processor;
-
+    
     friend class LfpLatencyProcessorVisualizerContentComponent;
     friend class TableContent;
 
