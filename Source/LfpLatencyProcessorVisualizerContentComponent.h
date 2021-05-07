@@ -144,9 +144,6 @@ private:
 	ScopedPointer<Label> stimulusVoltageMin_textLabel;
 	
 	// main GUI
-    // ScopedPointer<TextButton> setupButton;
-    // ScopedPointer<TextButton> optionsButton;
-
     ScopedPointer<ComboBox> colorStyleComboBox;
 	ScopedPointer<Label> colorStyleComboBoxLabel;
     

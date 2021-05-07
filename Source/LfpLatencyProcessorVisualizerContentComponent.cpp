@@ -178,16 +178,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	// The code for the descriptions is below
 	// I think that the labels can have the argument dontSendNotification. Not sure what sending does
 
-	// addAndMakeVisible(setupButton = new TextButton("setupButton"));
-	// setupButton->setButtonText("Setup");
-	// setupButton->addListener(this);
-	// setupButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
-
-	// addAndMakeVisible(optionsButton = new TextButton("optionsButton"));
-	// optionsButton->setButtonText("Options");
-	// optionsButton->addListener(this);
-	// optionsButton->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
-
 	// Stimulus control - setup components
 	addAndMakeVisible(ppControllerComponent = new ppController());
 
@@ -562,8 +552,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24); 
 
 	// Lucy's Group
-	// setupButton->setBounds(955, 10, 120, 24);
-	// optionsButton->setBounds(665, 10, 120, 24);
 
 	// channel control
 	//textBox1->setBounds(10, 320, 72, 24);
