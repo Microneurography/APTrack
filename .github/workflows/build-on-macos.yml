@@ -11,13 +11,15 @@ jobs:
       - name: Build plugin-gui
         run: |
           cd .. 
-          git clone https://github.com/open-ephys/plugin-GUI.git 
+          git clone --depth 1 -b master https://github.com/open-ephys/plugin-GUI.git 
           cd plugin-GUI/Build
           cmake -G "Xcode" ..
           xcodebuild -scheme ALL_BUILD build
-          cd ../../OE-plugin-latency-tracker/Build
+          cd ../../
+          mkdir ./OEPlugins
+          cp -R ./OE-plugin-latency-tracker/ ./OEPlugins/OE-plugin-latency-tracker/
+          cd ./OEPlugins/OE-plugin-latency-tracker/Build
           cmake -G "Xcode" ..
-          ls
           xcodebuild -list -project OE_PLUGIN_OE-plugin-latency-tracker.xcodeproj/
           xcodebuild -scheme ALL_BUILD build
       # - name: Archive compiled plugin-gui artifacts
