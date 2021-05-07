@@ -29,18 +29,6 @@ int LfpLatencySpectrogram::getImageWidth() const
     return image.getWidth();
 }
 
-void LfpLatencySpectrogram::paintAll(Colour colour)
-{
-    for (auto ii = 0; ii < getImageWidth(); ii++)
-    {
-        for (auto jj = 0; jj < getImageHeight(); jj++)
-        {
-            image.setPixelAt(ii, jj, colour);
-        }
-    }
-    std::cout << "finished paint" << std::endl;
-}
-
 // The comments here are ideas on how you could save the spectogram
 // I haven't made any comments in LfpLatencySpectogram.h, so if you do decide to implement it,
 // you will have to create all the variables yourself and handle delteing/deconstructing them.

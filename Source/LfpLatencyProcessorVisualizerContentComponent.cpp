@@ -422,10 +422,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	stimulusVoltageSlider->setValue(stimulusVoltage);
 	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 
-	searchBoxSlider->setValue(searchBoxLocation);
-
     colorStyleComboBox->setSelectedId(1);
-    searchBoxWidthSlider->setValue(searchBoxWidth);
     extendedColorScaleToggleButton->setToggleState(false,sendNotification);
 
     spectrogramControlPanel = new LfpLatencySpectrogramControlPanel(this);
@@ -468,6 +465,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	spectrogramPanel = new LfpLatencySpectrogramPanel(this);
 	addAndMakeVisible(spectrogramPanel);
+	spectrogramPanel->setSearchBoxValue(searchBoxLocation);
+	spectrogramPanel->setSearchBoxWidthValue(searchBoxWidth);
 
 	rightMiddlePanel = new LfpLatencyRightMiddlePanel(this);
 	addAndMakeVisible(rightMiddlePanel);
