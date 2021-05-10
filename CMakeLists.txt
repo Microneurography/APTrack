@@ -77,8 +77,9 @@ elseif(APPLE)
 	set_target_properties(${PLUGIN_NAME} PROPERTIES BUNDLE TRUE)
 	set_property(TARGET ${PLUGIN_NAME} APPEND_STRING PROPERTY LINK_FLAGS
 	"-undefined dynamic_lookup -rpath @loader_path/../../../../shared")
-
-	install(TARGETS ${PLUGIN_NAME} DESTINATION $ENV{HOME}/Library/Application\ Support/open-ephys/PlugIns)
+	target_compile_options(${PLUGIN_NAME} PRIVATE -ferror-limit=0)
+	#install(TARGETS ${PLUGIN_NAME} DESTINATION $ENV{HOME}/Library/Application\ Support/open-ephys/PlugIns)
+	install(TARGETS ${PLUGIN_NAME} DESTINATION ${GUI_BASE_DIR}/Build/open-ephys.app/Contents/plugIns )
 	set(CMAKE_PREFIX_PATH /opt/local)
 endif()
 
