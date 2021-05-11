@@ -1,21 +1,16 @@
 FROM ubuntu:focal
 
-RUN apt update \
-  && apt -y install git \
-  && rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN git clone https://github.com/open-ephys/plugin-GUI.git
+RUN apt-get update && apt-get install -y --no-install-recommends\
+    g++-8 \
+    make \
+    cmake \
+    git ca-certificates \
+    freeglut3-dev libfreetype6-dev libxinerama-dev libxcursor-dev libasound2-dev libxrandr-dev libcurl4-gnutls-dev \
+ && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /plugin-GUI/Resources/Scripts
-
-RUN apt update \
-  && ./install_linux_dependencies.sh \
-  && apt -y install gcc-8 g++-8 \
-  && DEBIAN_FRONTEND="noninteractive" apt -y install cmake \
-  # && apt install -y udev \
-  # && cp ./40-open-ephys.rules /etc/udev/rules.d \
-  # && service udev restart \
-  && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 -b master https://github.com/open-ephys/plugin-GUI.git
 
 WORKDIR /plugin-GUI/Build
 

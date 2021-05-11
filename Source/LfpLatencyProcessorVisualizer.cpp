@@ -24,11 +24,9 @@
 #include "LfpLatencyProcessor.h"
 
 
-LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor_pointer)
+LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcessor* processor_pointer):
+	content(processor_pointer)
 {
-    // Open Ephys Plugin Generator will insert generated code for editor here. Don't edit this section.
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_BEGIN]
-
     //m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
     //content.setLookAndFeel (m_contentLookAndFeel);
     addAndMakeVisible (&content);
@@ -43,7 +41,9 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
     windowSampleCount = 0;
     lastWindowPeak = 0;
     
-    pixelsPerTrack = 5;
+    tracksAmount = 60;
+
+    pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
     
     imageLinePoint = 0;
     
@@ -53,16 +53,17 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
     
     // Store pointer to processor
     processor = processor_pointer;
+
     
 
     
     
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_END]
 }
 
 
 LfpLatencyProcessorVisualizer::~LfpLatencyProcessorVisualizer()
 {
+	processor = nullptr;
     stopCallbacks(); //MM For the time being...
 }
 
@@ -84,10 +85,10 @@ void LfpLatencyProcessorVisualizer::refreshState()
 
 void LfpLatencyProcessorVisualizer::update()
 {
-    std::cout << "LfpLatencyProcessorVisualizer::update2" << std::endl;
+	std::cout << "LfpLatencyProcessorVisualizer::update2" << std::endl;
 
 	//Get number of availiable channels and update label
-  // HACK: harcoded to 24
+    // HACK: harcoded to 24
 	int numAvailiableChannels = processor->getTotalDataChannels();
 
 	std::cout << "LfpLatencyProcessorVisualizer::numAvailiableChannels" << numAvailiableChannels << std::endl;
@@ -138,6 +139,7 @@ void LfpLatencyProcessorVisualizer::update()
 	{
 		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
 	}
+	
 }
 
 
@@ -169,7 +171,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
     processor->changeParameter(2, content.startingSample);
 	processor->changeParameter(3, content.triggerChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
 	processor->changeParameter(4, content.dataChannelComboBox->getSelectedId()-1); // pass channel Id -1 = channel index
-	processor->changeParameter(5, content.trigger_threshold_Slider->getValue()); // pass channel Id -1 = channel index
+	processor->changeParameter(5, content.rightMiddlePanel->getTriggerThresholdValue()); // pass channel Id -1 = channel index
 	
 	//Update spectrogram image
 	updateSpectrogram();
@@ -177,7 +179,6 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	if (processor->checkEventReceived())
 	{
 		processor->resetEventFlag();
-
 		processTrack();
 
 	}
@@ -185,154 +186,150 @@ void LfpLatencyProcessorVisualizer::timerCallback()
     
    //Refresh canvas (redraw)
     refresh();
+	//Used to calculate the number of times fired in 5 seconds
+	probabilityTimer++;
+
+	if (probabilityTimer == 250) {
+		resetFirings = true;
+		probabilityTimer = 0;
+	}
 }
 
 
 void LfpLatencyProcessorVisualizer::updateSpectrogram()
 {
-        
-    for (int track=0; track < 60; track++)
-    {
-        //Get image dimension
-        draw_imageHeight = content.spectrogramImage.getHeight();
-        draw_rightHandEdge = content.spectrogramImage.getWidth()-track*pixelsPerTrack;
-        imageLinePoint= 0;
-
-        //Get data array
-        float* dataToPrint = processor->getdataCacheRow(track);
-        
-        //Reset subsampling flags
-        samplesAfterStimulus = 0;
-        lastWindowPeak = 0.0f;
-        windowSampleCount = 0;
-        for (auto ii=0; ii< (DATA_CACHE_SIZE_SAMPLES); ii++)
-        {
-            if (samplesAfterStimulus > content.startingSample)
-            {
-                auto sample = dataToPrint[ii];
-                
-                //If current sample is larger than previously stored peak, store sample as new peak
-                if (sample > lastWindowPeak)
-                {
-                    lastWindowPeak = sample;
-                }
-                
-                //Increment window sample counter
-                ++windowSampleCount;
-                
-                //If window is full, push window's peak into fifo
-                if (windowSampleCount >= content.subsamplesPerWindow)//76
-                {
-                    //If fifo is full, print warning to console
-                    if (imageLinePoint== SPECTROGRAM_HEIGHT)
-                    {
-                        //std::cout << "Spectrogram Full!" << std::endl;
-                    }
-                    
-                    //If fifo not full, store peak into fifo
-                    if (imageLinePoint < SPECTROGRAM_HEIGHT)
-                    {
-                        //Update spectrogram with selected color scheme
-                        switch (content.colorStyleComboBox->getSelectedId()) {
-                            case 1:
-                                //WHOT
-                                level = (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-                                    {
-                                        //Detected peak
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::yellowgreen);
-                                    }
-                                    else if (lastWindowPeak > content.highImageThreshold)
-                                    {
-                                        //Excessive peak
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::red);
-                                    }
-                                    else
-                                    {
-                                        //grayscale
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                    }
-                                }
-                                break;
-                            case 2:
-                                //BHOT
-                                level = 1.0f- (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    if (lastWindowPeak > content.detectionThreshold && lastWindowPeak < content.highImageThreshold)
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::darkgreen);
-                                    }
-                                    else if (lastWindowPeak > content.highImageThreshold)
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colours::red);
-                                    }
-                                    else
-                                    {
-                                        content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                    }
-                                }
-                                break;
-                            case 3:
-                                //WHOT, only grayscale
-                                level = (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                }
-                                break;
-                            case 4:
-                                //BHOT, only grayscale
-                                level = 1.0f- (jmap (lastWindowPeak, content.lowImageThreshold, content.highImageThreshold, 0.0f, 1.0f));
-                                for (auto jj = 0; jj< pixelsPerTrack; jj++)
-                                {
-                                    content.spectrogramImage.setPixelAt (draw_rightHandEdge-jj, draw_imageHeight-imageLinePoint, Colour::fromFloatRGBA(level, level, level, 1.0f));
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        //Go to next line
-                        imageLinePoint++;
-                    }
-                    //Reset subsampling flags
-                    lastWindowPeak = 0.0f;
-                    windowSampleCount = 0;
-                }
-            }
-            samplesAfterStimulus++;
-        }
-        
-    }
-    
+	content.spectrogramPanel->updateSpectrogram(*processor, content);
 }
 
 void LfpLatencyProcessorVisualizer::processTrack()
 {
 
+	
 	// Get latency track data of previous row
 	float* lastRowData = processor->getdataCacheRow(1);
 
 	// HACK Get searchbox location in absolute units
 
-	int serachBoxLocationAbs = content.startingSample + content.searchBoxLocation* content.subsamplesPerWindow;
+	int searchBoxLocationAbs = content.startingSample + content.searchBoxLocation* content.subsamplesPerWindow;
 	int searchBoxWidthAbs = content.searchBoxWidth * content.subsamplesPerWindow;
 
 	// get spike magnitude
-	float maxLevel = FloatVectorOperations::findMaximum(lastRowData + (serachBoxLocationAbs - searchBoxWidthAbs),
+	float maxLevel = FloatVectorOperations::findMaximum(lastRowData + (searchBoxLocationAbs - searchBoxWidthAbs),
 		searchBoxWidthAbs * 2 + content.subsamplesPerWindow);
 
 	// get spike location
-	int SpikeLocationAbs = std::max_element(lastRowData + (serachBoxLocationAbs - searchBoxWidthAbs),
-		lastRowData + (serachBoxLocationAbs + searchBoxWidthAbs)) - lastRowData; // Note we substract lastRowData so that index starts at zero
+	int SpikeLocationAbs = std::max_element(lastRowData + (searchBoxLocationAbs - searchBoxWidthAbs),
+		lastRowData + (searchBoxLocationAbs + searchBoxWidthAbs)) - lastRowData; // Note we substract lastRowData so that index starts at zero
 
 	int SpikeLocationRel= (SpikeLocationAbs - content.startingSample) / content.subsamplesPerWindow;
 
+	//Keep the spike location values updated
+	for (int q = 0; q < 4; q++) {
+		if (spikeLocations[q].isFull == true) {
+			updateSpikeInfo(q);
+			if (q == 0) {
+				content.location0->setText(String(spikeLocations[q].SLR));
+				content.fp0->setText(String(spikeLocations[q].firingNumber));
+			}
+			if (q == 1) {
+				content.location1->setText(String(spikeLocations[q].SLR));
+				content.fp1->setText(String(spikeLocations[q].firingNumber));
+			}
+			if (q == 2) {
+				content.location2->setText(String(spikeLocations[q].SLR));
+				content.fp2->setText(String(spikeLocations[q].firingNumber));
+			}
+			if (q == 3) {
+				content.location3->setText(String(spikeLocations[q].SLR));
+				content.fp3->setText(String(spikeLocations[q].firingNumber));
+			}
+		}
+	}
+
+	//Delete spike information
+	if (content.del_0 == true) {
+		content.follow0->setToggleState(false, sendNotification);
+		spikeLocations[0] = {};
+		spikeLocations[0].isFull = false;
+		content.location0->setText("0");
+		content.fp0->setText("0");
+		content.follow0->setToggleState(false, sendNotification);
+		content.del0->setToggleState(false, sendNotification);
+		std::cout << "Spike 1 Deleted" << endl;
+		content.del_0 = false;
+	}
+	if (content.del_1 == true) {
+		content.follow1->setToggleState(false, sendNotification);
+		spikeLocations[1] = {};
+		spikeLocations[1].isFull = false;
+		content.location1->setText("0");
+		content.fp1->setText("0");
+		content.follow1->setToggleState(false, sendNotification);
+		content.del1->setToggleState(false, sendNotification);
+		std::cout << "Spike 2 Deleted" << endl;
+		content.del_1 = false;
+	}
+	if (content.del_2 == true) {
+		content.follow2->setToggleState(false, sendNotification);
+		spikeLocations[2] = {};
+		spikeLocations[2].isFull = false;
+		content.location2->setText("0");
+		content.fp2->setText("0");
+		content.follow2->setToggleState(false, sendNotification);
+		content.del2->setToggleState(false, sendNotification);
+		std::cout << "Spike 3 Deleted" << endl;
+		content.del_2 = false;
+	}
+	if (content.del_3 == true) {
+		content.follow3->setToggleState(false, sendNotification);
+		spikeLocations[3] = {};
+		spikeLocations[3].isFull = false;
+		content.location3->setText("0");
+		content.fp3->setText("0");
+		content.follow3->setToggleState(false, sendNotification);
+		content.del3->setToggleState(false, sendNotification);
+		std::cout << "Spike 4 Deleted" << endl;
+		content.del_3 = false;
+	}
+
+	//Track spikes!
+	if (content.follow0->getToggleState() == true) {
+		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(0);
+		setConfig(0);
+		updateSpikeInfo(0);
+		content.spectrogramPanel->setSearchBoxValue(spikeLocations[0].SLR);
+	}
+	if (content.follow1->getToggleState() == true) {
+		content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(1);
+		setConfig(1);
+		updateSpikeInfo(1);
+		content.spectrogramPanel->setSearchBoxValue(spikeLocations[1].SLR);
+	}
+	if (content.follow2->getToggleState() == true) {
+		content.follow1->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(2);
+		setConfig(2);
+		updateSpikeInfo(2);
+		content.spectrogramPanel->setSearchBoxValue(spikeLocations[2].SLR);
+	}
+	if (content.follow3->getToggleState() == true) {
+		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
+		content.trackSpike_button->setToggleState(false, sendNotification);
+		content.spikeTracker->selectedRowsChanged(3);
+		setConfig(3);
+		updateSpikeInfo(3);
+		content.spectrogramPanel->setSearchBoxValue(spikeLocations[3].SLR);
+	}
+
+
 	//display values
-	content.ROISpikeMagnitude->setText(String(maxLevel,1) + " uV");
-	content.ROISpikeLatency->setText(String(SpikeLocationAbs/30.0f,1)+" ms"); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
+	content.rightMiddlePanel->setROISpikeValueText(String(maxLevel, 1));
+	content.rightMiddlePanel->setROISpikeLatencyText(String(SpikeLocationAbs / 30.0f, 1)); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
 
 	// If we have enabled spike tracking the track spike
 	if (content.trackSpike_button->getToggleState() == true) {
@@ -341,7 +338,41 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (maxLevel > content.detectionThreshold)
 		{
 			content.spikeDetected = true;
-			content.searchBoxSlider->setValue(SpikeLocationRel);
+			
+
+			//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
+			if (lastSearchBoxLocation == content.searchBoxLocation || spikeLocations[i].isFull == true) {
+				content.newSpikeDetected = false;
+			}
+			else {
+				content.newSpikeDetected = true;
+				cout << "Spike Found" << endl;
+				spikeLocations[i].startingSample = content.startingSample;
+				spikeLocations[i].searchBoxLocation = content.searchBoxLocation;
+				spikeLocations[i].subsamples = content.subsamplesPerWindow;
+				spikeLocations[i].searchBoxWidth = content.searchBoxWidth;
+				spikeLocations[i].lastRowData = lastRowData;
+				spikeLocations[i].isFull = true;
+				lastSearchBoxLocation = content.searchBoxLocation;
+				spikeLocations[i].firingNumber++;
+				i++;
+			}
+			//Reset spike array counter when it reaches four, allows for new spikes to be found once old ones are deleted
+			if (i == 4)
+				i = 0;
+
+
+			
+			// This is a new struct that I'm gonna fill with all the info about the spike, so essentially I can recreate the spike tracking muddle elsewhere
+			
+			
+			//CODE FOR LATER
+			//spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
+			//spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
+			//spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
+			//spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
+			//spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+		
 
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation
@@ -371,6 +402,36 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	
 }
 
+void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
+	
+	if (spikeLocations[i].isFull) {
+		spikeLocations[i].lastRowData = processor->getdataCacheRow(1);
+		spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
+		spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
+		spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
+		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold && resetFirings == false)
+			spikeLocations[i].firingNumber++;
+		if (resetFirings == true) {
+			spikeLocations[i].firingNumber = 0;
+			resetFirings = false;
+		}
+		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
+		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+	}
+
+}
+
+void LfpLatencyProcessorVisualizer::setConfig(int i) {
+	
+	if (spikeLocations[i].isFull) {
+		content.spectrogramControlPanel->setStartingSampleValue(spikeLocations[i].startingSample);
+		content.spectrogramControlPanel->setSubsamplesPerWindowValue(spikeLocations[i].subsamples);
+		content.spectrogramPanel->setSearchBoxWidthValue(spikeLocations[i].searchBoxWidth);
+	}
+
+}
+
+
 void LfpLatencyProcessorVisualizer::setParameter (int parameter, float newValue)
 {
 }
@@ -379,3 +440,4 @@ void LfpLatencyProcessorVisualizer::setParameter (int parameter, float newValue)
 void LfpLatencyProcessorVisualizer::setParameter (int parameter, int val1, int val2, float newValue)
 {
 }
+

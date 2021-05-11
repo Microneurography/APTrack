@@ -31,20 +31,15 @@ LfpLatencyProcessorEditor::LfpLatencyProcessorEditor (GenericProcessor* parentNo
     : VisualizerEditor (parentNode, useDefaultParameterEditors)
 {
     tabText = "LfpLatency";
-    
+
     // why not use processor = static_cast<LfpLatencyProcessor*>(parentNode);?
     processor = (LfpLatencyProcessor*) this->getProcessor();
 
-    // Open Ephys Plugin Generator will insert generated code for editor here. Don't edit this section.
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_BEGIN]
-
     //m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
     //content.setLookAndFeel (m_contentLookAndFeel);
-    addAndMakeVisible (&content);
-    content.toBack(); // to be able to see parameters components
+    // addAndMakeVisible (&content);
+    // content.toBack(); // to be able to see parameters components
     setDesiredWidth (EDITOR_DESIRED_WIDTH);
-
-    //[OPENEPHYS_EDITOR_PRE_CONSTRUCTOR_SECTION_END]
 
 
 
@@ -65,22 +60,18 @@ LfpLatencyProcessorEditor::~LfpLatencyProcessorEditor()
 
 void LfpLatencyProcessorEditor::resized()
 {
-    // Don't edit this section.
-    //[OPENEPHYS_EDITOR_PRE_RESIZE_SECTION_BEGIN]
-
     VisualizerEditor::resized();
 
-    const int xPosInitial = 2;
-    const int yPosIntiial = 23;
-    const int contentWidth = (isMerger() || isSplitter() || isUtility())
-                                    ? getWidth() - xPosInitial * 2
-                                    : channelSelector->isVisible()
-                                        ? channelSelector->getX() - xPosInitial * 2 - 5
-                                        : drawerButton->getX() - xPosInitial * 2;
-    content.setBounds (xPosInitial, yPosIntiial,
-                       contentWidth, getHeight() - yPosIntiial - 7);
+    // const int xPosInitial = 2;
+    // const int yPosIntiial = 23;
+    // const int contentWidth = (isMerger() || isSplitter() || isUtility())
+    //                                 ? getWidth() - xPosInitial * 2
+    //                                 : channelSelector->isVisible()
+    //                                     ? channelSelector->getX() - xPosInitial * 2 - 5
+    //                                     : drawerButton->getX() - xPosInitial * 2;
+    // content.setBounds (xPosInitial, yPosIntiial,
+    //                    contentWidth, getHeight() - yPosIntiial - 7);
 
-    //[OPENEPHYS_EDITOR_PRE_RESIZE_SECTION_END]
 }
 
 

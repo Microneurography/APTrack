@@ -1,67 +1,76 @@
-/*
-  ==============================================================================
-
-  This is an automatically generated GUI class created by the Projucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Projucer version: 4.2.1
-
-  ------------------------------------------------------------------------------
-
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
-
-  ==============================================================================
-*/
-
 #ifndef __JUCE_HEADER_D83F67960ECDED8C__
 #define __JUCE_HEADER_D83F67960ECDED8C__
 
-//[Headers]     -- You can add your own extra header files here --
 #include <EditorHeaders.h>
 #include "LfpLatencyProcessor.h"
-
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
 #include "pulsePalController/ppController.h"
 
-//[/Headers]
+#include "LfpLatencySpectrogram.h"
+#include "LfpLatencySpectrogramPanel.h"
+#include "LfpLatencySpectrogramControlPanel.h"
+#include "LfpLatencyOtherControlPanel.h"
+#include "LfpLatencyRightMiddlePanel.h"
 
-//==============================================================================
-/**
-                                                                    //[Comments]
-    An auto-generated component, created by the Projucer.
+class TableContent : public TableListBoxModel
+                     
+{
+public:
+   
+    TableContent();
+    ~TableContent();
+    
+    int getNumRows();
+    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
+    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
+    //Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
 
-    Describe your class and how it works here!
-                                                                    //[/Comments]
-*/
+private:    
+    
+    friend class LfpLatencyProcessorVisualizer;
+    
+    bool spikeFound = false;
+
+
+};
+
+
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
                                                       public ButtonListener
+                                                 
 {
 public:
-    //==============================================================================
-    LfpLatencyProcessorVisualizerContentComponent();
+    LfpLatencyProcessorVisualizerContentComponent(LfpLatencyProcessor* processor);
     ~LfpLatencyProcessorVisualizerContentComponent();
-
-    //==============================================================================
-    //[UserMethods]     -- You can add your own custom methods in this section.
-    //[/UserMethods]
 
     void paint(Graphics &g) override;
     void resized() override;
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
-
+	bool keyPressed(const KeyPress& k) override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
+    int getStartingSample() const;
+    bool getExtendedColorScale() const;
+    int getSubsamplesPerWindow() const;
+    float getLowImageThreshold() const;
+    float getHighImageThreshold() const;
+    float getDetectionThreshold() const;
+    int getColorStyleComboBoxSelectedId() const;
+    void tryToSave();
+
+    std::tuple<float, float, float, float, Colour> getSearchBoxInfo() const;
 private:
-    //[UserVariables]   -- You can add your own custom variables in this section.
-    Image spectrogramImage; //Will contain the spectrogram image.
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
+
+    ScopedPointer<TableContent> spikeTrackerContent;
+    ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
+    ScopedPointer<LfpLatencyOtherControlPanel> otherControlPanel;
+    ScopedPointer<LfpLatencySpectrogramPanel> spectrogramPanel;
+    ScopedPointer<LfpLatencyRightMiddlePanel> rightMiddlePanel;
 
     //Image thresholds
     float lowImageThreshold;
@@ -78,7 +87,9 @@ private:
 
     int searchBoxWidth;
 
-    bool spikeDetected;
+    bool spikeDetected = false;
+    bool newSpikeDetected = false;
+    bool extendedColorScale;
     float detectionThreshold;
     int subsamplesPerWindow;
     int startingSample;
@@ -88,7 +99,6 @@ private:
     float conductionDistance;
 
     int absPos;
-    //[/UserVariables]
 
     float stimulusVoltage;
 
@@ -96,68 +106,99 @@ private:
 
     float stimulusVoltageMin;
 
+	bool voltageTooHighOkay;
+	bool alreadyAlerted = false;
+    bool testSpikePls = false;
+
+    bool del_0 = false;
+    bool del_1 = false;
+    bool del_2 = false;
+    bool del_3 = false;
+
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
 
-    //==============================================================================
-    ScopedPointer<Slider> imageThresholdSlider;
-    ScopedPointer<Slider> searchBoxSlider;
+    bool isSaving;
+    unordered_map<string, juce::String> *valuesMap;
 
-    ScopedPointer<TextEditor> detectionThresholdText;
+	// setup
 
-    ScopedPointer<TextEditor> lowImageThresholdText;
-    ScopedPointer<TextEditor> highImageThresholdText;
+	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
+	ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
+	ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
 
-    ScopedPointer<Slider> subsamplesPerWindowSlider;
+	ScopedPointer<Label> trackSpike_DecreaseRate_Slider_Label;
+	ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
+	ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
 
-    ScopedPointer<Slider> startingSampleSlider;
+	ScopedPointer<Slider> stimulusVoltageSlider;
+	ScopedPointer<Label> stimulusVoltageSliderLabel;
 
-    ScopedPointer<Slider> searchBoxWidthSlider;
+	ScopedPointer<TextEditor> stimulusVoltageMax_text;
+	ScopedPointer<Label> stimulusVoltageMax_textLabel;
 
+	ScopedPointer<TextEditor> stimulusVoltage_text;
+	ScopedPointer<Label> stimulusVoltage_textLabel;
+
+	ScopedPointer<TextEditor> stimulusVoltageMin_text;
+	ScopedPointer<Label> stimulusVoltageMin_textLabel;
+	
+	// main GUI
     ScopedPointer<ComboBox> colorStyleComboBox;
-
-    ScopedPointer<GroupComponent> colorControlGroup;
-
+	ScopedPointer<Label> colorStyleComboBoxLabel;
+    
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
+    ScopedPointer<Label> extendedColorScaleToggleButtonLabel;
+	
+    ScopedPointer<Label> cmLabel;
+ 
+    //ScopedPointer<GroupComponent> detectionControlGroup;
 
-    // Stimulus control
-    ScopedPointer<Slider> stimulusVoltageSlider;
-
-    ScopedPointer<TextEditor> stimulusVoltageMax_text;
-    ScopedPointer<TextEditor> stimulusVoltage_text;
-    ScopedPointer<TextEditor> stimulusVoltageMin_text;
-
-    ScopedPointer<ppController> ppControllerComponent;
+	// Stimulus control
+	ScopedPointer<ppController> ppControllerComponent;
 
     ScopedPointer<TextEditor> textBox1;
     ScopedPointer<TextEditor> textBox2;
 
     ScopedPointer<ComboBox> triggerChannelComboBox;
+	ScopedPointer<Label> triggerChannelComboBoxLabel;
+
     ScopedPointer<ComboBox> dataChannelComboBox;
+	ScopedPointer<Label> dataChannelComboBoxLabel;
 
     ScopedPointer<Slider> Trigger_threshold; //TODO
-
     ScopedPointer<ToggleButton> trackSpike_button;
+    ScopedPointer<Label> trackSpike_button_Label;
+
+    //ScopedPointer<ComboBox> trackSpikeComboBox;
+    ScopedPointer<TableListBox> spikeTracker;
+    
+    ScopedPointer<TextEditor> location0;
+    ScopedPointer<TextEditor> location1;
+    ScopedPointer<TextEditor> location2;
+    ScopedPointer<TextEditor> location3;
+
+    ScopedPointer<TextEditor> fp0;
+    ScopedPointer<TextEditor> fp1;
+    ScopedPointer<TextEditor> fp2;
+    ScopedPointer<TextEditor> fp3;
+    
+    ScopedPointer<ToggleButton> follow0;
+    ScopedPointer<ToggleButton> follow1;
+    ScopedPointer<ToggleButton> follow2;
+    ScopedPointer<ToggleButton> follow3;
+
+    ScopedPointer<TextButton> del0;
+    ScopedPointer<TextButton> del1;
+    ScopedPointer<TextButton> del2;
+    ScopedPointer<TextButton> del3;
+
     ScopedPointer<ToggleButton> trackThreshold_button;
-
-    ScopedPointer<TextEditor> ROISpikeLatency;
-    ScopedPointer<TextEditor> ROISpikeMagnitude;
-
-    ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
-    ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
-
-    ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
-    ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
-
-    ScopedPointer<Slider> trigger_threshold_Slider;
+    ScopedPointer<Label> trackThreshold_button_Label;
 
     //DEBUG
 
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorVisualizerContentComponent)
 };
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
 
 #endif // __JUCE_HEADER_D83F67960ECDED8C__

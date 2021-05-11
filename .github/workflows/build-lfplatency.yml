@@ -1,23 +1,53 @@
-name: Build LfpLatency
-on: workflow_dispatch
+name: Build LfpLatency without_docker
+on: 
+  workflow_dispatch:
+    inputs:
+      release_name: 
+        description: The name of the release to attach the build artefacts
 
 jobs:
+
   build:
     name: Compile action
     runs-on: ubuntu-20.04
-    container: merlllle/compiled-plugin-gui:firsttry
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build plugin
+        with:
+          path: OEPlugins/OE-plugin-latency-tracker
+      - name: Checkout
+        uses: actions/checkout@v2
+
+        with:
+          repository: open-ephys/plugin-GUI
+          path: plugin-GUI
+      - name: setup env
+        working-directory: plugin-GUI/Resources/Scripts
+        env:
+          CC: gcc-8
+          CXX: g++-8
         run: |
-          cd ..
-          cp -R OE-plugin-latency-tracker/ /OE-plugin-latency-tracker/ # Not use mv to remove the error in Post Checkout and Stop containers
-          cd /OE-plugin-latency-tracker/Build 
-          export CC=gcc-8 CXX=g++-8 
-          cmake .. 
+          sudo apt-get update
+          sudo apt install gcc-8 g++-8
+          sudo ./install_linux_dependencies.sh
+          cd ../../Build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+      - name: Build plugin
+        env:
+          CC: gcc-8
+          CXX: g++-8
+        working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
+        run: |
+          cmake -G "Unix Makefiles" ..
           make
-      
+      - name: Release
+        uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.event.inputs.release_name }}
+          files: 'OEPlugins/OE-plugin-latency-tracker/Build/*.so'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Tried download artifact, but download from another workflow is not supported
       # - name: Download compiled plugin-gui
       #   uses: actions/download-artifact@v2
