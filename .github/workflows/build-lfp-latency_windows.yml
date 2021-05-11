@@ -23,7 +23,6 @@ jobs:
           path: plugin-GUI
       - name: setup env
         working-directory: plugin-GUI/Build
-        env
         run: |   
           cmake -G "Visual Studio 16 2019" -A x64 ..
       - name: Add msbuild to PATH
