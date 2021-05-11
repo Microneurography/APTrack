@@ -1,4 +1,4 @@
-name: Build LfpLatency
+name: Build LfpLatency without_docker
 on: workflow_dispatch
 
 jobs:
