@@ -28,7 +28,7 @@ jobs:
         run: |   
           cmake -G "Visual Studio 16 2019" -A x64 ..
           cd ..
-          msbuild Build/OPEN-EPHYS_BUILD.vcxproj -p:Configuration=Release -p:Platform=x64
+          msbuild Build/ALL_BUILD.vcxproj -p:Configuration=Release -p:Platform=x64
       - name: Build plugin
         working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
         run: |
