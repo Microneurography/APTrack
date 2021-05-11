@@ -27,6 +27,8 @@ jobs:
           CC: gcc-10
           CXX: g++-10
         run: |
+          sudo apt-get update
+          sudo ./install_linux_dependencies.sh
           cd ../../Build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
       - name: Build plugin
         env:
