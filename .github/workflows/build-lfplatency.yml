@@ -45,7 +45,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          releaseId: ${{ github.event.inputs.logLevel }}
+          releaseId: ${{ github.event.inputs.release_name }}
           args: 'OEPlugins/OE-plugin-latency-tracker/Build/*.so'
       # Tried download artifact, but download from another workflow is not supported
       # - name: Download compiled plugin-gui
