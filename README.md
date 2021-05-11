@@ -160,6 +160,32 @@ By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage
     <img src="./Resources/voltagewarning.png" alt="voltage warning.png" title="Voltage Warning">
 </p>
 
+### PulsePal integration
+
+The pulsepal controller allows for loading 'playlists' for stimulus paradigms. 
+First load the paradigm by pressing the `F` button (this will only be enabled if the pulsepal was detected at startup). Once loaded the playlist can be started with the `>` button.
+![pulsepal controller](Resources/pulsepalcontroller.png)
+
+The playlist file expected is a "csv" with the structure ([example](Resources/example_playlist.csv)) :
+
+| Duration (s) | Voltage (V)* | Rate (Hz) | Comment
+| -- | -- | -- |-- |
+| 60 | 1* | 0.5 | first phase stimulation
+| 60 | 1* | 1 | faster stimulation
+| 10 | 1* | 0 | a 10s pause
+
+\* "Voltage" is ignored by the plugin, but kept for future development. 
+
+If a recording is active, each event in the playlist is sent to the `all.messages` file.
+![pulsepal controller running](Resources/pulsepalcontroller2.png)
+When started the playlist will run until the playlist is complete, displaying the current step in the dialog box. It can also be stopped with the `[ ]` button. The playlist can be restarted by pressing the `>` again.
+
+The pulsepal will send:
+
+* Channel 1: a 0.0005s square output with the voltage set within the plugin. 
+* Channel 2: a 0.0005s square output with a constant 10V output
+* Channel 3: a 0.0105s square output with a constant 10V output offset by -0.005s
+	- This may be used to open a relay during stimulation
 
 ## Key binds
 
