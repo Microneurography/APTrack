@@ -40,7 +40,7 @@ jobs:
 #         if: startsWith(github.ref, 'refs/tags/')
         with:
           tag_name: ${{ github.event.inputs.release_name }}
-          files: 'OEPlugins/OE-plugin-latency-tracker/Build/*.dll'
+          files: 'OEPlugins/OE-plugin-latency-tracker/Build/Release/*.dll'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
