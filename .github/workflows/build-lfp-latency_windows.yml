@@ -21,12 +21,14 @@ jobs:
         with:
           repository: open-ephys/plugin-GUI
           path: plugin-GUI
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
       - name: setup env
         working-directory: plugin-GUI/Build
         run: |   
           cmake -G "Visual Studio 16 2019" -A x64 ..
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
+          cd ..
+          msbuild Build/open-ephys_BUILD.vcxproj -p:Configuration=Release -p:Platform=x64
       - name: Build plugin
         working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
         run: |
