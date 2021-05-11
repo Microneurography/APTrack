@@ -24,17 +24,14 @@ jobs:
       - name: setup env
         working-directory: plugin-GUI/Resources/Scripts
         env:
-          CC: gcc-8
-          CXX: g++-8
+          CC: gcc-10
+          CXX: g++-10
         run: |
-          sudo apt update
-          sudo apt install gcc-8 g++-8
-          sudo ./install_linux_dependencies.sh
           cd ../../Build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
       - name: Build plugin
         env:
-          CC: gcc-8
-          CXX: g++-8
+          CC: gcc-10
+          CXX: g++-10
         working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
         run: |
           cmake -G "Unix Makefiles" ..
