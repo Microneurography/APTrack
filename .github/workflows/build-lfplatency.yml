@@ -9,14 +9,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          path: OEPlugins
+          path: OEPlugins/OE-plugin-latency-tracker
       - name: Checkout
         uses: actions/checkout@v2
         with:
           repository: open-ephys/plugin-GUI
+          path: plugin-GUI
       - name: Build plugin
         run: |
-          cd OEPlugins/OE-plugin-latency-tracker/Build 
+          cd $GITHUB_WORKSPACE/OEPlugins/OE-plugin-latency-tracker/Build 
           export CC=gcc-8 CXX=g++-8 
           cmake -G "Unix Makefiles" ..
           make
