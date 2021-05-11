@@ -19,7 +19,7 @@ jobs:
         env:
           CC: gcc-10
           CXX: g++-10
-        working-directory: ${GITHUB_WORKSPACE}/OEPlugins/OE-plugin-latency-tracker/Build 
+        working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
         run: |
           cmake -G "Unix Makefiles" ..
           make
