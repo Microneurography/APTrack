@@ -1,4 +1,4 @@
-name: Build LfpLatency without_docker
+name: Build LfpLatency on windows
 on: 
   workflow_dispatch:
     inputs:
