@@ -25,6 +25,8 @@ jobs:
           sudo apt update
           sudo apt install gcc-8 g++-8
           sudo ./install_linux_dependencies.sh
+          cd ../../Build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+          make open-ephys
       - name: Build plugin
         env:
           CC: gcc-8
