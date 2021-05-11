@@ -5,15 +5,17 @@ jobs:
   build:
     name: Compile action
     runs-on: ubuntu-20.04
-    container: merlllle/compiled-plugin-gui:firsttry
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          path: OEPlugins
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: open-ephys/plugin-GUI
       - name: Build plugin
         run: |
-          cd ..
-          mkdir /OEPlugins
-          cp -R OE-plugin-latency-tracker/ /OEPlugins/OE-plugin-latency-tracker/ # Not use mv to remove the error in Post Checkout and Stop containers
           cd /OEPlugins/OE-plugin-latency-tracker/Build 
           export CC=gcc-8 CXX=g++-8 
           cmake -G "Unix Makefiles" ..
