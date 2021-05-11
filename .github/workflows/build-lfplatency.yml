@@ -16,9 +16,11 @@ jobs:
           repository: open-ephys/plugin-GUI
           path: plugin-GUI
       - name: Build plugin
+        env:
+          CC: gcc-10
+          CXX: g++-10
+        working-directory: ${GITHUB_WORKSPACE}/OEPlugins/OE-plugin-latency-tracker/Build 
         run: |
-          cd $GITHUB_WORKSPACE/OEPlugins/OE-plugin-latency-tracker/Build 
-          export CC=gcc-8 CXX=g++-8 
           cmake -G "Unix Makefiles" ..
           make
       
