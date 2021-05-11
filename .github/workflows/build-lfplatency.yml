@@ -44,7 +44,6 @@ jobs:
 #         if: startsWith(github.ref, 'refs/tags/')
         with:
           tag_name: ${{ github.event.inputs.release_name }}
-          body_path: ${{ github.workflow }}-CHANGELOG.txt
           files: 'OEPlugins/OE-plugin-latency-tracker/Build/*.so'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
