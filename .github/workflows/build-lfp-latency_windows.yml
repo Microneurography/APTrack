@@ -29,7 +29,7 @@ jobs:
       - name: setup env
         working-directory: plugin-GUI/Build
         run: |   
-         curl -o oebuild.zip https://github.com/open-ephys/plugin-GUI/releases/download/v0.5.2.2/open-ephys-v0.5.2.2-windows.zip
+         curl -L -o oebuild.zip https://github.com/open-ephys/plugin-GUI/releases/download/v0.5.2.2/open-ephys-v0.5.2.2-windows.zip
          unzip oebuild.zip
          
       - name: Build plugin
