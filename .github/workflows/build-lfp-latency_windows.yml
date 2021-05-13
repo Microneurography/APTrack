@@ -30,7 +30,9 @@ jobs:
         working-directory: plugin-GUI/Build
         run: |   
          curl -L -o oebuild.zip https://github.com/open-ephys/plugin-GUI/releases/download/v0.5.2.2/open-ephys-v0.5.2.2-windows.zip
-         unzip oebuild.zip
+         7z e oebuild.zip
+         mkdir Release
+         mv open-ephys/* Release
          
       - name: Build plugin
         working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
