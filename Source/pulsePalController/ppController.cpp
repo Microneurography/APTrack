@@ -195,7 +195,7 @@ void ppController::setStimulusVoltage(float newVoltage)
 	std::cout << "Updating stimulus voltage in pp \n";
 	pulsePal.currentOutputParams[2].phase1Voltage = 10.0f; 
 	std::cout << "updating max voltage in pp\n";
-	pulsePal.currentOutputParams[3].phase1Voltage = 10.0f; 
+	pulsePal.currentOutputParams[3].phase1Voltage = 3.0f; 
 
 	pulsePal.syncAllParams();
 	std::cout << "synced all params in pp\n";
@@ -453,7 +453,7 @@ void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataSt
 		pulsePal.currentOutputParams[2].pulseTrainDelay = RELAY_TTL_delay_s;
 		// Channel 3 - open/close relay
 		pulsePal.currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration ; // duration of the TTL should start before the stimulus, and end after the stimulus
-		pulsePal.currentOutputParams[3].interPulseInterval = pulsePeriod ;
+		pulsePal.currentOutputParams[3].interPulseInterval = pulsePeriod - RELAY_TTL_delay_s*2;
 		pulsePal.currentOutputParams[3].pulseTrainDelay = 0;
 
 		pulsePal.syncAllParams();

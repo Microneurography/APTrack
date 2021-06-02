@@ -82,7 +82,7 @@ private:
 
 	bool pulsePalConnected;
 
-	float RELAY_TTL_delay_s = 0.005; // The delay in seconds between 
+	float RELAY_TTL_delay_s = 0.0005f; // The delay in seconds between 
 	void StopCurrentProtocol();
 	void StartCurrentProtocol();
 
