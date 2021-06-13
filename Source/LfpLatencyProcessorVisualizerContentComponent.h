@@ -198,6 +198,16 @@ private:
     ScopedPointer<TextEditor> t2;
     ScopedPointer<TextEditor> t3;
 
+    ScopedPointer<ToggleButton> thres0;
+    ScopedPointer<ToggleButton> thres1;
+    ScopedPointer<ToggleButton> thres2;
+    ScopedPointer<ToggleButton> thres3;
+
+    ScopedPointer<TextButton> tdel0;
+    ScopedPointer<TextButton> tdel1;
+    ScopedPointer<TextButton> tdel2;
+    ScopedPointer<TextButton> tdel3;
+
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
 

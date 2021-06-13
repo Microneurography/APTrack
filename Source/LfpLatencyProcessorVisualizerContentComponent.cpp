@@ -341,10 +341,12 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
 	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
-	spikeTracker->getHeader().addColumn("Select Spike", 4, 100);
-	spikeTracker->getHeader().addColumn("Delete Track", 5, 100);
+	spikeTracker->getHeader().addColumn("Select", 4, 50);
+	spikeTracker->getHeader().addColumn("Delete", 5, 50);
 	spikeTracker->getHeader().addColumn("Threshold", 6, 100);
 	spikeTracker->getHeader().addColumn("Value", 7, 100);
+	spikeTracker->getHeader().addColumn("Select", 8, 50);
+	spikeTracker->getHeader().addColumn("Delete", 9, 50);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
@@ -408,6 +410,42 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	t2->setText("0");
 	addAndMakeVisible(t3 = new TextEditor("Threshold Value 3"));
 	t3->setText("0");
+
+	addAndMakeVisible(thres0 = new ToggleButton(""));
+	thres0->addListener(this);
+	thres0->setToggleState(false, sendNotification);
+	thres0->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(thres1 = new ToggleButton(""));
+	thres1->addListener(this);
+	thres1->setToggleState(false, sendNotification);
+	thres1->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(thres2 = new ToggleButton(""));
+	thres2->addListener(this);
+	thres2->setToggleState(false, sendNotification);
+	thres2->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+	addAndMakeVisible(thres3 = new ToggleButton(""));
+	thres3->addListener(this);
+	thres3->setToggleState(false, sendNotification);
+	thres3->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+
+	addAndMakeVisible(tdel0 = new TextButton(""));
+	tdel0->addListener(this);
+	tdel0->setToggleState(false, sendNotification);
+	tdel0->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	addAndMakeVisible(tdel1 = new TextButton(""));
+	tdel1->addListener(this);
+	tdel1->setToggleState(false, sendNotification);
+	tdel1->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	addAndMakeVisible(tdel2 = new TextButton(""));
+	tdel2->addListener(this);
+	tdel2->setToggleState(false, sendNotification);
+	tdel2->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	addAndMakeVisible(tdel3 = new TextButton(""));
+	tdel3->addListener(this);
+	tdel3->setToggleState(false, sendNotification);
+	tdel3->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+
+
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -503,6 +541,9 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	location0 = nullptr; location1 = nullptr; location2 = nullptr; location3 = nullptr;
 	follow0 = nullptr; follow1 = nullptr; follow2 = nullptr; follow3 = nullptr;
 	del0 = nullptr; del1 = nullptr; del2 = nullptr; del3 = nullptr;
+	t0 = nullptr; t1 = nullptr; t2 = nullptr; t3 = nullptr;
+	thres0 = nullptr; thres1 = nullptr; thres2 = nullptr; thres3 = nullptr;
+	tdel0 = nullptr; tdel1 = nullptr; tdel2 = nullptr; tdel3 = nullptr;
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -591,7 +632,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 		{fp0, fp1, fp2, fp3},
 		{follow0, follow1, follow2, follow3},
 		{del0, del1, del2, del3},
-		{t0, t1, t2, t3}
+		{t0, t1, t2, t3},
+		{thres0, thres1, thres2, thres3}
 	};
 
 	for (int i = 0; i < 3; i++)
@@ -605,15 +647,20 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	for (int i = 0; i < 4; i++)
 	{
 		auto cellArea = spikeTracker->getCellPosition(5, i, false).translated(tableX, tableY);
-		cellArea = cellArea.withSizeKeepingCentre(60, 18);
+		cellArea = cellArea.withSizeKeepingCentre(40, 18);
 		tableCells[3][i]->setBounds(cellArea);
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 4; i < 6; i++)
 	{
-		tableCells[4][i]->setBounds(spikeTracker->getCellPosition(7, i, false).translated(tableX, tableY));
+		for (int j = 0; j < 4; j++)
+		{
+			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 3, j, false).translated(tableX, tableY));
+		}
 	}
 
+
+	
 	//location0->setBounds(715, 69, 100, 20);
 	//location1->setBounds(715, 90, 100, 20);
 	//location2->setBounds(715, 111, 100, 20);

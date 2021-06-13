@@ -360,20 +360,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			//Reset spike array counter when it reaches four, allows for new spikes to be found once old ones are deleted
 			if (i == 4)
 				i = 0;
-
-
 			
-			// This is a new struct that I'm gonna fill with all the info about the spike, so essentially I can recreate the spike tracking muddle elsewhere
-			
-			
-			//CODE FOR LATER
-			//spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
-			//spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
-			//spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
-			//spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
-			//spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
-		
-
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation
 			if (content.trackThreshold_button->getToggleState() == true)
@@ -382,6 +369,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				content.stimulusVoltageSlider->setValue(std::max(newStimulus, content.stimulusVoltageMin));
 				content.ppControllerComponent->setStimulusVoltage(std::max(newStimulus, content.stimulusVoltageMin));
 			}
+
 		}
 		else
 		{

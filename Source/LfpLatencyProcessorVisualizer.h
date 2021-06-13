@@ -104,6 +104,7 @@ private:
         int searchBoxWidth;
         int firingNumber = 0;
         bool isFull = false;
+
     };
     
     float level;
