@@ -333,7 +333,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-	//MULTI SPIKE TRACKING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	//MULTI SPIKE AND THRESHOLD TRACKING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	spikeTrackerContent = new TableContent();
 	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes", spikeTrackerContent));
@@ -343,6 +343,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
 	spikeTracker->getHeader().addColumn("Select Spike", 4, 100);
 	spikeTracker->getHeader().addColumn("Delete Track", 5, 100);
+	spikeTracker->getHeader().addColumn("Threshold", 6, 100);
+	spikeTracker->getHeader().addColumn("Value", 7, 100);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
@@ -397,6 +399,15 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	del3->addListener(this);
 	del3->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
 	del3->setToggleState(false, sendNotification);
+
+	addAndMakeVisible(t0 = new TextEditor("Threshold Value 0"));
+	t0->setText("0");
+	addAndMakeVisible(t1 = new TextEditor("Threshold Value 1"));
+	t1->setText("0");
+	addAndMakeVisible(t2 = new TextEditor("Threshold Value 2"));
+	t2->setText("0");
+	addAndMakeVisible(t3 = new TextEditor("Threshold Value 3"));
+	t3->setText("0");
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -579,7 +590,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 		{location0, location1, location2, location3},
 		{fp0, fp1, fp2, fp3},
 		{follow0, follow1, follow2, follow3},
-		{del0, del1, del2, del3}
+		{del0, del1, del2, del3},
+		{t0, t1, t2, t3}
 	};
 
 	for (int i = 0; i < 3; i++)
@@ -592,9 +604,14 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	for (int i = 0; i < 4; i++)
 	{
-		auto cellArea = spikeTracker->getCellPosition(3 + 2, i, false).translated(tableX, tableY);
+		auto cellArea = spikeTracker->getCellPosition(5, i, false).translated(tableX, tableY);
 		cellArea = cellArea.withSizeKeepingCentre(60, 18);
 		tableCells[3][i]->setBounds(cellArea);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		tableCells[4][i]->setBounds(spikeTracker->getCellPosition(7, i, false).translated(tableX, tableY));
 	}
 
 	//location0->setBounds(715, 69, 100, 20);
@@ -1050,7 +1067,7 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 	Font font = 12.0f;
 	g.setFont(font);
 
-	if (columnId == 1)
+	if (columnId == 1 || columnId == 6)
 	{
 		auto text = to_string(rowNumber + 1);
 
