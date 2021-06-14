@@ -172,6 +172,8 @@ private:
 
     //ScopedPointer<ComboBox> trackSpikeComboBox;
     ScopedPointer<TableListBox> spikeTracker;
+    ScopedPointer<TableListBox> thresholdTracker;
+    ScopedPointer<TableListBoxModel> thresholdTrackerContent;
     
     ScopedPointer<TextEditor> location0;
     ScopedPointer<TextEditor> location1;

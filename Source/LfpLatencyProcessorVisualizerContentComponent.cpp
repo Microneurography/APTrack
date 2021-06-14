@@ -343,12 +343,18 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
 	spikeTracker->getHeader().addColumn("Select", 4, 50);
 	spikeTracker->getHeader().addColumn("Delete", 5, 50);
-	spikeTracker->getHeader().addColumn("Threshold", 6, 100);
-	spikeTracker->getHeader().addColumn("Value", 7, 100);
-	spikeTracker->getHeader().addColumn("Select", 8, 50);
-	spikeTracker->getHeader().addColumn("Delete", 9, 50);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
+
+	thresholdTrackerContent = new TableContent();
+	addAndMakeVisible(thresholdTracker = new TableListBox("Tracked Thresholds", thresholdTrackerContent));
+	thresholdTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
+	thresholdTracker->getHeader().addColumn("Threshold", 1, 100);
+	thresholdTracker->getHeader().addColumn("Value", 2, 100);
+	thresholdTracker->getHeader().addColumn("Select", 3, 50);
+	thresholdTracker->getHeader().addColumn("Delete", 4, 50);
+	thresholdTracker->autoSizeAllColumns();
+	thresholdTracker->updateContent();
 
 	addAndMakeVisible(location0 = new TextEditor("Location 0"));
 	location0->setText("0");
@@ -538,6 +544,8 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	
 	spikeTracker = nullptr;
 	spikeTrackerContent = nullptr;
+	thresholdTracker = nullptr;
+	thresholdTrackerContent = nullptr;
 	location0 = nullptr; location1 = nullptr; location2 = nullptr; location3 = nullptr;
 	follow0 = nullptr; follow1 = nullptr; follow2 = nullptr; follow3 = nullptr;
 	del0 = nullptr; del1 = nullptr; del2 = nullptr; del3 = nullptr;
@@ -570,6 +578,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	//spikeTracker->autoSizeAllColumns();
 	//spikeTracker->updateContent();
 	spikeTracker->updateContent();
+	thresholdTracker->updateContent();
 }
 
 // If you want to move something down, you have to increase the y value
@@ -622,10 +631,14 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto boundsMap = otherControlPanel->getTableBounds();
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
 	spikeTracker->setBounds(boundsMap["spikeTracker"]);
+	thresholdTracker->setBounds(boundsMap["thresholdTracker"]);
 	//spikeTracker->setBounds(665, 40, 470, 200);
 
-	auto tableX = boundsMap["spikeTracker"].getX();
-	auto tableY = boundsMap["spikeTracker"].getY();
+	auto STtableX = boundsMap["spikeTracker"].getX();
+	auto STtableY = boundsMap["spikeTracker"].getY();
+
+	auto TTtableX = boundsMap["thresholdTracker"].getX();
+	auto TTtableY = boundsMap["thresholdTracker"].getY();
 
 	vector<vector<Component*>> tableCells{ 
 		{location0, location1, location2, location3},
@@ -633,20 +646,21 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 		{follow0, follow1, follow2, follow3},
 		{del0, del1, del2, del3},
 		{t0, t1, t2, t3},
-		{thres0, thres1, thres2, thres3}
+		{thres0, thres1, thres2, thres3},
+		{tdel0, tdel1, tdel2, tdel3}
 	};
 
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 2, j, false).translated(tableX, tableY));
+			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 2, j, false).translated(STtableX, STtableY));
 		}
 	}
 
 	for (int i = 0; i < 4; i++)
 	{
-		auto cellArea = spikeTracker->getCellPosition(5, i, false).translated(tableX, tableY);
+		auto cellArea = spikeTracker->getCellPosition(5, i, false).translated(STtableX, STtableY);
 		cellArea = cellArea.withSizeKeepingCentre(40, 18);
 		tableCells[3][i]->setBounds(cellArea);
 	}
@@ -655,8 +669,14 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 3, j, false).translated(tableX, tableY));
+			tableCells[i][j]->setBounds(thresholdTracker->getCellPosition(i - 2, j, false).translated(TTtableX, TTtableY));
 		}
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		auto TcellArea = thresholdTracker->getCellPosition(4, i, false).translated(TTtableX, TTtableY);
+		TcellArea = TcellArea.withSizeKeepingCentre(40, 18);
+		tableCells[6][i]->setBounds(TcellArea);
 	}
 
 
@@ -1114,7 +1134,7 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 	Font font = 12.0f;
 	g.setFont(font);
 
-	if (columnId == 1 || columnId == 6)
+	if (columnId == 1)
 	{
 		auto text = to_string(rowNumber + 1);
 
