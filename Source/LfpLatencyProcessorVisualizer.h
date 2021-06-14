@@ -104,8 +104,10 @@ private:
         int searchBoxWidth;
         int firingNumber = 0;
         bool isFull = false;
-
+        float stimVol = 0;
+        float bigStim = 0;
     };
+
     
     float level;
 
@@ -128,6 +130,7 @@ private:
     
     spikeinfo spikeLocations[4];
 
+
     int probabilityTimer = 0;
 
     bool resetFirings = false;
@@ -137,6 +140,7 @@ private:
     int randomSpikeLocations[4] = { 0, 0, 0, 0 };
     
     int i = 0;
+    int q = 0;
     
     int draw_imageHeight;
     int draw_rightHandEdge;

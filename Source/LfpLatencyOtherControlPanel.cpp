@@ -106,7 +106,7 @@ std::map<String, Rectangle<int>> LfpLatencyOtherControlPanel::getTableBounds() c
 	auto spiketrackerarea = area.withSizeKeepingCentre(getWidth() - 2 * borderWidth, (getHeight() - 2 * borderWidth) / 1.95);
 	auto thresholdtrackerarea = area.withSizeKeepingCentre(getWidth() - 2 * borderWidth, (getHeight() - 2 * borderWidth) / 1.95);
 	spiketrackerarea = spiketrackerarea.withY(spiketrackerarea.getBottom() - (spiketrackerarea.getHeight() / 2));
-	thresholdtrackerarea = thresholdtrackerarea.withY(thresholdtrackerarea.getBottom() - (thresholdtrackerarea.getHeight() + 70));
+	thresholdtrackerarea = thresholdtrackerarea.withY(thresholdtrackerarea.getBottom() - (thresholdtrackerarea.getHeight() + 72));
 	spiketrackerarea.setWidth(spiketrackerarea.getWidth() - 150);
 	thresholdtrackerarea.setWidth(thresholdtrackerarea.getWidth() - 150);
 
