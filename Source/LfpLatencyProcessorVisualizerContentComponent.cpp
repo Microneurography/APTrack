@@ -356,102 +356,31 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	thresholdTracker->autoSizeAllColumns();
 	thresholdTracker->updateContent();
 
-	addAndMakeVisible(location0 = new TextEditor("Location 0"));
-	location0->setText("0");
-	addAndMakeVisible(location1 = new TextEditor("Location 1"));
-	location1->setText("0");
-	addAndMakeVisible(location2 = new TextEditor("Location 2"));
-	location2->setText("0");
-	addAndMakeVisible(location3 = new TextEditor("Location 3"));
-	location3->setText("0");
-
-	addAndMakeVisible(fp0 = new TextEditor("Firing Proabability 0"));
-	fp0->setText("0");
-	addAndMakeVisible(fp1 = new TextEditor("Firing Proabability 1"));
-	fp1->setText("0");
-	addAndMakeVisible(fp2 = new TextEditor("Firing Proabability 2"));
-	fp2->setText("0");
-	addAndMakeVisible(fp3 = new TextEditor("Firing Proabability 3"));
-	fp3->setText("0");
-
-	addAndMakeVisible(follow0 = new ToggleButton(""));
-	follow0->addListener(this);
-	follow0->setToggleState(false, sendNotification);
-	follow0->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(follow1 = new ToggleButton(""));
-	follow1->addListener(this);
-	follow1->setToggleState(false, sendNotification);
-	follow1->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(follow2 = new ToggleButton(""));
-	follow2->addListener(this);
-	follow2->setToggleState(false, sendNotification);
-	follow2->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(follow3 = new ToggleButton(""));
-	follow3->addListener(this);
-	follow3->setToggleState(false, sendNotification);
-	follow3->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-
-	addAndMakeVisible(del0 = new TextButton(""));
-	del0->addListener(this);
-	del0->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del0->setToggleState(false, sendNotification);
-	addAndMakeVisible(del1 = new TextButton(""));
-	del1->addListener(this);
-	del1->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del1->setToggleState(false, sendNotification);
-	addAndMakeVisible(del2 = new TextButton(""));
-	del2->addListener(this);
-	del2->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del2->setToggleState(false, sendNotification);
-	addAndMakeVisible(del3 = new TextButton(""));
-	del3->addListener(this);
-	del3->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del3->setToggleState(false, sendNotification);
-
-	addAndMakeVisible(t0 = new TextEditor("Threshold Value 0"));
-	t0->setText("0");
-	addAndMakeVisible(t1 = new TextEditor("Threshold Value 1"));
-	t1->setText("0");
-	addAndMakeVisible(t2 = new TextEditor("Threshold Value 2"));
-	t2->setText("0");
-	addAndMakeVisible(t3 = new TextEditor("Threshold Value 3"));
-	t3->setText("0");
-
-	addAndMakeVisible(thres0 = new ToggleButton(""));
-	thres0->addListener(this);
-	thres0->setToggleState(false, sendNotification);
-	thres0->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(thres1 = new ToggleButton(""));
-	thres1->addListener(this);
-	thres1->setToggleState(false, sendNotification);
-	thres1->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(thres2 = new ToggleButton(""));
-	thres2->addListener(this);
-	thres2->setToggleState(false, sendNotification);
-	thres2->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(thres3 = new ToggleButton(""));
-	thres3->addListener(this);
-	thres3->setToggleState(false, sendNotification);
-	thres3->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-
-	addAndMakeVisible(tdel0 = new TextButton(""));
-	tdel0->addListener(this);
-	tdel0->setToggleState(false, sendNotification);
-	tdel0->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	addAndMakeVisible(tdel1 = new TextButton(""));
-	tdel1->addListener(this);
-	tdel1->setToggleState(false, sendNotification);
-	tdel1->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	addAndMakeVisible(tdel2 = new TextButton(""));
-	tdel2->addListener(this);
-	tdel2->setToggleState(false, sendNotification);
-	tdel2->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	addAndMakeVisible(tdel3 = new TextButton(""));
-	tdel3->addListener(this);
-	tdel3->setToggleState(false, sendNotification);
-	tdel3->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-
-
+	for (int i = 0; i < 4; i++) {
+		addAndMakeVisible(locations[i] = new TextEditor("Location"));
+		locations[i]->setText("0");
+		addAndMakeVisible(fps[i] = new TextEditor("Firing Probability"));
+		fps[i]->setText("0");
+		addAndMakeVisible(follows[i] = new ToggleButton(""));
+		follows[i]->addListener(this);
+		follows[i]->setToggleState(false, sendNotification);
+		follows[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+		addAndMakeVisible(dels[i] = new TextButton(""));
+		dels[i]->addListener(this);
+		dels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+		dels[i]->setToggleState(false, sendNotification);
+		addAndMakeVisible(ts[i] = new TextEditor("Threshold"));
+		ts[i]->setText("0");
+		addAndMakeVisible(thresholds[i] = new ToggleButton(""));
+		thresholds[i]->addListener(this);
+		thresholds[i]->setToggleState(false, sendNotification);
+		thresholds[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+		addAndMakeVisible(tdels[i] = new TextButton(""));
+		tdels[i]->addListener(this);
+		tdels[i]->setToggleState(false, sendNotification);
+		tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+	}
+	
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -546,12 +475,16 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	spikeTrackerContent = nullptr;
 	thresholdTracker = nullptr;
 	thresholdTrackerContent = nullptr;
-	location0 = nullptr; location1 = nullptr; location2 = nullptr; location3 = nullptr;
-	follow0 = nullptr; follow1 = nullptr; follow2 = nullptr; follow3 = nullptr;
-	del0 = nullptr; del1 = nullptr; del2 = nullptr; del3 = nullptr;
-	t0 = nullptr; t1 = nullptr; t2 = nullptr; t3 = nullptr;
-	thres0 = nullptr; thres1 = nullptr; thres2 = nullptr; thres3 = nullptr;
-	tdel0 = nullptr; tdel1 = nullptr; tdel2 = nullptr; tdel3 = nullptr;
+	for (int i = 0; i < 4; i++) {
+		locations[i] = nullptr;
+		fps[i] = nullptr;
+		follows[i] = nullptr;
+		dels[i] = nullptr;
+		ts[i] = nullptr;
+		thresholds[i] = nullptr;
+		tdels[i] = nullptr;
+	}
+	
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -569,10 +502,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
     g.setOpacity (1.0f);
 
 	//Paint is called constatnly, so the cells should be paiting the new number in them
-	//spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
-	//spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
-	//spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
-	//spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+
 
 	
 	//spikeTracker->autoSizeAllColumns();
@@ -641,13 +571,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto TTtableY = boundsMap["thresholdTracker"].getY();
 
 	vector<vector<Component*>> tableCells{ 
-		{location0, location1, location2, location3},
-		{fp0, fp1, fp2, fp3},
-		{follow0, follow1, follow2, follow3},
-		{del0, del1, del2, del3},
-		{t0, t1, t2, t3},
-		{thres0, thres1, thres2, thres3},
-		{tdel0, tdel1, tdel2, tdel3}
+		{locations[0], locations[1], locations[2], locations[3]},
+		{fps[0], fps[1], fps[2], fps[3]},
+		{follows[0], follows[1], follows[2], follows[3]},
+		{dels[0], dels[1], dels[2], dels[3]},
+		{ts[0], ts[1], ts[2], ts[3]},
+		{thresholds[0], thresholds[1], thresholds[2], thresholds[3]},
+		{tdels[0], tdels[1], tdels[2], tdels[3]}
 	};
 
 	for (int i = 0; i < 3; i++)
@@ -679,28 +609,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 		tableCells[6][i]->setBounds(TcellArea);
 	}
 
-
-	
-	//location0->setBounds(715, 69, 100, 20);
-	//location1->setBounds(715, 90, 100, 20);
-	//location2->setBounds(715, 111, 100, 20);
-	//location3->setBounds(715, 132, 100, 20);
-
-	//fp0->setBounds(815, 69, 120, 20);
-	//fp1->setBounds(815, 90, 120, 20);
-	//fp2->setBounds(815, 111, 120, 20);
-	//fp3->setBounds(815, 132, 120, 20);
-
-	//follow0->setBounds(935, 69, 120, 20);
-	//follow1->setBounds(935, 91, 120, 20);
-	//follow2->setBounds(935, 112, 120, 20);
-	//follow3->setBounds(935, 134, 120, 20);
-
-	//del0->setBounds(1050, 68, 60, 18);
-	//del1->setBounds(1050, 89, 60, 18);
-	//del2->setBounds(1050, 110, 60, 18);
-	//del3->setBounds(1050, 131, 60, 18);
-
 	trackSpike_button->setBounds(780, 126, 120, 24);
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
 
@@ -721,46 +629,46 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 		return true;
 	}
 	else if (k == KeyPress::F1Key) {
-		if (follow0->getToggleState() == true) {
-			follow0->setToggleState(false, sendNotification);
+		if (follows[0]->getToggleState() == true) {
+			follows[0]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(0);
 			return true;
 		}
-		else if (follow0->getToggleState() == false) {
-			follow0->setToggleState(true, sendNotification);
+		else if (follows[0]->getToggleState() == false) {
+			follows[0]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
 	else if (k == KeyPress::F2Key) {
-		if (follow1->getToggleState() == true) {
-			follow1->setToggleState(false, sendNotification);
+		if (follows[1]->getToggleState() == true) {
+			follows[1]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(1);
 			return true;
 		}
-		else if (follow1->getToggleState() == false) {
-			follow1->setToggleState(true, sendNotification);
+		else if (follows[1]->getToggleState() == false) {
+			follows[1]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
 	else if (k == KeyPress::F3Key) {
-		if (follow2->getToggleState() == true) {
-			follow2->setToggleState(false, sendNotification);
+		if (follows[2]->getToggleState() == true) {
+			follows[2]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(2);
 			return true;
 		}
-		else if (follow2->getToggleState() == false) {
-			follow2->setToggleState(true, sendNotification);
+		else if (follows[2]->getToggleState() == false) {
+			follows[2]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
 	else if (k == KeyPress::F4Key) {
-		if (follow3->getToggleState() == true) {
-			follow3->setToggleState(false, sendNotification);
+		if (follows[3]->getToggleState() == true) {
+			follows[3]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(3);
 			return true;
 		}
-		else if (follow3->getToggleState() == false) {
-			follow3->setToggleState(true, sendNotification);
+		else if (follows[3]->getToggleState() == false) {
+			follows[3]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
@@ -997,14 +905,11 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			(*valuesMap)["trackSpike"] = "0";
 		}
 	}
-	if (buttonThatWasClicked == del0)
-		del_0 = true;
-	if (buttonThatWasClicked == del1)
-		del_1 = true;
-	if (buttonThatWasClicked == del2)
-		del_2 = true;
-	if (buttonThatWasClicked == del3)
-		del_3 = true;
+	for (int i = 0; i < 4; i++) {
+		if (buttonThatWasClicked == dels[i]) {
+			deletes[i] = true;
+		}
+	}
 	if (buttonThatWasClicked->getName() == "Setup") {
 
 		Viewport* view = new Viewport("viewTest");
@@ -1210,19 +1115,19 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 			colour = Colours::red;
 		}
 	}
-	else if (follow0->getToggleState() == true) 
+	else if (follows[0]->getToggleState() == true) 
 	{
 		colour = Colours::lightsteelblue;
 	}
-	else if (follow1->getToggleState() == true) 
+	else if (follows[1]->getToggleState() == true) 
 	{
 		colour = Colours::lightskyblue;
 	}
-	else if (follow2->getToggleState() == true)
+	else if (follows[2]->getToggleState() == true)
 	{
 		colour = Colours::darkgreen;
 	}
-	else if (follow3->getToggleState() == true)
+	else if (follows[3]->getToggleState() == true)
 	{
 		colour = Colours::orange;
 	}

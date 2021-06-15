@@ -227,27 +227,36 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	for (int q = 0; q < 4; q++) {
 		if (spikeLocations[q].isFull == true) {
 			updateSpikeInfo(q);
-			if (q == 0) {
-				content.location0->setText(String(spikeLocations[q].SLR));
-				content.fp0->setText(String(spikeLocations[q].firingNumber));
-			}
-			if (q == 1) {
-				content.location1->setText(String(spikeLocations[q].SLR));
-				content.fp1->setText(String(spikeLocations[q].firingNumber));
-			}
-			if (q == 2) {
-				content.location2->setText(String(spikeLocations[q].SLR));
-				content.fp2->setText(String(spikeLocations[q].firingNumber));
-			}
-			if (q == 3) {
-				content.location3->setText(String(spikeLocations[q].SLR));
-				content.fp3->setText(String(spikeLocations[q].firingNumber));
-			}
+			content.locations[q]->setText(String(spikeLocations[q].SLR));
+			content.fps[q]->setText(String(spikeLocations[q].firingNumber));
+			content.ts[0]->setText(String(spikeLocations[q].bigStim));
+		}
+		if (content.deletes[q] == true) {
+			content.follows[q]->setToggleState(false, sendNotification);
+			spikeLocations[q] = {};
+			spikeLocations[q].isFull = false;
+			content.locations[q]->setText("0");
+			content.fps[q]->setText("0");
+			content.dels[q]->setToggleState(false, sendNotification);
+			std::cout << "Spike " << q << " Deleted" << endl;
+			content.deletes[q] = false;
+		}
+		if (content.follows[q]->getToggleState() == true) {
+			//content.follows[->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
+			for (int n = 0; n < 4; n++)
+				if (n == q) continue;
+				else content.follows[n]->setToggleState(false, sendNotification);
+			content.trackSpike_button->setToggleState(false, sendNotification);
+			content.spikeTracker->selectedRowsChanged(q);
+			setConfig(q);
+			updateSpikeInfo(q);
+			content.spectrogramPanel->setSearchBoxValue(spikeLocations[q].SLR);
 		}
 	}
 
+
 	//Delete spike information
-	if (content.del_0 == true) {
+	/*if (content.del_0 == true) {
 		content.follow0->setToggleState(false, sendNotification);
 		spikeLocations[0] = {};
 		spikeLocations[0].isFull = false;
@@ -290,10 +299,10 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		content.del3->setToggleState(false, sendNotification);
 		std::cout << "Spike 4 Deleted" << endl;
 		content.del_3 = false;
-	}
+	}*/
 
 	//Track spikes!
-	if (content.follow0->getToggleState() == true) {
+	/*if (content.follow0->getToggleState() == true) {
 		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
 		content.trackSpike_button->setToggleState(false, sendNotification);
 		content.spikeTracker->selectedRowsChanged(0);
@@ -325,6 +334,18 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		updateSpikeInfo(3);
 		content.spectrogramPanel->setSearchBoxValue(spikeLocations[3].SLR);
 	}
+
+	//Track Thresholds!
+	if (content.thres0->getToggleState() == true) {
+		if (spikeLocations[0].isFull == true) {
+			content.stimulusVoltageSlider->setValue(spikeLocations[0].bigStim);
+			content.ppControllerComponent->setStimulusVoltage(spikeLocations[0].bigStim);
+		}
+		else {
+			content.stimulusVoltageSlider->setValue(spikeLocations[0].bigStim);
+			content.ppControllerComponent->setStimulusVoltage(spikeLocations[0].bigStim);
+		}
+	}*/
 
 
 	//display values

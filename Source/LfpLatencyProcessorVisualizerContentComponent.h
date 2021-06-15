@@ -110,10 +110,17 @@ private:
 	bool alreadyAlerted = false;
     bool testSpikePls = false;
 
-    bool del_0 = false;
-    bool del_1 = false;
-    bool del_2 = false;
-    bool del_3 = false;
+    bool deletes[4] = { false, false, false, false };
+    //bool del_0 = false;
+    //bool del_1 = false;
+    //bool del_2 = false;
+    //bool del_3 = false;
+
+    bool t_deletes[4] = { false, false, false, false };
+    //bool t_del0 = false;
+    //bool t_del1 = false;
+    //bool t_del2 = false;
+    //bool t_del3 = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
@@ -175,40 +182,13 @@ private:
     ScopedPointer<TableListBox> thresholdTracker;
     ScopedPointer<TableListBoxModel> thresholdTrackerContent;
     
-    ScopedPointer<TextEditor> location0;
-    ScopedPointer<TextEditor> location1;
-    ScopedPointer<TextEditor> location2;
-    ScopedPointer<TextEditor> location3;
-
-    ScopedPointer<TextEditor> fp0;
-    ScopedPointer<TextEditor> fp1;
-    ScopedPointer<TextEditor> fp2;
-    ScopedPointer<TextEditor> fp3;
-    
-    ScopedPointer<ToggleButton> follow0;
-    ScopedPointer<ToggleButton> follow1;
-    ScopedPointer<ToggleButton> follow2;
-    ScopedPointer<ToggleButton> follow3;
-
-    ScopedPointer<TextButton> del0;
-    ScopedPointer<TextButton> del1;
-    ScopedPointer<TextButton> del2;
-    ScopedPointer<TextButton> del3;
-
-    ScopedPointer<TextEditor> t0;
-    ScopedPointer<TextEditor> t1;
-    ScopedPointer<TextEditor> t2;
-    ScopedPointer<TextEditor> t3;
-
-    ScopedPointer<ToggleButton> thres0;
-    ScopedPointer<ToggleButton> thres1;
-    ScopedPointer<ToggleButton> thres2;
-    ScopedPointer<ToggleButton> thres3;
-
-    ScopedPointer<TextButton> tdel0;
-    ScopedPointer<TextButton> tdel1;
-    ScopedPointer<TextButton> tdel2;
-    ScopedPointer<TextButton> tdel3;
+    ScopedPointer <TextEditor> locations[4];
+    ScopedPointer <TextEditor> fps[4];
+    ScopedPointer <ToggleButton> follows[4];
+    ScopedPointer <TextButton> dels[4];
+    ScopedPointer<TextEditor> ts[4];
+    ScopedPointer<ToggleButton> thresholds[4];
+    ScopedPointer<TextButton> tdels[4];
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
