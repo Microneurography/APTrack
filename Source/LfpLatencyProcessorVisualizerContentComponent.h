@@ -111,16 +111,8 @@ private:
     bool testSpikePls = false;
 
     bool deletes[4] = { false, false, false, false };
-    //bool del_0 = false;
-    //bool del_1 = false;
-    //bool del_2 = false;
-    //bool del_3 = false;
 
     bool t_deletes[4] = { false, false, false, false };
-    //bool t_del0 = false;
-    //bool t_del1 = false;
-    //bool t_del2 = false;
-    //bool t_del3 = false;
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
@@ -182,10 +174,10 @@ private:
     ScopedPointer<TableListBox> thresholdTracker;
     ScopedPointer<TableListBoxModel> thresholdTrackerContent;
     
-    ScopedPointer <TextEditor> locations[4];
-    ScopedPointer <TextEditor> fps[4];
-    ScopedPointer <ToggleButton> follows[4];
-    ScopedPointer <TextButton> dels[4];
+    ScopedPointer<TextEditor> locations[4];
+    ScopedPointer<TextEditor> fps[4];
+    ScopedPointer<ToggleButton> follows[4];
+    ScopedPointer<TextButton> dels[4];
     ScopedPointer<TextEditor> ts[4];
     ScopedPointer<ToggleButton> thresholds[4];
     ScopedPointer<TextButton> tdels[4];

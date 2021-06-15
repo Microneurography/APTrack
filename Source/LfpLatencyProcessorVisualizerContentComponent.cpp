@@ -377,8 +377,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 		thresholds[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
 		addAndMakeVisible(tdels[i] = new TextButton(""));
 		tdels[i]->addListener(this);
-		tdels[i]->setToggleState(false, sendNotification);
 		tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+		tdels[i]->setToggleState(false, sendNotification);
 	}
 	
 
@@ -908,6 +908,9 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 	for (int i = 0; i < 4; i++) {
 		if (buttonThatWasClicked == dels[i]) {
 			deletes[i] = true;
+		}
+		if (buttonThatWasClicked == tdels[i]) {
+			t_deletes[i] = true;
 		}
 	}
 	if (buttonThatWasClicked->getName() == "Setup") {

@@ -229,11 +229,11 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			updateSpikeInfo(q);
 			content.locations[q]->setText(String(spikeLocations[q].SLR));
 			content.fps[q]->setText(String(spikeLocations[q].firingNumber));
-			content.ts[0]->setText(String(spikeLocations[q].bigStim));
+			content.ts[0]->setText(String(thresholds[q].bigStim));
 		}
 		if (content.deletes[q] == true) {
 			content.follows[q]->setToggleState(false, sendNotification);
-			spikeLocations[q] = {};
+			spikeLocations[q];
 			spikeLocations[q].isFull = false;
 			content.locations[q]->setText("0");
 			content.fps[q]->setText("0");
@@ -242,7 +242,6 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.deletes[q] = false;
 		}
 		if (content.follows[q]->getToggleState() == true) {
-			//content.follows[->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
 			for (int n = 0; n < 4; n++)
 				if (n == q) continue;
 				else content.follows[n]->setToggleState(false, sendNotification);
@@ -252,101 +251,25 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			updateSpikeInfo(q);
 			content.spectrogramPanel->setSearchBoxValue(spikeLocations[q].SLR);
 		}
-	}
-
-
-	//Delete spike information
-	/*if (content.del_0 == true) {
-		content.follow0->setToggleState(false, sendNotification);
-		spikeLocations[0] = {};
-		spikeLocations[0].isFull = false;
-		content.location0->setText("0");
-		content.fp0->setText("0");
-		content.follow0->setToggleState(false, sendNotification);
-		content.del0->setToggleState(false, sendNotification);
-		std::cout << "Spike 1 Deleted" << endl;
-		content.del_0 = false;
-	}
-	if (content.del_1 == true) {
-		content.follow1->setToggleState(false, sendNotification);
-		spikeLocations[1] = {};
-		spikeLocations[1].isFull = false;
-		content.location1->setText("0");
-		content.fp1->setText("0");
-		content.follow1->setToggleState(false, sendNotification);
-		content.del1->setToggleState(false, sendNotification);
-		std::cout << "Spike 2 Deleted" << endl;
-		content.del_1 = false;
-	}
-	if (content.del_2 == true) {
-		content.follow2->setToggleState(false, sendNotification);
-		spikeLocations[2] = {};
-		spikeLocations[2].isFull = false;
-		content.location2->setText("0");
-		content.fp2->setText("0");
-		content.follow2->setToggleState(false, sendNotification);
-		content.del2->setToggleState(false, sendNotification);
-		std::cout << "Spike 3 Deleted" << endl;
-		content.del_2 = false;
-	}
-	if (content.del_3 == true) {
-		content.follow3->setToggleState(false, sendNotification);
-		spikeLocations[3] = {};
-		spikeLocations[3].isFull = false;
-		content.location3->setText("0");
-		content.fp3->setText("0");
-		content.follow3->setToggleState(false, sendNotification);
-		content.del3->setToggleState(false, sendNotification);
-		std::cout << "Spike 4 Deleted" << endl;
-		content.del_3 = false;
-	}*/
-
-	//Track spikes!
-	/*if (content.follow0->getToggleState() == true) {
-		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
-		content.trackSpike_button->setToggleState(false, sendNotification);
-		content.spikeTracker->selectedRowsChanged(0);
-		setConfig(0);
-		updateSpikeInfo(0);
-		content.spectrogramPanel->setSearchBoxValue(spikeLocations[0].SLR);
-	}
-	if (content.follow1->getToggleState() == true) {
-		content.follow2->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
-		content.trackSpike_button->setToggleState(false, sendNotification);
-		content.spikeTracker->selectedRowsChanged(1);
-		setConfig(1);
-		updateSpikeInfo(1);
-		content.spectrogramPanel->setSearchBoxValue(spikeLocations[1].SLR);
-	}
-	if (content.follow2->getToggleState() == true) {
-		content.follow1->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification); content.follow3->setToggleState(false, sendNotification);
-		content.trackSpike_button->setToggleState(false, sendNotification);
-		content.spikeTracker->selectedRowsChanged(2);
-		setConfig(2);
-		updateSpikeInfo(2);
-		content.spectrogramPanel->setSearchBoxValue(spikeLocations[2].SLR);
-	}
-	if (content.follow3->getToggleState() == true) {
-		content.follow1->setToggleState(false, sendNotification); content.follow2->setToggleState(false, sendNotification); content.follow0->setToggleState(false, sendNotification);
-		content.trackSpike_button->setToggleState(false, sendNotification);
-		content.spikeTracker->selectedRowsChanged(3);
-		setConfig(3);
-		updateSpikeInfo(3);
-		content.spectrogramPanel->setSearchBoxValue(spikeLocations[3].SLR);
-	}
-
-	//Track Thresholds!
-	if (content.thres0->getToggleState() == true) {
-		if (spikeLocations[0].isFull == true) {
-			content.stimulusVoltageSlider->setValue(spikeLocations[0].bigStim);
-			content.ppControllerComponent->setStimulusVoltage(spikeLocations[0].bigStim);
+		if (content.thresholds[q]->getToggleState() == true) {
+			for (int n = 0; n < 4; n++)
+				if (n == q) continue;
+				else content.thresholds[n]->setToggleState(false, sendNotification);
+			content.trackThreshold_button->setToggleState(false, sendNotification);
+			updateSpikeInfo(q);
+			content.stimulusVoltageSlider->setValue(thresholds[q].bigStim);
+			content.ppControllerComponent->setStimulusVoltage(thresholds[q].bigStim);
 		}
-		else {
-			content.stimulusVoltageSlider->setValue(spikeLocations[0].bigStim);
-			content.ppControllerComponent->setStimulusVoltage(spikeLocations[0].bigStim);
+		if (content.t_deletes[q] == true) {
+			content.thresholds[q]->setToggleState(false, sendNotification);
+			thresholds[q] = {};
+			thresholds[q].thresholdFull = false;
+			content.ts[q]->setText("0");
+			content.tdels[q]->setToggleState(false, sendNotification);
+			std::cout << "Threshold " << q << " Deleted" << endl;
+			content.tdels[q] = false;
 		}
-	}*/
-
+	}
 
 	//display values
 	content.rightMiddlePanel->setROISpikeValueText(String(maxLevel, 1));
@@ -383,14 +306,16 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			
 			// If we have enabled threshold tracking then update threshold:
 			// Spike, decrease stimulation
-			if (content.trackThreshold_button->getToggleState() == true)
+			if (content.trackThreshold_button->getToggleState() == true && thresholds[q].thresholdFull == false)
 			{
-				spikeLocations[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-				spikeLocations[q].bigStim = std::max(spikeLocations[q].stimVol, content.stimulusVoltageMin);
-				content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
-				content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
+				thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+				thresholds[q].bigStim = std::max(thresholds[q].stimVol, content.stimulusVoltageMin);
+				thresholds[q].thresholdFull = true;
+				//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
+				//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
 				content.trackThreshold_button->setToggleState(false, sendNotification);
 				q++;
+				if (q == 4) q = 0;
 			}
 
 			i++;
@@ -401,15 +326,17 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.spikeDetected = false;
 
 			// If we have enabled threshold tracking then update threshold:
-			if (content.trackThreshold_button->getToggleState() == true)
+			if (content.trackThreshold_button->getToggleState() == true && thresholds[q].thresholdFull == false)
 			{
 				//No spike, increase stimulation
-				spikeLocations[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-				spikeLocations[q].bigStim = std::min(spikeLocations[q].stimVol, content.stimulusVoltageMax);
-				content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
-				content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
+				thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+				thresholds[q].bigStim = std::min(thresholds[q].stimVol, content.stimulusVoltageMax);
+				thresholds[q].thresholdFull = true;
+				//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
+				//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
 				content.trackThreshold_button->setToggleState(false, sendNotification);
 				q++;
+				if (q == 4) q = 0;
 			}
 
 		}
@@ -431,14 +358,14 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 			spikeLocations[i].firingNumber = 0;
 			resetFirings = false;
 		}
-		spikeLocations[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
-		spikeLocations[q].bigStim = std::max(spikeLocations[q].stimVol, content.stimulusVoltageMin);
+		thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+		thresholds[q].bigStim = std::max(thresholds[q].stimVol, content.stimulusVoltageMin);
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
 	}
 	else {
-		spikeLocations[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
-		spikeLocations[q].bigStim = std::min(spikeLocations[q].stimVol, content.stimulusVoltageMax);
+		thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+		thresholds[q].bigStim = std::min(thresholds[q].stimVol, content.stimulusVoltageMax);
 	}
 
 }
