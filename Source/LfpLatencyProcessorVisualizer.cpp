@@ -267,7 +267,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.ts[q]->setText("0");
 			content.tdels[q]->setToggleState(false, sendNotification);
 			std::cout << "Threshold " << q << " Deleted" << endl;
-			content.tdels[q] = false;
+			content.t_deletes[q] = false;
 		}
 	}
 
