@@ -63,8 +63,8 @@ void LfpLatencyOtherControlPanel::resized()
 
 	auto buttonHeight = 24;
 	auto buttonWidth = 120;
-	auto buttonArea = area.removeFromRight(buttonWidth);
-	auto optionsArea = buttonArea.removeFromTop(buttonArea.getWidth() / 2).withSizeKeepingCentre(buttonWidth, buttonHeight);
+	auto buttonArea = area.removeFromTop(buttonHeight);
+	auto optionsArea = buttonArea.removeFromLeft(buttonArea.getWidth() / 2).withSizeKeepingCentre(buttonWidth, buttonHeight);
 	options->setBounds(optionsArea);
 	auto setupArea = buttonArea.withSizeKeepingCentre(buttonWidth, buttonHeight);
 	setup->setBounds(setupArea);
@@ -103,17 +103,16 @@ std::map<String, Rectangle<int>> LfpLatencyOtherControlPanel::getTableBounds() c
 {
 	auto area = getLocalBounds();
 	auto borderWidth = 20;
-	auto spiketrackerarea = area.withSizeKeepingCentre(getWidth() - 2 * borderWidth, (getHeight() - 2 * borderWidth) / 1.95);
-	auto thresholdtrackerarea = area.withSizeKeepingCentre(getWidth() - 2 * borderWidth, (getHeight() - 2 * borderWidth) / 1.95);
-	spiketrackerarea = spiketrackerarea.withY(spiketrackerarea.getBottom() - (spiketrackerarea.getHeight() / 2));
-	thresholdtrackerarea = thresholdtrackerarea.withY(thresholdtrackerarea.getBottom() - (thresholdtrackerarea.getHeight() + 72));
-	spiketrackerarea.setWidth(spiketrackerarea.getWidth() - 150);
-	thresholdtrackerarea.setWidth(thresholdtrackerarea.getWidth() - 150);
+	area = area.withSizeKeepingCentre(getWidth() - 2 * borderWidth, getHeight() - 2 * borderWidth);
+	auto buttonHeight = 24;
+	area.removeFromTop(buttonHeight);
 
 	std::map<String, Rectangle<int>> bounds;
 
-	bounds["spikeTracker"] = spiketrackerarea;
-	bounds["thresholdTracker"] = thresholdtrackerarea;
+	auto verticalSpaceBetween = 5;
+	area.removeFromTop(verticalSpaceBetween);
+
+	bounds["spikeTracker"] = area;
 
 	for (auto it = bounds.begin(); it != bounds.end(); it++)
 	{

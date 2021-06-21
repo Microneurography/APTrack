@@ -171,8 +171,8 @@ private:
 
     //ScopedPointer<ComboBox> trackSpikeComboBox;
     ScopedPointer<TableListBox> spikeTracker;
-    ScopedPointer<TableListBox> thresholdTracker;
-    ScopedPointer<TableListBoxModel> thresholdTrackerContent;
+    //ScopedPointer<TableListBox> thresholdTracker;
+    //ScopedPointer<TableListBoxModel> thresholdTrackerContent;
     
     ScopedPointer<TextEditor> locations[4];
     ScopedPointer<TextEditor> fps[4];
@@ -180,7 +180,7 @@ private:
     ScopedPointer<TextButton> dels[4];
     ScopedPointer<TextEditor> ts[4];
     ScopedPointer<ToggleButton> thresholds[4];
-    ScopedPointer<TextButton> tdels[4];
+    //ScopedPointer<TextButton> tdels[4];
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;

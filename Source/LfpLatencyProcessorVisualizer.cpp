@@ -260,7 +260,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.stimulusVoltageSlider->setValue(thresholds[q].bigStim);
 			content.ppControllerComponent->setStimulusVoltage(thresholds[q].bigStim);
 		}
-		if (content.t_deletes[q] == true) {
+		/*if (content.t_deletes[q] == true) {
 			content.thresholds[q]->setToggleState(false, sendNotification);
 			thresholds[q] = {};
 			thresholds[q].thresholdFull = false;
@@ -268,7 +268,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.tdels[q]->setToggleState(false, sendNotification);
 			std::cout << "Threshold " << q << " Deleted" << endl;
 			content.t_deletes[q] = false;
-		}
+		}*/
 	}
 
 	//display values

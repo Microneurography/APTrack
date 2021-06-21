@@ -341,12 +341,14 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
 	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
-	spikeTracker->getHeader().addColumn("Select", 4, 50);
-	spikeTracker->getHeader().addColumn("Delete", 5, 50);
+	spikeTracker->getHeader().addColumn("Threshold Value", 4, 100);
+	spikeTracker->getHeader().addColumn("Select Spike", 5, 100);
+	spikeTracker->getHeader().addColumn("Select Threshold", 6, 100);
+	spikeTracker->getHeader().addColumn("Delete", 7, 50);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
-	thresholdTrackerContent = new TableContent();
+	/*thresholdTrackerContent = new TableContent();
 	addAndMakeVisible(thresholdTracker = new TableListBox("Tracked Thresholds", thresholdTrackerContent));
 	thresholdTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
 	thresholdTracker->getHeader().addColumn("Threshold", 1, 100);
@@ -354,7 +356,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	thresholdTracker->getHeader().addColumn("Select", 3, 50);
 	thresholdTracker->getHeader().addColumn("Delete", 4, 50);
 	thresholdTracker->autoSizeAllColumns();
-	thresholdTracker->updateContent();
+	thresholdTracker->updateContent();*/
 
 	for (int i = 0; i < 4; i++) {
 		addAndMakeVisible(locations[i] = new TextEditor("Location"));
@@ -375,10 +377,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 		thresholds[i]->addListener(this);
 		thresholds[i]->setToggleState(false, sendNotification);
 		thresholds[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-		addAndMakeVisible(tdels[i] = new TextButton(""));
-		tdels[i]->addListener(this);
-		tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-		tdels[i]->setToggleState(false, sendNotification);
+		//addAndMakeVisible(tdels[i] = new TextButton(""));
+		//tdels[i]->addListener(this);
+		//tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+		//tdels[i]->setToggleState(false, sendNotification);
 	}
 	
 
@@ -473,8 +475,8 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	
 	spikeTracker = nullptr;
 	spikeTrackerContent = nullptr;
-	thresholdTracker = nullptr;
-	thresholdTrackerContent = nullptr;
+	//thresholdTracker = nullptr;
+	//thresholdTrackerContent = nullptr;
 	for (int i = 0; i < 4; i++) {
 		locations[i] = nullptr;
 		fps[i] = nullptr;
@@ -482,7 +484,7 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 		dels[i] = nullptr;
 		ts[i] = nullptr;
 		thresholds[i] = nullptr;
-		tdels[i] = nullptr;
+		//tdels[i] = nullptr;
 	}
 	
 
@@ -508,7 +510,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	//spikeTracker->autoSizeAllColumns();
 	//spikeTracker->updateContent();
 	spikeTracker->updateContent();
-	thresholdTracker->updateContent();
+	//thresholdTracker->updateContent();
 }
 
 // If you want to move something down, you have to increase the y value
@@ -561,26 +563,24 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto boundsMap = otherControlPanel->getTableBounds();
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
 	spikeTracker->setBounds(boundsMap["spikeTracker"]);
-	thresholdTracker->setBounds(boundsMap["thresholdTracker"]);
+	//thresholdTracker->setBounds(boundsMap["thresholdTracker"]);
 	//spikeTracker->setBounds(665, 40, 470, 200);
 
 	auto STtableX = boundsMap["spikeTracker"].getX();
 	auto STtableY = boundsMap["spikeTracker"].getY();
 
-	auto TTtableX = boundsMap["thresholdTracker"].getX();
-	auto TTtableY = boundsMap["thresholdTracker"].getY();
 
 	vector<vector<Component*>> tableCells{ 
 		{locations[0], locations[1], locations[2], locations[3]},
 		{fps[0], fps[1], fps[2], fps[3]},
-		{follows[0], follows[1], follows[2], follows[3]},
-		{dels[0], dels[1], dels[2], dels[3]},
 		{ts[0], ts[1], ts[2], ts[3]},
+		{follows[0], follows[1], follows[2], follows[3]},
 		{thresholds[0], thresholds[1], thresholds[2], thresholds[3]},
-		{tdels[0], tdels[1], tdels[2], tdels[3]}
+		{dels[0], dels[1], dels[2], dels[3]}
+		//{tdels[0], tdels[1], tdels[2], tdels[3]}
 	};
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
@@ -590,24 +590,12 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	for (int i = 0; i < 4; i++)
 	{
-		auto cellArea = spikeTracker->getCellPosition(5, i, false).translated(STtableX, STtableY);
+		auto cellArea = spikeTracker->getCellPosition(7, i, false).translated(STtableX, STtableY);
 		cellArea = cellArea.withSizeKeepingCentre(40, 18);
-		tableCells[3][i]->setBounds(cellArea);
+		tableCells[5][i]->setBounds(cellArea);
 	}
 
-	for (int i = 4; i < 6; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			tableCells[i][j]->setBounds(thresholdTracker->getCellPosition(i - 2, j, false).translated(TTtableX, TTtableY));
-		}
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		auto TcellArea = thresholdTracker->getCellPosition(4, i, false).translated(TTtableX, TTtableY);
-		TcellArea = TcellArea.withSizeKeepingCentre(40, 18);
-		tableCells[6][i]->setBounds(TcellArea);
-	}
+
 
 	trackSpike_button->setBounds(780, 126, 120, 24);
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
@@ -909,9 +897,9 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		if (buttonThatWasClicked == dels[i]) {
 			deletes[i] = true;
 		}
-		if (buttonThatWasClicked == tdels[i]) {
-			t_deletes[i] = true;
-		}
+		//if (buttonThatWasClicked == tdels[i]) {
+			//t_deletes[i] = true;
+		//}
 	}
 	if (buttonThatWasClicked->getName() == "Setup") {
 
