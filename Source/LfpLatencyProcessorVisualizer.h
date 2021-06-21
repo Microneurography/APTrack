@@ -104,14 +104,10 @@ private:
         int searchBoxWidth;
         int firingNumber = 0;
         bool isFull = false;
-    };
-
-    struct thresholdinfo {
         float stimVol = 0;
         float bigStim = 0;
         bool thresholdFull = false;
     };
-
     
     float level;
 
@@ -133,8 +129,6 @@ private:
     int windowSampleCount;
     
     spikeinfo spikeLocations[4];
-    thresholdinfo thresholds[4];
-
 
     int probabilityTimer = 0;
 

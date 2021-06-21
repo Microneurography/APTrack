@@ -229,7 +229,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			updateSpikeInfo(q);
 			content.locations[q]->setText(String(spikeLocations[q].SLR));
 			content.fps[q]->setText(String(spikeLocations[q].firingNumber));
-			content.ts[0]->setText(String(thresholds[q].bigStim));
+			content.ts[0]->setText(String(spikeLocations[q].bigStim));
 		}
 		if (content.deletes[q] == true) {
 			content.follows[q]->setToggleState(false, sendNotification);
@@ -257,18 +257,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				else content.thresholds[n]->setToggleState(false, sendNotification);
 			content.trackThreshold_button->setToggleState(false, sendNotification);
 			updateSpikeInfo(q);
-			content.stimulusVoltageSlider->setValue(thresholds[q].bigStim);
-			content.ppControllerComponent->setStimulusVoltage(thresholds[q].bigStim);
+			content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
+			content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
 		}
-		/*if (content.t_deletes[q] == true) {
-			content.thresholds[q]->setToggleState(false, sendNotification);
-			thresholds[q] = {};
-			thresholds[q].thresholdFull = false;
-			content.ts[q]->setText("0");
-			content.tdels[q]->setToggleState(false, sendNotification);
-			std::cout << "Threshold " << q << " Deleted" << endl;
-			content.t_deletes[q] = false;
-		}*/
 	}
 
 	//display values
@@ -299,26 +290,20 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].isFull = true;
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
+				
+				if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
+				{
+					spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+					spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+					spikeLocations[i].thresholdFull = true;
+					//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
+					//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
+				}
 			}
 			//Reset spike array counter when it reaches four, allows for new spikes to be found once old ones are deleted
+			i++;
 			if (i == 4)
 				i = 0;
-			
-			// If we have enabled threshold tracking then update threshold:
-			// Spike, decrease stimulation
-			if (content.trackThreshold_button->getToggleState() == true && thresholds[q].thresholdFull == false)
-			{
-				thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-				thresholds[q].bigStim = std::max(thresholds[q].stimVol, content.stimulusVoltageMin);
-				thresholds[q].thresholdFull = true;
-				//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
-				//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
-				content.trackThreshold_button->setToggleState(false, sendNotification);
-				q++;
-				if (q == 4) q = 0;
-			}
-
-			i++;
 
 		}
 		else
@@ -326,17 +311,14 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.spikeDetected = false;
 
 			// If we have enabled threshold tracking then update threshold:
-			if (content.trackThreshold_button->getToggleState() == true && thresholds[q].thresholdFull == false)
+			if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
 			{
 				//No spike, increase stimulation
-				thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-				thresholds[q].bigStim = std::min(thresholds[q].stimVol, content.stimulusVoltageMax);
-				thresholds[q].thresholdFull = true;
+				spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+				spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
+				spikeLocations[i].thresholdFull = true;
 				//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
 				//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
-				content.trackThreshold_button->setToggleState(false, sendNotification);
-				q++;
-				if (q == 4) q = 0;
 			}
 
 		}
@@ -358,14 +340,14 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 			spikeLocations[i].firingNumber = 0;
 			resetFirings = false;
 		}
-		thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
-		thresholds[q].bigStim = std::max(thresholds[q].stimVol, content.stimulusVoltageMin);
+		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+		spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
 	}
 	else {
-		thresholds[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
-		thresholds[q].bigStim = std::min(thresholds[q].stimVol, content.stimulusVoltageMax);
+		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+		spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 	}
 
 }
