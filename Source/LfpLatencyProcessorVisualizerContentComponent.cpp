@@ -269,6 +269,18 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackThreshold_button_Label->setText("Track Threshold", sendNotification);
 	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 
+	stimuliNumberSlider = new Slider("stimuliNumberSlider");
+	stimuliNumberSlider->setRange(1, 10, 1);
+	stimuliNumberSlider->setSliderStyle(Slider::Rotary);
+	stimuliNumberSlider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
+	stimuliNumberSlider->addListener(this);
+	stimuliNumberSlider->setValue(stimuli);
+	stimuliNumber = new TextEditor("Number of Stimuli");
+	stimuliNumber->setText(String(stimuli));
+	stimuliNumberLabel = new Label("Stimuli_Number_Label");
+	stimuliNumberLabel->setText("Stimuli Number", sendNotification);
+
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	//SETUP BUTTON -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -333,7 +345,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-	//MULTI SPIKE TRACKING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	//MULTI SPIKE AND THRESHOLD TRACKING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	spikeTrackerContent = new TableContent();
 	addAndMakeVisible(spikeTracker = new TableListBox("Tracked Spikes", spikeTrackerContent));
@@ -341,62 +353,48 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Spike", 1, 50);
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
 	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
-	spikeTracker->getHeader().addColumn("Select Spike", 4, 100);
-	spikeTracker->getHeader().addColumn("Delete Track", 5, 100);
+	spikeTracker->getHeader().addColumn("Threshold Value", 4, 100);
+	spikeTracker->getHeader().addColumn("Select Spike", 5, 100);
+	spikeTracker->getHeader().addColumn("Select Threshold", 6, 100);
+	spikeTracker->getHeader().addColumn("Delete", 7, 50);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
-	addAndMakeVisible(location0 = new TextEditor("Location 0"));
-	location0->setText("0");
-	addAndMakeVisible(location1 = new TextEditor("Location 1"));
-	location1->setText("0");
-	addAndMakeVisible(location2 = new TextEditor("Location 2"));
-	location2->setText("0");
-	addAndMakeVisible(location3 = new TextEditor("Location 3"));
-	location3->setText("0");
+	/*thresholdTrackerContent = new TableContent();
+	addAndMakeVisible(thresholdTracker = new TableListBox("Tracked Thresholds", thresholdTrackerContent));
+	thresholdTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
+	thresholdTracker->getHeader().addColumn("Threshold", 1, 100);
+	thresholdTracker->getHeader().addColumn("Value", 2, 100);
+	thresholdTracker->getHeader().addColumn("Select", 3, 50);
+	thresholdTracker->getHeader().addColumn("Delete", 4, 50);
+	thresholdTracker->autoSizeAllColumns();
+	thresholdTracker->updateContent();*/
 
-	addAndMakeVisible(fp0 = new TextEditor("Firing Proabability 0"));
-	fp0->setText("0");
-	addAndMakeVisible(fp1 = new TextEditor("Firing Proabability 1"));
-	fp1->setText("0");
-	addAndMakeVisible(fp2 = new TextEditor("Firing Proabability 2"));
-	fp2->setText("0");
-	addAndMakeVisible(fp3 = new TextEditor("Firing Proabability 3"));
-	fp3->setText("0");
-
-	addAndMakeVisible(follow0 = new ToggleButton(""));
-	follow0->addListener(this);
-	follow0->setToggleState(false, sendNotification);
-	follow0->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(follow1 = new ToggleButton(""));
-	follow1->addListener(this);
-	follow1->setToggleState(false, sendNotification);
-	follow1->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(follow2 = new ToggleButton(""));
-	follow2->addListener(this);
-	follow2->setToggleState(false, sendNotification);
-	follow2->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-	addAndMakeVisible(follow3 = new ToggleButton(""));
-	follow3->addListener(this);
-	follow3->setToggleState(false, sendNotification);
-	follow3->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-
-	addAndMakeVisible(del0 = new TextButton(""));
-	del0->addListener(this);
-	del0->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del0->setToggleState(false, sendNotification);
-	addAndMakeVisible(del1 = new TextButton(""));
-	del1->addListener(this);
-	del1->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del1->setToggleState(false, sendNotification);
-	addAndMakeVisible(del2 = new TextButton(""));
-	del2->addListener(this);
-	del2->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del2->setToggleState(false, sendNotification);
-	addAndMakeVisible(del3 = new TextButton(""));
-	del3->addListener(this);
-	del3->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-	del3->setToggleState(false, sendNotification);
+	for (int i = 0; i < 4; i++) {
+		addAndMakeVisible(locations[i] = new TextEditor("Location"));
+		locations[i]->setText("0");
+		addAndMakeVisible(fps[i] = new TextEditor("Firing Probability"));
+		fps[i]->setText("0");
+		addAndMakeVisible(follows[i] = new ToggleButton(""));
+		follows[i]->addListener(this);
+		follows[i]->setToggleState(false, sendNotification);
+		follows[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+		addAndMakeVisible(dels[i] = new TextButton(""));
+		dels[i]->addListener(this);
+		dels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+		dels[i]->setToggleState(false, sendNotification);
+		addAndMakeVisible(ts[i] = new TextEditor("Threshold"));
+		ts[i]->setText("0");
+		addAndMakeVisible(thresholds[i] = new ToggleButton(""));
+		thresholds[i]->addListener(this);
+		thresholds[i]->setToggleState(false, sendNotification);
+		thresholds[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
+		//addAndMakeVisible(tdels[i] = new TextButton(""));
+		//tdels[i]->addListener(this);
+		//tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+		//tdels[i]->setToggleState(false, sendNotification);
+	}
+	
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -489,15 +487,28 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	
 	spikeTracker = nullptr;
 	spikeTrackerContent = nullptr;
-	location0 = nullptr; location1 = nullptr; location2 = nullptr; location3 = nullptr;
-	follow0 = nullptr; follow1 = nullptr; follow2 = nullptr; follow3 = nullptr;
-	del0 = nullptr; del1 = nullptr; del2 = nullptr; del3 = nullptr;
+	//thresholdTracker = nullptr;
+	//thresholdTrackerContent = nullptr;
+	for (int i = 0; i < 4; i++) {
+		locations[i] = nullptr;
+		fps[i] = nullptr;
+		follows[i] = nullptr;
+		dels[i] = nullptr;
+		ts[i] = nullptr;
+		thresholds[i] = nullptr;
+		//tdels[i] = nullptr;
+	}
+	
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
 
 	trackSpike_IncreaseRate_Text = nullptr;
 	trackSpike_DecreaseRate_Text = nullptr;
+
+	stimuliNumber = nullptr;
+	stimuliNumberLabel = nullptr;
+	stimuliNumberSlider = nullptr;
 
 	delete valuesMap;
 }
@@ -509,15 +520,13 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
     g.setOpacity (1.0f);
 
 	//Paint is called constatnly, so the cells should be paiting the new number in them
-	//spikeTrackerContent->paintCell(g, 1, 1, 10, 10, true);
-	//spikeTrackerContent->paintCell(g, 2, 1, 10, 10, true);
-	//spikeTrackerContent->paintCell(g, 1, 2, 10, 10, true);
-	//spikeTrackerContent->paintCell(g, 2, 2, 10, 10, true);
+
 
 	
 	//spikeTracker->autoSizeAllColumns();
 	//spikeTracker->updateContent();
 	spikeTracker->updateContent();
+	//thresholdTracker->updateContent();
 }
 
 // If you want to move something down, you have to increase the y value
@@ -570,52 +579,39 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto boundsMap = otherControlPanel->getTableBounds();
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
 	spikeTracker->setBounds(boundsMap["spikeTracker"]);
+	//thresholdTracker->setBounds(boundsMap["thresholdTracker"]);
 	//spikeTracker->setBounds(665, 40, 470, 200);
 
-	auto tableX = boundsMap["spikeTracker"].getX();
-	auto tableY = boundsMap["spikeTracker"].getY();
+	auto STtableX = boundsMap["spikeTracker"].getX();
+	auto STtableY = boundsMap["spikeTracker"].getY();
+
 
 	vector<vector<Component*>> tableCells{ 
-		{location0, location1, location2, location3},
-		{fp0, fp1, fp2, fp3},
-		{follow0, follow1, follow2, follow3},
-		{del0, del1, del2, del3}
+		{locations[0], locations[1], locations[2], locations[3]},
+		{fps[0], fps[1], fps[2], fps[3]},
+		{ts[0], ts[1], ts[2], ts[3]},
+		{follows[0], follows[1], follows[2], follows[3]},
+		{thresholds[0], thresholds[1], thresholds[2], thresholds[3]},
+		{dels[0], dels[1], dels[2], dels[3]}
+		//{tdels[0], tdels[1], tdels[2], tdels[3]}
 	};
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 2, j, false).translated(tableX, tableY));
+			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 2, j, false).translated(STtableX, STtableY));
 		}
 	}
 
 	for (int i = 0; i < 4; i++)
 	{
-		auto cellArea = spikeTracker->getCellPosition(3 + 2, i, false).translated(tableX, tableY);
-		cellArea = cellArea.withSizeKeepingCentre(60, 18);
-		tableCells[3][i]->setBounds(cellArea);
+		auto cellArea = spikeTracker->getCellPosition(7, i, false).translated(STtableX, STtableY);
+		cellArea = cellArea.withSizeKeepingCentre(40, 18);
+		tableCells[5][i]->setBounds(cellArea);
 	}
 
-	//location0->setBounds(715, 69, 100, 20);
-	//location1->setBounds(715, 90, 100, 20);
-	//location2->setBounds(715, 111, 100, 20);
-	//location3->setBounds(715, 132, 100, 20);
 
-	//fp0->setBounds(815, 69, 120, 20);
-	//fp1->setBounds(815, 90, 120, 20);
-	//fp2->setBounds(815, 111, 120, 20);
-	//fp3->setBounds(815, 132, 120, 20);
-
-	//follow0->setBounds(935, 69, 120, 20);
-	//follow1->setBounds(935, 91, 120, 20);
-	//follow2->setBounds(935, 112, 120, 20);
-	//follow3->setBounds(935, 134, 120, 20);
-
-	//del0->setBounds(1050, 68, 60, 18);
-	//del1->setBounds(1050, 89, 60, 18);
-	//del2->setBounds(1050, 110, 60, 18);
-	//del3->setBounds(1050, 131, 60, 18);
 
 	trackSpike_button->setBounds(780, 126, 120, 24);
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
@@ -637,46 +633,46 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 		return true;
 	}
 	else if (k == KeyPress::F1Key) {
-		if (follow0->getToggleState() == true) {
-			follow0->setToggleState(false, sendNotification);
+		if (follows[0]->getToggleState() == true) {
+			follows[0]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(0);
 			return true;
 		}
-		else if (follow0->getToggleState() == false) {
-			follow0->setToggleState(true, sendNotification);
+		else if (follows[0]->getToggleState() == false) {
+			follows[0]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
 	else if (k == KeyPress::F2Key) {
-		if (follow1->getToggleState() == true) {
-			follow1->setToggleState(false, sendNotification);
+		if (follows[1]->getToggleState() == true) {
+			follows[1]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(1);
 			return true;
 		}
-		else if (follow1->getToggleState() == false) {
-			follow1->setToggleState(true, sendNotification);
+		else if (follows[1]->getToggleState() == false) {
+			follows[1]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
 	else if (k == KeyPress::F3Key) {
-		if (follow2->getToggleState() == true) {
-			follow2->setToggleState(false, sendNotification);
+		if (follows[2]->getToggleState() == true) {
+			follows[2]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(2);
 			return true;
 		}
-		else if (follow2->getToggleState() == false) {
-			follow2->setToggleState(true, sendNotification);
+		else if (follows[2]->getToggleState() == false) {
+			follows[2]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
 	else if (k == KeyPress::F4Key) {
-		if (follow3->getToggleState() == true) {
-			follow3->setToggleState(false, sendNotification);
+		if (follows[3]->getToggleState() == true) {
+			follows[3]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(3);
 			return true;
 		}
-		else if (follow3->getToggleState() == false) {
-			follow3->setToggleState(true, sendNotification);
+		else if (follows[3]->getToggleState() == false) {
+			follows[3]->setToggleState(true, sendNotification);
 			return true;
 		}
 	}
@@ -845,6 +841,11 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
+	if (sliderThatWasMoved == stimuliNumberSlider)
+	{
+		stimuli = sliderThatWasMoved->getValue();
+		stimuliNumber->setText(String(stimuli));
+	}
 
 	printf("running save custom params\n");
 	tryToSave();
@@ -913,14 +914,14 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			(*valuesMap)["trackSpike"] = "0";
 		}
 	}
-	if (buttonThatWasClicked == del0)
-		del_0 = true;
-	if (buttonThatWasClicked == del1)
-		del_1 = true;
-	if (buttonThatWasClicked == del2)
-		del_2 = true;
-	if (buttonThatWasClicked == del3)
-		del_3 = true;
+	for (int i = 0; i < 4; i++) {
+		if (buttonThatWasClicked == dels[i]) {
+			deletes[i] = true;
+		}
+		//if (buttonThatWasClicked == tdels[i]) {
+			//t_deletes[i] = true;
+		//}
+	}
 	if (buttonThatWasClicked->getName() == "Setup") {
 
 		Viewport* view = new Viewport("viewTest");
@@ -993,6 +994,10 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		view->addAndMakeVisible(dataChannelComboBox);
 		view->addAndMakeVisible(dataChannelComboBoxLabel);
 
+		view->addAndMakeVisible(stimuliNumber);
+		view->addAndMakeVisible(stimuliNumberLabel);
+		view->addAndMakeVisible(stimuliNumberSlider);
+
 		colorStyleComboBox->setBounds(135, 10, 120, 24);
 		colorStyleComboBoxLabel->setBounds(10, 10, 120, 24);
 
@@ -1011,7 +1016,11 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		dataChannelComboBox->setBounds(135, 160, 120, 24);
 		dataChannelComboBoxLabel->setBounds(10, 160, 120, 24); // fine
 
-		view->setSize(300, 200);
+		stimuliNumberSlider->setBounds(114, 220, 72, 72);
+		stimuliNumber->setBounds(135, 190, 72, 24);
+		stimuliNumberLabel->setBounds(10, 190, 120, 24);
+
+		view->setSize(300, 300);
 
 		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
@@ -1126,19 +1135,19 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 			colour = Colours::red;
 		}
 	}
-	else if (follow0->getToggleState() == true) 
+	else if (follows[0]->getToggleState() == true) 
 	{
 		colour = Colours::lightsteelblue;
 	}
-	else if (follow1->getToggleState() == true) 
+	else if (follows[1]->getToggleState() == true) 
 	{
 		colour = Colours::lightskyblue;
 	}
-	else if (follow2->getToggleState() == true)
+	else if (follows[2]->getToggleState() == true)
 	{
 		colour = Colours::darkgreen;
 	}
-	else if (follow3->getToggleState() == true)
+	else if (follows[3]->getToggleState() == true)
 	{
 		colour = Colours::orange;
 	}
