@@ -186,13 +186,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
     
    //Refresh canvas (redraw)
     refresh();
-	//Used to calculate the number of times fired in 5 seconds
-	probabilityTimer++;
 
-	if (probabilityTimer == 250) {
-		resetFirings = true;
-		probabilityTimer = 0;
-	}
 }
 
 
@@ -228,7 +222,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (spikeLocations[q].isFull == true) {
 			updateSpikeInfo(q);
 			content.locations[q]->setText(String(spikeLocations[q].SLR));
-			content.fps[q]->setText(String(spikeLocations[q].firingNumber));
+			content.fps[q]->setText(String(spikeLocations[q].firingNumber/content.stimuli));
 			content.ts[0]->setText(String(spikeLocations[q].bigStim));
 		}
 		if (content.deletes[q] == true) {
@@ -323,7 +317,6 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 		}
 	}
-
 	
 }
 
@@ -337,7 +330,7 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold && resetFirings == false)
 			spikeLocations[i].firingNumber++;
 		if (resetFirings == true) {
-			spikeLocations[i].firingNumber = 0;
+			spikeLocations[0].firingNumber = 0; spikeLocations[1].firingNumber = 0; spikeLocations[2].firingNumber = 0; spikeLocations[3].firingNumber = 0;
 			resetFirings = false;
 		}
 		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);

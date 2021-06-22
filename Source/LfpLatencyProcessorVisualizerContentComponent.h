@@ -61,6 +61,7 @@ public:
     void tryToSave();
 
     std::tuple<float, float, float, float, Colour> getSearchBoxInfo() const;
+
 private:
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
@@ -100,6 +101,8 @@ private:
 
     int absPos;
 
+    int stimuli = 4;
+    
     float stimulusVoltage;
 
     float stimulusVoltageMax;
@@ -184,6 +187,10 @@ private:
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
+
+    ScopedPointer<Slider> stimuliNumberSlider;
+    ScopedPointer<TextEditor> stimuliNumber;
+    ScopedPointer<Label> stimuliNumberLabel;
 
     //DEBUG
 

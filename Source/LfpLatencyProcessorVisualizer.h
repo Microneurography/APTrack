@@ -102,7 +102,7 @@ private:
         int searchBoxLocation;
         int subsamples;
         int searchBoxWidth;
-        int firingNumber = 0;
+        float firingNumber = 0;
         bool isFull = false;
         float stimVol = 0;
         float bigStim = 0;
@@ -129,8 +129,6 @@ private:
     int windowSampleCount;
     
     spikeinfo spikeLocations[4];
-
-    int probabilityTimer = 0;
 
     bool resetFirings = false;
 

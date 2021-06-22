@@ -269,6 +269,18 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackThreshold_button_Label->setText("Track Threshold", sendNotification);
 	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 
+	stimuliNumberSlider = new Slider("stimuliNumberSlider");
+	stimuliNumberSlider->setRange(1, 10, 1);
+	stimuliNumberSlider->setSliderStyle(Slider::Rotary);
+	stimuliNumberSlider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
+	stimuliNumberSlider->addListener(this);
+	stimuliNumberSlider->setValue(stimuli);
+	stimuliNumber = new TextEditor("Number of Stimuli");
+	stimuliNumber->setText(String(stimuli));
+	stimuliNumberLabel = new Label("Stimuli_Number_Label");
+	stimuliNumberLabel->setText("Stimuli Number", sendNotification);
+
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	//SETUP BUTTON -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -493,6 +505,10 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	trackSpike_IncreaseRate_Text = nullptr;
 	trackSpike_DecreaseRate_Text = nullptr;
+
+	stimuliNumber = nullptr;
+	stimuliNumberLabel = nullptr;
+	stimuliNumberSlider = nullptr;
 
 	delete valuesMap;
 }
@@ -825,6 +841,11 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
 	}
+	if (sliderThatWasMoved == stimuliNumberSlider)
+	{
+		stimuli = sliderThatWasMoved->getValue();
+		stimuliNumber->setText(String(stimuli));
+	}
 
 	printf("running save custom params\n");
 	tryToSave();
@@ -973,6 +994,10 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		view->addAndMakeVisible(dataChannelComboBox);
 		view->addAndMakeVisible(dataChannelComboBoxLabel);
 
+		view->addAndMakeVisible(stimuliNumber);
+		view->addAndMakeVisible(stimuliNumberLabel);
+		view->addAndMakeVisible(stimuliNumberSlider);
+
 		colorStyleComboBox->setBounds(135, 10, 120, 24);
 		colorStyleComboBoxLabel->setBounds(10, 10, 120, 24);
 
@@ -991,7 +1016,11 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		dataChannelComboBox->setBounds(135, 160, 120, 24);
 		dataChannelComboBoxLabel->setBounds(10, 160, 120, 24); // fine
 
-		view->setSize(300, 200);
+		stimuliNumberSlider->setBounds(114, 220, 72, 72);
+		stimuliNumber->setBounds(135, 190, 72, 24);
+		stimuliNumberLabel->setBounds(10, 190, 120, 24);
+
+		view->setSize(300, 300);
 
 		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
