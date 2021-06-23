@@ -182,9 +182,10 @@ public:
 	float getParameterFloat(int parameterID);
 	//Result makingFile;
 
+    void addMessage(std::string message);
+
 private:
 
-    void addMessage(std::string message);
     friend class ppController;
 
 	//debug
