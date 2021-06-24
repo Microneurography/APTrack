@@ -124,7 +124,7 @@ Visualiser for the plugin:
 
 > Starting Sample: If exceeded by the by a sample, it will be stored as a new peak.
 
-> Image Threshold Values: These are the limits for the colour scale on the plot
+> Image Threshold Values: These are the limits for the colour scale on the plot, and the spike tracking algorithm.
 
 There are two additional drop down tabs: Setup and Options
 
@@ -151,7 +151,7 @@ The Threshold Values are used to detect spikes in the search box. If the spike m
 	<img src="./Resources/table.png" alt="table.png" title="Table">
 </p>
 
-The table above can be used to track multiple spikes. Any spikes found will be added to the table. They can be tracked and deleted from the table.
+The table above can be used to track multiple spikes/thresholds. Any found will be added to the table. They can be tracked and deleted from the table.
 
 #### Stimulus Voltage  
 
