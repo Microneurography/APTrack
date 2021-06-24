@@ -126,6 +126,8 @@ private:
     
     float lastWindowPeak;
 
+    Time clock;
+
     int windowSampleCount;
     
     spikeinfo spikeLocations[4];

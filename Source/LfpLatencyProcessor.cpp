@@ -111,6 +111,8 @@ void LfpLatencyProcessor::createEventChannels(){
         chan->setDescription("Messages from the pulsepal runner");
         chan->setIdentifier("pulsepal.event");
         eventChannelArray.add(chan);
+        //EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, 0, this, 0);
+        //spikeEvents->setName("tracking spikes init");
 }
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
