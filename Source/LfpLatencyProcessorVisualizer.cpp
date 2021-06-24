@@ -284,18 +284,6 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].isFull = true;
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
-				clock = Time::getCurrentTime();
-				auto time = clock.toString(false, true, true, false);
-				auto string_time = time.toStdString();
-				processor->addMessage(string_time + 
-					" SPIKE FOUND Location: " + 
-					to_string(spikeLocations[i].searchBoxLocation) + 
-					"StartingSample: " + 
-					to_string(spikeLocations[i].startingSample) + 
-					"Subsamples per Window: " + 
-					to_string(spikeLocations[i].subsamples) + 
-					"Search Box Width: " + 
-					to_string(spikeLocations[i].searchBoxWidth));
 				
 				if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
 				{
@@ -349,18 +337,6 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
-		clock = Time::getCurrentTime();
-		auto time = clock.toString(false, true, true, false);
-		auto string_time = time.toStdString();
-		processor->addMessage(string_time + 
-			" Spike " +
-			to_string(i) +
-			" Search Box Location Absolute: " +
-			to_string(spikeLocations[i].SBLA) +
-			" Search Box Location Width: " +
-			to_string(spikeLocations[i].SBWA) +
-			" Max Level: " +
-			to_string(spikeLocations[i].MAXLEVEL));
 	}
 	else {
 		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
