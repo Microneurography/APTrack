@@ -205,8 +205,7 @@ private:
     bool eventReceived;
     
     int currentSample;
-    
-    
+      
     int samplesPerSubsampleWindow;
 
     

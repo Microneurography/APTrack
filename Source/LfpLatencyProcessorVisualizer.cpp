@@ -284,7 +284,11 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].isFull = true;
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
-				processor->addMessage("SPIKE FOUND Location: " + 
+				clock = Time::getCurrentTime();
+				auto time = clock.toString(false, true, true, false);
+				auto string_time = time.toStdString();
+				processor->addMessage(string_time + 
+					" SPIKE FOUND Location: " + 
 					to_string(spikeLocations[i].searchBoxLocation) + 
 					"StartingSample: " + 
 					to_string(spikeLocations[i].startingSample) + 
@@ -345,7 +349,11 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
-		processor->addMessage("Spike " +
+		clock = Time::getCurrentTime();
+		auto time = clock.toString(false, true, true, false);
+		auto string_time = time.toStdString();
+		processor->addMessage(string_time + 
+			" Spike " +
 			to_string(i) +
 			" Search Box Location Absolute: " +
 			to_string(spikeLocations[i].SBLA) +
