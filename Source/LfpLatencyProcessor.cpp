@@ -101,7 +101,7 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
     return editor;
 }
 void LfpLatencyProcessor::addMessage(std::string message){
-    messages.push(message);
+//     messages.push(message);
 }
 
 // create event channel for pulsepal
@@ -229,11 +229,11 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
             }
         }
     }
-    while(!messages.empty()){
-        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(0), CoreServices::getGlobalTimestamp(), messages.front());
-		addEvent(getEventChannel(0), event, 0);
-        messages.pop();
-    }
+//     while(!messages.empty()){
+//         TextEventPtr event = TextEvent::createTextEvent(getEventChannel(0), CoreServices::getGlobalTimestamp(), messages.front());
+// 		addEvent(getEventChannel(0), event, 0);
+//         messages.pop();
+//     }
 }
 
 void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)
