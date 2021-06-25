@@ -8,7 +8,7 @@
 LfpLatencyRightMiddlePanel::LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisualizerContentComponent* content)
 {
     ROISpikeLatency = new LfpLatencyLabelTextEditor("ROI Spike Location");
-    ROISpikeValue = new LfpLatencyLabelTextEditor("ROI Spike Value");
+    ROISpikeMagnitude = new LfpLatencyLabelTextEditor("ROI Spike Value");
     triggerThreshold = new LfpLatencyLabelSlider("Trigger Threshold");
 
     triggerThreshold->setSliderRange(0.1, 150);
@@ -16,7 +16,7 @@ LfpLatencyRightMiddlePanel::LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisual
     triggerThreshold->setSliderValue(2.5);
 
     addAndMakeVisible(ROISpikeLatency);
-    addAndMakeVisible(ROISpikeValue);
+    addAndMakeVisible(ROISpikeMagnitude);
     addAndMakeVisible(triggerThreshold);
 }
 
@@ -29,7 +29,7 @@ void LfpLatencyRightMiddlePanel::resized()
     area.removeFromTop(itemVerticalSpace);
     ROISpikeLatency->setBounds(area.removeFromTop(itemHeight));
     area.removeFromTop(itemVerticalSpace);
-    ROISpikeValue->setBounds(area.removeFromTop(itemHeight));
+    ROISpikeMagnitude->setBounds(area.removeFromTop(itemHeight));
     area.removeFromTop(itemVerticalSpace);
 
     auto triggerThresholdHeight = 64;
@@ -41,9 +41,9 @@ void LfpLatencyRightMiddlePanel::setROISpikeLatencyText(const String& newText)
     ROISpikeLatency->setTextEditorText(newText + " ms");
 }
 
-void LfpLatencyRightMiddlePanel::setROISpikeValueText(const String& newText)
+void LfpLatencyRightMiddlePanel::setROISpikeMagnitudeText(const String& newText)
 {
-    ROISpikeValue->setTextEditorText(newText + " uV");
+    ROISpikeMagnitude->setTextEditorText(newText + " uV");
 }
 
 double LfpLatencyRightMiddlePanel::getTriggerThresholdValue() const

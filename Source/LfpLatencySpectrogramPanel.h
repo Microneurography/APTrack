@@ -22,6 +22,7 @@ public:
     double getSearchBoxValue() const;
     void changeSearchBoxValue(double deltaValue);
     void setSearchBoxWidthValue(double newValue);
+    void spikeIndicatorTrue(bool spikeFound);
     int getImageHeight() const;
     int getImageWidth() const;
 private:
@@ -30,6 +31,7 @@ private:
     ScopedPointer<LfpLatencyLabelLinearVerticalSliderNoTextBox> searchBox;
     ScopedPointer<LfpLatencyLabelSliderNoTextBox> searchBoxWidth;
     ScopedPointer<LfpLatencySearchBox> searchBoxRectangle;
+    ScopedPointer<Label> spikeIndicator;
 
     const LfpLatencyProcessorVisualizerContentComponent& content;
 };

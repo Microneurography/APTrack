@@ -12,6 +12,10 @@ LfpLatencySpectrogramPanel::LfpLatencySpectrogramPanel(LfpLatencyProcessorVisual
     searchBox = new LfpLatencyLabelLinearVerticalSliderNoTextBox("Search Box");
     searchBoxWidth = new LfpLatencyLabelSliderNoTextBox("Search Box Width");
     searchBoxRectangle = new LfpLatencySearchBox(*content, *spectrogram);
+    spikeIndicator = new Label("Spike Found");
+    
+    spikeIndicator->setText("Spike Tracked", sendNotification);
+    spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::grey);
 
     searchBox->setSliderRange(0, spectrogram->getImageHeight(), 1);
     searchBox->addSliderListener(content);
@@ -26,6 +30,7 @@ LfpLatencySpectrogramPanel::LfpLatencySpectrogramPanel(LfpLatencyProcessorVisual
     addAndMakeVisible(searchBox);
     addAndMakeVisible(searchBoxWidth);
     addAndMakeVisible(searchBoxRectangle);
+    addAndMakeVisible(spikeIndicator);
 }
 
 void LfpLatencySpectrogramPanel::resized()
@@ -50,6 +55,10 @@ void LfpLatencySpectrogramPanel::resized()
     searchBox->setBounds(searchBoxArea);
 
     spectrogram->setBounds(area);
+    
+    
+    
+    spikeIndicator->setBounds(searchBoxWidthArea.removeFromLeft(area.getWidth()));
 
     searchBoxRectangle->setBounds(area);
 }
@@ -82,6 +91,12 @@ void LfpLatencySpectrogramPanel::setSearchBoxWidthValue(double newValue)
 int LfpLatencySpectrogramPanel::getImageHeight() const
 {
     return spectrogram->getImageHeight();
+}
+
+void LfpLatencySpectrogramPanel::spikeIndicatorTrue(bool spikeFound) 
+{
+    if (spikeFound == true) spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::green);
+    else if (spikeFound == false) spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::grey);
 }
 
 int LfpLatencySpectrogramPanel::getImageWidth() const

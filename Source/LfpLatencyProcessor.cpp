@@ -86,7 +86,16 @@ void LfpLatencyProcessor::timerCallback(int timerID)
 
 LfpLatencyProcessor::~LfpLatencyProcessor()
 {
-    //TODO: destructor
+}
+
+void LfpLatencyProcessor::resetDataChannel()
+{
+    dataChannel_idx = 0;
+}
+
+void LfpLatencyProcessor::resetTriggerChannel()
+{
+    triggerChannel_idx = 0;
 }
 
 /**
@@ -416,10 +425,35 @@ float *LfpLatencyProcessor::getdataCache()
     //float* rowPtr = (dataCache+currentTrack*DATA_CACHE_SIZE_SAMPLES);
     return dataCache;
 }
+int LfpLatencyProcessor::getSamplesPerSubsampleWindow()
+{
+    return samplesPerSubsampleWindow;
+}
 
 void LfpLatencyProcessor::changeParameter(int parameterID, int value)
 {
-    if (parameterID == 1)
+    switch (parameterID)
+    {
+    case 1:
+        samplesPerSubsampleWindow = value;
+        break;
+    case 2:
+        samplesAfterStimulusStart = value;
+        break;
+    case 3:
+        // change current trigger chan
+        if (value >= 0 && value < 25) triggerChannel_idx = value;
+        break;
+    case 4:
+        // change current trigger chan
+        if (value >= 0 && value < 25) dataChannel_idx = value;
+        break;
+    case 5:
+        // change current strimulus detection threshold
+        if (value >= 0) stimulus_threshold = value;
+        break;
+    }
+    /*if (parameterID == 1)
     {
         samplesPerSubsampleWindow = value;
     }
@@ -450,7 +484,7 @@ void LfpLatencyProcessor::changeParameter(int parameterID, int value)
         {
             stimulus_threshold = value;
         }
-    }
+    }*/
 }
 
 int LfpLatencyProcessor::getParameterInt(int parameterID)
