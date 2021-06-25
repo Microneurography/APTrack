@@ -267,6 +267,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (maxLevel > content.detectionThreshold)
 		{
 			content.spikeDetected = true;
+			content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
 			
 
 			//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
@@ -303,6 +304,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		else
 		{
 			content.spikeDetected = false;
+			content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
 
 			// If we have enabled threshold tracking then update threshold:
 			if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)

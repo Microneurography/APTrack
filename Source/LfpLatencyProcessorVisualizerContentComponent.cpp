@@ -394,6 +394,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 		//tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
 		//tdels[i]->setToggleState(false, sendNotification);
 	}
+
+	
 	
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

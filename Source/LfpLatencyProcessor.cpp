@@ -86,7 +86,6 @@ void LfpLatencyProcessor::timerCallback(int timerID)
 
 LfpLatencyProcessor::~LfpLatencyProcessor()
 {
-    //TODO: destructor
 }
 
 /**
