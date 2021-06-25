@@ -38,16 +38,16 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer (LfpLatencyProcesso
     However that does not seem to be working (begin/endAnimation() are not called at all?) so its now called in the constructor
     */
     
-    windowSampleCount = 0;
-    lastWindowPeak = 0;
+    //windowSampleCount = 0;
+    //lastWindowPeak = 0;
     
-    tracksAmount = 60;
+    //tracksAmount = 60;
 
-    pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
+    //pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
     
-    imageLinePoint = 0;
+    //imageLinePoint = 0;
     
-    samplesAfterStimulus = 0;
+    //samplesAfterStimulus = 0;
     
     startCallbacks(); 
     
@@ -108,7 +108,6 @@ void LfpLatencyProcessorVisualizer::update()
 
 	for (int ii = 0; ii < numAvailiableChannels; ii++)
 	{
-		//TODO: better implementation first to through channel list and find type, then populate combobox
 		if (processor->getDataChannel(ii)->getChannelType() == DataChannel::HEADSTAGE_CHANNEL)
 		{
 			content.triggerChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
@@ -120,7 +119,7 @@ void LfpLatencyProcessorVisualizer::update()
 			content.dataChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
 		}
 	}
-	// If channel still availaible, keep selection, otherwise no don't select anything (TODO: and warn?)
+	// If channel still availaible, keep selection, otherwise no don't select anything
 	// Trigger chanel combobox
 	if (content.triggerChannelComboBox->getNumItems() <= last_triggerChannelId)
 	{
@@ -128,7 +127,8 @@ void LfpLatencyProcessorVisualizer::update()
 	}
 	else
 	{
-		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default trigger channel" method in processor instead of here?
+		content.triggerChannelComboBox->setSelectedId(0);
+		processor->resetTriggerChannel();
 	}
 	// data channel combobox
 	if (content.dataChannelComboBox->getNumItems() <= last_dataChannelID)
@@ -137,7 +137,8 @@ void LfpLatencyProcessorVisualizer::update()
 	}
 	else
 	{
-		content.triggerChannelComboBox->setSelectedId(0); // TODO: Set a "set default data channel" method in processor instead of here?
+		content.triggerChannelComboBox->setSelectedId(0);
+		processor->resetDataChannel();
 	}
 	
 }
@@ -244,6 +245,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			setConfig(q);
 			updateSpikeInfo(q);
 			content.spectrogramPanel->setSearchBoxValue(spikeLocations[q].SLR);
+			content.rightMiddlePanel->setROISpikeMagnitudeText(String(spikeLocations[q].MAXLEVEL, 1));
+			content.rightMiddlePanel->setROISpikeLatencyText(String(spikeLocations[q].SLA / 30.0f, 1));
 		}
 		if (content.thresholds[q]->getToggleState() == true) {
 			for (int n = 0; n < 4; n++)
@@ -257,8 +260,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 	}
 
 	//display values
-	content.rightMiddlePanel->setROISpikeValueText(String(maxLevel, 1));
-	content.rightMiddlePanel->setROISpikeLatencyText(String(SpikeLocationAbs / 30.0f, 1)); //Convert abs position in samples to ms 30kSamp/s=30Samp/ms TODO: get actual sample size from processor
+	//content.rightMiddlePanel->setROISpikeMagnitudeText(String(maxLevel, 1));
+	//content.rightMiddlePanel->setROISpikeLatencyText(String(SpikeLocationAbs / 30.0f, 1));
 
 	// If we have enabled spike tracking the track spike
 	if (content.trackSpike_button->getToggleState() == true) {

@@ -19,12 +19,12 @@ public:
     void setROISpikeLatencyText(const String& newText);
 
     /* Just pass in the value string, " uV" will be auto added. */
-    void setROISpikeValueText(const String& newText);
+    void setROISpikeMagnitudeText(const String& newText);
 
     double getTriggerThresholdValue() const;
 private:
     ScopedPointer<LfpLatencyLabelTextEditor> ROISpikeLatency;
-    ScopedPointer<LfpLatencyLabelTextEditor> ROISpikeValue; // or ROISpikeMagnitude in some code. TODO: make them consistent
+    ScopedPointer<LfpLatencyLabelTextEditor> ROISpikeMagnitude;
     ScopedPointer<LfpLatencyLabelSlider> triggerThreshold;
 };
 

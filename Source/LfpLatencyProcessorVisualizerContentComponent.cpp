@@ -466,7 +466,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(rightMiddlePanel);
 
 	rightMiddlePanel->setROISpikeLatencyText(String(searchBoxLocation));
-	rightMiddlePanel->setROISpikeValueText("NaN");
+	rightMiddlePanel->setROISpikeMagnitudeText("NaN");
 
     setSize (700, 900);
     
@@ -544,17 +544,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	auto spectrogramPanelWidth = getWidth() * 0.5;
 	spectrogramPanel->setBounds(area.removeFromLeft(spectrogramPanelWidth));
-
-	// TODO: these numbers were found in ppController.cpp. Need to change to dynamic;
-	auto ppControllerWidth = 305;
-	auto ppControllerHeight = 130;
-
-	auto panelHeight = (getHeight() - ppControllerHeight) * 0.5;
+	
+	auto panelHeight = (getHeight() - PPCONTROLLER_HEIGHT) * 0.5;
 
 	otherControlPanel->setBounds(area.removeFromTop(panelHeight));
 
-	auto middleArea = area.removeFromTop(ppControllerHeight);
-	ppControllerComponent->setBounds(middleArea.removeFromLeft(ppControllerWidth));
+	auto middleArea = area.removeFromTop(PPCONTROLLER_HEIGHT);
+	ppControllerComponent->setBounds(middleArea.removeFromLeft(PPCONTROLLER_WIDTH));
 	rightMiddlePanel->setBounds(middleArea);
 
 	spectrogramControlPanel->setBounds(area);
