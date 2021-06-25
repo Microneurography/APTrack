@@ -111,8 +111,11 @@ void LfpLatencyProcessor::createEventChannels(){
         chan->setDescription("Messages from the pulsepal runner");
         chan->setIdentifier("pulsepal.event");
         eventChannelArray.add(chan);
-        //EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, 0, this, 0);
-        //spikeEvents->setName("tracking spikes init");
+        EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, 0.0f, this, 0);
+        spikeEvents->setName("Spike Data");
+        spikeEvents->setDescription("Details of spikes found");
+        spikeEvents->setIdentifier("spike.event");
+        eventChannelArray.add(spikeEvents);
 }
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
@@ -232,8 +235,8 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
         }
     }
     while(!messages.empty()){
-        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(0), CoreServices::getGlobalTimestamp(), messages.front());
-		addEvent(getEventChannel(0), event, 0);
+        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(1), CoreServices::getGlobalTimestamp(), messages.front());
+		addEvent(getEventChannel(1), event, 0);
         messages.pop();
     }
 }
