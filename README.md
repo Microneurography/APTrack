@@ -163,6 +163,15 @@ The table above can be used to track multiple spikes/thresholds. Any found will 
 	<img src="./Resources/track_spike.png" alt="track_spike.png" title="Track Spike/Threshold">
 </p>
 
+<p align = 'center'>
+	<img src="./Resources/spike_found.png" alt="spike_found.png" title="Spike Found">
+</p>
+
+<p float = 'left'>
+	<img src="./Resources/spike_tracks.png" alt="spike_tracks.png" title="Spike Track">
+	<img src="./Resources/spike_track_window.png" alt="spike_track_window.png" title="Spike Track Window">
+</p>
+
 
 #### Stimulus Voltage  
 
@@ -190,7 +199,11 @@ The playlist file expected is a "csv" with the structure ([example](Resources/ex
 \* "Voltage" is ignored by the plugin, but kept for future development. 
 
 If a recording is active, each event in the playlist is sent to the `all.messages` file.
-![pulsepal controller running](Resources/pulsepalcontroller2.png)
+
+<p align="center">
+    <img src="./Resources/pulsepalcontroller2.png" alt="pulespalcontroller2.png" title="pulsepal 2">
+</p>
+
 When started the playlist will run until the playlist is complete, displaying the current step in the dialog box. It can also be stopped with the `[ ]` button. The playlist can be restarted by pressing the `>` again.
 
 The pulsepal will send:
