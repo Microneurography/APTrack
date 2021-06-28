@@ -790,6 +790,17 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
 		(*valuesMap)["detectionThreshold"] = String(detectionThreshold, 1);
         spectrogramControlPanel->setDetectionThresholdText(String(detectionThreshold, 1) + " uV");
 
+		if (highImageThreshold == lowImageThreshold) {
+			if (lowImageThreshold == 0) {
+				highImageThreshold++;
+				spectrogramControlPanel->setHighImageThresholdText(String(highImageThreshold, 1) + " uV");
+			}
+			else {
+				lowImageThreshold--;
+				spectrogramControlPanel->setLowImageThresholdText(String(lowImageThreshold, 1) + " uV");
+			}
+		}
+
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
     }
     if (sliderThatWasMoved->getName() == "Search Box")

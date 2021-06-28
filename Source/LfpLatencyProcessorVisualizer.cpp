@@ -223,7 +223,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (spikeLocations[q].isFull == true) {
 			updateSpikeInfo(q);
 			content.locations[q]->setText(String(spikeLocations[q].SLR));
-			content.fps[q]->setText(String(spikeLocations[q].firingNumber/content.stimuli));
+			content.fps[q]->setText(String(spikeLocations[q].firingNumbers[content.stimuli-1]/content.stimuli));
 			content.ts[0]->setText(String(spikeLocations[q].bigStim));
 		}
 		if (content.deletes[q] == true) {
@@ -288,6 +288,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].isFull = true;
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
+				spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
 				
 				if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
 				{
@@ -332,16 +333,14 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
 		spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
 		spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
-		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold && resetFirings == false)
+		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold) {
 			spikeLocations[i].firingNumber++;
-		if (resetFirings == true) {
-			spikeLocations[0].firingNumber = 0; spikeLocations[1].firingNumber = 0; spikeLocations[2].firingNumber = 0; spikeLocations[3].firingNumber = 0;
-			resetFirings = false;
 		}
 		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
 		spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+		if (spikeLocations[i].firingNumbers.size() != 11) spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
 	}
 	else {
 		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
