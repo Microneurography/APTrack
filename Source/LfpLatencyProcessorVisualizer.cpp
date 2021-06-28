@@ -223,8 +223,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (spikeLocations[q].isFull == true) {
 			updateSpikeInfo(q);
 			content.locations[q]->setText(String(spikeLocations[q].SLR));
-			content.fps[q]->setText(String(spikeLocations[q].firingNumbers[content.stimuli-1]/content.stimuli));
-			content.ts[0]->setText(String(spikeLocations[q].bigStim));
+			content.fps[q]->setText(String(spikeLocations[q].firingProbability));
+			content.ts[q]->setText(String(spikeLocations[q].bigStim));
 		}
 		if (content.deletes[q] == true) {
 			content.follows[q]->setToggleState(false, sendNotification);
@@ -340,7 +340,14 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
-		if (spikeLocations[i].firingNumbers.size() != 11) spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
+		if (spikeLocations[i].firingNumbers.size() != content.stimuli) {
+			spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
+		}
+		else if (spikeLocations[i].firingNumbers.size() == content.stimuli) {
+			spikeLocations[i].firingProbability = spikeLocations[i].firingNumbers[content.stimuli - 1] / content.stimuli;
+			spikeLocations[i].firingNumbers.clear();
+			spikeLocations[i].firingNumber = 0;
+		}
 	}
 	else {
 		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);

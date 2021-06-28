@@ -104,6 +104,7 @@ private:
         int searchBoxWidth;
         float firingNumber = 0;
         Array <float> firingNumbers;
+        float firingProbability = 0;
         bool isFull = false;
         float stimVol = 0;
         float bigStim = 0;
