@@ -175,7 +175,9 @@ By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage
 
 The pulsepal controller allows for loading 'playlists' for stimulus paradigms. 
 First load the paradigm by pressing the `F` button (this will only be enabled if the pulsepal was detected at startup). Once loaded the playlist can be started with the `>` button.
-![pulsepal controller](Resources/pulsepalcontroller.png)
+<p align="center">
+    <img src="./Resources/pulsepalcontroller.png" alt="pulespalcontroller.png" title="pulsepal">
+</p>
 
 The playlist file expected is a "csv" with the structure ([example](Resources/example_playlist.csv)) :
 
