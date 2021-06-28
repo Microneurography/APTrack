@@ -145,11 +145,14 @@ Setup:
 This is where the stimulus voltage and rates of spike tracking can be adjusted.
 
 #### Spike Tracking  
-The Threshold Values are used to detect spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box, with the search box turning green.
+The plugin supports the tracking of multiple neuronal spikes, which are recorded in the table.
 
 <p align="center">
 	<img src="./Resources/table.png" alt="table.png" title="Table">
 </p>
+
+#### To Track Spikes
+	1.  
 
 The table above can be used to track multiple spikes/thresholds. Any found will be added to the table. They can be tracked and deleted from the table.
 
