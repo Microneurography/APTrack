@@ -22,7 +22,15 @@ jobs:
           repository: open-ephys/plugin-GUI
           path: plugin-GUI
           ref: v0.5.2.2
+        
+      - name: Cache oe
+        id: cache-oe
+        uses: actions/cache@v2
+        with:
+          path: plugin-GUI/Build
+          key: ${{ runner.os }}-cache-oe
       - name: build oe
+        if: steps.cache-oe.outputs.cache-hit != 'true'
         working-directory: plugin-GUI
         run: | 
           mkdir -p Build
@@ -40,6 +48,10 @@ jobs:
         working-directory: OEPlugins/OE-plugin-latency-tracker/Build
         run : |
           ls -la
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oe-plugin-latency-tracker
+          path: OEPlugins/OE-plugin-latency-tracker/Build/OE-plugin-latency-tracker.bundle
       - name: Release
         uses: softprops/action-gh-release@v1
 #         if: startsWith(github.ref, 'refs/tags/')
