@@ -1,36 +1,50 @@
-name: Build plugin-gui macos
-on: workflow_dispatch
+name: Build LfpLatency on windows
+on: 
+  workflow_dispatch:
+    inputs:
+      release_name: 
+        description: The name of the release to attach the build artefacts
 
 jobs:
+
   build:
     name: Compile action
-    runs-on: macos-10.15
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build plugin-gui
-        run: |
-          cd .. 
-          git clone --depth 1 -b master https://github.com/open-ephys/plugin-GUI.git 
-          cd plugin-GUI/Build
+        with:
+          path: OEPlugins/OE-plugin-latency-tracker
+     
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: open-ephys/plugin-GUI
+          path: plugin-GUI
+          ref: v0.5.2.2
+          
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+        
+      - name: build oe
+        working-directory: plugin-GUI/Build
+        run: |  
           cmake -G "Xcode" ..
           xcodebuild -scheme ALL_BUILD build
-          cd ../../
-          mkdir ./OEPlugins
-          cp -R ./OE-plugin-latency-tracker/ ./OEPlugins/OE-plugin-latency-tracker/
-          cd ./OEPlugins/OE-plugin-latency-tracker/Build
+      - name: build plugin
+        working-directory: OEPlugins/OE-plugin-latency-tracker
+        run: |
+          mkdir -p Build
+          cd Build
           cmake -G "Xcode" ..
           xcodebuild -list -project OE_PLUGIN_OE-plugin-latency-tracker.xcodeproj/
           xcodebuild -scheme ALL_BUILD build
-      # - name: Archive compiled plugin-gui artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: plugin-GUI
-      #     path: |
-      #       /home/runner/work/OE-plugin-latency-tracker/plugin-GUI
-      # - name: Archive compiled plugin-gui/Build artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: Build
-      #     path: |
-      #       /home/runner/work/OE-plugin-latency-tracker/plugin-GUI/Build
+          
+      - name: Release
+        uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.event.inputs.release_name }}
+          files: 'OEPlugins/OE-plugin-latency-tracker/Build/Release/*'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
