@@ -23,15 +23,19 @@ jobs:
           path: plugin-GUI
           ref: v0.5.2.2
       - name: build oe
-        working-directory: plugin-GUI/Build
+        working-directory: plugin-GUI
         run: | 
-          cmake --build .. --config Release --target open-ephys -j 2
+          mkdir -p Build
+          cmake
+          cd Build
+          cmake --build . --config Release --target open-ephys -j 2
       - name: build plugin
         working-directory: OEPlugins/OE-plugin-latency-tracker
         run: |
           mkdir -p Build
+          cmake
           cd Build
-          cmake --build .. --config Release
+          cmake --build . --config Release
           
       - name: Release
         uses: softprops/action-gh-release@v1
