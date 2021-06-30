@@ -1,4 +1,4 @@
-name: Build LfpLatency on windows
+name: Build LfpLatency on osx
 on: 
   workflow_dispatch:
     inputs:
@@ -9,7 +9,7 @@ jobs:
 
   build:
     name: Compile action
-    runs-on: windows-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
