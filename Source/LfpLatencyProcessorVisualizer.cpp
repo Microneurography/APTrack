@@ -341,9 +341,10 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 				spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 			}
 		}
-		else if (spikeLocations[i].MAXLEVEL =< content.detectionThreshold && spikeLocations[i].thresholdFull == true) {
+		else if (spikeLocations[i].MAXLEVEL <= content.detectionThreshold && spikeLocations[i].thresholdFull == true) {
 			spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
-			spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);	
+			spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
+		}
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
 		if (spikeLocations[i].firingNumbers.size() != content.stimuli) {
