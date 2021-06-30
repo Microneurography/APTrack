@@ -26,15 +26,15 @@ jobs:
         working-directory: plugin-GUI
         run: | 
           mkdir -p Build
-          cmake .
           cd Build
+          cmake ..
           cmake --build . --config Release --target open-ephys -j 2
       - name: build plugin
         working-directory: OEPlugins/OE-plugin-latency-tracker
         run: |
           mkdir -p Build
-          cmake .
           cd Build
+          cmake ..
           cmake --build . --config Release
           
       - name: Release
