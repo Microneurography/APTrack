@@ -24,17 +24,14 @@ jobs:
           ref: v0.5.2.2
       - name: build oe
         working-directory: plugin-GUI/Build
-        run: |  
-          cmake -G "Xcode" ..
-          xcodebuild -scheme ALL_BUILD build
+        run: | 
+          cmake --build .. --config Release --target open-ephys -j 2
       - name: build plugin
         working-directory: OEPlugins/OE-plugin-latency-tracker
         run: |
           mkdir -p Build
           cd Build
-          cmake -G "Xcode" ..
-          xcodebuild -list -project OE_PLUGIN_OE-plugin-latency-tracker.xcodeproj/
-          xcodebuild -scheme ALL_BUILD build
+          cmake --build .. --config Release
           
       - name: Release
         uses: softprops/action-gh-release@v1
