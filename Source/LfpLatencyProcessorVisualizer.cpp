@@ -270,7 +270,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (maxLevel > content.detectionThreshold)
 		{
 			content.spikeDetected = true;
-			content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
+			//content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
 			
 
 			//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
@@ -278,7 +278,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				content.newSpikeDetected = false;
 			}
 			else {
-				content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
+				//content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
 				content.newSpikeDetected = true;
 				cout << "Spike Found" << endl;
 				spikeLocations[i].startingSample = content.startingSample;
@@ -336,10 +336,12 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
 		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold) {
 			spikeLocations[i].firingNumber++;
-			spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
-			spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+			if (spikeLocations[i].thresholdFull == true) {
+				spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+				spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+			}
 		}
-		else if (spikeLocations[i].MAXLEVEL =< content.detectionThreshold) {
+		else if (spikeLocations[i].MAXLEVEL =< content.detectionThreshold && spikeLocations[i].thresholdFull == true) {
 			spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
 			spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);	
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
@@ -353,7 +355,7 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 			spikeLocations[i].firingNumber = 0;
 		}
 	}
-	else if (spikeLocations[i].thresholdFull) {
+	else if (spikeLocations[i].thresholdFull == true) {
 		spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
 		spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 	}
