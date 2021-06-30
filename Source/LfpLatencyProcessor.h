@@ -181,6 +181,9 @@ public:
     
     int fifoIndex;
 
+    int currentTrack;
+    int currentSample;
+
 	//debug
 	float getParameterFloat(int parameterID);
 	//Result makingFile;
@@ -207,12 +210,12 @@ private:
     
     bool eventReceived;
     
-    int currentSample;
+    //int currentSample;
       
     int samplesPerSubsampleWindow;
 
     
-    int currentTrack;
+    //int currentTrack;
     
     int peakThreshold;
 
