@@ -278,6 +278,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				content.newSpikeDetected = false;
 			}
 			else {
+				content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
 				content.newSpikeDetected = true;
 				cout << "Spike Found" << endl;
 				spikeLocations[i].startingSample = content.startingSample;
@@ -335,9 +336,12 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
 		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold) {
 			spikeLocations[i].firingNumber++;
+			spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+			spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 		}
-		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
-		spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+		else if (spikeLocations[i].MAXLEVEL =< content.detectionThreshold) {
+			spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
+			spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);	
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
 		if (spikeLocations[i].firingNumbers.size() != content.stimuli) {
@@ -349,7 +353,7 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 			spikeLocations[i].firingNumber = 0;
 		}
 	}
-	else if (spikeLocations[i].MAXLEVEL < content.detectionThreshold) {
+	else {
 		spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
 		spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 	}

@@ -186,16 +186,16 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	ppControllerComponent->setProcessor(processor);
 
 	// Not added here because they appear in the setup box.
-	stimulusVoltageSlider = new Slider("stimulusVoltage");
-	stimulusVoltageSlider->setRange(0.0f, 10.0f, 0);
-	stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
-	stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
-	stimulusVoltageSlider->addListener(this);
-	stimulusVoltageSlider->setLookAndFeel(new CustomLookAndFeel);
-	stimulusVoltageSlider->setColour(Slider::ColourIds::thumbColourId, Colours::darkgrey);
-	stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label");
-	stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
-	stimulusVoltageSliderLabel->setColour(Label::ColourIds::textColourId, Colours::white);
+	//stimulusVoltageSlider = new Slider("stimulusVoltage");
+	//stimulusVoltageSlider->setRange(0.0f, 10.0f, 0);
+	//stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
+	//stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
+	//stimulusVoltageSlider->addListener(this);
+	//stimulusVoltageSlider->setLookAndFeel(new CustomLookAndFeel);
+	//stimulusVoltageSlider->setColour(Slider::ColourIds::thumbColourId, Colours::darkgrey);
+	//stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label");
+	//stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
+	//stimulusVoltageSliderLabel->setColour(Label::ColourIds::textColourId, Colours::white);
 
 	stimulusVoltageMin_text = new TextEditor("Stimulus Min");
 	stimulusVoltageMin_text->setText(String(stimulusVoltageMin) + " V");
