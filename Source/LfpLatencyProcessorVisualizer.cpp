@@ -314,7 +314,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
 			{
 				//No spike, increase stimulation
-				spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+				spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_IncreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
 				spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 				spikeLocations[i].thresholdFull = true;
 				//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
@@ -349,8 +349,8 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 			spikeLocations[i].firingNumber = 0;
 		}
 	}
-	else {
-		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+	else if (spikeLocations[i].MAXLEVEL < content.detectionThreshold) {
+		spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_IncreaseRate);
 		spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 	}
 
