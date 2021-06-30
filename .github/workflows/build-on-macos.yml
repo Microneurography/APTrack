@@ -22,10 +22,6 @@ jobs:
           repository: open-ephys/plugin-GUI
           path: plugin-GUI
           ref: v0.5.2.2
-          
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
-        
       - name: build oe
         working-directory: plugin-GUI/Build
         run: |  
