@@ -288,6 +288,10 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				auto time = clock.toString(false, true, true, false);
 				auto string_time = time.toStdString();
 				processor->addMessage(string_time + 
+					" Current Sample Number: " + 
+					to_string(processor->currentSample) + 
+					" Current Track Number: " + 
+					to_string(processor->currentTrack) + 
 					" SPIKE FOUND Location: " + 
 					to_string(spikeLocations[i].searchBoxLocation) + 
 					"StartingSample: " + 
