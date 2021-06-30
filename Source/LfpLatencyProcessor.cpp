@@ -118,6 +118,10 @@ void LfpLatencyProcessor::createEventChannels(){
         eventChannelArray.add(spikeEvents);
 }
 
+//void LfpLatencyProcessor::createSpikeChannels(){
+    //SpikeChannel* spikes = new SpikeChannel()
+//}
+
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
 {
     GenericProcessor::setParameter(parameterIndex, newValue);

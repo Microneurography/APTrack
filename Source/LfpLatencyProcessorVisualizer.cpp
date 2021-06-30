@@ -223,7 +223,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			updateSpikeInfo(q);
 			content.locations[q]->setText(String(spikeLocations[q].SLR));
 			content.fps[q]->setText(String(spikeLocations[q].firingNumber/content.stimuli));
-			content.ts[0]->setText(String(spikeLocations[q].bigStim));
+			content.ts[q]->setText(String(spikeLocations[q].bigStim));
 		}
 		if (content.deletes[q] == true) {
 			content.follows[q]->setToggleState(false, sendNotification);

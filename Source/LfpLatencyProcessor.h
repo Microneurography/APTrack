@@ -129,6 +129,9 @@ public:
         structure shouldn't be manipulated outside of this method.
     */
     //void updateSettings();
+
+    // Channel used for the recording of spike data
+    //virtual void createSpikeChannels() override;
     
     
      /** Method to allow the visualizer to check eventDetection flag*/ 
