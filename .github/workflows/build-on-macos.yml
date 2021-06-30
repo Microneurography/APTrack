@@ -41,10 +41,11 @@ jobs:
         run : |
           ls -la
       - name: Release
+        working-directory: OEPlugins/OE-plugin-latency-tracker/Build
         uses: softprops/action-gh-release@v1
 #         if: startsWith(github.ref, 'refs/tags/')
         with:
           tag_name: ${{ github.event.inputs.release_name }}
-          files: 'OEPlugins/OE-plugin-latency-tracker/Build/*.bundle'
+          files: '*.bundle'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
