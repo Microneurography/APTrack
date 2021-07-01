@@ -31,7 +31,7 @@ LfpLatencyProcessorEditor::LfpLatencyProcessorEditor (GenericProcessor* parentNo
     : VisualizerEditor (parentNode, useDefaultParameterEditors)
 {
     tabText = "LfpLatency";
-    
+
     // why not use processor = static_cast<LfpLatencyProcessor*>(parentNode);?
     processor = (LfpLatencyProcessor*) this->getProcessor();
 

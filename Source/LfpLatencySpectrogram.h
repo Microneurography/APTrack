@@ -13,18 +13,13 @@ class LfpLatencySpectrogram : public Component
 {
 public:
     LfpLatencySpectrogram(int imageWidth = SPECTROGRAM_WIDTH, int imageHeight = SPECTROGRAM_HEIGHT);
-    ~LfpLatencySpectrogram();
-
     void paint(Graphics& g) override;
-    void resized() override;
 
-    // TODO: might change to override getHeight/getWidth
-    int getImageHeight();
-    int getImageWidth();
-    const Image &getImage();
+    int getImageHeight() const;
+    int getImageWidth() const;
+    const Image &getImage() const;
 
     void update(LfpLatencyProcessor& processor, const LfpLatencyProcessorVisualizerContentComponent& content);
-
 private:
     Image image;
 

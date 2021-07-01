@@ -21,12 +21,6 @@
 
 */
 
-/*
- TODO: Spike detected indicator in GUI
- TODO: Spike threshold in GUI
- TODO:  ..
- */
-
 #ifndef LFPLATENCYPROCESSOR_H_INCLUDED
 #define LFPLATENCYPROCESSOR_H_INCLUDED
 
@@ -39,18 +33,25 @@
 
 #include <Windows.h>
 #endif
-
+#include <string>
 #include <ProcessorHeaders.h>
 #include <functional>
+#include <map>
+#include <unordered_map>
+#include <queue>
 
 //fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
 
 //Width in pixels of spectrogram image
 //300 pixels = 300 tracks approx 5 min
-#define SPECTROGRAM_WIDTH 600
+#define SPECTROGRAM_WIDTH 300
 
-#define SPECTROGRAM_HEIGHT 600
+#define SPECTROGRAM_HEIGHT 300
+
+#define PPCONTROLLER_WIDTH 305
+
+#define PPCONTROLLER_HEIGHT 130
 
 #define EVENT_DETECTION_THRESHOLD 1500
 
@@ -61,6 +62,7 @@
 //for debug
 #define SEARCH_BOX_WIDTH 3
 
+class ppController;
 /**
     This class serves as a template for creating new processors.
 
@@ -102,12 +104,21 @@ public:
         are modified only through this method while data acquisition is active. */
     void setParameter (int parameterIndex, float newValue) override;
 
+	/** This method is a critical section, protected a mutex lock. Allows you to save slider values, and maybe
+	some data if you wanted in a file called LastLfpLatencyPluginComponents */
+	static void saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap);
+
+	/** Starts by asking the user if they would like to load data from LastLfpLatencyPluginComponents, 
+	the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
+	static void loadRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap);
+
     /** Saving custom settings to XML. */
     virtual void saveCustomParametersToXml (XmlElement* parentElement) override;
 
     /** Load custom settings from XML*/
     virtual void loadCustomParametersFromXml() override;
 
+    virtual void createEventChannels() override;
     /** Optional method called every time the signal chain is refreshed or changed in any way.
 
         Allows the processor to handle variations in the channel configuration or any other parameter
@@ -136,6 +147,12 @@ public:
      - Returns: pointer to raw circular array
      */
     float* getdataCache();
+
+    //Sets data channel back to default
+    void resetDataChannel();
+
+    //Sets trigger channle to default
+    void resetTriggerChannel();
     
     /**
      Returns pointer stored latency track data, one track at a time
@@ -151,6 +168,8 @@ public:
     void changeParameter(int parameterID, int value);
 
 	int getParameterInt(int parameterID);
+
+    int getSamplesPerSubsampleWindow();
     
     void pushLatencyData(int latency);
     
@@ -167,9 +186,12 @@ public:
 
 	//debug
 	float getParameterFloat(int parameterID);
-
+	//Result makingFile;
 
 private:
+
+    void addMessage(std::string message);
+    friend class ppController;
 
 	//debug
 	float lastReceivedDACPulse;
@@ -200,6 +222,8 @@ private:
     int samplesAfterStimulusStart;
 
 	float stimulus_threshold;
+    
+    std::queue<String> messages;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessor);

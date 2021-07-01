@@ -6,53 +6,76 @@
 LfpLatencySpectrogram::LfpLatencySpectrogram(int imageWidth, int imageHeight)
 : image(Image::RGB, imageWidth, imageHeight, true)
 {
-    std::cout << "Pre" << std::endl;
-    std::cout << "Med" << std::endl;
-
     //Paint image
     paintAll(Colours::yellowgreen);
-
-    std::cout << "Post" << std::endl;
-}
-
-LfpLatencySpectrogram::~LfpLatencySpectrogram()
-{
-
 }
 
 void LfpLatencySpectrogram::paint(Graphics& g)
 {
-
+    auto area = getLocalBounds();
+    g.drawImageWithin(image, 
+        area.getX(), area.getY(), 
+        area.getWidth(), area.getHeight(), 
+        RectanglePlacement(RectanglePlacement::stretchToFit));
 }
 
-void LfpLatencySpectrogram::resized()
-{
-
-}
-
-int LfpLatencySpectrogram::getImageHeight()
+int LfpLatencySpectrogram::getImageHeight() const
 {
     return image.getHeight();
 }
 
-int LfpLatencySpectrogram::getImageWidth()
+int LfpLatencySpectrogram::getImageWidth() const
 {
     return image.getWidth();
 }
 
+// The comments here are ideas on how you could save the spectogram
+// I haven't made any comments in LfpLatencySpectogram.h, so if you do decide to implement it,
+// you will have to create all the variables yourself and handle delteing/deconstructing them.
+// You will also need to write LfpLatencySpectrogram::loadImage (It's commented below this function)
+// and make some changes in LfpLatencyProcessor::loadRecoveryData, I have added comments there for you.
+// I hope this is actually helpful, and I hope you have a nice day!
 void LfpLatencySpectrogram::paintAll(Colour colour)
 {
+	// dataXmlValue = new XmlElement("Data"); 
+	// int savingIndex = 0;
     for (auto ii = 0; ii < getImageWidth(); ii++)
     {
         for (auto jj = 0; jj < getImageHeight(); jj++)
         {
             image.setPixelAt(ii, jj, colour);
+			//  dataXmlValue->setAttribute(savingIndex, colour); // I think you might need to convert savingIndex and Colour to a String, but you also may not
+			// savingIndex++;
         }
     }
+	// LfpLatencyProcessor::saveRecoveryData(dataXmlValue);
     std::cout << "finished paint" << std::endl;
+	// Alternatively, there is Image::BitmapData 
+	// a class that allows you to easily retrieve a section 
+	// of an image as raw pixel data so it can be read from/written to
+	// However, there are warnings in the docs that it should only be used if you know what you're doing
+	// And I rarely do.
 }
 
-const Image& LfpLatencySpectrogram::getImage()
+// theorised function the index way
+/* 
+const Image& LfpLatencySpectrogram::loadImage(std::vector newParametersAsVector) // I don't actually know if this is how you pass a vector
+{
+	// int loadingIndex = 0;
+	for (auto ii = 0; ii < getImageWidth(); ii++)
+	{
+		for (auto jj = 0; jj < getImageHeight(); jj++)
+		{
+			image.setPixelAt(ii, jj, colour);
+			//  xmlElementName->setAttribute(ii, jj, newParametersAsVector[loadingIndex]); 
+			// loadingIndex++;
+		}
+	}
+	std::cout << "finished loading paint" << std::endl;
+}
+*/
+
+const Image& LfpLatencySpectrogram::getImage() const
 {
     return image;
 }

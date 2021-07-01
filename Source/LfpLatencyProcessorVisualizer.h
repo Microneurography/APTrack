@@ -24,8 +24,6 @@
 #define LFPLATENCYPROCESSORVISUALIZER_H_INCLUDED
 
 #include <VisualizerEditorHeaders.h>
-#include <AllLookAndFeels.h>
-
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
 
@@ -76,17 +74,12 @@ public:
     /** Process new track*/
     void processTrack();
 
-    /**Test Multi Spike Tracking*/
-    void spikeTest();
-
     /*Update spike info structs*/
     void updateSpikeInfo(int i);
 
     /*Set settings to right level to find spike*/
     void setConfig(int i);
 
-    /*Update info in the table*/
-    void updateTable();
 
 
     /** Fill in rightmost edge of spectrogram with up to date data*/
@@ -109,18 +102,23 @@ private:
         int searchBoxLocation;
         int subsamples;
         int searchBoxWidth;
+        float firingNumber = 0;
+        Array <float> firingNumbers;
+        float firingProbability = 0;
         bool isFull = false;
+        float stimVol = 0;
+        float bigStim = 0;
+        bool thresholdFull = false;
     };
     
     float level;
 
-    int pixelsPerTrack;
+    //int pixelsPerTrack;
 
-    int tracksAmount;
+    //int tracksAmount;
+    //int imageLinePoint;
 
-    int imageLinePoint;
-
-    int samplesAfterStimulus;
+    //int samplesAfterStimulus;
 
     int missCounter;
 
@@ -134,16 +132,20 @@ private:
     
     spikeinfo spikeLocations[4];
 
-    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
+    int lastSearchBoxLocation;
+
+    Array <int> availableSpace = { 0, 1, 2, 3 };
+
+    Array <int> availableThresholdSpace = { 0, 1, 2, 3 };
     
-    int i = 0;
+    int q = 0;
     
-    int draw_imageHeight;
-    int draw_rightHandEdge;
+    //int draw_imageHeight;
+    //int draw_rightHandEdge;
 
     //Pointer to processor
     LfpLatencyProcessor* processor;
-
+    
     friend class LfpLatencyProcessorVisualizerContentComponent;
     friend class TableContent;
 

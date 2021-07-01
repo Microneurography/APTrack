@@ -22,15 +22,24 @@
 */
 
 #include <stdio.h>
-
+#include <string>
+#include <mutex>
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorEditor.h"
+#include "LfpLatencySpectrogramControlPanel.h"
+//#include "/modules/juce_core/files/juce_File.h"
+//#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
+#include <map>
+#include "semaphore.hpp"
 
 //If the processor uses a custom editor, it needs its header to instantiate it
 //#include "ExampleEditor.h"
 
+std::mutex savingAndLoadingLock;
+
+
 LfpLatencyProcessor::LfpLatencyProcessor()
-    : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0)
+    : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages()
 
 {
     setProcessorType(PROCESSOR_TYPE_SINK);
@@ -77,7 +86,16 @@ void LfpLatencyProcessor::timerCallback(int timerID)
 
 LfpLatencyProcessor::~LfpLatencyProcessor()
 {
-    //TODO: destructor
+}
+
+void LfpLatencyProcessor::resetDataChannel()
+{
+    dataChannel_idx = 0;
+}
+
+void LfpLatencyProcessor::resetTriggerChannel()
+{
+    triggerChannel_idx = 0;
 }
 
 /**
@@ -90,6 +108,18 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
     //std::cout << "Creating editor." << std::endl;
 
     return editor;
+}
+void LfpLatencyProcessor::addMessage(std::string message){
+//     messages.push(message);
+}
+
+// create event channel for pulsepal
+void LfpLatencyProcessor::createEventChannels(){
+        EventChannel* chan = new EventChannel(EventChannel::TEXT, 1, 1000,0.0f, this,0);
+        chan->setName(getName() + " PulsePal Messages");
+        chan->setDescription("Messages from the pulsepal runner");
+        chan->setIdentifier("pulsepal.event");
+        eventChannelArray.add(chan);
 }
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
@@ -208,11 +238,101 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
             }
         }
     }
+//     while(!messages.empty()){
+//         TextEventPtr event = TextEvent::createTextEvent(getEventChannel(0), CoreServices::getGlobalTimestamp(), messages.front());
+// 		addEvent(getEventChannel(0), event, 0);
+//         messages.pop();
+//     }
+}
+
+void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)
+{
+	savingAndLoadingLock.lock();
+	std::cout << "Trying to save " << std::endl;
+    File recoveryConfigFile = CoreServices::getSavedStateDirectory().getChildFile("LastLfpLatencyPluginComponents.cfg");
+    std::string cfgText = "";
+
+    std::unordered_map<std::string, juce::String>::iterator it = valuesMap->begin();
+    while (it != valuesMap->end())
+    {
+        cfgText += it->first + "[" + it->second.toStdString() + "]\n";
+        it++;
+    }
+
+    FileOutputStream output (recoveryConfigFile);
+
+    if (!output.openedOk()) {
+        std::cout << "recoveryConfigFile didnt open corectly" << std::endl;
+    }
+    else
+    {
+        output.setPosition(0);
+        output.truncate();
+        output.setNewLineString("\n");
+        output.writeText(cfgText,false,false);
+        output.flush();
+
+        if (output.getStatus().failed())
+        {
+            std::cout << "Error with FileOutoutStream and recoveryConfigFile" << std::endl;
+        }
+    }
+
+    savingAndLoadingLock.unlock();
+}
+
+void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)
+{
+    bool load = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Load LfpLatency Configurations?", "Would you like to load previous Lfp Latency Configurations?", "Yes", "No");
+
+    if (!load)
+    {
+        return;
+    }
+
+    savingAndLoadingLock.lock();
+    std::cout << "Trying to load " << std::endl;
+    File recoveryConfigFile = CoreServices::getSavedStateDirectory().getChildFile("LastLfpLatencyPluginComponents.cfg");
+
+    if (recoveryConfigFile.existsAsFile())
+    {
+        FileInputStream input (recoveryConfigFile);
+
+        if (!input.openedOk())
+        {
+            std::cout << "LastLfpLatencyPluginComponents failed to open" << std::endl;
+        }
+        else
+        {
+            while (!input.isExhausted())
+            {
+                juce::String line = input.readNextLine();
+
+                int firstBracket = line.indexOf("[");
+                int secondBracket = line.indexOf("]");
+
+                if (!(firstBracket <= 0 || secondBracket <= 0 || firstBracket > secondBracket))
+                {
+                    std::string itemName = line.substring(0, firstBracket).toStdString();
+                    juce::String value = line.substring(firstBracket+1, secondBracket);
+
+                    (*valuesMap)[itemName] = value;
+                }
+                
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Failed to find LastLfpLatencyPluginComponents" << std::endl;
+    }
+
+    savingAndLoadingLock.unlock();
 }
 
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
-    XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
+	XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
     mainNode->setAttribute("numParameters", getNumParameters());
 
     for (int i = 0; i < getNumParameters(); ++i)
@@ -305,10 +425,35 @@ float *LfpLatencyProcessor::getdataCache()
     //float* rowPtr = (dataCache+currentTrack*DATA_CACHE_SIZE_SAMPLES);
     return dataCache;
 }
+int LfpLatencyProcessor::getSamplesPerSubsampleWindow()
+{
+    return samplesPerSubsampleWindow;
+}
 
 void LfpLatencyProcessor::changeParameter(int parameterID, int value)
 {
-    if (parameterID == 1)
+    switch (parameterID)
+    {
+    case 1:
+        samplesPerSubsampleWindow = value;
+        break;
+    case 2:
+        samplesAfterStimulusStart = value;
+        break;
+    case 3:
+        // change current trigger chan
+        if (value >= 0 && value < 25) triggerChannel_idx = value;
+        break;
+    case 4:
+        // change current trigger chan
+        if (value >= 0 && value < 25) dataChannel_idx = value;
+        break;
+    case 5:
+        // change current strimulus detection threshold
+        if (value >= 0) stimulus_threshold = value;
+        break;
+    }
+    /*if (parameterID == 1)
     {
         samplesPerSubsampleWindow = value;
     }
@@ -339,7 +484,7 @@ void LfpLatencyProcessor::changeParameter(int parameterID, int value)
         {
             stimulus_threshold = value;
         }
-    }
+    }*/
 }
 
 int LfpLatencyProcessor::getParameterInt(int parameterID)
