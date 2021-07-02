@@ -1057,7 +1057,7 @@ int TableContent::getNumRows() {
 }
 
 TableContent::TableContent() {
-		
+
 }
 
 TableContent::~TableContent() {
@@ -1115,44 +1115,28 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 		//}
 		return selectionBox;
 	}
-	if (columnId == 2) {
+	if (columnId == 2 || columnId == 3 || columnId == 4) {
 		auto* textLabel_0 = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
 
 		if (textLabel_0 == nullptr)
-			textLabel_0 = new UpdatingTextColumnComponent(*this, rowNumber);
+			textLabel_0 = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 
+		
 		textLabel_0->setRowAndColumn(rowNumber, columnId);
-		textLabel_0->setText(String(info[rowNumber].firingProb));
+		if (spikeFound == true) textLabel_0->updateText();
 
 		return textLabel_0;
 
 	}
-	if (columnId == 3) {
-		auto* textLabel_1 = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
-
-		if (textLabel_1 == nullptr)
-			textLabel_1 = new UpdatingTextColumnComponent(*this, rowNumber);
-
-		textLabel_1->setRowAndColumn(rowNumber, columnId);
-		textLabel_1->setText(String(info[rowNumber].firingProb));
-		textLabel_1->addListener(this);
-
-		return textLabel_1;
-	}
-	if (columnId == 4) {
-		auto* textLabel_2 = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
-
-		if (textLabel_2 == nullptr)
-			textLabel_2 = new UpdatingTextColumnComponent(*this, rowNumber);
-
-		textLabel_2->setRowAndColumn(rowNumber, columnId);
-		textLabel_2->setText(String(info[rowNumber].threshold));
-
-		return textLabel_2;
-	}
 	jassert(exsistingComponetToUpdate == nullptr);
 	return nullptr;
 
+}
+
+void TableContent::updateInfo(int location, float fp, float threshold, int i) {
+	info[i].location = location;
+	info[i].firingProb = fp;
+	info[i].threshold = threshold;
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
