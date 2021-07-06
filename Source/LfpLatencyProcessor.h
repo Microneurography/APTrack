@@ -121,6 +121,9 @@ public:
     virtual void loadCustomParametersFromXml() override;
 
     virtual void createEventChannels() override;
+
+    //virtual void createSpikeChannels() override;
+
     /** Optional method called every time the signal chain is refreshed or changed in any way.
 
         Allows the processor to handle variations in the channel configuration or any other parameter
@@ -188,7 +191,11 @@ public:
 	float getParameterFloat(int parameterID);
 	//Result makingFile;
 
+    
+    //Functions used to save data
     void addMessage(std::string message);
+
+    void addSpike(std::string spike);
 
 private:
 
@@ -224,6 +231,7 @@ private:
 	float stimulus_threshold;
     
     std::queue<String> messages;
+    std::queue<String> spikes;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessor);

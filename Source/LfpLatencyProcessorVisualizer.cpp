@@ -233,6 +233,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.fps[q]->setText("0");
 			content.dels[q]->setToggleState(false, sendNotification);
 			std::cout << "Spike " << q << " Deleted" << endl;
+			processor->addSpike("SPIKE " + to_string(q) + " DELETED");
 			content.deletes[q] = false;
 		}
 		if (content.follows[q]->getToggleState() == true) {
@@ -287,18 +288,18 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				clock = Time::getCurrentTime();
 				auto time = clock.toString(false, true, true, false);
 				auto string_time = time.toStdString();
-				processor->addMessage(string_time + 
+				processor->addSpike(string_time + 
 					" Current Sample Number: " + 
 					to_string(processor->currentSample) + 
 					" Current Track Number: " + 
 					to_string(processor->currentTrack) + 
 					" SPIKE FOUND Location: " + 
 					to_string(spikeLocations[i].searchBoxLocation) + 
-					"StartingSample: " + 
+					" StartingSample: " + 
 					to_string(spikeLocations[i].startingSample) + 
-					"Subsamples per Window: " + 
+					" Subsamples per Window: " + 
 					to_string(spikeLocations[i].subsamples) + 
-					"Search Box Width: " + 
+					" Search Box Width: " + 
 					to_string(spikeLocations[i].searchBoxWidth));
 				
 				if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
@@ -356,7 +357,7 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		clock = Time::getCurrentTime();
 		auto time = clock.toString(false, true, true, false);
 		auto string_time = time.toStdString();
-		processor->addMessage(string_time + 
+		processor->addSpike(string_time + 
 			" Spike " +
 			to_string(i) +
 			" Search Box Location Absolute: " +
