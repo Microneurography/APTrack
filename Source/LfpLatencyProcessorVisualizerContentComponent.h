@@ -23,13 +23,13 @@ public:
     int getNumRows();
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
-    virtual Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
+    virtual Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) override;
     void updateInfo(int location, float fp, float threshold, int i);
 
     struct tableData {
-        int location = 0;
-        float firingProb = 0.0f;
-        float threshold = 0.0f;
+        int location;
+        float firingProb;
+        float threshold;
     };
 
     tableData info[4];
@@ -70,22 +70,7 @@ public:
     public:
         UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber) : owner(tcon)
         {
-            switch (columnNumber)
-            {
-            case 2:
-                addAndMakeVisible(locations[rowNumber] = new TextEditor("Location"));
-                locations[rowNumber]->setText(String(owner.info[rowNumber].location));
-                locations[rowNumber]->setReadOnly(true);
-                break;
-            case 3:
-                addAndMakeVisible(fps[rowNumber] = new TextEditor("Firing Probability"));
-                fps[rowNumber]->setText(String(owner.info[rowNumber].firingProb));
-                break;
-            case 4:
-                addAndMakeVisible(thresholds[rowNumber] = new TextEditor("Threshold"));
-                thresholds[rowNumber]->setText(String(owner.info[rowNumber].threshold));
-                break;
-            }
+            addAndMakeVisible(value = new TextEditor());
         }
         void setRowAndColumn(int newRow, int newColumn)
         {
@@ -93,21 +78,19 @@ public:
             columnId = newColumn;
 
         }
-        void updateText()
+        /*void updateText()
         {
             for (int a = 0; a < 4; a++) {
                 locations[a]->setText(String(owner.info[a].location));
                 fps[a]->setText(String(owner.info[a].firingProb));
                 thresholds[a]->setText(String(owner.info[a].threshold));
             }
-        }
+        }*/
     private:
         TableContent& owner;
         int row, columnId;
         juce::Colour textColour;
-        ScopedPointer<TextEditor> locations[4];
-        ScopedPointer<TextEditor> fps[4];
-        ScopedPointer<TextEditor> thresholds[4];
+        ScopedPointer<TextEditor> value;
 
     };
 private:    

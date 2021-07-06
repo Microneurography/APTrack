@@ -528,8 +528,8 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 	
 	//spikeTracker->autoSizeAllColumns();
 	//spikeTracker->updateContent();
-	spikeTracker->updateContent();
-	spikeTracker->repaint();
+	//spikeTracker->updateContent();
+	//spikeTracker->repaint();
 	//thresholdTracker->updateContent();
 }
 
@@ -1123,8 +1123,22 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 
 		
 		textLabel_0->setRowAndColumn(rowNumber, columnId);
-		if (spikeFound == true) textLabel_0->updateText();
-
+		//if (spikeFound == true) {
+			//textLabel_0->updateText();
+		//}
+		switch (columnId)
+		{
+		case 2:
+			textLabel_0->setText(String(info[rowNumber].location));
+			std::cout << "TEST " << exsistingComponetToUpdate << endl;
+			break;
+		case 3:
+			textLabel_0->setText(String(info[rowNumber].firingProb));
+			break;			
+		case 4:
+			textLabel_0->setText(String(info[rowNumber].threshold));
+			break;
+		}
 		return textLabel_0;
 
 	}

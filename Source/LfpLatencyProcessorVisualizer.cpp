@@ -224,9 +224,13 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			updateSpikeInfo(q);
 			tc.updateInfo(spikeLocations[q].SLR, spikeLocations[q].firingProbability, spikeLocations[q].bigStim, q);
 			tc.spikeFound = true;
-			std::cout << tc.info[q].firingProb << tc.info[q].firingProb << endl;
-			content.spikeTracker->updateContent();
-			content.spikeTracker->repaint();
+			std::cout << tc.info[q].location << "  " << tc.info[q].firingProb << endl;
+			//content.spikeTracker->updateContent();
+			for (int x = 0; x < 4; x++) {
+				content.spikeTracker->getModel()->refreshComponentForCell(q, x, false, content.otherControlPanel);
+				content.spikeTracker->getModel()->refreshComponentForCell(q, x, false, &content);
+			}
+			
 			//content.locations[q]->setText(String(spikeLocations[q].SLR));
 			//content.fps[q]->setText(String(spikeLocations[q].firingProbability));
 			//content.ts[q]->setText(String(spikeLocations[q].bigStim));
