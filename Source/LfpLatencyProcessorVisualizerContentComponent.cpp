@@ -186,16 +186,16 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	ppControllerComponent->setProcessor(processor);
 
 	// Not added here because they appear in the setup box.
-	stimulusVoltageSlider = new Slider("stimulusVoltage");
-	stimulusVoltageSlider->setRange(0.0f, 10.0f, 0);
-	stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
-	stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
-	stimulusVoltageSlider->addListener(this);
-	stimulusVoltageSlider->setLookAndFeel(new CustomLookAndFeel);
-	stimulusVoltageSlider->setColour(Slider::ColourIds::thumbColourId, Colours::darkgrey);
-	stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label");
-	stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
-	stimulusVoltageSliderLabel->setColour(Label::ColourIds::textColourId, Colours::white);
+	//stimulusVoltageSlider = new Slider("stimulusVoltage");
+	//stimulusVoltageSlider->setRange(0.0f, 10.0f, 0);
+	//stimulusVoltageSlider->setSliderStyle(Slider::ThreeValueVertical);
+	//stimulusVoltageSlider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
+	//stimulusVoltageSlider->addListener(this);
+	//stimulusVoltageSlider->setLookAndFeel(new CustomLookAndFeel);
+	//stimulusVoltageSlider->setColour(Slider::ColourIds::thumbColourId, Colours::darkgrey);
+	//stimulusVoltageSliderLabel = new Label("Stimulus_Voltage_Slider_Label");
+	//stimulusVoltageSliderLabel->setText("Stimulus Voltage", sendNotification);
+	//stimulusVoltageSliderLabel->setColour(Label::ColourIds::textColourId, Colours::white);
 
 	stimulusVoltageMin_text = new TextEditor("Stimulus Min");
 	stimulusVoltageMin_text->setText(String(stimulusVoltageMin) + " V");
@@ -394,6 +394,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 		//tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
 		//tdels[i]->setToggleState(false, sendNotification);
 	}
+
+	
 	
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -464,7 +466,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(rightMiddlePanel);
 
 	rightMiddlePanel->setROISpikeLatencyText(String(searchBoxLocation));
-	rightMiddlePanel->setROISpikeValueText("NaN");
+	rightMiddlePanel->setROISpikeMagnitudeText("NaN");
 
     setSize (700, 900);
     
@@ -542,17 +544,13 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	auto spectrogramPanelWidth = getWidth() * 0.5;
 	spectrogramPanel->setBounds(area.removeFromLeft(spectrogramPanelWidth));
-
-	// TODO: these numbers were found in ppController.cpp. Need to change to dynamic;
-	auto ppControllerWidth = 305;
-	auto ppControllerHeight = 130;
-
-	auto panelHeight = (getHeight() - ppControllerHeight) * 0.5;
+	
+	auto panelHeight = (getHeight() - PPCONTROLLER_HEIGHT) * 0.5;
 
 	otherControlPanel->setBounds(area.removeFromTop(panelHeight));
 
-	auto middleArea = area.removeFromTop(ppControllerHeight);
-	ppControllerComponent->setBounds(middleArea.removeFromLeft(ppControllerWidth));
+	auto middleArea = area.removeFromTop(PPCONTROLLER_HEIGHT);
+	ppControllerComponent->setBounds(middleArea.removeFromLeft(PPCONTROLLER_WIDTH));
 	rightMiddlePanel->setBounds(middleArea);
 
 	spectrogramControlPanel->setBounds(area);
@@ -791,6 +789,17 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider* s
         std::cout << "DetectionThehold" << detectionThreshold << std::endl;
 		(*valuesMap)["detectionThreshold"] = String(detectionThreshold, 1);
         spectrogramControlPanel->setDetectionThresholdText(String(detectionThreshold, 1) + " uV");
+
+		if (highImageThreshold == lowImageThreshold) {
+			if (lowImageThreshold == 0) {
+				highImageThreshold++;
+				spectrogramControlPanel->setHighImageThresholdText(String(highImageThreshold, 1) + " uV");
+			}
+			else {
+				lowImageThreshold--;
+				spectrogramControlPanel->setLowImageThresholdText(String(lowImageThreshold, 1) + " uV");
+			}
+		}
 
         //sliderThatWasMoved.getMinValue (1.0 / sliderThatWasMoved.getValue(), dontSendNotification);
     }

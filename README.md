@@ -124,7 +124,7 @@ Visualiser for the plugin:
 
 > Starting Sample: If exceeded by the by a sample, it will be stored as a new peak.
 
-> Image Threshold Values: These are the limits for the colour scale on the plot
+> Image Threshold Values: These are the limits for the colour scale on the plot, and the spike tracking algorithm.
 
 There are two additional drop down tabs: Setup and Options
 
@@ -145,13 +145,33 @@ Setup:
 This is where the stimulus voltage and rates of spike tracking can be adjusted.
 
 #### Spike Tracking  
-The Threshold Values are used to detect spikes in the search box. If the spike magnitude exceeds the detection threshold, and the Track Spike button has been toggled, the spike will be tracked via the search box, with the search box turning green.
+The plugin supports the tracking of multiple neuronal spikes, which are recorded in the table.
 
 <p align="center">
 	<img src="./Resources/table.png" alt="table.png" title="Table">
 </p>
 
-The table above can be used to track multiple spikes. Any spikes found will be added to the table. They can be tracked and deleted from the table.
+The table above can be used to track multiple spikes/thresholds. Any found will be added to the table. They can be tracked and deleted from the table.
+
+#### To Track Spikes/Threshold
+	1. Select the Track Spike/Track Threshold buttons from the Options Menu
+	2. This will make the search box turn red. Use the slider to position it.
+	3. Once a spike is found, the search box will turn green, and an indicator at the bottom of the search box will display. The location of the spike, its firing probability, and/or stimulus threshold will be shown in the table.
+	4. To follow spike/threshold, toggle the Select Spike/Threshold options in the table. Please note: This will alter Starting Sample, Subsamples Per Window, and Search Box Width.
+
+<p align = 'center'>
+	<img src="./Resources/track_spike.png" alt="track_spike.png" title="Track Spike/Threshold">
+</p>
+
+<p align = 'center'>
+	<img src="./Resources/spike_found.png" alt="spike_found.png" title="Spike Found">
+</p>
+
+<p float = 'left'>
+	<img src="./Resources/spike_tracks.png" alt="spike_tracks.png" title="Spike Track">
+	<img src="./Resources/spike_track_window.png" alt="spike_track_window.png" title="Spike Track Window">
+</p>
+
 
 #### Stimulus Voltage  
 
@@ -164,7 +184,9 @@ By default, the Stimulus Voltage is set at 3, while the Maximum Stimulus Voltage
 
 The pulsepal controller allows for loading 'playlists' for stimulus paradigms. 
 First load the paradigm by pressing the `F` button (this will only be enabled if the pulsepal was detected at startup). Once loaded the playlist can be started with the `>` button.
-![pulsepal controller](Resources/pulsepalcontroller.png)
+<p align="center">
+    <img src="./Resources/pulsepalcontroller.png" alt="pulespalcontroller.png" title="pulsepal">
+</p>
 
 The playlist file expected is a "csv" with the structure ([example](Resources/example_playlist.csv)) :
 
@@ -177,7 +199,11 @@ The playlist file expected is a "csv" with the structure ([example](Resources/ex
 \* "Voltage" is ignored by the plugin, but kept for future development. 
 
 If a recording is active, each event in the playlist is sent to the `all.messages` file.
-![pulsepal controller running](Resources/pulsepalcontroller2.png)
+
+<p align="center">
+    <img src="./Resources/pulsepalcontroller2.png" alt="pulespalcontroller2.png" title="pulsepal 2">
+</p>
+
 When started the playlist will run until the playlist is complete, displaying the current step in the dialog box. It can also be stopped with the `[ ]` button. The playlist can be restarted by pressing the `>` again.
 
 The pulsepal will send:

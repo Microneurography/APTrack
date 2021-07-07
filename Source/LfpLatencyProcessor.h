@@ -21,12 +21,6 @@
 
 */
 
-/*
- TODO: Spike detected indicator in GUI
- TODO: Spike threshold in GUI
- TODO:  ..
- */
-
 #ifndef LFPLATENCYPROCESSOR_H_INCLUDED
 #define LFPLATENCYPROCESSOR_H_INCLUDED
 
@@ -54,6 +48,10 @@
 #define SPECTROGRAM_WIDTH 300
 
 #define SPECTROGRAM_HEIGHT 300
+
+#define PPCONTROLLER_WIDTH 305
+
+#define PPCONTROLLER_HEIGHT 130
 
 #define EVENT_DETECTION_THRESHOLD 1500
 
@@ -155,6 +153,12 @@ public:
      - Returns: pointer to raw circular array
      */
     float* getdataCache();
+
+    //Sets data channel back to default
+    void resetDataChannel();
+
+    //Sets trigger channle to default
+    void resetTriggerChannel();
     
     /**
      Returns pointer stored latency track data, one track at a time
@@ -170,6 +174,8 @@ public:
     void changeParameter(int parameterID, int value);
 
 	int getParameterInt(int parameterID);
+
+    int getSamplesPerSubsampleWindow();
     
     void pushLatencyData(int latency);
     
@@ -191,6 +197,7 @@ public:
 	float getParameterFloat(int parameterID);
 	//Result makingFile;
 
+
     
     //Functions used to save data
     void addMessage(std::string message);
@@ -204,7 +211,7 @@ private:
 	//debug
 	float lastReceivedDACPulse;
 
-	int dataChannel_idx;
+	 int dataChannel_idx;
 	int triggerChannel_idx;
 
 	int triggerChannel_threshold;
@@ -217,8 +224,11 @@ private:
     
     bool eventReceived;
     
-    //int currentSample;
       
+
+    int currentSample;
+    
+    
     int samplesPerSubsampleWindow;
 
     
@@ -228,7 +238,7 @@ private:
 
     int samplesAfterStimulusStart;
 
-	float stimulus_threshold;
+    float stimulus_threshold;
     
     std::queue<String> messages;
     std::queue<String> spikes;

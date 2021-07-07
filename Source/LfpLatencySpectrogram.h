@@ -15,7 +15,6 @@ public:
     LfpLatencySpectrogram(int imageWidth = SPECTROGRAM_WIDTH, int imageHeight = SPECTROGRAM_HEIGHT);
     void paint(Graphics& g) override;
 
-    // TODO: might change to override getHeight/getWidth
     int getImageHeight() const;
     int getImageWidth() const;
     const Image &getImage() const;

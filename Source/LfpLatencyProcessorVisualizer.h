@@ -103,6 +103,8 @@ private:
         int subsamples;
         int searchBoxWidth;
         float firingNumber = 0;
+        Array <float> firingNumbers;
+        float firingProbability = 0;
         bool isFull = false;
         float stimVol = 0;
         float bigStim = 0;
@@ -111,12 +113,12 @@ private:
     
     float level;
 
-    int pixelsPerTrack;
+    //int pixelsPerTrack;
 
-    int tracksAmount;
-    int imageLinePoint;
+    //int tracksAmount;
+    //int imageLinePoint;
 
-    int samplesAfterStimulus;
+    //int samplesAfterStimulus;
 
     int missCounter;
 
@@ -126,13 +128,9 @@ private:
     
     float lastWindowPeak;
 
-    Time clock;
-
     int windowSampleCount;
     
     spikeinfo spikeLocations[4];
-
-    bool resetFirings = false;
 
     int lastSearchBoxLocation;
 
@@ -141,8 +139,8 @@ private:
     int i = 0;
     int q = 0;
     
-    int draw_imageHeight;
-    int draw_rightHandEdge;
+    //int draw_imageHeight;
+    //int draw_rightHandEdge;
 
     //Pointer to processor
     LfpLatencyProcessor* processor;
