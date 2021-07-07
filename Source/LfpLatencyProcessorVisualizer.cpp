@@ -234,6 +234,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.fps[q]->setText("0");
 			content.dels[q]->setToggleState(false, sendNotification);
 			std::cout << "Spike " << q << " Deleted" << endl;
+			processor->addSpike("SPIKE " + to_string(q) + " DELETED");
 			content.deletes[q] = false;
 		}
 		if (content.follows[q]->getToggleState() == true) {
@@ -289,7 +290,24 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].isFull = true;
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
+				clock = Time::getCurrentTime();
+				auto time = clock.toString(false, true, true, false);
+				auto string_time = time.toStdString();
+				processor->addSpike(string_time + 
+					" Current Sample Number: " + 
+					to_string(processor->currentSample) + 
+					" Current Track Number: " + 
+					to_string(processor->currentTrack) + 
+					" SPIKE FOUND Location: " + 
+					to_string(spikeLocations[i].searchBoxLocation) + 
+					" StartingSample: " + 
+					to_string(spikeLocations[i].startingSample) + 
+					" Subsamples per Window: " + 
+					to_string(spikeLocations[i].subsamples) + 
+					" Search Box Width: " + 
+					to_string(spikeLocations[i].searchBoxWidth));
 				spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
+
 				
 				if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
 				{
@@ -347,6 +365,18 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		}
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
+		clock = Time::getCurrentTime();
+		auto time = clock.toString(false, true, true, false);
+		auto string_time = time.toStdString();
+		processor->addSpike(string_time + 
+			" Spike " +
+			to_string(i) +
+			" Search Box Location Absolute: " +
+			to_string(spikeLocations[i].SBLA) +
+			" Search Box Location Width: " +
+			to_string(spikeLocations[i].SBWA) +
+			" Max Level: " +
+			to_string(spikeLocations[i].MAXLEVEL));
 		if (spikeLocations[i].firingNumbers.size() != content.stimuli) {
 			spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
 		}
