@@ -110,11 +110,11 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
     return editor;
 }
 void LfpLatencyProcessor::addMessage(std::string message){
-//     messages.push(message);
+     messages.push(message);
 }
 
 void LfpLatencyProcessor::addSpike(std::string spike) {
-    spikes.push(spike);
+       spikes.push(spike);
 }
 
 // create event channel for pulsepal

@@ -211,7 +211,7 @@ private:
 	//debug
 	float lastReceivedDACPulse;
 
-	 int dataChannel_idx;
+	int dataChannel_idx;
 	int triggerChannel_idx;
 
 	int triggerChannel_threshold;
@@ -226,7 +226,7 @@ private:
     
       
 
-    int currentSample;
+    //int currentSample;
     
     
     int samplesPerSubsampleWindow;
