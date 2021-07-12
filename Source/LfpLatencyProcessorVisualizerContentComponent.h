@@ -23,16 +23,26 @@ public:
     int getNumRows();
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
-    virtual Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) override;
+    Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
     void updateInfo(int location, float fp, float threshold, int i);
 
     struct tableData {
-        int location;
-        float firingProb;
-        float threshold;
+        int location = 0;
+        float firingProb = 0;
+        float threshold = 0;
     };
 
     tableData info[4];
+
+    ScopedPointer <TextEditor> locations[4];
+    ScopedPointer <TextEditor> fps[4];
+    ScopedPointer <TextEditor> thresholds[4];
+
+    //Component* label[4][3];
+
+    //Array <UpdatingTextColumnComponent> locations;
+    //Array <UpdatingTextColumnComponent> fps;
+    //Array <UpdatingTextColumnComponent> thresholds;
     
 
     class SelectableColumnComponent : public Component
@@ -41,8 +51,6 @@ public:
         SelectableColumnComponent(TableContent& tcon) : owner(tcon)
         {
             addAndMakeVisible(toggleButton = new ToggleButton);
-            //toggleButton->addListener(this);
-
         }
 
         void resized() override
@@ -68,24 +76,13 @@ public:
     class UpdatingTextColumnComponent : public juce::TextEditor
     {
     public:
-        UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber) : owner(tcon)
-        {
-            addAndMakeVisible(value = new TextEditor());
-        }
-        void setRowAndColumn(int newRow, int newColumn)
-        {
-            row = newRow;
-            columnId = newColumn;
+        
+        UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber);
+        ~UpdatingTextColumnComponent();
+        
+        void setRowAndColumn(int newRow, int newColumn);
+        void alterText(TableContent& tcon, const int columnNumber, const int rowNumber);
 
-        }
-        /*void updateText()
-        {
-            for (int a = 0; a < 4; a++) {
-                locations[a]->setText(String(owner.info[a].location));
-                fps[a]->setText(String(owner.info[a].firingProb));
-                thresholds[a]->setText(String(owner.info[a].threshold));
-            }
-        }*/
     private:
         TableContent& owner;
         int row, columnId;
@@ -93,9 +90,13 @@ public:
         ScopedPointer<TextEditor> value;
 
     };
+
+    //UpdatingTextColumnComponent* label[4][3];
+
 private:    
     
     friend class LfpLatencyProcessorVisualizer;
+
     
     bool spikeFound = false;
 
@@ -128,6 +129,7 @@ public:
     float getDetectionThreshold() const;
     int getColorStyleComboBoxSelectedId() const;
     void tryToSave();
+    void updateTable(int rowNumber);
 
     std::tuple<float, float, float, float, Colour> getSearchBoxInfo() const;
 
@@ -135,6 +137,7 @@ private:
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
+    friend class TableContent;
 
     ScopedPointer<TableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
@@ -256,6 +259,8 @@ private:
     ScopedPointer<Slider> stimuliNumberSlider;
     ScopedPointer<TextEditor> stimuliNumber;
     ScopedPointer<Label> stimuliNumberLabel;
+
+    TableContent tcon;
 
     //DEBUG
 

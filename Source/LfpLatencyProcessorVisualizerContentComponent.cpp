@@ -1052,6 +1052,10 @@ void LfpLatencyProcessorVisualizerContentComponent::tryToSave()
 	
 }
 
+void LfpLatencyProcessorVisualizerContentComponent::updateTable(int rowNumber) {
+	spikeTracker->getModel()->refreshComponentForCell(rowNumber, 2, false, this);
+}
+
 int TableContent::getNumRows() {
 	return 4;
 }
@@ -1061,7 +1065,12 @@ TableContent::TableContent() {
 }
 
 TableContent::~TableContent() {
-
+	/*for (int x = 0; x < 4; x++) {
+		for (int c = 0; c < 3; c++) {
+			values[x][c] = nullptr;
+			std::cout << "EEEEEE" << endl;
+		}
+	}*/
 }
 
 void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
@@ -1100,47 +1109,66 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 }
 
 Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
-	if (columnId == 5 || columnId == 6) {
-		auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
+	if (rowNumber < 4) {
+		std::cout << "it just works " << rowNumber << columnId << exsistingComponetToUpdate << endl;
+		if (columnId == 5 || columnId == 6) {
+			auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
 
-		if (selectionBox == nullptr)
-			selectionBox = new SelectableColumnComponent(*this);
+			if (selectionBox == nullptr)
+				selectionBox = new SelectableColumnComponent(*this);
 
-		selectionBox->setRowAndColumn(rowNumber, columnId);
+			selectionBox->setRowAndColumn(rowNumber, columnId);
 
-		//if (selectionBox->getTState() == true) {
-			//cout << "noticed" << endl;
-			//cout << rowNumber << endl;
-			//buttonSelected = rowNumber;
-		//}
-		return selectionBox;
-	}
-	if (columnId == 2 || columnId == 3 || columnId == 4) {
-		auto* textLabel_0 = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
-
-		if (textLabel_0 == nullptr)
-			textLabel_0 = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
-
-		
-		textLabel_0->setRowAndColumn(rowNumber, columnId);
-		//if (spikeFound == true) {
-			//textLabel_0->updateText();
-		//}
-		switch (columnId)
-		{
-		case 2:
-			textLabel_0->setText(String(info[rowNumber].location));
-			std::cout << "TEST " << exsistingComponetToUpdate << endl;
-			break;
-		case 3:
-			textLabel_0->setText(String(info[rowNumber].firingProb));
-			break;			
-		case 4:
-			textLabel_0->setText(String(info[rowNumber].threshold));
-			break;
+			//if (selectionBox->getTState() == true) {
+				//cout << "noticed" << endl;
+				//cout << rowNumber << endl;
+				//buttonSelected = rowNumber;
+			//}
+			return selectionBox;
 		}
-		return textLabel_0;
+		if (columnId == 2) {
+			 auto* label = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
 
+			if (label == nullptr)
+				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
+
+			//std::cout << "is it breaking here 1" << endl;
+			label->setRowAndColumn(rowNumber, columnId);
+			//label->alterText(*this, columnId, rowNumber);
+			label->setText(to_string(info[rowNumber].location));
+			//locations.insert(rowNumber, label);
+
+			return label ;
+
+		}
+		if (columnId == 3) {
+			auto* label  = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+
+			if (label == nullptr)
+				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
+
+			//std::cout << "is it breaking here 1" << endl;
+			label->setRowAndColumn(rowNumber, columnId);
+			//label->alterText(*this, columnId, rowNumber);
+			label->setText(to_string(info[rowNumber].firingProb));
+			//fps.insert(rowNumber, label);
+
+			return label ;
+		}
+		if (columnId == 4) {
+			auto* label  = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+
+			if (label == nullptr)
+				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
+
+			//std::cout << "is it breaking here 1" << endl;
+			label->setRowAndColumn(rowNumber, columnId);
+			//label->alterText(*this, columnId, rowNumber);
+			label->setText(to_string(info[rowNumber].threshold));
+			//thresholds.insert(rowNumber, label);
+
+			return label ;
+		}
 	}
 	jassert(exsistingComponetToUpdate == nullptr);
 	return nullptr;
@@ -1151,6 +1179,37 @@ void TableContent::updateInfo(int location, float fp, float threshold, int i) {
 	info[i].location = location;
 	info[i].firingProb = fp;
 	info[i].threshold = threshold;
+}
+
+TableContent::UpdatingTextColumnComponent::UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber) : owner(tcon)
+{
+	addAndMakeVisible(value = new TextEditor("_"));
+}
+
+TableContent::UpdatingTextColumnComponent::~UpdatingTextColumnComponent() 
+{
+	value = nullptr;
+}
+
+void TableContent::UpdatingTextColumnComponent::setRowAndColumn(int newRow, int newColumn) 
+{
+	row = newRow;
+	columnId = newColumn;
+}
+void TableContent::UpdatingTextColumnComponent::alterText(TableContent& tcon, const int columnNumber, const int rowNumber)
+{
+	if (columnNumber == 2)
+	{
+		value->setText(to_string(tcon.info[rowNumber].location));
+	}
+	if (columnNumber == 3)
+	{
+		value->setText(to_string(tcon.info[rowNumber].firingProb));
+	}
+	if (columnNumber == 4)
+	{
+		value->setText(to_string(tcon.info[rowNumber].threshold));
+	}
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
@@ -1215,11 +1274,11 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 	else if (follows[3]->getToggleState() == true)
 	{
 		colour = Colours::orange;
-	}
+	}*/
 	else
 	{
 		colour = Colours::lightyellow;
-	}*/
+	}
 	
 	auto width = 8;
 	auto x = spectrogramPanel->getImageWidth() - width;

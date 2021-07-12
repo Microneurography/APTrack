@@ -148,11 +148,15 @@ private:
     
     friend class LfpLatencyProcessorVisualizerContentComponent;
     friend class TableContent;
+    //friend class TableContent::UpdatingTextColumnComponent;
+    //friend class TableContent::SelectableColumnComponent;
 
     // This component contains all components and graphics that were added using Projucer.
     // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
     TableContent tc;
+    //TableContent::UpdatingTextColumnComponent utcc;
+    //TableContent::SelectableColumnComponent scc;
 
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
