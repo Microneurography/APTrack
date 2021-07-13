@@ -110,11 +110,11 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
     return editor;
 }
 void LfpLatencyProcessor::addMessage(std::string message){
-     messages.push(message);
+    //messages.push(message);
 }
 
 void LfpLatencyProcessor::addSpike(std::string spike) {
-       spikes.push(spike);
+   //spikes.push(spike);
 }
 
 // create event channel for pulsepal
@@ -124,11 +124,11 @@ void LfpLatencyProcessor::createEventChannels(){
         chan->setDescription("Messages from the pulsepal runner");
         chan->setIdentifier("pulsepal.event");
         eventChannelArray.add(chan);
-        EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, 0.0f, this, 0);
+        /*EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, 0.0f, this, 0);
         spikeEvents->setName("Spike Data");
         spikeEvents->setDescription("Details of spikes found");
         spikeEvents->setIdentifier("spike.event");
-        eventChannelArray.add(spikeEvents);
+        eventChannelArray.add(spikeEvents);*/
 }
 
 // create chanel for storing spike data
