@@ -27,9 +27,9 @@ public:
     void updateInfo(int location, float fp, float threshold, int i);
 
     struct tableData {
-        int location = 0;
-        float firingProb = 0;
-        float threshold = 0;
+        int location;
+        float firingProb;
+        float threshold;
     };
 
     tableData info[4];

@@ -227,8 +227,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			std::cout << tc.info[q].location << "  " << tc.info[q].firingProb << endl;
 			content.updateTable(q);
 			content.spikeTracker->visibilityChanged();
-			content.spikeTracker->updateContent();
-			content.spikeTracker->repaint();
+			//content.spikeTracker->updateContent();
+			//content.spikeTracker->repaintRow(q);
 			//content.spikeTracker->getModel()->refreshComponentForCell(q, 2, false, )
 			
 			//content.locations[q]->setText(String(spikeLocations[q].SLR));

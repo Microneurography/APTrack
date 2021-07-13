@@ -1061,7 +1061,11 @@ int TableContent::getNumRows() {
 }
 
 TableContent::TableContent() {
-
+	for (int j = 0; j < 4; j++) {
+		info[j].location = 0;
+		info[j].firingProb = 0;
+		info[j].threshold = 0;
+	}
 }
 
 TableContent::~TableContent() {
@@ -1110,7 +1114,7 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 
 Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
 	if (rowNumber < 4) {
-		std::cout << "it just works " << rowNumber << columnId << exsistingComponetToUpdate << endl;
+
 		if (columnId == 5 || columnId == 6) {
 			auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
 
@@ -1127,46 +1131,58 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 			return selectionBox;
 		}
 		if (columnId == 2) {
-			 auto* label = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+			auto* label = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
 
-			if (label == nullptr)
+			if (label == nullptr) 
+			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
-
-			//std::cout << "is it breaking here 1" << endl;
-			label->setRowAndColumn(rowNumber, columnId);
-			//label->alterText(*this, columnId, rowNumber);
-			label->setText(to_string(info[rowNumber].location));
-			//locations.insert(rowNumber, label);
-
+				label->setText("0");
+			}
+			else 
+			{
+				//label->setRowAndColumn(rowNumber, columnId);
+				//label->alterText(*this, columnId, rowNumber);
+				label->setText(to_string(info[rowNumber].location));
+				label->repaint();
+				//locations.insert(rowNumber, label);
+			}
 			return label ;
-
 		}
 		if (columnId == 3) {
 			auto* label  = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
 
-			if (label == nullptr)
+			if (label == nullptr) 
+			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
-
-			//std::cout << "is it breaking here 1" << endl;
-			label->setRowAndColumn(rowNumber, columnId);
-			//label->alterText(*this, columnId, rowNumber);
-			label->setText(to_string(info[rowNumber].firingProb));
-			//fps.insert(rowNumber, label);
-
+				label->setText("0");
+			}
+			else 
+			{
+				//label->setRowAndColumn(rowNumber, columnId);
+				//label->alterText(*this, columnId, rowNumber);
+				label->setText(to_string(info[rowNumber].firingProb));
+				label->repaint();
+				//fps.insert(rowNumber, label);
+			}
 			return label ;
 		}
-		if (columnId == 4) {
+		if (columnId == 4) 
+		{
 			auto* label  = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
 
-			if (label == nullptr)
+			if (label == nullptr) 
+			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
-
-			//std::cout << "is it breaking here 1" << endl;
-			label->setRowAndColumn(rowNumber, columnId);
-			//label->alterText(*this, columnId, rowNumber);
-			label->setText(to_string(info[rowNumber].threshold));
-			//thresholds.insert(rowNumber, label);
-
+				label->setText("0");
+			}
+			else 
+			{
+				//label->setRowAndColumn(rowNumber, columnId);
+				//label->alterText(*this, columnId, rowNumber);
+				label->setText(to_string(info[rowNumber].threshold));
+				label->repaint();
+				//thresholds.insert(rowNumber, label);
+			}
 			return label ;
 		}
 	}
@@ -1184,6 +1200,7 @@ void TableContent::updateInfo(int location, float fp, float threshold, int i) {
 TableContent::UpdatingTextColumnComponent::UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber) : owner(tcon)
 {
 	addAndMakeVisible(value = new TextEditor("_"));
+
 }
 
 TableContent::UpdatingTextColumnComponent::~UpdatingTextColumnComponent() 
