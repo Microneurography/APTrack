@@ -24,7 +24,13 @@ public:
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
     Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
-    void updateInfo(int location, float fp, float threshold, int i);
+    friend void updateInfo(TableContent &tc, int location, float fp, float threshold, int i);
+    friend bool getSpikeSelect(TableContent& tc, int row);
+    friend bool getThresholdSelect(TableContent& tc, int row);
+    friend void selectSpikeDefault(TableContent& tc, int row);
+    friend void selectThreshold(TableContent& tc, int row);
+    friend bool getSpikeToDelete(TableContent& tc, int row);
+    friend void deleteSpikeAndThreshold(TableContent& tc, int row);
 
     struct tableData {
         int location;
@@ -34,60 +40,46 @@ public:
 
     tableData info[4];
 
-    ScopedPointer <TextEditor> locations[4];
-    ScopedPointer <TextEditor> fps[4];
-    ScopedPointer <TextEditor> thresholds[4];
-
-    //Component* label[4][3];
-
-    //Array <UpdatingTextColumnComponent> locations;
-    //Array <UpdatingTextColumnComponent> fps;
-    //Array <UpdatingTextColumnComponent> thresholds;
-    
-
-    class SelectableColumnComponent : public Component
+    class SelectableColumnComponent : public juce::ToggleButton
     {
     public:
-        SelectableColumnComponent(TableContent& tcon) : owner(tcon)
-        {
-            addAndMakeVisible(toggleButton = new ToggleButton);
-        }
+        SelectableColumnComponent(TableContent& tcon);
+        ~SelectableColumnComponent();
 
-        void resized() override
-        {
-            toggleButton->setBoundsInset(juce::BorderSize<int>(1));
-        }
+        ScopedPointer<ToggleButton> toggleButton;
 
-        void setRowAndColumn(int newRow, int newColumn)
-        {
-            row = newRow;
-            columnId = newColumn;
-        }
-        bool getTState()
-        {
-            return toggleButton->getToggleState();
-        }
     private:
         TableContent& owner;
-        ScopedPointer<ToggleButton> toggleButton;
-        int row, columnId;
+        
 
     };
     class UpdatingTextColumnComponent : public juce::TextEditor
+                                       
     {
     public:
         
         UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber);
         ~UpdatingTextColumnComponent();
-        
-        void setRowAndColumn(int newRow, int newColumn);
-        void alterText(TableContent& tcon, const int columnNumber, const int rowNumber);
+
+        ScopedPointer<TextEditor> value;
 
     private:
         TableContent& owner;
-        int row, columnId;
         juce::Colour textColour;
-        ScopedPointer<TextEditor> value;
+
+    };
+    class DeleteComponent : public juce::TextButton
+
+    {
+    public:
+
+        DeleteComponent(TableContent& tcon);
+        ~DeleteComponent();
+
+        ScopedPointer<TextButton> del;
+
+    private:
+        TableContent& owner;
 
     };
 
@@ -96,7 +88,17 @@ public:
 private:    
     
     friend class LfpLatencyProcessorVisualizer;
+    friend class LfpLatencyProcessorVisulizerContentComponent;
 
+    bool trackSpikes[4];
+    bool newSpikeFound[4];
+    bool trackThresholds[4];
+    bool newThresholdFound[4];
+
+    bool thresholdAlreadyTracked;
+    bool spikeAlreadyTracked;
+
+    bool deleteSpike[4];
     
     bool spikeFound = false;
 
@@ -129,7 +131,6 @@ public:
     float getDetectionThreshold() const;
     int getColorStyleComboBoxSelectedId() const;
     void tryToSave();
-    void updateTable(int rowNumber);
 
     std::tuple<float, float, float, float, Colour> getSearchBoxInfo() const;
 

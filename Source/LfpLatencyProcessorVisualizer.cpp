@@ -181,6 +181,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	{
 		processor->resetEventFlag();
 		processTrack();
+		content.spikeTracker->visibilityChanged();
 
 	}
 
@@ -220,37 +221,13 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 	//Keep the spike location values updated
 	for (int q = 0; q < 4; q++) {
-		if (spikeLocations[q].isFull == true) {
+		if (spikeLocations[q].isFull == true) 
+		{
 			updateSpikeInfo(q);
-			tc.updateInfo(spikeLocations[q].SLR, spikeLocations[q].firingProbability, spikeLocations[q].bigStim, q);
-			tc.spikeFound = true;
-			std::cout << tc.info[q].location << "  " << tc.info[q].firingProb << endl;
-			content.updateTable(q);
-			content.spikeTracker->visibilityChanged();
-			//content.spikeTracker->updateContent();
-			//content.spikeTracker->repaintRow(q);
-			//content.spikeTracker->getModel()->refreshComponentForCell(q, 2, false, )
-			
-			//content.locations[q]->setText(String(spikeLocations[q].SLR));
-			//content.fps[q]->setText(String(spikeLocations[q].firingProbability));
-			//content.ts[q]->setText(String(spikeLocations[q].bigStim));
+			updateInfo(*content.spikeTrackerContent , spikeLocations[q].SLR, spikeLocations[q].firingProbability, spikeLocations[q].bigStim, q);
 		}
-		/*if (content.deletes[q] == true) {
-			content.follows[q]->setToggleState(false, sendNotification);
-			spikeLocations[q] = {};
-			spikeLocations[q].isFull = false;
-			content.locations[q]->setText("0");
-			content.fps[q]->setText("0");
-			content.dels[q]->setToggleState(false, sendNotification);
-			std::cout << "Spike " << q << " Deleted" << endl;
-			content.deletes[q] = false;
-			availableSpace.add(q);
-			availableThresholdSpace.add(q);
-		}
-		if (content.follows[q]->getToggleState() == true) {
-			for (int n = 0; n < 4; n++)
-				if (n == q) continue;
-				else content.follows[n]->setToggleState(false, sendNotification);
+		if (getSpikeSelect(*content.spikeTrackerContent, q)) 
+		{
 			content.trackSpike_button->setToggleState(false, sendNotification);
 			content.spikeTracker->selectedRowsChanged(q);
 			setConfig(q);
@@ -259,15 +236,23 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.rightMiddlePanel->setROISpikeMagnitudeText(String(spikeLocations[q].MAXLEVEL, 1));
 			content.rightMiddlePanel->setROISpikeLatencyText(String(spikeLocations[q].SLA / 30.0f, 1));
 		}
-		if (content.thresholds[q]->getToggleState() == true) {
-			for (int n = 0; n < 4; n++)
-				if (n == q) continue;
-				else content.thresholds[n]->setToggleState(false, sendNotification);
+		if (getThresholdSelect(*content.spikeTrackerContent, q)) 
+		{
 			content.trackThreshold_button->setToggleState(false, sendNotification);
 			updateSpikeInfo(q);
 			content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
 			content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
-		}*/
+		}
+		if (getSpikeToDelete(*content.spikeTrackerContent, q)) 
+		{
+			deleteSpikeAndThreshold(*content.spikeTrackerContent, q);
+			spikeLocations[q] = {};
+			spikeLocations[q].isFull = false;
+			updateInfo(*content.spikeTrackerContent, 0, 0.0f, 0.0f, q);
+			std::cout << "Spike " << q << " Deleted" << endl;
+			availableSpace.add(q);
+			availableThresholdSpace.add(q);
+		}
 	}
 
 	//display values
@@ -301,7 +286,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
 				spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
-						
+				content.trackSpike_button->setToggleState(false, sendNotification);
+				selectSpikeDefault(*content.spikeTrackerContent, i);
 				
 				if (content.trackThreshold_button->getToggleState() == true && !availableThresholdSpace.isEmpty())
 				{
