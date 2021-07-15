@@ -1084,6 +1084,18 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 			}
 			else
 			{
+				if (trackThresholds[rowNumber] != selectionBox->getToggleState())
+				{
+					if (newThresholdFound[rowNumber])
+					{
+						selectionBox->setToggleState(true, sendNotificationAsync);
+						newThresholdFound[rowNumber] = false;
+					}
+					else
+					{
+						selectionBox->setToggleState(false, sendNotificationAsync);
+					}
+				}
 				trackThresholds[rowNumber] = selectionBox->getToggleState();
 			}
 			return selectionBox;
@@ -1162,6 +1174,12 @@ void selectSpikeDefault(TableContent& tc, int row)
 {
 	tc.trackSpikes[row] = true;
 	tc.newSpikeFound[row] = true;
+}
+
+void selectThresholdDefault(TableContent& tc, int row)
+{
+	tc.trackThresholds[row] = true;
+	tc.newThresholdFound[row] = true;
 }
 
 void selectThreshold(TableContent& tc, int row)

@@ -140,6 +140,8 @@ private:
     Array <int> availableThresholdSpace = { 0, 1, 2, 3 };
     
     int q = 0;
+
+    int i;
     
     //int draw_imageHeight;
     //int draw_rightHandEdge;

@@ -226,6 +226,11 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			updateSpikeInfo(q);
 			updateInfo(*content.spikeTrackerContent , spikeLocations[q].SLR, spikeLocations[q].firingProbability, spikeLocations[q].bigStim, q);
 		}
+		else
+		{
+			updateSpikeInfo(q);
+			updateInfo(*content.spikeTrackerContent, 0, 0.0f, spikeLocations[q].bigStim, q);
+		}
 		if (getSpikeSelect(*content.spikeTrackerContent, q)) 
 		{
 			content.trackSpike_button->setToggleState(false, sendNotification);
@@ -248,6 +253,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			deleteSpikeAndThreshold(*content.spikeTrackerContent, q);
 			spikeLocations[q] = {};
 			spikeLocations[q].isFull = false;
+			spikeLocations[q].thresholdFull = false;
 			updateInfo(*content.spikeTrackerContent, 0, 0.0f, 0.0f, q);
 			std::cout << "Spike " << q << " Deleted" << endl;
 			availableSpace.add(q);
@@ -266,6 +272,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (maxLevel > content.detectionThreshold)
 		{
 			content.spikeDetected = true;
+
 			content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
       
 			//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
@@ -285,7 +292,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
 				spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
-								auto clock = Time::getCurrentTime();
+				auto clock = Time::getCurrentTime();
 				auto time = clock.toString(false, true, true, false);
 				auto string_time = time.toStdString();
 				processor->addSpike(string_time + 
@@ -301,8 +308,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 					to_string(spikeLocations[i].subsamples) + 
 					" Search Box Width: " + 
 					to_string(spikeLocations[i].searchBoxWidth));
-        content.trackSpike_button->setToggleState(false, sendNotification);
+				content.trackSpike_button->setToggleState(false, sendNotification);
 				selectSpikeDefault(*content.spikeTrackerContent, i);
+				availableSpace.remove(0);
 				
 				if (content.trackThreshold_button->getToggleState() == true && !availableThresholdSpace.isEmpty())
 				{
@@ -310,11 +318,10 @@ void LfpLatencyProcessorVisualizer::processTrack()
 					spikeLocations[p].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
 					spikeLocations[p].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 					spikeLocations[p].thresholdFull = true;
-					//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
-					//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
+					content.trackThreshold_button->setToggleState(false, sendNotification);
+					selectThresholdDefault(*content.spikeTrackerContent, p);
+					availableThresholdSpace.remove(0);
 				}
-				availableSpace.remove(0);
-				availableThresholdSpace.remove(0);
 			}
 			if (availableSpace.isEmpty()) {
 				cout << "NO SPACE FOR NEW SPIKE IN TABLE" << endl;
@@ -334,12 +341,13 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
 			{
 				//No spike, increase stimulation
-				spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-				spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
-				spikeLocations[i].thresholdFull = true;
-        availableThresholdSpace.remove(0);
-				//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
-				//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
+				int p = availableThresholdSpace[0];
+				spikeLocations[p].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+				spikeLocations[p].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
+				spikeLocations[p].thresholdFull = true;
+				content.trackThreshold_button->setToggleState(false, sendNotification);
+				selectThresholdDefault(*content.spikeTrackerContent, p);
+				availableThresholdSpace.remove(0);
 			}
 		}
 	}

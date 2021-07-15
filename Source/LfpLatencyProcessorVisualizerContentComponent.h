@@ -28,6 +28,7 @@ public:
     friend bool getSpikeSelect(TableContent& tc, int row);
     friend bool getThresholdSelect(TableContent& tc, int row);
     friend void selectSpikeDefault(TableContent& tc, int row);
+    friend void selectThresholdDefault(TableContent& tc, int row);
     friend void selectThreshold(TableContent& tc, int row);
     friend bool getSpikeToDelete(TableContent& tc, int row);
     friend void deleteSpikeAndThreshold(TableContent& tc, int row);

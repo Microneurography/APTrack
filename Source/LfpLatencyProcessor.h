@@ -242,7 +242,6 @@ private:
     std::queue<String> messages;
     std::queue<String> spikes;
     
-    std::queue<String> messages;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessor);
