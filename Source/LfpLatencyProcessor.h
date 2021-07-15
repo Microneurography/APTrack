@@ -119,6 +119,10 @@ public:
     virtual void loadCustomParametersFromXml() override;
 
     virtual void createEventChannels() override;
+
+    //virtual void createSpikeChannels() override;
+
+
     /** Optional method called every time the signal chain is refreshed or changed in any way.
 
         Allows the processor to handle variations in the channel configuration or any other parameter
@@ -127,6 +131,9 @@ public:
         structure shouldn't be manipulated outside of this method.
     */
     //void updateSettings();
+
+    // Channel used for the recording of spike data
+    //virtual void createSpikeChannels() override;
     
     
      /** Method to allow the visualizer to check eventDetection flag*/ 
@@ -184,14 +191,21 @@ public:
     
     int fifoIndex;
 
-	//debug
-	float getParameterFloat(int parameterID);
-	//Result makingFile;
+    int currentTrack;
+    int currentSample;
+
+	 //debug
+	 float getParameterFloat(int parameterID);
+	 //Result makingFile;
+
+   //Functions used to save data
+   void addMessage(std::string message);
+
+   void addSpike(std::string spike);
 
 private:
 
-    void addMessage(std::string message);
-    friend class ppController;
+   friend class ppController;
 
 	//debug
 	float lastReceivedDACPulse;
@@ -209,19 +223,24 @@ private:
     
     bool eventReceived;
     
-    int currentSample;
+      
+
+    //int currentSample;
     
     
     int samplesPerSubsampleWindow;
 
     
-    int currentTrack;
+    //int currentTrack;
     
     int peakThreshold;
 
     int samplesAfterStimulusStart;
 
-	float stimulus_threshold;
+    float stimulus_threshold;
+    
+    std::queue<String> messages;
+    std::queue<String> spikes;
     
     std::queue<String> messages;
     

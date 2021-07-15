@@ -39,6 +39,7 @@ set(CONFIGURATION_FOLDER $<$<CONFIG:Debug>:Debug>$<$<NOT:$<CONFIG:Debug>>:Releas
 list(APPEND CMAKE_PREFIX_PATH ${GUI_COMMONLIB_DIR} ${GUI_COMMONLIB_DIR}/${CONFIGURATION_FOLDER})
 
 if (APPLE)
+	set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architecture for Mac OS X" FORCE)
 	add_library(${PLUGIN_NAME} MODULE ${SRC_FILES})
 else()
 	add_library(${PLUGIN_NAME} SHARED ${SRC_FILES})
@@ -77,8 +78,9 @@ elseif(APPLE)
 	set_target_properties(${PLUGIN_NAME} PROPERTIES BUNDLE TRUE)
 	set_property(TARGET ${PLUGIN_NAME} APPEND_STRING PROPERTY LINK_FLAGS
 	"-undefined dynamic_lookup -rpath @loader_path/../../../../shared")
-
-	install(TARGETS ${PLUGIN_NAME} DESTINATION $ENV{HOME}/Library/Application\ Support/open-ephys/PlugIns)
+	target_compile_options(${PLUGIN_NAME} PRIVATE -ferror-limit=0)
+	#install(TARGETS ${PLUGIN_NAME} DESTINATION $ENV{HOME}/Library/Application\ Support/open-ephys/PlugIns)
+	install(TARGETS ${PLUGIN_NAME} DESTINATION ${GUI_BASE_DIR}/Build/open-ephys.app/Contents/plugIns )
 	set(CMAKE_PREFIX_PATH /opt/local)
 endif()
 

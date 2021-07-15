@@ -1,0 +1,2 @@
+Duration,Voltage,Rate,Comment <-header
+60,1,1,"10s 1Hz"

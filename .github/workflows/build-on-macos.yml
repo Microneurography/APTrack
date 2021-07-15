@@ -1,0 +1,62 @@
+name: Build LfpLatency on osx
+on: 
+  workflow_dispatch:
+    inputs:
+      release_name: 
+        description: The name of the release to attach the build artefacts
+
+jobs:
+
+  build:
+    name: Compile action
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: OEPlugins/OE-plugin-latency-tracker
+     
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: open-ephys/plugin-GUI
+          path: plugin-GUI
+          ref: v0.5.2.2
+        
+      - name: Cache oe
+        id: cache-oe
+        uses: actions/cache@v2
+        with:
+          path: plugin-GUI/Build
+          key: ${{ runner.os }}-cache-oe
+      - name: build oe
+        if: steps.cache-oe.outputs.cache-hit != 'true'
+        working-directory: plugin-GUI
+        run: | 
+          mkdir -p Build
+          cd Build
+          cmake ..
+          cmake --build . --config Release --target open-ephys -j 2
+      - name: build plugin
+        working-directory: OEPlugins/OE-plugin-latency-tracker
+        run: |
+          mkdir -p Build
+          cd Build
+          cmake ..
+          cmake --build . --config Release
+      - name: testing
+        working-directory: OEPlugins/OE-plugin-latency-tracker/Build
+        run : |
+          ls -la
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oe-plugin-latency-tracker
+          path: OEPlugins/OE-plugin-latency-tracker/Build/OE-plugin-latency-tracker.bundle
+      - name: Release
+        uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.event.inputs.release_name }}
+          files: 'OEPlugins/OE-plugin-latency-tracker/Build/OE-plugin-latency-tracker.bundle'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -110,7 +110,11 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
     return editor;
 }
 void LfpLatencyProcessor::addMessage(std::string message){
-//     messages.push(message);
+    //messages.push(message);
+}
+
+void LfpLatencyProcessor::addSpike(std::string spike) {
+   //spikes.push(spike);
 }
 
 // create event channel for pulsepal
@@ -120,7 +124,24 @@ void LfpLatencyProcessor::createEventChannels(){
         chan->setDescription("Messages from the pulsepal runner");
         chan->setIdentifier("pulsepal.event");
         eventChannelArray.add(chan);
+        /*EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, 0.0f, this, 0);
+        spikeEvents->setName("Spike Data");
+        spikeEvents->setDescription("Details of spikes found");
+        spikeEvents->setIdentifier("spike.event");
+        eventChannelArray.add(spikeEvents);*/
 }
+
+// create chanel for storing spike data
+//void LfpLatencyProcessor::createSpikeChannels() {
+    
+    //pikeChannel* spikechan = new SpikeChannel(SpikeChannel::typeFromNumChannels(), this);
+   // SpikeEvent::SpikeBuffer buf = SpikeEvent::SpikeBuffer::SpikeBuffer(spikechan);
+//}
+
+
+//void LfpLatencyProcessor::createSpikeChannels(){
+    //SpikeChannel* spikes = new SpikeChannel()
+//}
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
 {
@@ -238,11 +259,17 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
             }
         }
     }
-//     while(!messages.empty()){
-//         TextEventPtr event = TextEvent::createTextEvent(getEventChannel(0), CoreServices::getGlobalTimestamp(), messages.front());
-// 		addEvent(getEventChannel(0), event, 0);
-//         messages.pop();
-//     }
+    while(!messages.empty()){
+        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(1), CoreServices::getGlobalTimestamp(), messages.front());
+		    addEvent(getEventChannel(0), event, 0);
+        messages.pop();
+    }
+    while (!spikes.empty()) {
+        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(1), CoreServices::getGlobalTimestamp(), spikes.front());
+        addEvent(getEventChannel(1), event, 0);
+        spikes.pop();
+    }
+
 }
 
 void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)

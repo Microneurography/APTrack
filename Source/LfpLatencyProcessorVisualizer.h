@@ -134,6 +134,7 @@ private:
 
     int lastSearchBoxLocation;
 
+
     Array <int> availableSpace = { 0, 1, 2, 3 };
 
     Array <int> availableThresholdSpace = { 0, 1, 2, 3 };
@@ -155,8 +156,6 @@ private:
     // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
     TableContent tc;
-    //TableContent::UpdatingTextColumnComponent utcc;
-    //TableContent::SelectableColumnComponent scc;
 
     //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 

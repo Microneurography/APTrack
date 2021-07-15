@@ -83,7 +83,6 @@ public:
 
     };
 
-    //UpdatingTextColumnComponent* label[4][3];
 
 private:    
     
@@ -99,9 +98,6 @@ private:
     bool spikeAlreadyTracked;
 
     bool deleteSpike[4];
-    
-    bool spikeFound = false;
-
 };
 
 
@@ -246,13 +242,6 @@ private:
     ScopedPointer<Label> trackSpike_button_Label;
 
     ScopedPointer<TableListBox> spikeTracker;
-
-    ScopedPointer<TextEditor> locations[4];
-    ScopedPointer<TextEditor> fps[4];
-    ScopedPointer<ToggleButton> follows[4];
-    ScopedPointer<TextButton> dels[4];
-    ScopedPointer<TextEditor> ts[4];
-    ScopedPointer<ToggleButton> thresholds[4];
 
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
