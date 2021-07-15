@@ -23,15 +23,81 @@ public:
     int getNumRows();
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
-    //Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
+    Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
+    friend void updateInfo(TableContent &tc, int location, float fp, float threshold, int i);
+    friend bool getSpikeSelect(TableContent& tc, int row);
+    friend bool getThresholdSelect(TableContent& tc, int row);
+    friend void selectSpikeDefault(TableContent& tc, int row);
+    friend void selectThreshold(TableContent& tc, int row);
+    friend bool getSpikeToDelete(TableContent& tc, int row);
+    friend void deleteSpikeAndThreshold(TableContent& tc, int row);
+
+    struct tableData {
+        int location;
+        float firingProb;
+        float threshold;
+    };
+
+    tableData info[4];
+
+    class SelectableColumnComponent : public juce::ToggleButton
+    {
+    public:
+        SelectableColumnComponent(TableContent& tcon);
+        ~SelectableColumnComponent();
+
+        ScopedPointer<ToggleButton> toggleButton;
+
+    private:
+        TableContent& owner;
+        
+
+    };
+    class UpdatingTextColumnComponent : public juce::TextEditor
+                                       
+    {
+    public:
+        
+        UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber);
+        ~UpdatingTextColumnComponent();
+
+        ScopedPointer<TextEditor> value;
+
+    private:
+        TableContent& owner;
+        juce::Colour textColour;
+
+    };
+    class DeleteComponent : public juce::TextButton
+
+    {
+    public:
+
+        DeleteComponent(TableContent& tcon);
+        ~DeleteComponent();
+
+        ScopedPointer<TextButton> del;
+
+    private:
+        TableContent& owner;
+
+    };
+
 
 private:    
     
     friend class LfpLatencyProcessorVisualizer;
-    
-    bool spikeFound = false;
+    friend class LfpLatencyProcessorVisulizerContentComponent;
 
+    bool trackSpikes[4];
+    bool newSpikeFound[4];
+    bool trackThresholds[4];
+    bool newThresholdFound[4];
 
+    bool thresholdAlreadyTracked;
+    bool spikeAlreadyTracked;
+
+    bool deleteSpike[4];
 };
 
 
@@ -49,7 +115,9 @@ public:
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
 	bool keyPressed(const KeyPress& k) override;
+    //std::function<void()> onTextChange override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
+
 
     int getStartingSample() const;
     bool getExtendedColorScale() const;
@@ -66,6 +134,7 @@ private:
     // Make an editor to be friendly class of this content component,
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
+    friend class TableContent;
 
     ScopedPointer<TableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
@@ -174,19 +243,14 @@ private:
 
     ScopedPointer<TableListBox> spikeTracker;
 
-    ScopedPointer<TextEditor> locations[4];
-    ScopedPointer<TextEditor> fps[4];
-    ScopedPointer<ToggleButton> follows[4];
-    ScopedPointer<TextButton> dels[4];
-    ScopedPointer<TextEditor> ts[4];
-    ScopedPointer<ToggleButton> thresholds[4];
-
     ScopedPointer<ToggleButton> trackThreshold_button;
     ScopedPointer<Label> trackThreshold_button_Label;
 
     ScopedPointer<Slider> stimuliNumberSlider;
     ScopedPointer<TextEditor> stimuliNumber;
     ScopedPointer<Label> stimuliNumberLabel;
+
+    TableContent tcon;
 
     //DEBUG
 

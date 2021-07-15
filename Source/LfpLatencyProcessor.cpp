@@ -259,7 +259,6 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
             }
         }
     }
-
     while(!messages.empty()){
         TextEventPtr event = TextEvent::createTextEvent(getEventChannel(1), CoreServices::getGlobalTimestamp(), messages.front());
 		    addEvent(getEventChannel(0), event, 0);
@@ -270,6 +269,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
         addEvent(getEventChannel(1), event, 0);
         spikes.pop();
     }
+
 }
 
 void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)

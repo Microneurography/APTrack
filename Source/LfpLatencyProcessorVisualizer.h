@@ -134,9 +134,11 @@ private:
 
     int lastSearchBoxLocation;
 
-    int randomSpikeLocations[4] = { 0, 0, 0, 0 };
+
+    Array <int> availableSpace = { 0, 1, 2, 3 };
+
+    Array <int> availableThresholdSpace = { 0, 1, 2, 3 };
     
-    int i = 0;
     int q = 0;
     
     //int draw_imageHeight;
@@ -147,6 +149,8 @@ private:
     
     friend class LfpLatencyProcessorVisualizerContentComponent;
     friend class TableContent;
+    //friend class TableContent::UpdatingTextColumnComponent;
+    //friend class TableContent::SelectableColumnComponent;
 
     // This component contains all components and graphics that were added using Projucer.
     // It's bounds initially have same bounds as the canvas itself.

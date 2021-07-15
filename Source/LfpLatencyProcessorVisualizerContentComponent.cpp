@@ -118,12 +118,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	{
 		stimulusVoltageMin = stof((*valuesMap)["stimulusVoltageMin"].toStdString());
 	}
-
 	if (valuesMap->find("stimulusVoltage") != valuesMap->end())
 	{
 		stimulusVoltage = stof((*valuesMap)["stimulusVoltage"].toStdString());
 	}
-
 	if (valuesMap->find("highImageThreshold") != valuesMap->end())
 	{
 		highImageThreshold = stof((*valuesMap)["highImageThreshold"].toStdString());
@@ -370,34 +368,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	thresholdTracker->autoSizeAllColumns();
 	thresholdTracker->updateContent();*/
 
-	for (int i = 0; i < 4; i++) {
-		addAndMakeVisible(locations[i] = new TextEditor("Location"));
-		locations[i]->setText("0");
-		addAndMakeVisible(fps[i] = new TextEditor("Firing Probability"));
-		fps[i]->setText("0");
-		addAndMakeVisible(follows[i] = new ToggleButton(""));
-		follows[i]->addListener(this);
-		follows[i]->setToggleState(false, sendNotification);
-		follows[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-		addAndMakeVisible(dels[i] = new TextButton(""));
-		dels[i]->addListener(this);
-		dels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-		dels[i]->setToggleState(false, sendNotification);
-		addAndMakeVisible(ts[i] = new TextEditor("Threshold"));
-		ts[i]->setText("0");
-		addAndMakeVisible(thresholds[i] = new ToggleButton(""));
-		thresholds[i]->addListener(this);
-		thresholds[i]->setToggleState(false, sendNotification);
-		thresholds[i]->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::white);
-		//addAndMakeVisible(tdels[i] = new TextButton(""));
-		//tdels[i]->addListener(this);
-		//tdels[i]->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
-		//tdels[i]->setToggleState(false, sendNotification);
-	}
-
-	
-	
-
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	//Debug
@@ -491,16 +461,6 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	spikeTrackerContent = nullptr;
 	//thresholdTracker = nullptr;
 	//thresholdTrackerContent = nullptr;
-	for (int i = 0; i < 4; i++) {
-		locations[i] = nullptr;
-		fps[i] = nullptr;
-		follows[i] = nullptr;
-		dels[i] = nullptr;
-		ts[i] = nullptr;
-		thresholds[i] = nullptr;
-		//tdels[i] = nullptr;
-	}
-	
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -525,9 +485,6 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
 
 
 	
-	//spikeTracker->autoSizeAllColumns();
-	//spikeTracker->updateContent();
-	spikeTracker->updateContent();
 	//thresholdTracker->updateContent();
 }
 
@@ -583,34 +540,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto STtableX = boundsMap["spikeTracker"].getX();
 	auto STtableY = boundsMap["spikeTracker"].getY();
 
-
-	vector<vector<Component*>> tableCells{ 
-		{locations[0], locations[1], locations[2], locations[3]},
-		{fps[0], fps[1], fps[2], fps[3]},
-		{ts[0], ts[1], ts[2], ts[3]},
-		{follows[0], follows[1], follows[2], follows[3]},
-		{thresholds[0], thresholds[1], thresholds[2], thresholds[3]},
-		{dels[0], dels[1], dels[2], dels[3]}
-		//{tdels[0], tdels[1], tdels[2], tdels[3]}
-	};
-
-	for (int i = 0; i < 5; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			tableCells[i][j]->setBounds(spikeTracker->getCellPosition(i + 2, j, false).translated(STtableX, STtableY));
-		}
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		auto cellArea = spikeTracker->getCellPosition(7, i, false).translated(STtableX, STtableY);
-		cellArea = cellArea.withSizeKeepingCentre(40, 18);
-		tableCells[5][i]->setBounds(cellArea);
-	}
-
-
-
 	trackSpike_button->setBounds(780, 126, 120, 24);
 	trackSpike_button_Label->setBounds(665, 126, 120, 24);
 
@@ -630,7 +559,8 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 		spectrogramPanel->changeSearchBoxValue(-5);
 		return true;
 	}
-	else if (k == KeyPress::F1Key) {
+
+	/*else if (k == KeyPress::F1Key) {
 		if (follows[0]->getToggleState() == true) {
 			follows[0]->setToggleState(false, sendNotification);
 			spikeTracker->selectedRowsChanged(0);
@@ -673,7 +603,8 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 			follows[3]->setToggleState(true, sendNotification);
 			return true;
 		}
-	}
+	}*/
+
 
 	auto subsamplesPerWindowValue = spectrogramControlPanel->getSubsamplesPerWindowValue();
 	//Increase subsamplesperwindow
@@ -921,16 +852,8 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			trackThreshold_button->setToggleState(false, sendNotification);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 			(*valuesMap)["trackSpike"] = "0";
-		}
-	}
-	for (int i = 0; i < 4; i++) {
-		if (buttonThatWasClicked == dels[i]) {
-			deletes[i] = true;
-		}
-		//if (buttonThatWasClicked == tdels[i]) {
-			//t_deletes[i] = true;
-		//}
-	}
+    }
+  }
 	if (buttonThatWasClicked->getName() == "Setup") {
 
 		Viewport* view = new Viewport("viewTest");
@@ -1055,7 +978,16 @@ int TableContent::getNumRows() {
 }
 
 TableContent::TableContent() {
-		
+	for (int j = 0; j < 4; j++) {
+		info[j].location = 0;
+		info[j].firingProb = 0;
+		info[j].threshold = 0;
+		trackSpikes[j] = false;
+		newSpikeFound[j] = false;
+		trackThresholds[j] = false;
+	}
+	spikeAlreadyTracked = false;
+	thresholdAlreadyTracked = false;
 }
 
 TableContent::~TableContent() {
@@ -1095,6 +1027,189 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 	else {
 		g.fillAll(Colours::lightgrey);
 	}
+}
+
+Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
+	if (rowNumber < 4) {
+		if (columnId == 7)
+		{
+			auto* deleteButton = static_cast<DeleteComponent*> (exsistingComponetToUpdate);
+
+			if (deleteButton == nullptr)
+			{
+				deleteButton = new DeleteComponent(*this);
+			}
+			else
+			{
+				if (deleteButton->isDown())
+				{
+					deleteSpike[rowNumber] = true;
+				}
+			}
+			return deleteButton;
+		}
+		if (columnId == 5) 
+		{
+			auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
+
+			if (selectionBox == nullptr)
+			{
+				selectionBox = new SelectableColumnComponent(*this);
+			}
+			else
+			{
+				if (trackSpikes[rowNumber] != selectionBox->getToggleState()) 
+				{
+					if (newSpikeFound[rowNumber])
+					{
+						selectionBox->setToggleState(true, sendNotificationAsync);
+						newSpikeFound[rowNumber] = false;
+					}
+					else 
+					{
+						selectionBox->setToggleState(false, sendNotificationAsync);
+					}
+				}
+				trackSpikes[rowNumber] = selectionBox->getToggleState();
+			}
+			return selectionBox;
+		}
+		if (columnId == 6) 
+		{
+			auto* selectionBox = static_cast<SelectableColumnComponent*> (exsistingComponetToUpdate);
+
+			if (selectionBox == nullptr) 
+			{
+				selectionBox = new SelectableColumnComponent(*this);
+			}
+			else
+			{
+				trackThresholds[rowNumber] = selectionBox->getToggleState();
+			}
+			return selectionBox;
+		}
+		if (columnId == 2) 
+		{
+			auto* label = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+
+			if (label == nullptr) 
+			{
+				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
+				label->setText("0");
+			}
+			else
+			{
+				label->setText(to_string(info[rowNumber].location));
+				label->repaint();
+			}
+			return label ;
+		}
+		if (columnId == 3) 
+		{
+			auto* label  = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+
+			if (label == nullptr) 
+			{
+				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
+				label->setText("0");
+			}
+			else
+			{
+				label->setText(to_string(info[rowNumber].firingProb));
+				label->repaint();
+			}
+			return label ;
+		}
+		if (columnId == 4) 
+		{
+			auto* label  = dynamic_cast<UpdatingTextColumnComponent*> (exsistingComponetToUpdate);
+
+			if (label == nullptr) 
+			{
+				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
+				label->setText("0");
+			}
+			else
+			{
+				label->setText(to_string(info[rowNumber].threshold));
+				label->repaint();
+			}
+			return label ;
+		}
+	}
+	jassert(exsistingComponetToUpdate == nullptr);
+	return nullptr;
+
+}
+
+void updateInfo(TableContent& tc, int location, float fp, float threshold, int i) {
+	tc.info[i].location = location;
+	tc.info[i].firingProb = fp;
+	tc.info[i].threshold = threshold;
+}
+
+bool getSpikeSelect(TableContent& tc, int row)
+{
+	return tc.trackSpikes[row];
+}
+
+bool getThresholdSelect(TableContent& tc, int row)
+{
+	return tc.trackThresholds[row];
+}
+
+void selectSpikeDefault(TableContent& tc, int row)
+{
+	tc.trackSpikes[row] = true;
+	tc.newSpikeFound[row] = true;
+}
+
+void selectThreshold(TableContent& tc, int row)
+{
+	tc.trackThresholds[row] = true;
+}
+
+bool getSpikeToDelete(TableContent& tc, int row)
+{
+	return tc.deleteSpike[row];
+}
+
+void deleteSpikeAndThreshold(TableContent& tc, int row)
+{
+	tc.trackSpikes[row] = false;
+	tc.trackThresholds[row] = false;
+	tc.deleteSpike[row] = false;
+}
+
+TableContent::UpdatingTextColumnComponent::UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber) : owner(tcon)
+{
+	addAndMakeVisible(value = new TextEditor("_"));
+}
+
+TableContent::UpdatingTextColumnComponent::~UpdatingTextColumnComponent() 
+{
+	value = nullptr;
+}
+
+TableContent::SelectableColumnComponent::SelectableColumnComponent(TableContent& tcon) : owner(tcon)
+{
+	addAndMakeVisible(toggleButton = new ToggleButton);
+}
+
+TableContent::SelectableColumnComponent::~SelectableColumnComponent()
+{
+	toggleButton = nullptr;
+}
+
+TableContent::DeleteComponent::DeleteComponent(TableContent& tcon) : owner(tcon)
+{
+	addAndMakeVisible(del = new TextButton);
+	del->setColour(TextButton::ColourIds::buttonColourId, Colours::white);
+}
+
+TableContent::DeleteComponent::~DeleteComponent()
+{
+	del = nullptr;
 }
 
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
@@ -1144,19 +1259,19 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 			colour = Colours::red;
 		}
 	}
-	else if (follows[0]->getToggleState() == true) 
+	else if (getSpikeSelect(*spikeTrackerContent, 0)) 
 	{
 		colour = Colours::lightsteelblue;
 	}
-	else if (follows[1]->getToggleState() == true) 
+	else if (getSpikeSelect(*spikeTrackerContent, 1))
 	{
 		colour = Colours::lightskyblue;
 	}
-	else if (follows[2]->getToggleState() == true)
+	else if (getSpikeSelect(*spikeTrackerContent, 2))
 	{
 		colour = Colours::darkgreen;
 	}
-	else if (follows[3]->getToggleState() == true)
+	else if (getSpikeSelect(*spikeTrackerContent, 3))
 	{
 		colour = Colours::orange;
 	}

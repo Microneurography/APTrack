@@ -129,6 +129,7 @@ void LfpLatencyProcessorVisualizer::update()
 	{
 		content.triggerChannelComboBox->setSelectedId(0);
 		processor->resetTriggerChannel();
+
 	}
 	// data channel combobox
 	if (content.dataChannelComboBox->getNumItems() <= last_dataChannelID)
@@ -181,7 +182,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	{
 		processor->resetEventFlag();
 		processTrack();
-
+		content.spikeTracker->visibilityChanged();
 	}
 
     
@@ -220,27 +221,13 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 	//Keep the spike location values updated
 	for (int q = 0; q < 4; q++) {
-		if (spikeLocations[q].isFull == true) {
+		if (spikeLocations[q].isFull == true) 
+		{
 			updateSpikeInfo(q);
-			content.locations[q]->setText(String(spikeLocations[q].SLR));
-			content.fps[q]->setText(String(spikeLocations[q].firingProbability));
-			content.ts[q]->setText(String(spikeLocations[q].bigStim));
+			updateInfo(*content.spikeTrackerContent , spikeLocations[q].SLR, spikeLocations[q].firingProbability, spikeLocations[q].bigStim, q);
 		}
-		if (content.deletes[q] == true) {
-			content.follows[q]->setToggleState(false, sendNotification);
-			spikeLocations[q];
-			spikeLocations[q].isFull = false;
-			content.locations[q]->setText("0");
-			content.fps[q]->setText("0");
-			content.dels[q]->setToggleState(false, sendNotification);
-			std::cout << "Spike " << q << " Deleted" << endl;
-			processor->addSpike("SPIKE " + to_string(q) + " DELETED");
-			content.deletes[q] = false;
-		}
-		if (content.follows[q]->getToggleState() == true) {
-			for (int n = 0; n < 4; n++)
-				if (n == q) continue;
-				else content.follows[n]->setToggleState(false, sendNotification);
+		if (getSpikeSelect(*content.spikeTrackerContent, q)) 
+		{
 			content.trackSpike_button->setToggleState(false, sendNotification);
 			content.spikeTracker->selectedRowsChanged(q);
 			setConfig(q);
@@ -249,14 +236,22 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.rightMiddlePanel->setROISpikeMagnitudeText(String(spikeLocations[q].MAXLEVEL, 1));
 			content.rightMiddlePanel->setROISpikeLatencyText(String(spikeLocations[q].SLA / 30.0f, 1));
 		}
-		if (content.thresholds[q]->getToggleState() == true) {
-			for (int n = 0; n < 4; n++)
-				if (n == q) continue;
-				else content.thresholds[n]->setToggleState(false, sendNotification);
+		if (getThresholdSelect(*content.spikeTrackerContent, q)) 
+		{
 			content.trackThreshold_button->setToggleState(false, sendNotification);
 			updateSpikeInfo(q);
 			content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
 			content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
+		}
+		if (getSpikeToDelete(*content.spikeTrackerContent, q)) 
+		{
+			deleteSpikeAndThreshold(*content.spikeTrackerContent, q);
+			spikeLocations[q] = {};
+			spikeLocations[q].isFull = false;
+			updateInfo(*content.spikeTrackerContent, 0, 0.0f, 0.0f, q);
+			std::cout << "Spike " << q << " Deleted" << endl;
+			availableSpace.add(q);
+			availableThresholdSpace.add(q);
 		}
 	}
 
@@ -271,15 +266,14 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (maxLevel > content.detectionThreshold)
 		{
 			content.spikeDetected = true;
-			//content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
-			
-
+			content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
+      
 			//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
-			if (lastSearchBoxLocation == content.searchBoxLocation || spikeLocations[i].isFull == true) {
+			if (lastSearchBoxLocation == content.searchBoxLocation) {
 				content.newSpikeDetected = false;
 			}
-			else {
-				//content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
+			else  if (!availableSpace.isEmpty()) {
+				int i = availableSpace[0];
 				content.newSpikeDetected = true;
 				cout << "Spike Found" << endl;
 				spikeLocations[i].startingSample = content.startingSample;
@@ -290,7 +284,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].isFull = true;
 				lastSearchBoxLocation = content.searchBoxLocation;
 				spikeLocations[i].firingNumber++;
-				auto clock = Time::getCurrentTime();
+				spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
+								auto clock = Time::getCurrentTime();
 				auto time = clock.toString(false, true, true, false);
 				auto string_time = time.toStdString();
 				processor->addSpike(string_time + 
@@ -306,22 +301,28 @@ void LfpLatencyProcessorVisualizer::processTrack()
 					to_string(spikeLocations[i].subsamples) + 
 					" Search Box Width: " + 
 					to_string(spikeLocations[i].searchBoxWidth));
-				spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
-
+        content.trackSpike_button->setToggleState(false, sendNotification);
+				selectSpikeDefault(*content.spikeTrackerContent, i);
 				
-				if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
+				if (content.trackThreshold_button->getToggleState() == true && !availableThresholdSpace.isEmpty())
 				{
-					spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-					spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
-					spikeLocations[i].thresholdFull = true;
+					int p = availableThresholdSpace[0];
+					spikeLocations[p].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+					spikeLocations[p].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+					spikeLocations[p].thresholdFull = true;
 					//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
 					//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
 				}
+				availableSpace.remove(0);
+				availableThresholdSpace.remove(0);
 			}
-			//Reset spike array counter when it reaches four, allows for new spikes to be found once old ones are deleted
-			i++;
-			if (i == 4)
-				i = 0;
+			if (availableSpace.isEmpty()) {
+				cout << "NO SPACE FOR NEW SPIKE IN TABLE" << endl;
+			}
+			if (availableThresholdSpace.isEmpty()) {
+				cout << "NO SPACE FOR THRESHOLD IN TABLE" << endl;
+			}
+
 
 		}
 		else
@@ -336,10 +337,10 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
 				spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 				spikeLocations[i].thresholdFull = true;
+        availableThresholdSpace.remove(0);
 				//content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
 				//content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
 			}
-
 		}
 	}
 	

@@ -122,6 +122,7 @@ public:
 
     //virtual void createSpikeChannels() override;
 
+
     /** Optional method called every time the signal chain is refreshed or changed in any way.
 
         Allows the processor to handle variations in the channel configuration or any other parameter
@@ -193,20 +194,18 @@ public:
     int currentTrack;
     int currentSample;
 
-	//debug
-	float getParameterFloat(int parameterID);
-	//Result makingFile;
+	 //debug
+	 float getParameterFloat(int parameterID);
+	 //Result makingFile;
 
+   //Functions used to save data
+   void addMessage(std::string message);
 
-    
-    //Functions used to save data
-    void addMessage(std::string message);
-
-    void addSpike(std::string spike);
+   void addSpike(std::string spike);
 
 private:
 
-    friend class ppController;
+   friend class ppController;
 
 	//debug
 	float lastReceivedDACPulse;
@@ -242,6 +241,8 @@ private:
     
     std::queue<String> messages;
     std::queue<String> spikes;
+    
+    std::queue<String> messages;
     
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessor);
