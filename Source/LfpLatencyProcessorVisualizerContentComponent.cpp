@@ -252,20 +252,20 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	dataChannelComboBoxLabel = new Label("Data_Channel_Combo_Box_Label");
 	dataChannelComboBoxLabel->setText("Data Channel", sendNotification);
 
-	trackSpike_button = new ToggleButton("");
+	/*trackSpike_button = new ToggleButton("");
 	trackSpike_button->addListener(this);
 	trackSpike_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
 	trackSpike_button_Label = new Label("track_spike_button_label");
-	trackSpike_button_Label->setText("Track Spike", sendNotification);
+	trackSpike_button_Label->setText("Track Spike", sendNotification);*/
 
-	trackThreshold_button = new ToggleButton("");
+	/*trackThreshold_button = new ToggleButton("");
 	trackThreshold_button->addListener(this);
 	trackThreshold_button->setToggleState(false, sendNotification);
 	trackThreshold_button->setEnabled(trackSpike_button->getToggleState());
 	trackThreshold_button->setColour(ToggleButton::ColourIds::tickDisabledColourId, Colours::lightgrey);
 	trackThreshold_button_Label = new Label("track_threshold_button_label");
 	trackThreshold_button_Label->setText("Track Threshold", sendNotification);
-	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
+	trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);*/
 
 	stimuliNumberSlider = new Slider("stimuliNumberSlider");
 	stimuliNumberSlider->setRange(1, 10, 1);
@@ -352,8 +352,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
 	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
 	spikeTracker->getHeader().addColumn("Threshold Value", 4, 100);
-	spikeTracker->getHeader().addColumn("Select Spike", 5, 100);
-	spikeTracker->getHeader().addColumn("Select Threshold", 6, 100);
+	spikeTracker->getHeader().addColumn("Track Spike", 5, 100);
+	spikeTracker->getHeader().addColumn("Track Threshold", 6, 100);
 	spikeTracker->getHeader().addColumn("Delete", 7, 50);
 	spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
@@ -408,7 +408,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 		extendedColorScaleToggleButton->setToggleState(false, sendNotification);
 	}
 
-	if (valuesMap->find("trackSpike") != valuesMap->end())
+	/*if (valuesMap->find("trackSpike") != valuesMap->end())
 	{
 		if ((*valuesMap)["trackSpike"] == "1")
 		{
@@ -422,7 +422,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	else
 	{
 		trackSpike_button->setToggleState(false, sendNotification);
-	}
+	}*/
 	otherControlPanel = new LfpLatencyOtherControlPanel(this);
 	addAndMakeVisible(otherControlPanel);
 	otherControlPanel->toBack();
@@ -454,8 +454,8 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 	triggerChannelComboBox = nullptr;
 	dataChannelComboBox = nullptr;
 
-	trackThreshold_button = nullptr;
-	trackSpike_button = nullptr;
+	//trackThreshold_button = nullptr;
+	//trackSpike_button = nullptr;
 	
 	spikeTracker = nullptr;
 	spikeTrackerContent = nullptr;
@@ -541,11 +541,11 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto STtableX = boundsMap["spikeTracker"].getX();
 	auto STtableY = boundsMap["spikeTracker"].getY();
 
-	trackSpike_button->setBounds(780, 126, 120, 24);
-	trackSpike_button_Label->setBounds(665, 126, 120, 24);
+	//trackSpike_button->setBounds(780, 126, 120, 24);
+	//trackSpike_button_Label->setBounds(665, 126, 120, 24);
 
-	trackThreshold_button->setBounds(780, 155, 120, 24);
-	trackThreshold_button_Label->setBounds(665, 155, 120, 24);
+	//trackThreshold_button->setBounds(780, 155, 120, 24);
+	//trackThreshold_button_Label->setBounds(665, 155, 120, 24);
 }
 
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {
@@ -840,7 +840,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			(*valuesMap)["extendedColorScale"] = "0";
         }
     }
-	if (buttonThatWasClicked == trackSpike_button)
+	/*if (buttonThatWasClicked == trackSpike_button)
 	{
 		if (buttonThatWasClicked->getToggleState() == true) {
 			trackThreshold_button->setEnabled(true);
@@ -853,8 +853,8 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			trackThreshold_button->setToggleState(false, sendNotification);
 			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
 			(*valuesMap)["trackSpike"] = "0";
-    }
-  }
+		}
+    }*/
 	if (buttonThatWasClicked->getName() == "Setup") {
 
 		Viewport* view = new Viewport("viewTest");
@@ -915,11 +915,11 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		view->addAndMakeVisible(extendedColorScaleToggleButton);
 		view->addAndMakeVisible(extendedColorScaleToggleButtonLabel);
 
-		view->addAndMakeVisible(trackSpike_button);
-		view->addAndMakeVisible(trackSpike_button_Label);
+		//view->addAndMakeVisible(trackSpike_button);
+		//view->addAndMakeVisible(trackSpike_button_Label);
 
-		view->addAndMakeVisible(trackThreshold_button);
-		view->addAndMakeVisible(trackThreshold_button_Label);
+		//view->addAndMakeVisible(trackThreshold_button);
+		//view->addAndMakeVisible(trackThreshold_button_Label);
 
 		view->addAndMakeVisible(triggerChannelComboBox);
 		view->addAndMakeVisible(triggerChannelComboBoxLabel);
@@ -937,23 +937,23 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		extendedColorScaleToggleButton->setBounds(135, 40, 24, 24);
 		extendedColorScaleToggleButtonLabel->setBounds(10, 40, 120, 24);
 
-		trackSpike_button->setBounds(135, 70, 120, 24);
-		trackSpike_button_Label->setBounds(10, 70, 120, 24);
+		//trackSpike_button->setBounds(135, 70, 120, 24);
+		//trackSpike_button_Label->setBounds(10, 70, 120, 24);
 
-		trackThreshold_button->setBounds(135, 100, 120, 24);
-		trackThreshold_button_Label->setBounds(10, 100, 120, 24);
+		//trackThreshold_button->setBounds(135, 100, 120, 24);
+		//trackThreshold_button_Label->setBounds(10, 100, 120, 24);
 
-		triggerChannelComboBox->setBounds(135, 130, 120, 24);
-		triggerChannelComboBoxLabel->setBounds(10, 130, 120, 24);
+		triggerChannelComboBox->setBounds(135, 70, 120, 24);
+		triggerChannelComboBoxLabel->setBounds(10, 70, 120, 24);
 
-		dataChannelComboBox->setBounds(135, 160, 120, 24);
-		dataChannelComboBoxLabel->setBounds(10, 160, 120, 24); // fine
+		dataChannelComboBox->setBounds(135, 100, 120, 24);
+		dataChannelComboBoxLabel->setBounds(10, 100, 120, 24); // fine
 
-		stimuliNumberSlider->setBounds(114, 220, 72, 72);
-		stimuliNumber->setBounds(135, 190, 72, 24);
-		stimuliNumberLabel->setBounds(10, 190, 120, 24);
+		stimuliNumberSlider->setBounds(114, 160, 72, 72);
+		stimuliNumber->setBounds(135, 130, 72, 24);
+		stimuliNumberLabel->setBounds(10, 130, 120, 24);
 
-		view->setSize(300, 300);
+		view->setSize(300, 260);
 
 		auto& setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
@@ -985,7 +985,9 @@ TableContent::TableContent() {
 		info[j].threshold = 0;
 		trackSpikes[j] = false;
 		newSpikeFound[j] = false;
+		newThresholdFound[j] = false;
 		trackThresholds[j] = false;
+		deleteSpike[j] = false;
 	}
 	spikeAlreadyTracked = false;
 	thresholdAlreadyTracked = false;
@@ -1059,7 +1061,7 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 			}
 			else
 			{
-				if (trackSpikes[rowNumber] != selectionBox->getToggleState()) 
+				/*if (trackSpikes[rowNumber] != selectionBox->getToggleState()) 
 				{
 					if (newSpikeFound[rowNumber])
 					{
@@ -1070,7 +1072,7 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 					{
 						selectionBox->setToggleState(false, sendNotificationAsync);
 					}
-				}
+				}*/
 				trackSpikes[rowNumber] = selectionBox->getToggleState();
 			}
 			return selectionBox;
@@ -1085,7 +1087,7 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 			}
 			else
 			{
-				if (trackThresholds[rowNumber] != selectionBox->getToggleState())
+				/*if (trackThresholds[rowNumber] != selectionBox->getToggleState())
 				{
 					if (newThresholdFound[rowNumber])
 					{
@@ -1096,7 +1098,7 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 					{
 						selectionBox->setToggleState(false, sendNotificationAsync);
 					}
-				}
+				}*/
 				trackThresholds[rowNumber] = selectionBox->getToggleState();
 			}
 			return selectionBox;
@@ -1169,6 +1171,31 @@ bool getSpikeSelect(TableContent& tc, int row)
 bool getThresholdSelect(TableContent& tc, int row)
 {
 	return tc.trackThresholds[row];
+}
+
+Array <bool> getRow(TableContent& tc, bool spike, bool threshold)
+{
+	Array <bool> rowsSelected;
+	for (int x = 0; x < 4; x++)
+	{
+		if (tc.trackSpikes[x] && spike)
+		{
+			rowsSelected.insert(x, true);
+		}
+		else
+		{
+			rowsSelected.insert(x, false);
+		}
+		if (tc.trackThresholds[x] && threshold)
+		{
+			rowsSelected.insert(x + 4, true);
+		}
+		else
+		{
+			rowsSelected.insert(x + 4, false);
+		}
+	}
+	return rowsSelected;
 }
 
 void selectSpikeDefault(TableContent& tc, int row)
@@ -1269,7 +1296,7 @@ int LfpLatencyProcessorVisualizerContentComponent::getColorStyleComboBoxSelected
 std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerContentComponent::getSearchBoxInfo() const
 {
 	Colour colour;
-	if (trackSpike_button->getToggleState() == true)
+	/*if (trackSpike_button->getToggleState() == true)
 	{
 		if (spikeDetected) {
 			colour = Colours::green;
@@ -1277,8 +1304,8 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 		else {
 			colour = Colours::red;
 		}
-	}
-	else if (getSpikeSelect(*spikeTrackerContent, 0)) 
+	}*/
+	if (getSpikeSelect(*spikeTrackerContent, 0)) 
 	{
 		colour = Colours::lightsteelblue;
 	}

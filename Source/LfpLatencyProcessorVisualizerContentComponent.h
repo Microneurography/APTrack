@@ -27,6 +27,7 @@ public:
     friend void updateInfo(TableContent &tc, int location, float fp, float threshold, int i);
     friend bool getSpikeSelect(TableContent& tc, int row);
     friend bool getThresholdSelect(TableContent& tc, int row);
+    friend Array <bool> getRow(TableContent& tc, bool spike, bool threshold);
     friend void selectSpikeDefault(TableContent& tc, int row);
     friend void selectThresholdDefault(TableContent& tc, int row);
     friend void selectThreshold(TableContent& tc, int row);
@@ -239,13 +240,14 @@ private:
 	ScopedPointer<Label> dataChannelComboBoxLabel;
 
     ScopedPointer<Slider> Trigger_threshold; //TODO
-    ScopedPointer<ToggleButton> trackSpike_button;
-    ScopedPointer<Label> trackSpike_button_Label;
+    
+    //ScopedPointer<ToggleButton> trackSpike_button;
+    //ScopedPointer<Label> trackSpike_button_Label;
 
     ScopedPointer<TableListBox> spikeTracker;
 
-    ScopedPointer<ToggleButton> trackThreshold_button;
-    ScopedPointer<Label> trackThreshold_button_Label;
+    //ScopedPointer<ToggleButton> trackThreshold_button;
+    //ScopedPointer<Label> trackThreshold_button_Label;
 
     ScopedPointer<Slider> stimuliNumberSlider;
     ScopedPointer<TextEditor> stimuliNumber;
