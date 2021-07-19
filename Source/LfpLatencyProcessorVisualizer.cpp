@@ -391,7 +391,8 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 		}
 		else if (spikeLocations[i].firingNumbers.size() == content.stimuli) {
 			spikeLocations[i].firingProbability = spikeLocations[i].firingNumbers[content.stimuli - 1] / content.stimuli;
-			spikeLocations[i].firingNumbers.remove(0);
+			spikeLocations[i].firingNumbers.clear();
+			spikeLocations[i].firingNumber = 0;
 		}
 	}
 	else if (spikeLocations[i].thresholdFull == true) {
