@@ -370,14 +370,14 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i)
 			spikeLocations[i].firingNumber++;
 			if (spikeLocations[i].thresholdFull || getThresholdSelect(*content.spikeTrackerContent, i)) 
 			{
-				spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+				spikeLocations[i].stimVol = spikeLocations[i].bigStim - std::abs(content.trackSpike_DecreaseRate);
 				spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
 				spikeLocations[i].thresholdFull = true;
 			}
 		}
 		else if (spikeLocations[i].MAXLEVEL <= content.detectionThreshold && (spikeLocations[i].thresholdFull || getThresholdSelect(*content.spikeTrackerContent, i))) 
 		{
-			spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
+			spikeLocations[i].stimVol = spikeLocations[i].bigStim + std::abs(content.trackSpike_IncreaseRate);
 			spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 			spikeLocations[i].thresholdFull = true;
 		}
@@ -408,7 +408,7 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i)
 	}
 	else if (spikeLocations[i].thresholdFull == true) 
 	{
-		spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
+		spikeLocations[i].stimVol = spikeLocations[i].bigStim + std::abs(content.trackSpike_IncreaseRate);
 		spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 	}
 
