@@ -44,6 +44,7 @@ jobs:
           cd Build
           cmake ..
           cmake --build . --config Release
+          tar -zcvf OE-plugin-latency-tracker.bundle.tar.gz OE-plugin-latency-tracker.bundle
       - name: testing
         working-directory: OEPlugins/OE-plugin-latency-tracker/Build
         run : |
