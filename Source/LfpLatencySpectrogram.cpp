@@ -17,6 +17,7 @@ void LfpLatencySpectrogram::paint(Graphics& g)
         area.getX(), area.getY(), 
         area.getWidth(), area.getHeight(), 
         RectanglePlacement(RectanglePlacement::stretchToFit));
+    
 }
 
 int LfpLatencySpectrogram::getImageHeight() const

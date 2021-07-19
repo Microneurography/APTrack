@@ -63,6 +63,28 @@ void LfpLatencySpectrogramPanel::resized()
     searchBoxRectangle->setBounds(area);
 }
 
+void LfpLatencySpectrogramPanel::paint(Graphics& g)
+{
+    auto area = getLocalBounds();
+    
+    auto widthOfSearchBox = 80;
+    auto searchBoxArea = area.removeFromRight(widthOfSearchBox);
+    searchBoxArea.setX(searchBoxArea.getX() - 25);
+    searchBoxArea.setWidth(searchBoxArea.getWidth() - 78);
+    searchBoxArea.setHeight(area.getHeight() - 104);
+    searchBoxArea.setY(area.getY() + 20);
+    
+    g.setColour(Colours::white);
+    g.fillRect(searchBoxArea);
+
+    for (int y = searchBoxArea.getY(); y <= searchBoxArea.getY()+searchBoxArea.getHeight(); y += (searchBoxArea.getY() + searchBoxArea.getHeight()) / 30)
+    {
+        g.fillRect(searchBoxArea.getX(), y, 14, 2);
+        //g.drawText(to_string(y), searchBoxArea.getX() + 25, y, 25, 25, Justification::centredRight);
+    }
+
+}
+
 void LfpLatencySpectrogramPanel::updateSpectrogram(LfpLatencyProcessor& processor, const LfpLatencyProcessorVisualizerContentComponent& content)
 {
     spectrogram->update(processor, content);

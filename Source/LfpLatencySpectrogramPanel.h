@@ -16,6 +16,7 @@ class LfpLatencySpectrogramPanel : public Component
 public:
     LfpLatencySpectrogramPanel(LfpLatencyProcessorVisualizerContentComponent* content);
     void resized() override;
+    void paint(Graphics& g) override;
 
     void updateSpectrogram(LfpLatencyProcessor& processor, const LfpLatencyProcessorVisualizerContentComponent& content);
     void setSearchBoxValue(double newValue);

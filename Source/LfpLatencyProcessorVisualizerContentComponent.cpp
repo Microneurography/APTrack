@@ -481,6 +481,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paint (Graphics& g)
     g.fillAll (Colours::grey);
     g.setOpacity (1.0f);
 
+
 	//Paint is called constatnly, so the cells should be paiting the new number in them
 
 
