@@ -406,7 +406,7 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i)
 			spikeLocations[i].firingNumber = 0;
 		}
 	}
-	else if (spikeLocations[i].thresholdFull == true) 
+	else if (spikeLocations[i].thresholdFull == true || getThresholdSelect(*content.spikeTrackerContent, i)) 
 	{
 		spikeLocations[i].stimVol = spikeLocations[i].bigStim + std::abs(content.trackSpike_IncreaseRate);
 		spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
