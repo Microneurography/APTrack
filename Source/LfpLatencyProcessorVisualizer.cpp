@@ -219,6 +219,8 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 	int SpikeLocationRel= (SpikeLocationAbs - content.startingSample) / content.subsamplesPerWindow;
 
+	Array <bool> rowsSelected = getRow(*content.spikeTrackerContent, true, true);
+
 	//Keep the spike location values updated
 	for (int q = 0; q < 4; q++) {
 		if (spikeLocations[q].isFull == true) 
@@ -231,9 +233,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			updateSpikeInfo(q);
 			updateInfo(*content.spikeTrackerContent, 0, 0.0f, spikeLocations[q].bigStim, q);
 		}
-		if (getSpikeSelect(*content.spikeTrackerContent, q)) 
+		if (getSpikeSelect(*content.spikeTrackerContent, q) && spikeLocations[q].isFull) 
 		{
-			content.trackSpike_button->setToggleState(false, sendNotification);
+			//content.trackSpike_button->setToggleState(false, sendNotification);
 			content.spikeTracker->selectedRowsChanged(q);
 			setConfig(q);
 			updateSpikeInfo(q);
@@ -241,9 +243,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.rightMiddlePanel->setROISpikeMagnitudeText(String(spikeLocations[q].MAXLEVEL, 1));
 			content.rightMiddlePanel->setROISpikeLatencyText(String(spikeLocations[q].SLA / 30.0f, 1));
 		}
-		if (getThresholdSelect(*content.spikeTrackerContent, q)) 
+		if (getThresholdSelect(*content.spikeTrackerContent, q) && spikeLocations[q].thresholdFull) 
 		{
-			content.trackThreshold_button->setToggleState(false, sendNotification);
+			//content.trackThreshold_button->setToggleState(false, sendNotification);
 			updateSpikeInfo(q);
 			content.stimulusVoltageSlider->setValue(spikeLocations[q].bigStim);
 			content.ppControllerComponent->setStimulusVoltage(spikeLocations[q].bigStim);
@@ -252,125 +254,154 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		{
 			deleteSpikeAndThreshold(*content.spikeTrackerContent, q);
 			spikeLocations[q] = {};
+			lastSearchBoxLocation = 0;
 			spikeLocations[q].isFull = false;
 			spikeLocations[q].thresholdFull = false;
 			updateInfo(*content.spikeTrackerContent, 0, 0.0f, 0.0f, q);
 			std::cout << "Spike " << q << " Deleted" << endl;
-			availableSpace.add(q);
-			availableThresholdSpace.add(q);
+			content.rightMiddlePanel->setROISpikeMagnitudeText(String(0));
+			content.rightMiddlePanel->setROISpikeLatencyText(String(0));
+			//availableSpace.add(q);
+			//availableThresholdSpace.add(q);
 		}
-	}
+	
+	
 
 	//display values
 	//content.rightMiddlePanel->setROISpikeMagnitudeText(String(maxLevel, 1));
 	//content.rightMiddlePanel->setROISpikeLatencyText(String(SpikeLocationAbs / 30.0f, 1));
 
 	// If we have enabled spike tracking the track spike
-	if (content.trackSpike_button->getToggleState() == true) {
-
-		// Check for spike inside ROI box
-		if (maxLevel > content.detectionThreshold)
+		if (rowsSelected[q]) 
 		{
-			content.spikeDetected = true;
 
-			content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
-      
-			//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
-			if (lastSearchBoxLocation == content.searchBoxLocation) {
-				content.newSpikeDetected = false;
-			}
-			else  if (!availableSpace.isEmpty()) {
-				int i = availableSpace[0];
-				content.newSpikeDetected = true;
-				cout << "Spike Found" << endl;
-				spikeLocations[i].startingSample = content.startingSample;
-				spikeLocations[i].searchBoxLocation = content.searchBoxLocation;
-				spikeLocations[i].subsamples = content.subsamplesPerWindow;
-				spikeLocations[i].searchBoxWidth = content.searchBoxWidth;
-				spikeLocations[i].lastRowData = lastRowData;
-				spikeLocations[i].isFull = true;
-				lastSearchBoxLocation = content.searchBoxLocation;
-				spikeLocations[i].firingNumber++;
-				spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
-				auto clock = Time::getCurrentTime();
-				auto time = clock.toString(false, true, true, false);
-				auto string_time = time.toStdString();
-				processor->addSpike(string_time + 
-					" Current Sample Number: " + 
-					to_string(processor->currentSample) + 
-					" Current Track Number: " + 
-					to_string(processor->currentTrack) + 
-					" SPIKE FOUND Location: " + 
-					to_string(spikeLocations[i].searchBoxLocation) + 
-					" StartingSample: " + 
-					to_string(spikeLocations[i].startingSample) + 
-					" Subsamples per Window: " + 
-					to_string(spikeLocations[i].subsamples) + 
-					" Search Box Width: " + 
-					to_string(spikeLocations[i].searchBoxWidth));
-				content.trackSpike_button->setToggleState(false, sendNotification);
-				selectSpikeDefault(*content.spikeTrackerContent, i);
-				availableSpace.remove(0);
-				
-				if (content.trackThreshold_button->getToggleState() == true && !availableThresholdSpace.isEmpty())
-				{
-					int p = availableThresholdSpace[0];
-					spikeLocations[p].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-					spikeLocations[p].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
-					spikeLocations[p].thresholdFull = true;
-					content.trackThreshold_button->setToggleState(false, sendNotification);
-					selectThresholdDefault(*content.spikeTrackerContent, p);
-					availableThresholdSpace.remove(0);
-				}
-			}
-			if (availableSpace.isEmpty()) {
-				cout << "NO SPACE FOR NEW SPIKE IN TABLE" << endl;
-			}
-			if (availableThresholdSpace.isEmpty()) {
-				cout << "NO SPACE FOR THRESHOLD IN TABLE" << endl;
-			}
-
-
-		}
-		else
-		{
-			content.spikeDetected = false;
-			content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
-
-			// If we have enabled threshold tracking then update threshold:
-			if (content.trackThreshold_button->getToggleState() == true && spikeLocations[i].thresholdFull == false)
+			// Check for spike inside ROI box
+			if (maxLevel > content.detectionThreshold)
 			{
-				//No spike, increase stimulation
-				int p = availableThresholdSpace[0];
-				spikeLocations[p].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
-				spikeLocations[p].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
-				spikeLocations[p].thresholdFull = true;
-				content.trackThreshold_button->setToggleState(false, sendNotification);
-				selectThresholdDefault(*content.spikeTrackerContent, p);
-				availableThresholdSpace.remove(0);
+				content.spikeDetected = true;
+
+				content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
+
+				//Check if spike is a repeat based on last location, and make sure the current spikeinfo is empty
+				if (lastSearchBoxLocation == content.searchBoxLocation) 
+				{
+					content.newSpikeDetected = false;
+				}
+				else  if (!spikeLocations[q].isFull) 
+				{
+					//int i = availableSpace[0];
+					content.newSpikeDetected = true;
+					cout << "Spike Found" << endl;
+					spikeLocations[q].startingSample = content.startingSample;
+					spikeLocations[q].searchBoxLocation = content.searchBoxLocation;
+					spikeLocations[q].subsamples = content.subsamplesPerWindow;
+					spikeLocations[q].searchBoxWidth = content.searchBoxWidth;
+					spikeLocations[q].lastRowData = lastRowData;
+					spikeLocations[q].isFull = true;
+					lastSearchBoxLocation = content.searchBoxLocation;
+					spikeLocations[q].firingNumber++;
+					spikeLocations[q].firingNumbers.add(spikeLocations[q].firingNumber);
+					auto clock = Time::getCurrentTime();
+					auto time = clock.toString(false, true, true, false);
+					auto string_time = time.toStdString();
+					processor->addSpike(string_time +
+						" Current Sample Number: " +
+						to_string(processor->currentSample) +
+						" Current Track Number: " +
+						to_string(processor->currentTrack) +
+						" SPIKE FOUND Location: " +
+						to_string(spikeLocations[q].searchBoxLocation) +
+						" StartingSample: " +
+						to_string(spikeLocations[q].startingSample) +
+						" Subsamples per Window: " +
+						to_string(spikeLocations[q].subsamples) +
+						" Search Box Width: " +
+						to_string(spikeLocations[q].searchBoxWidth));
+					//content.trackSpike_button->setToggleState(false, sendNotification);
+					//selectSpikeDefault(*content.spikeTrackerContent, q);
+					//availableSpace.remove(0);
+
+					if (rowsSelected[q + 4] == true && !spikeLocations[q].thresholdFull)
+					{
+						//int p = availableThresholdSpace[0];
+						spikeLocations[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+						spikeLocations[q].bigStim = std::max(spikeLocations[q].stimVol, content.stimulusVoltageMin);
+						spikeLocations[q].thresholdFull = true;
+						//content.trackThreshold_button->setToggleState(false, sendNotification);
+						//selectThresholdDefault(*content.spikeTrackerContent, q);
+						//availableThresholdSpace.remove(0);
+					}
+				}
+
 			}
+			else
+			{
+				content.spikeDetected = false;
+				content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
+
+				// If we have enabled threshold tracking then update threshold:
+			}
+		}
+		 else if (rowsSelected[q + 4] == true && !spikeLocations[q].thresholdFull)
+		{
+			//No spike, increase stimulation
+			//int p = availableThresholdSpace[0];
+			spikeLocations[q].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
+			spikeLocations[q].bigStim = std::min(spikeLocations[q].stimVol, content.stimulusVoltageMax);
+			spikeLocations[q].thresholdFull = true;
+			//content.trackThreshold_button->setToggleState(false, sendNotification);
+			//selectThresholdDefault(*content.spikeTrackerContent, q);
+			//availableThresholdSpace.remove(0);
 		}
 	}
 	
 }
 
-void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
+void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) 
+{
 	
-	if (spikeLocations[i].isFull) {
+	if (spikeLocations[i].isFull) 
+	{
 		spikeLocations[i].lastRowData = processor->getdataCacheRow(1);
 		spikeLocations[i].SBLA = spikeLocations[i].startingSample + spikeLocations[i].searchBoxLocation * spikeLocations[i].subsamples;
 		spikeLocations[i].SBWA = spikeLocations[i].searchBoxWidth * spikeLocations[i].subsamples;
 		spikeLocations[i].MAXLEVEL = FloatVectorOperations::findMaximum(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].SBWA * 2 + spikeLocations[i].subsamples);
-		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold) {
+		if (spikeLocations[i].MAXLEVEL > content.detectionThreshold) 
+		{
 			spikeLocations[i].firingNumber++;
-			if (spikeLocations[i].thresholdFull == true) {
-				spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
-				spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+			if (getThresholdSelect(*content.spikeTrackerContent, i)) 
+			{
+				if (!spikeLocations[i].thresholdFull)
+				{
+					spikeLocations[i].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate);
+					spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+					spikeLocations[i].thresholdFull = true;
+				}
+				else if (spikeLocations[i].thresholdFull)
+				{
+					spikeLocations[i].stimVol = spikeLocations[i].bigStim - std::abs(content.trackSpike_DecreaseRate);
+					spikeLocations[i].bigStim = std::max(spikeLocations[i].stimVol, content.stimulusVoltageMin);
+					spikeLocations[i].thresholdFull = true;
+				}
 			}
 		}
-		else if (spikeLocations[i].MAXLEVEL <= content.detectionThreshold && spikeLocations[i].thresholdFull == true) {
-			spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
-			spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
+		else if (spikeLocations[i].MAXLEVEL <= content.detectionThreshold && (spikeLocations[i].thresholdFull && getThresholdSelect(*content.spikeTrackerContent, i))) 
+		{
+			if (getThresholdSelect(*content.spikeTrackerContent, i))
+			{
+				if (!spikeLocations[i].thresholdFull) 
+				{
+					spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
+					spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
+					spikeLocations[i].thresholdFull = true;
+				}
+				else if (spikeLocations[i].thresholdFull)
+				{
+					spikeLocations[i].stimVol = spikeLocations[i].bigStim + std::abs(content.trackSpike_IncreaseRate);
+					spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
+					spikeLocations[i].thresholdFull = true;
+				}
+			}
 		}
 		spikeLocations[i].SLA = std::max_element(spikeLocations[i].lastRowData + (spikeLocations[i].SBLA - spikeLocations[i].SBWA), spikeLocations[i].lastRowData + (spikeLocations[i].SBLA + spikeLocations[i].SBWA)) - spikeLocations[i].lastRowData;
 		spikeLocations[i].SLR = (spikeLocations[i].SLA - spikeLocations[i].startingSample) / spikeLocations[i].subsamples;
@@ -386,25 +417,30 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) {
 			to_string(spikeLocations[i].SBWA) +
 			" Max Level: " +
 			to_string(spikeLocations[i].MAXLEVEL));
-		if (spikeLocations[i].firingNumbers.size() != content.stimuli) {
+		if (spikeLocations[i].firingNumbers.size() != content.stimuli) 
+		{
 			spikeLocations[i].firingNumbers.add(spikeLocations[i].firingNumber);
 		}
-		else if (spikeLocations[i].firingNumbers.size() == content.stimuli) {
+		else if (spikeLocations[i].firingNumbers.size() == content.stimuli) 
+		{
 			spikeLocations[i].firingProbability = spikeLocations[i].firingNumbers[content.stimuli - 1] / content.stimuli;
 			spikeLocations[i].firingNumbers.clear();
 			spikeLocations[i].firingNumber = 0;
 		}
 	}
-	else if (spikeLocations[i].thresholdFull == true) {
-		spikeLocations[i].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate);
+	else if (spikeLocations[i].thresholdFull == true && getThresholdSelect(*content.spikeTrackerContent, i)) 
+	{
+		spikeLocations[i].stimVol = spikeLocations[i].bigStim + std::abs(content.trackSpike_IncreaseRate);
 		spikeLocations[i].bigStim = std::min(spikeLocations[i].stimVol, content.stimulusVoltageMax);
 	}
 
 }
 
-void LfpLatencyProcessorVisualizer::setConfig(int i) {
+void LfpLatencyProcessorVisualizer::setConfig(int i) 
+{
 	
-	if (spikeLocations[i].isFull) {
+	if (spikeLocations[i].isFull) 
+	{
 		content.spectrogramControlPanel->setStartingSampleValue(spikeLocations[i].startingSample);
 		content.spectrogramControlPanel->setSubsamplesPerWindowValue(spikeLocations[i].subsamples);
 		content.spectrogramPanel->setSearchBoxWidthValue(spikeLocations[i].searchBoxWidth);
