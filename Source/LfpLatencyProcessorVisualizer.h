@@ -130,7 +130,7 @@ private:
 
     int windowSampleCount;
     
-    spikeinfo spikeLocations[4];
+    spikeinfo SL[4]; //spikeLocations
 
     int lastSearchBoxLocation;
 
