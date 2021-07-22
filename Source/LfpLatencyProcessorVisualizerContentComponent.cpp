@@ -453,14 +453,9 @@ LfpLatencyProcessorVisualizerContentComponent::~LfpLatencyProcessorVisualizerCon
 
 	triggerChannelComboBox = nullptr;
 	dataChannelComboBox = nullptr;
-
-	//trackThreshold_button = nullptr;
-	//trackSpike_button = nullptr;
 	
 	spikeTracker = nullptr;
 	spikeTrackerContent = nullptr;
-	//thresholdTracker = nullptr;
-	//thresholdTrackerContent = nullptr;
 
 	trackSpike_IncreaseRate_Slider = nullptr;
 	trackSpike_DecreaseRate_Slider = nullptr;
@@ -551,82 +546,64 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k) {
 	//Lucy's style of keybind was much better than mine as it allowed to adjust value and slider position and send a notification in one single line, so thank you <3, from James
 	//Increase search box location
-	if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < SPECTROGRAM_HEIGHT)) {
+	if ((k == KeyPress::rightKey || k == KeyPress::numberPad6) && (searchBoxLocation < SPECTROGRAM_HEIGHT)) 
+	{
 		spectrogramPanel->changeSearchBoxValue(5);
 		return true;
 	}
 	//Decrease search box location
-	else if ((k == KeyPress::leftKey || k == KeyPress::numberPad4) && (searchBoxLocation > 0)) {
+	else if ((k == KeyPress::leftKey || k == KeyPress::numberPad4) && (searchBoxLocation > 0)) 
+	{
 		spectrogramPanel->changeSearchBoxValue(-5);
 		return true;
 	}
 
-	/*else if (k == KeyPress::F1Key) {
-		if (follows[0]->getToggleState() == true) {
-			follows[0]->setToggleState(false, sendNotification);
-			spikeTracker->selectedRowsChanged(0);
-			return true;
-		}
-		else if (follows[0]->getToggleState() == false) {
-			follows[0]->setToggleState(true, sendNotification);
-			return true;
-		}
+	else if (k == KeyPress::F1Key) 
+	{
+		selectSpike(*spikeTrackerContent, 0);
+		return true;
 	}
-	else if (k == KeyPress::F2Key) {
-		if (follows[1]->getToggleState() == true) {
-			follows[1]->setToggleState(false, sendNotification);
-			spikeTracker->selectedRowsChanged(1);
-			return true;
-		}
-		else if (follows[1]->getToggleState() == false) {
-			follows[1]->setToggleState(true, sendNotification);
-			return true;
-		}
+	else if (k == KeyPress::F2Key) 
+	{
+		selectSpike(*spikeTrackerContent, 1);
+		return true;
 	}
-	else if (k == KeyPress::F3Key) {
-		if (follows[2]->getToggleState() == true) {
-			follows[2]->setToggleState(false, sendNotification);
-			spikeTracker->selectedRowsChanged(2);
-			return true;
-		}
-		else if (follows[2]->getToggleState() == false) {
-			follows[2]->setToggleState(true, sendNotification);
-			return true;
-		}
+	else if (k == KeyPress::F3Key) 
+	{
+		selectSpike(*spikeTrackerContent, 2);
+		return true;
 	}
-	else if (k == KeyPress::F4Key) {
-		if (follows[3]->getToggleState() == true) {
-			follows[3]->setToggleState(false, sendNotification);
-			spikeTracker->selectedRowsChanged(3);
-			return true;
-		}
-		else if (follows[3]->getToggleState() == false) {
-			follows[3]->setToggleState(true, sendNotification);
-			return true;
-		}
-	}*/
+	else if (k == KeyPress::F4Key) 
+	{
+		selectSpike(*spikeTrackerContent, 3);
+		return true;
+	}
 
 
 	auto subsamplesPerWindowValue = spectrogramControlPanel->getSubsamplesPerWindowValue();
 	//Increase subsamplesperwindow
-	if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindowValue < spectrogramControlPanel->getSubsamplesPerWindowMaximum())) {
+	if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindowValue < spectrogramControlPanel->getSubsamplesPerWindowMaximum())) 
+	{
 		spectrogramControlPanel->changeSubsamplesPerWindowValue(5);
 		return true;
 	}
 	//Decrease subsamplesperwindow
-	else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindowValue > spectrogramControlPanel->getSubsamplesPerWindowMinimum())) {
+	else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindowValue > spectrogramControlPanel->getSubsamplesPerWindowMinimum())) 
+	{
 		spectrogramControlPanel->changeSubsamplesPerWindowValue(-5);
 		return true;
 	}
 
 	auto startingSampleValue = spectrogramControlPanel->getStartingSampleValue();
 	//Increase starting sample
-	if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSampleValue < spectrogramControlPanel->getStartingSampleMaximum())) {
+	if ((k == KeyPress::upKey || k == KeyPress::numberPad8) && (startingSampleValue < spectrogramControlPanel->getStartingSampleMaximum())) 
+	{
 		spectrogramControlPanel->changeStartingSampleValue(100);
 		return true;
 	}
 	//Decrease starting sample
-	else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSampleValue > spectrogramControlPanel->getStartingSampleMinimum())) {
+	else if ((k == KeyPress::downKey || k == KeyPress::numberPad2) && (startingSampleValue > spectrogramControlPanel->getStartingSampleMinimum())) 
+	{
 		spectrogramControlPanel->changeStartingSampleValue(-100);
 		return true;
 	}
@@ -634,22 +611,26 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress& k
 	auto highImageThreshold = spectrogramControlPanel->getImageThresholdMaxValue();
 	auto lowImageThreshold = spectrogramControlPanel->getImageThresholdMinValue();
 	//Increase highImageThreshold
-	if ((k == KeyPress::pageUpKey || k == KeyPress::numberPad9) && (highImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) {
+	if ((k == KeyPress::pageUpKey || k == KeyPress::numberPad9) && (highImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) 
+	{
 		spectrogramControlPanel->changeImageThresholdMaxValue(2);
 		return true;
 	}
 	//Decrease highImageThreshold
-	else if ((k == KeyPress::pageDownKey || k == KeyPress::numberPad3) && (highImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) {
+	else if ((k == KeyPress::pageDownKey || k == KeyPress::numberPad3) && (highImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) 
+	{
 		spectrogramControlPanel->changeImageThresholdMaxValue(-2);
 		return true;
 	}
 	//Increase lowImageThreshold
-	else if ((k == KeyPress::homeKey || k == KeyPress::numberPad7) && (lowImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) {
+	else if ((k == KeyPress::homeKey || k == KeyPress::numberPad7) && (lowImageThreshold < spectrogramControlPanel->getImageThresholdMaximum())) 
+	{
 		spectrogramControlPanel->changeImageThresholdMinValue(2);
 		return true;
 	}
 	//Decrease lowImageThreshold
-	else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) {
+	else if ((k == KeyPress::endKey || k == KeyPress::numberPad1) && (lowImageThreshold > spectrogramControlPanel->getImageThresholdMinimum())) 
+	{
 		spectrogramControlPanel->changeImageThresholdMinValue(-2);
 		return true;
 	}
@@ -840,21 +821,6 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 			(*valuesMap)["extendedColorScale"] = "0";
         }
     }
-	/*if (buttonThatWasClicked == trackSpike_button)
-	{
-		if (buttonThatWasClicked->getToggleState() == true) {
-			trackThreshold_button->setEnabled(true);
-			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::black);
-			(*valuesMap)["trackSpike"] = "1";
-		}
-		else if (buttonThatWasClicked->getToggleState() == false)
-		{
-			trackThreshold_button->setEnabled(false);
-			trackThreshold_button->setToggleState(false, sendNotification);
-			trackThreshold_button_Label->setColour(juce::Label::ColourIds::textColourId, Colours::darkgrey);
-			(*valuesMap)["trackSpike"] = "0";
-		}
-    }*/
 	if (buttonThatWasClicked->getName() == "Setup") {
 
 		Viewport* view = new Viewport("viewTest");
@@ -915,12 +881,6 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 		view->addAndMakeVisible(extendedColorScaleToggleButton);
 		view->addAndMakeVisible(extendedColorScaleToggleButtonLabel);
 
-		//view->addAndMakeVisible(trackSpike_button);
-		//view->addAndMakeVisible(trackSpike_button_Label);
-
-		//view->addAndMakeVisible(trackThreshold_button);
-		//view->addAndMakeVisible(trackThreshold_button_Label);
-
 		view->addAndMakeVisible(triggerChannelComboBox);
 		view->addAndMakeVisible(triggerChannelComboBoxLabel);
 
@@ -936,12 +896,6 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button* button
 
 		extendedColorScaleToggleButton->setBounds(135, 40, 24, 24);
 		extendedColorScaleToggleButtonLabel->setBounds(10, 40, 120, 24);
-
-		//trackSpike_button->setBounds(135, 70, 120, 24);
-		//trackSpike_button_Label->setBounds(10, 70, 120, 24);
-
-		//trackThreshold_button->setBounds(135, 100, 120, 24);
-		//trackThreshold_button_Label->setBounds(10, 100, 120, 24);
 
 		triggerChannelComboBox->setBounds(135, 70, 120, 24);
 		triggerChannelComboBoxLabel->setBounds(10, 70, 120, 24);
@@ -974,11 +928,13 @@ void LfpLatencyProcessorVisualizerContentComponent::tryToSave()
 	
 }
 
-int TableContent::getNumRows() {
+int TableContent::getNumRows() 
+{
 	return 4;
 }
 
-TableContent::TableContent() {
+TableContent::TableContent() 
+{
 	for (int j = 0; j < 4; j++) {
 		info[j].location = 0;
 		info[j].firingProb = 0;
@@ -988,16 +944,19 @@ TableContent::TableContent() {
 		newThresholdFound[j] = false;
 		trackThresholds[j] = false;
 		deleteSpike[j] = false;
+		keybind[j] = false;
 	}
 	spikeAlreadyTracked = false;
 	thresholdAlreadyTracked = false;
 }
 
-TableContent::~TableContent() {
+TableContent::~TableContent() 
+{
 
 }
 
-void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
+void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) 
+{
 
 	g.setColour(Colours::black);  // [5]
 	Font font = 12.0f;
@@ -1015,7 +974,8 @@ void TableContent::paintCell(Graphics& g, int rowNumber, int columnId, int width
 
 }
 
-void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
+void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) 
+{
 
 	if (rowIsSelected) {
 		if (rowNumber == 0)
@@ -1032,8 +992,9 @@ void TableContent::paintRowBackground(Graphics& g, int rowNumber, int width, int
 	}
 }
 
-Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) {
-	if (rowNumber < 4) {
+Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate) 
+{
+	if (rowNumber < getNumRows()) {
 		if (columnId == 7)
 		{
 			auto* deleteButton = static_cast<DeleteComponent*> (exsistingComponetToUpdate);
@@ -1059,20 +1020,13 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 			{
 				selectionBox = new SelectableColumnComponent(*this);
 			}
+			else if (keybind[rowNumber])
+			{
+				selectionBox->setToggleState(!selectionBox->getToggleState(), sendNotification);
+				keybind[rowNumber] = false;
+			}
 			else
 			{
-				/*if (trackSpikes[rowNumber] != selectionBox->getToggleState()) 
-				{
-					if (newSpikeFound[rowNumber])
-					{
-						selectionBox->setToggleState(true, sendNotificationAsync);
-						newSpikeFound[rowNumber] = false;
-					}
-					else 
-					{
-						selectionBox->setToggleState(false, sendNotificationAsync);
-					}
-				}*/
 				trackSpikes[rowNumber] = selectionBox->getToggleState();
 			}
 			return selectionBox;
@@ -1087,18 +1041,6 @@ Component* TableContent::refreshComponentForCell(int rowNumber, int columnId, bo
 			}
 			else
 			{
-				/*if (trackThresholds[rowNumber] != selectionBox->getToggleState())
-				{
-					if (newThresholdFound[rowNumber])
-					{
-						selectionBox->setToggleState(true, sendNotificationAsync);
-						newThresholdFound[rowNumber] = false;
-					}
-					else
-					{
-						selectionBox->setToggleState(false, sendNotificationAsync);
-					}
-				}*/
 				trackThresholds[rowNumber] = selectionBox->getToggleState();
 			}
 			return selectionBox;
@@ -1198,24 +1140,18 @@ Array <bool> getRow(TableContent& tc, bool spike, bool threshold)
 	return rowsSelected;
 }
 
-void selectSpikeDefault(TableContent& tc, int row)
-{
-	tc.trackSpikes[row] = true;
-	tc.newSpikeFound[row] = true;
-}
-
-void selectThresholdDefault(TableContent& tc, int row)
-{
-	tc.trackThresholds[row] = true;
-	tc.newThresholdFound[row] = true;
-}
-
 void selectThreshold(TableContent& tc, int row)
 {
-	tc.trackThresholds[row] = true;
+	tc.trackThresholds[row] = !tc.trackThresholds[row];
 }
 
-bool getSpikeToDelete(TableContent& tc, int row)
+void selectSpike(TableContent& tc, int row)
+{
+	tc.trackSpikes[row] = !tc.trackSpikes[row];
+	tc.keybind[row] = !tc.keybind[row];
+}
+
+bool getRowToDelete(TableContent& tc, int row)
 {
 	return tc.deleteSpike[row];
 }

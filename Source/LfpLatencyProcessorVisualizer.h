@@ -80,24 +80,15 @@ public:
     /*Set settings to right level to find spike*/
     void setConfig(int i);
 
-
-
-    /** Fill in rightmost edge of spectrogram with up to date data*/
-    /*
-     //DEPRECATED
-    void newLineOfSpectrogram();
-    */
-
-
 private:
 
     struct spikeinfo {
         float* lastRowData;
-        int SBLA;
-        int SBWA;
+        int SBLA; // Search Box Location Absolute
+        int SBWA; // Search Box Width Absolute
         float MAXLEVEL;
-        int SLA;
-        int SLR;
+        int SLA; // Search Location Absolute
+        int SLR; // Search Box Location Relative
         int startingSample;
         int searchBoxLocation;
         int subsamples;
@@ -112,13 +103,6 @@ private:
     };
     
     float level;
-
-    //int pixelsPerTrack;
-
-    //int tracksAmount;
-    //int imageLinePoint;
-
-    //int samplesAfterStimulus;
 
     int missCounter;
 

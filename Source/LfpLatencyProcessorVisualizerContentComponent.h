@@ -20,20 +20,41 @@ public:
     TableContent();
     ~TableContent();
     
+    /* These are all implementations of the functions defined in TableListBoxModel */
+    
     int getNumRows();
+
     void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
+    
     void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
+    
     Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
+    
+    /* Update the table with new spike data */
     friend void updateInfo(TableContent &tc, int location, float fp, float threshold, int i);
+    
+    /* Returns whether the spike track button in the table has been toggled */
     friend bool getSpikeSelect(TableContent& tc, int row);
+    
+    /* Returns whether the threshold track button in the table has been toggled*/
     friend bool getThresholdSelect(TableContent& tc, int row);
+    
+    /* Returns an array of all the states of the buttons in a table*/
     friend Array <bool> getRow(TableContent& tc, bool spike, bool threshold);
-    friend void selectSpikeDefault(TableContent& tc, int row);
-    friend void selectThresholdDefault(TableContent& tc, int row);
+    
+    /* Toggles the tracking of a threshold */
     friend void selectThreshold(TableContent& tc, int row);
-    friend bool getSpikeToDelete(TableContent& tc, int row);
+    
+    /* Toggles the tracking of a spike */
+    friend void selectSpike(TableContent& tc, int row);
+    
+    /* Determines which row has been selected to delete*/
+    friend bool getRowToDelete(TableContent& tc, int row);
+    
+    /* Delete all data in a specific row */
     friend void deleteSpikeAndThreshold(TableContent& tc, int row);
 
+    /* This structure is used to keep track of data to be displayed in the table*/
     struct tableData {
         int location;
         float firingProb;
@@ -42,6 +63,7 @@ public:
 
     tableData info[4];
 
+    /* This is a custom class used to add custom cells with toggle buttons inside them, the helper functions above help */
     class SelectableColumnComponent : public juce::ToggleButton
     {
     public:
@@ -52,9 +74,10 @@ public:
 
     private:
         TableContent& owner;
-        
 
     };
+    
+    /* This a custom class used to add custom cells that display data on tracked spike, with the updateInfo() function handling most of the work*/
     class UpdatingTextColumnComponent : public juce::TextEditor
                                        
     {
@@ -95,6 +118,7 @@ private:
     bool newSpikeFound[4];
     bool trackThresholds[4];
     bool newThresholdFound[4];
+    bool keybind[4];
 
     bool thresholdAlreadyTracked;
     bool spikeAlreadyTracked;
@@ -240,14 +264,8 @@ private:
 	ScopedPointer<Label> dataChannelComboBoxLabel;
 
     ScopedPointer<Slider> Trigger_threshold; //TODO
-    
-    //ScopedPointer<ToggleButton> trackSpike_button;
-    //ScopedPointer<Label> trackSpike_button_Label;
 
     ScopedPointer<TableListBox> spikeTracker;
-
-    //ScopedPointer<ToggleButton> trackThreshold_button;
-    //ScopedPointer<Label> trackThreshold_button_Label;
 
     ScopedPointer<Slider> stimuliNumberSlider;
     ScopedPointer<TextEditor> stimuliNumber;

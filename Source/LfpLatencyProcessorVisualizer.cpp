@@ -221,7 +221,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 	Array <bool> rowsSelected = getRow(*content.spikeTrackerContent, true, true);
 
-	//Keep the spike location values updated
+	//Keep the spike/threshold location values updated, track them, and delete them if required
 	for (int q = 0; q < 4; q++) {
 		if (SL[q].isFull == true) 
 		{
@@ -235,7 +235,6 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		}
 		if (getSpikeSelect(*content.spikeTrackerContent, q) && SL[q].isFull) 
 		{
-			//content.trackSpike_button->setToggleState(false, sendNotification);
 			content.spikeTracker->selectedRowsChanged(q);
 			setConfig(q);
 			updateSpikeInfo(q);
@@ -245,12 +244,11 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		}
 		if (getThresholdSelect(*content.spikeTrackerContent, q) && SL[q].thresholdFull) 
 		{
-			//content.trackThreshold_button->setToggleState(false, sendNotification);
 			updateSpikeInfo(q);
 			content.stimulusVoltageSlider->setValue(SL[q].bigStim);
 			content.ppControllerComponent->setStimulusVoltage(SL[q].bigStim);
 		}
-		if (getSpikeToDelete(*content.spikeTrackerContent, q)) 
+		if (getRowToDelete(*content.spikeTrackerContent, q)) 
 		{
 			deleteSpikeAndThreshold(*content.spikeTrackerContent, q);
 			SL[q] = {};
@@ -261,17 +259,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			std::cout << "Spike " << q << " Deleted" << endl;
 			content.rightMiddlePanel->setROISpikeMagnitudeText(String(0));
 			content.rightMiddlePanel->setROISpikeLatencyText(String(0));
-			//availableSpace.add(q);
-			//availableThresholdSpace.add(q);
 		}
 	
-	
-
-	//display values
-	//content.rightMiddlePanel->setROISpikeMagnitudeText(String(maxLevel, 1));
-	//content.rightMiddlePanel->setROISpikeLatencyText(String(SpikeLocationAbs / 30.0f, 1));
-
-	// If we have enabled spike tracking the track spike
+		// If a row of the table is toggled, track any spikes found there
 		if (rowsSelected[q]) 
 		{
 
@@ -299,8 +289,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 					SL[q].lastRowData = lastRowData;
 					SL[q].isFull = true;
 					lastSearchBoxLocation = content.searchBoxLocation;
-					SL[q].firingNumber++;
-					SL[q].firingNumbers.add(SL[q].firingNumber);
+					SL[q].firingNumbers.add(1);
 					auto clock = Time::getCurrentTime();
 					auto time = clock.toString(false, true, true, false);
 					auto string_time = time.toStdString();
@@ -317,19 +306,14 @@ void LfpLatencyProcessorVisualizer::processTrack()
 						to_string(SL[q].subsamples) +
 						" Search Box Width: " +
 						to_string(SL[q].searchBoxWidth));
-					//content.trackSpike_button->setToggleState(false, sendNotification);
-					//selectSpikeDefault(*content.spikeTrackerContent, q);
-					//availableSpace.remove(0);
-
+					
+					// If threshold column is toggled, start tracking the threshold
 					if (rowsSelected[q + 4] == true && !SL[q].thresholdFull)
 					{
-						//int p = availableThresholdSpace[0];
+						// Spike! Increase stimulation
 						SL[q].stimVol = content.stimulusVoltage - std::abs(content.trackSpike_DecreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
 						SL[q].bigStim = std::max(SL[q].stimVol, content.stimulusVoltageMin);
 						SL[q].thresholdFull = true;
-						//content.trackThreshold_button->setToggleState(false, sendNotification);
-						//selectThresholdDefault(*content.spikeTrackerContent, q);
-						//availableThresholdSpace.remove(0);
 					}
 				}
 
@@ -339,19 +323,14 @@ void LfpLatencyProcessorVisualizer::processTrack()
 				content.spikeDetected = false;
 				content.spectrogramPanel->spikeIndicatorTrue(content.spikeDetected);
 
-				// If we have enabled threshold tracking then update threshold:
 			}
 		}
-		 else if (rowsSelected[q + 4] == true && !SL[q].thresholdFull)
+		else if (rowsSelected[q + 4] == true && !SL[q].thresholdFull)
 		{
 			//No spike, increase stimulation
-			//int p = availableThresholdSpace[0];
 			SL[q].stimVol = content.stimulusVoltage + std::abs(content.trackSpike_IncreaseRate); //call with abs since rate does not have sign. Avoids fat finger error
 			SL[q].bigStim = std::min(SL[q].stimVol, content.stimulusVoltageMax);
-			SL[q].thresholdFull = true;
-			//content.trackThreshold_button->setToggleState(false, sendNotification);
-			//selectThresholdDefault(*content.spikeTrackerContent, q);
-			//availableThresholdSpace.remove(0);
+			SL[q].thresholdFull = true;;
 		}
 	}
 	
@@ -360,6 +339,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i) 
 {
 	
+	// If there is a spike being tracked, update data, using a new row of data from cache
 	if (SL[i].isFull) 
 	{
 		SL[i].lastRowData = processor->getdataCacheRow(1);
@@ -450,9 +430,10 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i)
 
 }
 
+// Sets config to one used when spike was first found, TODO: Get rid of this, allow adjustment of settings while tracking?
 void LfpLatencyProcessorVisualizer::setConfig(int i) 
 {
-	
+
 	if (SL[i].isFull) 
 	{
 		content.spectrogramControlPanel->setStartingSampleValue(SL[i].startingSample);
