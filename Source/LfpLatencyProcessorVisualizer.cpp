@@ -398,12 +398,12 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i)
 			to_string(SL[i].SBWA) +
 			" Max Level: " +
 			to_string(SL[i].MAXLEVEL));
-		if (SL[i].firingNumbers.size() != content.stimuli) 
+		if (SL[i].firingNumbers.size() < content.stimuli) 
 		{
 			SL[i].firingNumbers.add(SL[i].firingNumber);
 			SL[i].firingNumber = 0;
 		}
-		else if (SL[i].firingNumbers.size() == content.stimuli) 
+		else if (SL[i].firingNumbers.size() >= content.stimuli) 
 		{
 			for (int x = 0; x < content.stimuli; x++)
 			{
