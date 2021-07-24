@@ -154,10 +154,11 @@ The plugin supports the tracking of multiple neuronal spikes, which are recorded
 The table above can be used to track multiple spikes/thresholds. Any found will be added to the table. They can be tracked and deleted from the table.
 
 #### To Track Spikes/Threshold
-	1. Select the Track Spike/Track Threshold buttons from the Options Menu
-	2. This will make the search box turn red. Use the slider to position it.
+	1. Select a Track Spike/Track Threshold button from the Table
+	2. This will change the search box colour to the assigned colour of the row. Use the slider to position it.
 	3. Once a spike is found, the search box will turn green, and an indicator at the bottom of the search box will display. The location of the spike, its firing probability, and/or stimulus threshold will be shown in the table.
-	4. To follow spike/threshold, toggle the Select Spike/Threshold options in the table. Please note: This will alter Starting Sample, Subsamples Per Window, and Search Box Width.
+	4. The spike/threshold will be automatically selected, and the search box slider/ stimulus voltage will be adjusted. To deselect a spike/threshold, simply toggle the buttons in the table
+	5. To delete a spike/threshold, hold down its corresponding delete button in the table.
 
 <p align = 'center'>
 	<img src="./Resources/track_spike.png" alt="track_spike.png" title="Track Spike/Threshold">
