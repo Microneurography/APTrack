@@ -161,7 +161,7 @@ The table above can be used to track multiple spikes/thresholds. Any found will 
 	5. To delete a spike/threshold, hold down its corresponding delete button in the table.
 
 <p align = 'center'>
-	<img src="./Resources/track_spike.png" alt="track_spike.png" title="Track Spike/Threshold">
+	<img src="./Resources/spike_tracks.png" alt="spike_tracks.png" title="Spike Track">
 </p>
 
 <p align = 'center'>
@@ -169,7 +169,6 @@ The table above can be used to track multiple spikes/thresholds. Any found will 
 </p>
 
 <p float = 'left'>
-	<img src="./Resources/spike_tracks.png" alt="spike_tracks.png" title="Spike Track">
 	<img src="./Resources/spike_track_window.png" alt="spike_track_window.png" title="Spike Track Window">
 </p>
 
