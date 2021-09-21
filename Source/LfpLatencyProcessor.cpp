@@ -110,7 +110,7 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
     return editor;
 }
 void LfpLatencyProcessor::addMessage(std::string message){
-    //messages.push(message);
+    messages.push(message);
 }
 
 void LfpLatencyProcessor::addSpike(std::string spike) {
@@ -119,16 +119,19 @@ void LfpLatencyProcessor::addSpike(std::string spike) {
 
 // create event channel for pulsepal
 void LfpLatencyProcessor::createEventChannels(){
-        EventChannel* chan = new EventChannel(EventChannel::TEXT, 1, 1000,0.0f, this,0);
-        chan->setName(getName() + " PulsePal Messages");
-        chan->setDescription("Messages from the pulsepal runner");
-        chan->setIdentifier("pulsepal.event");
-        eventChannelArray.add(chan);
-        /*EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, 0.0f, this, 0);
+    
+        EventChannel* pulsepalEvents = new EventChannel(EventChannel::TEXT, 1, 1000,CoreServices::getGlobalSampleRate(), this);
+
+        pulsepalEvents->setName(getName() + " PulsePal Messages");
+        pulsepalEvents->setDescription("Messages from the pulsepal runner");
+        pulsepalEvents->setIdentifier("pulsepal.event");
+        pulsePalEventPtr = eventChannelArray.add(pulsepalEvents);
+
+        EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT,1, 1000,CoreServices::getGlobalSampleRate(), this);
         spikeEvents->setName("Spike Data");
         spikeEvents->setDescription("Details of spikes found");
         spikeEvents->setIdentifier("spike.event");
-        eventChannelArray.add(spikeEvents);*/
+        spikeEventPtr = eventChannelArray.add(spikeEvents);
 }
 
 // create chanel for storing spike data
@@ -260,13 +263,13 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
         }
     }
     while(!messages.empty()){
-        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(1), CoreServices::getGlobalTimestamp(), messages.front());
-		    addEvent(getEventChannel(0), event, 0);
+        TextEventPtr event = TextEvent::createTextEvent(this->pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
+		    addEvent(pulsePalEventPtr, event, 0);
         messages.pop();
     }
     while (!spikes.empty()) {
-        TextEventPtr event = TextEvent::createTextEvent(getEventChannel(1), CoreServices::getGlobalTimestamp(), spikes.front());
-        addEvent(getEventChannel(1), event, 0);
+        TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), spikes.front());
+        addEvent(spikeEventPtr, event, 0);
         spikes.pop();
     }
 

@@ -203,6 +203,7 @@ public:
 
    void addSpike(std::string spike);
 
+
 private:
 
    friend class ppController;
@@ -223,7 +224,8 @@ private:
     
     bool eventReceived;
     
-      
+    EventChannel* pulsePalEventPtr;
+    EventChannel* spikeEventPtr;
 
     //int currentSample;
     
