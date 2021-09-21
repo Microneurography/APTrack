@@ -37,9 +37,9 @@
 
 std::mutex savingAndLoadingLock;
 
-
 LfpLatencyProcessor::LfpLatencyProcessor()
-    : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages()
+    : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages(),
+    spikeGroups(4)
 
 {
     setProcessorType(PROCESSOR_TYPE_SINK);
@@ -109,41 +109,43 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
 
     return editor;
 }
-void LfpLatencyProcessor::addMessage(std::string message){
+void LfpLatencyProcessor::addMessage(std::string message)
+{
     messages.push(message);
 }
 
-void LfpLatencyProcessor::addSpike(std::string spike) {
-   //spikes.push(spike);
+void LfpLatencyProcessor::addSpike(std::string spike)
+{
+    spikes.push(spike);
 }
 
 // create event channel for pulsepal
-void LfpLatencyProcessor::createEventChannels(){
-    
-        EventChannel* pulsepalEvents = new EventChannel(EventChannel::TEXT, 1, 1000,CoreServices::getGlobalSampleRate(), this);
+void LfpLatencyProcessor::createEventChannels()
+{
 
-        pulsepalEvents->setName(getName() + " PulsePal Messages");
-        pulsepalEvents->setDescription("Messages from the pulsepal runner");
-        pulsepalEvents->setIdentifier("pulsepal.event");
-        pulsePalEventPtr = eventChannelArray.add(pulsepalEvents);
+    EventChannel *pulsepalEvents = new EventChannel(EventChannel::TEXT, 1, 1000, CoreServices::getGlobalSampleRate(), this);
 
-        EventChannel* spikeEvents = new EventChannel(EventChannel::TEXT,1, 1000,CoreServices::getGlobalSampleRate(), this);
-        spikeEvents->setName("Spike Data");
-        spikeEvents->setDescription("Details of spikes found");
-        spikeEvents->setIdentifier("spike.event");
-        spikeEventPtr = eventChannelArray.add(spikeEvents);
+    pulsepalEvents->setName(getName() + " PulsePal Messages");
+    pulsepalEvents->setDescription("Messages from the pulsepal runner");
+    pulsepalEvents->setIdentifier("pulsepal.event");
+    pulsePalEventPtr = eventChannelArray.add(pulsepalEvents);
+
+    EventChannel *spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, CoreServices::getGlobalSampleRate(), this);
+    spikeEvents->setName("Spike Data");
+    spikeEvents->setDescription("Details of spikes found");
+    spikeEvents->setIdentifier("spike.event");
+    spikeEventPtr = eventChannelArray.add(spikeEvents);
 }
 
 // create chanel for storing spike data
 //void LfpLatencyProcessor::createSpikeChannels() {
-    
-    //pikeChannel* spikechan = new SpikeChannel(SpikeChannel::typeFromNumChannels(), this);
-   // SpikeEvent::SpikeBuffer buf = SpikeEvent::SpikeBuffer::SpikeBuffer(spikechan);
+
+//pikeChannel* spikechan = new SpikeChannel(SpikeChannel::typeFromNumChannels(), this);
+// SpikeEvent::SpikeBuffer buf = SpikeEvent::SpikeBuffer::SpikeBuffer(spikechan);
 //}
 
-
 //void LfpLatencyProcessor::createSpikeChannels(){
-    //SpikeChannel* spikes = new SpikeChannel()
+//SpikeChannel* spikes = new SpikeChannel()
 //}
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
@@ -194,91 +196,140 @@ void LfpLatencyProcessor::handleEvent (const EventChannel* eventInfo, const Midi
     }
 }
 */
+void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike){
+    SpikeGroup s = {};
+    s.templateSpike = templateSpike;
+    spikeGroups.push_back(s);
+};
+void LfpLatencyProcessor::removeSpikeGroup(int i){
+    spikeGroups.erase(spikeGroups.begin()+i);
+};
+std::vector<LfpLatencyProcessor::SpikeGroup> LfpLatencyProcessor::getSpikeGroups(){
+    return spikeGroups;
+}
+void LfpLatencyProcessor::trackSpikes()
+{
 
+    for (int i = 0; i < spikeGroups.size(); i++)
+    {
+        // check if current sample is beyond the window (i.e. it should have data to check)
+        auto curSpikeGroup = spikeGroups[i];
+        auto templateSpike = spikeGroups[i].templateSpike;
+        if (currentSample < templateSpike.spikeSampleLatency + templateSpike.windowSize)
+        {
+            curSpikeGroup.recentHistory.push_back(false);
+            continue;
+        }
+        auto curTrackBufferLoc = currentTrack * DATA_CACHE_SIZE_SAMPLES; // to index dataBuffer
+        auto windowStartInBuffer = curTrackBufferLoc + templateSpike.spikeSampleLatency - templateSpike.windowSize;
+        auto startPtr = dataCache + windowStartInBuffer;
+        auto maxValInWindow = std::max_element(startPtr, startPtr + (2 * templateSpike.windowSize));
+        if (*maxValInWindow < templateSpike.threshold) // if there is a value > threshold
+        {
+            curSpikeGroup.recentHistory.push_back(false); //add to array
+            continue;
+        }
+
+        SpikeInfo newSpike = {};
+        newSpike.spikeSampleLatency = (maxValInWindow - startPtr);
+        newSpike.windowSize = templateSpike.windowSize;
+        newSpike.threshold = templateSpike.threshold;
+        newSpike.spikePeakValue = *maxValInWindow;
+        newSpike.spikeSampleNumber = 0; //TODO figure out current sample number...
+        curSpikeGroup.spikeInfos.push_back(newSpike);
+
+        curSpikeGroup.recentHistory.push_back(true);
+    }
+}
 void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 {
     int numChannels = buffer.getNumChannels();
 
-    if (numChannels > 0 && (dataChannel_idx <= numChannels) && (triggerChannel_idx <= numChannels)) // Avoids crashing when no data source connected
+    if ((numChannels < 0) || (dataChannel_idx <= numChannels) || (triggerChannel_idx <= numChannels)) // Avoids crashing when no data source connected
     {
-        // get num of samples in buffer
-        int nSamples = getNumSamples(0);
+        return;
+    }
+    // get num of samples in buffer
+    int nSamples = getNumSamples(0);
 
-        //Data channel
-        const float *bufPtr = buffer.getReadPointer(dataChannel_idx);
+    //Data channel
+    const float *bufPtr = buffer.getReadPointer(dataChannel_idx);
 
-        // Trigger channel
-        const float *bufPtr_pulses = buffer.getReadPointer(triggerChannel_idx);
+    // Trigger channel
+    const float *bufPtr_pulses = buffer.getReadPointer(triggerChannel_idx);
 
-        // Debug channel, used to explore scalings
-        //const float* bufPtr_test = buffer.getReadPointer(23);
+    // Debug channel, used to explore scalings
+    //const float* bufPtr_test = buffer.getReadPointer(23);
 
-        //For each sample in buffer
-        for (auto n = 0; n < nSamples; ++n)
+    //For each sample in buffer
+    for (auto n = 0; n < nSamples; ++n)
+    {
+        //Read sample from DATA buffer
+        float data = *(bufPtr + n) * 1.0f;
+
+        //Read sample from TRIGGER (ADC) buffer
+        float data_pulses = *(bufPtr_pulses + n);
+
+        //Read sample from Debug buffer
+        //float test_pulses = *(bufPtr_test + n);
+
+        //If data is above threshold, and no event received lately
+        if (std::abs(data_pulses) > stimulus_threshold && !eventReceived)
         {
-            //Read sample from DATA buffer
-            float data = *(bufPtr + n) * 1.0f;
+            //DEBUG
+            //lastReceivedDACPulse=test_pulses;
 
-            //Read sample from TRIGGER (ADC) buffer
-            float data_pulses = *(bufPtr_pulses + n);
+            //Print to console
+            //std::cout << "Peak with amplitude: " << data_pulses << std::endl;
 
-            //Read sample from Debug buffer
-            //float test_pulses = *(bufPtr_test + n);
+            // TODO: this is an antipattern. We should get the global timestamp instead.
+            //Set flags
+            eventReceived = true;
+            // We have a pulse, start refactoery period timer
+            startTimer(1, 200); //from 600
 
-            //If data is above threshold, and no event received lately
-            if (std::abs(data_pulses) > stimulus_threshold && !eventReceived)
+            //Reset fifo index (so that buffer overwrites
+            fifoIndex = 0;
+            currentSample = 0;
+
+            //increment row count
+            currentTrack < (DATA_CACHE_SIZE_TRACKS - 1) ? currentTrack++ : currentTrack = 0;
+
+            //clear row
+            for (auto ii = 0; ii < DATA_CACHE_SIZE_SAMPLES; ii++)
             {
-                //DEBUG
-                //lastReceivedDACPulse=test_pulses;
-
-                //Print to console
-                //std::cout << "Peak with amplitude: " << data_pulses << std::endl;
-
-                //Set flags
-                eventReceived = true;
-                // We have a pulse, start refactoery period timer
-                startTimer(1, 200); //from 600
-
-                //Reset fifo index (so that buffer overwrites
-                fifoIndex = 0;
-                currentSample = 0;
-
-                //increment row count
-                currentTrack < (DATA_CACHE_SIZE_TRACKS - 1) ? currentTrack++ : currentTrack = 0;
-
-                //clear row
-                for (auto ii = 0; ii < DATA_CACHE_SIZE_SAMPLES; ii++)
-                {
-                    dataCache[currentTrack * DATA_CACHE_SIZE_SAMPLES + ii] = 0.0f;
-                }
-            }
-
-            if (currentSample < (DATA_CACHE_SIZE_SAMPLES))
-            {
-
-                dataCache[currentTrack * DATA_CACHE_SIZE_SAMPLES + currentSample] = 1.0f * std::abs(data);
-
-                currentSample++;
+                dataCache[currentTrack * DATA_CACHE_SIZE_SAMPLES + ii] = 0.0f;
             }
         }
+
+        if (currentSample < (DATA_CACHE_SIZE_SAMPLES))
+        {
+
+            dataCache[currentTrack * DATA_CACHE_SIZE_SAMPLES + currentSample] = 1.0f * std::abs(data);
+
+            currentSample++;
+        }
+        trackSpikes();
     }
-    while(!messages.empty()){
+
+    while (!messages.empty())
+    { // post pulsePal messages
         TextEventPtr event = TextEvent::createTextEvent(this->pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
-		    addEvent(pulsePalEventPtr, event, 0);
+        addEvent(pulsePalEventPtr, event, 0);
         messages.pop();
     }
-    while (!spikes.empty()) {
+    while (!spikes.empty())
+    { // post Spike detected events
         TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), spikes.front());
         addEvent(spikeEventPtr, event, 0);
         spikes.pop();
     }
-
 }
 
-void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)
+void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce::String> *valuesMap)
 {
-	savingAndLoadingLock.lock();
-	std::cout << "Trying to save " << std::endl;
+    savingAndLoadingLock.lock();
+    std::cout << "Trying to save " << std::endl;
     File recoveryConfigFile = CoreServices::getSavedStateDirectory().getChildFile("LastLfpLatencyPluginComponents.cfg");
     std::string cfgText = "";
 
@@ -289,9 +340,10 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
         it++;
     }
 
-    FileOutputStream output (recoveryConfigFile);
+    FileOutputStream output(recoveryConfigFile);
 
-    if (!output.openedOk()) {
+    if (!output.openedOk())
+    {
         std::cout << "recoveryConfigFile didnt open corectly" << std::endl;
     }
     else
@@ -299,7 +351,7 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
         output.setPosition(0);
         output.truncate();
         output.setNewLineString("\n");
-        output.writeText(cfgText,false,false);
+        output.writeText(cfgText, false, false);
         output.flush();
 
         if (output.getStatus().failed())
@@ -311,7 +363,7 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
     savingAndLoadingLock.unlock();
 }
 
-void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce::String>* valuesMap)
+void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce::String> *valuesMap)
 {
     bool load = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Load LfpLatency Configurations?", "Would you like to load previous Lfp Latency Configurations?", "Yes", "No");
 
@@ -326,7 +378,7 @@ void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce:
 
     if (recoveryConfigFile.existsAsFile())
     {
-        FileInputStream input (recoveryConfigFile);
+        FileInputStream input(recoveryConfigFile);
 
         if (!input.openedOk())
         {
@@ -344,11 +396,10 @@ void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce:
                 if (!(firstBracket <= 0 || secondBracket <= 0 || firstBracket > secondBracket))
                 {
                     std::string itemName = line.substring(0, firstBracket).toStdString();
-                    juce::String value = line.substring(firstBracket+1, secondBracket);
+                    juce::String value = line.substring(firstBracket + 1, secondBracket);
 
                     (*valuesMap)[itemName] = value;
                 }
-                
             }
         }
     }
@@ -362,7 +413,7 @@ void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce:
 
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
-	XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
+    XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
     mainNode->setAttribute("numParameters", getNumParameters());
 
     for (int i = 0; i < getNumParameters(); ++i)
@@ -472,15 +523,18 @@ void LfpLatencyProcessor::changeParameter(int parameterID, int value)
         break;
     case 3:
         // change current trigger chan
-        if (value >= 0 && value < 25) triggerChannel_idx = value;
+        if (value >= 0 && value < 25)
+            triggerChannel_idx = value;
         break;
     case 4:
         // change current trigger chan
-        if (value >= 0 && value < 25) dataChannel_idx = value;
+        if (value >= 0 && value < 25)
+            dataChannel_idx = value;
         break;
     case 5:
         // change current strimulus detection threshold
-        if (value >= 0) stimulus_threshold = value;
+        if (value >= 0)
+            stimulus_threshold = value;
         break;
     }
     /*if (parameterID == 1)

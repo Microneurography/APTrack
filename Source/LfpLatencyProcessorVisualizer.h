@@ -84,11 +84,11 @@ private:
 
     struct spikeinfo {
         float* lastRowData;
-        int SBLA; // Search Box Location Absolute
-        int SBWA; // Search Box Width Absolute
+        int searchBoxLocationAbsolute; // Search Box Location Absolute (not sure what this is for, doesn't seem to change?)
+        int searchBoxWidthAbsolute; // Search Box Width Absolute
         float MAXLEVEL;
-        int SLA; // Search Location Absolute
-        int SLR; // Search Box Location Relative
+        int SearchLocationAbsolute; // Search Location Absolute
+        int SearchLocationRelative; // Search Box Location Relative
         int startingSample;
         int searchBoxLocation;
         int subsamples;
@@ -99,7 +99,7 @@ private:
         bool isFull = false;
         float stimVol = 0;
         float bigStim = 0;
-        bool thresholdFull = false;
+        bool thresholdFull = false; // not sure what this does.
     };
     
     float level;

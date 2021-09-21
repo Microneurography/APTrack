@@ -202,8 +202,22 @@ public:
    void addMessage(std::string message);
 
    void addSpike(std::string spike);
-
-
+    struct SpikeInfo{
+        int spikeSampleNumber; // the recording sample number of the spike
+        int spikeSampleLatency; // the spike time relative to the stimulus
+        int spikePeakValue; // the peak value
+        int windowSize; // the number of samples used to identify spike
+        int threshold; // the threshold value for the spike, used to detect
+    };
+    struct SpikeGroup{
+        std::vector<SpikeInfo> spikeInfos;
+        std::vector<bool> recentHistory;
+        SpikeInfo templateSpike; // the information used to determine the spike
+        char uid; // #TODO: create uid
+    };
+    void addSpikeGroup(SpikeInfo templateSpike);
+    void removeSpikeGroup(int i);
+    std::vector<SpikeGroup> getSpikeGroups();
 private:
 
    friend class ppController;
@@ -217,6 +231,10 @@ private:
 	int triggerChannel_threshold;
 
 	void timerCallback(int timerID) override;
+
+    void trackSpikes(); // updates the currently tracked spike group
+
+    std::vector<SpikeGroup> spikeGroups;
     
     float dataCache[DATA_CACHE_SIZE_TRACKS*DATA_CACHE_SIZE_SAMPLES];
     

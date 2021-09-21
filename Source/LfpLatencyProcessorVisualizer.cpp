@@ -205,7 +205,7 @@ void LfpLatencyProcessorVisualizer::processTrack()
 		if (SL[q].isFull == true)
 		{
 			updateSpikeInfo(q);
-			updateInfo(*content.spikeTrackerContent, SL[q].SLR, SL[q].firingProbability, SL[q].bigStim, q);
+			updateInfo(*content.spikeTrackerContent, SL[q].SearchLocationRelative, SL[q].firingProbability, SL[q].bigStim, q);
 		}
 		else
 		{
@@ -217,9 +217,9 @@ void LfpLatencyProcessorVisualizer::processTrack()
 			content.spikeTracker->selectedRowsChanged(q);
 			setConfig(q);
 			updateSpikeInfo(q);
-			content.spectrogramPanel->setSearchBoxValue(SL[q].SLR);
+			content.spectrogramPanel->setSearchBoxValue(SL[q].SearchLocationRelative);
 			content.rightMiddlePanel->setROISpikeMagnitudeText(String(SL[q].MAXLEVEL, 1));
-			content.rightMiddlePanel->setROISpikeLatencyText(String(SL[q].SLA / 30.0f, 1));
+			content.rightMiddlePanel->setROISpikeLatencyText(String(SL[q].SearchLocationAbsolute / 30.0f, 1));
 		}
 		if (getThresholdSelect(*content.spikeTrackerContent, q) && SL[q].thresholdFull)
 		{
@@ -316,19 +316,23 @@ void LfpLatencyProcessorVisualizer::processTrack()
 
 void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i)
 {
-
+	// #TODO: this should be run as part of the update() call in processor
 	// If there is a spike being tracked, update data, using a new row of data from cache
 	if (SL[i].isFull)
 	{
 		SL[i].lastRowData = processor->getdataCacheRow(1);
-		SL[i].SBLA = SL[i].startingSample + SL[i].searchBoxLocation * SL[i].subsamples;
-		SL[i].SBWA = SL[i].searchBoxWidth * SL[i].subsamples;
-		auto max_level = FloatVectorOperations::findMaximum(SL[i].lastRowData + (SL[i].SBLA - SL[i].SBWA), SL[i].SBWA * 2 + SL[i].subsamples);
-		if (max_level > content.detectionThreshold)
+		// two absolute values
+		SL[i].searchBoxLocationAbsolute = SL[i].startingSample + SL[i].searchBoxLocation * SL[i].subsamples;											// I think this is the initial location of the search box
+		SL[i].searchBoxWidthAbsolute = SL[i].searchBoxWidth * SL[i].subsamples;																			// the width of the search box
+		auto max_level = juce::FloatVectorOperations::findMaximum(SL[i].lastRowData + (SL[i].searchBoxLocationAbsolute - SL[i].searchBoxWidthAbsolute), // pointer arithmetic to get the window of data
+																  SL[i].searchBoxWidthAbsolute * 2 + SL[i].subsamples);									// number of samples
+		if (max_level > content.detectionThreshold)																										// When the value exceeds the threshold record change.
 		{
 			SL[i].MAXLEVEL = max_level;
-			SL[i].SLA = std::max_element(SL[i].lastRowData + (SL[i].SBLA - SL[i].SBWA), SL[i].lastRowData + (SL[i].SBLA + SL[i].SBWA)) - SL[i].lastRowData;
-			SL[i].SLR = (SL[i].SLA - SL[i].startingSample) / SL[i].subsamples;
+			SL[i].SearchLocationAbsolute = std::max_element(SL[i].lastRowData + (SL[i].searchBoxLocationAbsolute - SL[i].searchBoxWidthAbsolute),
+															SL[i].lastRowData + (SL[i].searchBoxLocationAbsolute + SL[i].searchBoxWidthAbsolute)) -
+										   SL[i].lastRowData;
+			SL[i].SearchLocationRelative = (SL[i].SearchLocationAbsolute - SL[i].startingSample) / SL[i].subsamples;
 			SL[i].firingNumbers.add(1);
 			if (getThresholdSelect(*content.spikeTrackerContent, i))
 			{
@@ -345,19 +349,19 @@ void LfpLatencyProcessorVisualizer::updateSpikeInfo(int i)
 					SL[i].thresholdFull = true;
 				}
 			}
-			auto clock = Time::getCurrentTime();
-			auto time = clock.toString(false, true, true, false);
-			auto string_time = time.toStdString(); // Probably dont need this, it should be handled by OE
+			// auto clock = Time::getCurrentTime();
+			// auto time = clock.toString(false, true, true, false);
+			// auto string_time = time.toStdString(); // Probably dont need this, it should be handled by OE
 
-			processor->addSpike(string_time +
-								" Spike " +
-								to_string(i) +
-								" Search Box Location Absolute: " +
-								to_string(SL[i].SBLA) +
-								" Search Box Location Width: " +
-								to_string(SL[i].SBWA) +
-								" Max Level: " +
-								to_string(SL[i].MAXLEVEL));
+			processor->addSpike( // This could/should be a binary/spike event which can then contain all the info
+				" Spike " +
+				to_string(i) +
+				" Search Box Location: " +
+				to_string(SL[i].searchBoxLocation) +
+				" Search Box Location Width: " +
+				to_string(SL[i].searchBoxWidthAbsolute) +
+				" Max Level: " +
+				to_string(SL[i].MAXLEVEL));
 		}
 		else if (SL[i].MAXLEVEL <= content.detectionThreshold && (SL[i].thresholdFull && getThresholdSelect(*content.spikeTrackerContent, i)))
 		{
