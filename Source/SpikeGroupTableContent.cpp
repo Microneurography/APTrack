@@ -86,7 +86,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			}
 			return selectionBox;
 		}
-		if (columnId == Columns::track_spike_button)
+		if (columnId == Columns::threshold_spike_button)
 		{
 			auto *selectionBox = static_cast<SelectableColumnComponent *>(existingComponetToUpdate);
 			if (selectionBox == nullptr)

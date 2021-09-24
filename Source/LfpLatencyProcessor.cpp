@@ -39,7 +39,7 @@ std::mutex savingAndLoadingLock;
 
 LfpLatencyProcessor::LfpLatencyProcessor()
     : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages(),
-    spikeGroups(4)
+    spikeGroups(10)
 
 {
     setProcessorType(PROCESSOR_TYPE_SINK);

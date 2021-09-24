@@ -74,10 +74,10 @@ struct SpikeInfo
 class SpikeGroup
 {
     public:
-    // SpikeGroup() : templateSpike(), isTracking(false), isActive(true){};
+    SpikeGroup() : spikeHistory(100), recentHistory(10), templateSpike(), isTracking(false), isActive(true){};
     // ~SpikeGroup();
-    SpikeInfo spikeHistory[100]; // making these vectors breaks it...
-    bool recentHistory[100];
+    std::vector<SpikeInfo> spikeHistory; 
+    std::vector<bool> recentHistory;
     SpikeInfo templateSpike; // the information used to determine the spike
     bool isTracking;         // is the stimulus volt being tracked?
     bool isActive;           // is this spike currently active
