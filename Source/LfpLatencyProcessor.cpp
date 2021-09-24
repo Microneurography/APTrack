@@ -252,7 +252,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 {
     int numChannels = buffer.getNumChannels();
 
-    if ((numChannels < 0) || (dataChannel_idx <= numChannels) || (triggerChannel_idx <= numChannels)) // Avoids crashing when no data source connected
+    if ((numChannels < 0) || ( numChannels <= dataChannel_idx ) || ( numChannels <= triggerChannel_idx)) // Avoids crashing when no data source connected
     {
         return;
     }
