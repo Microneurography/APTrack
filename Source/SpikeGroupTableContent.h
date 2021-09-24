@@ -5,7 +5,7 @@
 
 class LfpLatencyProcessor;
 
-class SpikeGroupTableContent : public TableListBoxModel//, public ButtonListener
+class SpikeGroupTableContent : public TableListBoxModel, public ButtonListener
                      
 {
 public:
@@ -16,26 +16,32 @@ public:
     
     /* These are all implementations of the functions defined in TableListBoxModel */
     
-    int getNumRows();
+    int getNumRows() override;
 
-    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
+    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
     
-    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
+    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
     
-    Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* existingComponetToUpdate);
-
+    Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* existingComponetToUpdate) override;
+    void buttonClicked (Button* button) override;
     
     /* This is a custom class used to add custom cells with toggle buttons inside them, the helper functions above help */
-    class SelectableColumnComponent : public juce::ToggleButton
+    class SelectableColumnComponent : public juce::ToggleButton, public juce::ToggleButton::Listener
     {
     public:
-        SelectableColumnComponent(SpikeGroupTableContent& tcon);
+        enum Action{TRACK_SPIKE,ACTIVATE_SPIKE};
+        SelectableColumnComponent(SpikeGroupTableContent& tcon, int spikeID, Action action,LfpLatencyProcessor* processor);
         ~SelectableColumnComponent();
+        void buttonClicked (juce::Button* b);
+        void setSpikeID(int spikeID);
 
         ScopedPointer<ToggleButton> toggleButton;
         //void ButtonListener::buttonClicked (Button* button) override;
     private:
+        LfpLatencyProcessor* processor;
         SpikeGroupTableContent& owner;
+        int spikeID;
+        Action action;
 
     };
     

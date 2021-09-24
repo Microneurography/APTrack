@@ -205,9 +205,9 @@ void LfpLatencyProcessor::removeSpikeGroup(int i){
     spikeGroups.erase(spikeGroups.begin()+i);
     
 };
-SpikeGroup LfpLatencyProcessor::getSpikeGroup(int i){
+SpikeGroup* LfpLatencyProcessor::getSpikeGroup(int i){
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
-    return spikeGroups[i];
+    return &spikeGroups[i];
 }
 int LfpLatencyProcessor::getSpikeGroupCount(){
     return spikeGroups.size();

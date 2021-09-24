@@ -5,7 +5,7 @@ int SpikeGroupTableContent::getNumRows()
 	return this->processor->getSpikeGroupCount();
 }
 
-SpikeGroupTableContent::SpikeGroupTableContent(LfpLatencyProcessor* processor)
+SpikeGroupTableContent::SpikeGroupTableContent(LfpLatencyProcessor *processor)
 {
 	this->processor = processor;
 	// for (int j = 0; j < 4; j++)
@@ -23,7 +23,6 @@ SpikeGroupTableContent::SpikeGroupTableContent(LfpLatencyProcessor* processor)
 	// spikeAlreadyTracked = false;
 	// thresholdAlreadyTracked = false;
 }
-
 
 SpikeGroupTableContent::~SpikeGroupTableContent()
 {
@@ -64,6 +63,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 {
 	if (rowNumber < getNumRows())
 	{
+		auto spikeGroup = processor->getSpikeGroup(rowNumber);;
 		if (columnId == Columns::delete_button)
 		{
 			auto *deleteButton = static_cast<DeleteComponent *>(existingComponetToUpdate);
@@ -81,9 +81,10 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 
 			if (selectionBox == nullptr)
 			{
-				selectionBox = new SelectableColumnComponent(*this);
-				//selectionBox->addListener(this);
+				selectionBox = new SelectableColumnComponent(*this, rowNumber, SpikeGroupTableContent::SelectableColumnComponent::Action::ACTIVATE_SPIKE, processor);
 			}
+			selectionBox->setSpikeID(rowNumber);
+			selectionBox->setToggleState(spikeGroup->isActive, juce::NotificationType::dontSendNotification);
 			return selectionBox;
 		}
 		if (columnId == Columns::threshold_spike_button)
@@ -91,9 +92,10 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			auto *selectionBox = static_cast<SelectableColumnComponent *>(existingComponetToUpdate);
 			if (selectionBox == nullptr)
 			{
-				selectionBox = new SelectableColumnComponent(*this);
-				//selectionBox->addListener(this);
+				selectionBox = new SelectableColumnComponent(*this, rowNumber, SpikeGroupTableContent::SelectableColumnComponent::Action::TRACK_SPIKE, processor);
 			}
+			selectionBox->setSpikeID(rowNumber);
+			selectionBox->setToggleState(spikeGroup->isTracking, juce::NotificationType::dontSendNotification);
 			return selectionBox;
 		}
 		if (columnId == Columns::location_info)
@@ -104,8 +106,8 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
-			//label->setText(to_string(info[rowNumber].location));
-			//label->repaint();
+			label->setText(std::to_string(spikeGroup->templateSpike.spikeSampleLatency));
+			label->repaint();
 			return label;
 		}
 		if (columnId == Columns::firing_probability_info)
@@ -116,9 +118,9 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
-			// label->setText(to_string(info[rowNumber].firingProb));
-			// label->repaint();
-			
+			label->setText(std::to_string(100*std::count(spikeGroup->recentHistory.begin(), spikeGroup->recentHistory.end(),true)/spikeGroup->recentHistory.size()));
+			label->repaint();
+
 			return label;
 		}
 		if (columnId == Columns::threshold_info)
@@ -129,9 +131,9 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
-			// label->setText(to_string(info[rowNumber].threshold));
-			// label->repaint();
-			
+			label->setText(std::to_string(spikeGroup->templateSpike.threshold));
+			label->repaint();
+
 			return label;
 		}
 	}
@@ -139,6 +141,9 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 	return nullptr;
 }
 
+void SpikeGroupTableContent::buttonClicked (juce::Button* button) {
+	button->getToggleState();
+} 
 SpikeGroupTableContent::UpdatingTextColumnComponent::UpdatingTextColumnComponent(SpikeGroupTableContent &tcon, int rowNumber, int columnNumber) : owner(tcon)
 {
 	addAndMakeVisible(value = new TextEditor("_"));
@@ -149,11 +154,38 @@ SpikeGroupTableContent::UpdatingTextColumnComponent::~UpdatingTextColumnComponen
 	value = nullptr;
 }
 
-SpikeGroupTableContent::SelectableColumnComponent::SelectableColumnComponent(SpikeGroupTableContent &tcon) : owner(tcon)
+SpikeGroupTableContent::SelectableColumnComponent::SelectableColumnComponent(SpikeGroupTableContent& tcon, int spikeID, Action action,LfpLatencyProcessor* processor): owner(tcon), spikeID(spikeID), action(action)
 {
+	this->processor = processor;
 	addAndMakeVisible(toggleButton = new ToggleButton);
+	this->addListener(this);
+	//toggleButton->addListener(this);
 }
+void SpikeGroupTableContent::SelectableColumnComponent::buttonClicked (juce::Button* b){
+	auto state = b->getToggleState();
+	for (int x=0;x<this->processor->getSpikeGroupCount();x++){
 
+		auto sg = this->processor->getSpikeGroup(x);
+		if (x==this->spikeID){
+			if(action == Action::ACTIVATE_SPIKE)
+				sg->isActive=state;
+			else if (action == Action::TRACK_SPIKE)
+				sg->isTracking=state;
+		}
+		else{
+			if(action == Action::ACTIVATE_SPIKE)
+				sg->isActive = false;
+			else if (action == Action::TRACK_SPIKE)
+				sg->isTracking= false;
+
+		}
+	}
+
+
+}
+void SpikeGroupTableContent::SelectableColumnComponent::setSpikeID(int spikeID){
+	this->spikeID = spikeID;
+}
 SpikeGroupTableContent::SelectableColumnComponent::~SelectableColumnComponent()
 {
 	toggleButton = nullptr;

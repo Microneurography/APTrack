@@ -74,7 +74,7 @@ struct SpikeInfo
 class SpikeGroup
 {
     public:
-    SpikeGroup() : spikeHistory(100), recentHistory(10), templateSpike(), isTracking(false), isActive(true){};
+    SpikeGroup() : spikeHistory(100), recentHistory(10), templateSpike(), isTracking(false), isActive(false){};
     // ~SpikeGroup();
     std::vector<SpikeInfo> spikeHistory; 
     std::vector<bool> recentHistory;
@@ -216,7 +216,7 @@ public:
     void addSpikeGroup(SpikeInfo templateSpike);
     void removeSpikeGroup(int i);
 
-    SpikeGroup getSpikeGroup(int i);
+    SpikeGroup* getSpikeGroup(int i);
     int getSpikeGroupCount();
 
 private:
