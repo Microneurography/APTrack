@@ -11,121 +11,7 @@
 #include "LfpLatencySpectrogramControlPanel.h"
 #include "LfpLatencyOtherControlPanel.h"
 #include "LfpLatencyRightMiddlePanel.h"
-
-class TableContent : public TableListBoxModel
-                     
-{
-public:
-   
-    TableContent();
-    ~TableContent();
-    
-    /* These are all implementations of the functions defined in TableListBoxModel */
-    
-    int getNumRows();
-
-    void paintRowBackground(Graphics& g, int rowNumber, int width, int height, bool rowIsSelected);
-    
-    void paintCell(Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected);
-    
-    Component* refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component* exsistingComponetToUpdate);
-    
-    /* Update the table with new spike data */
-    friend void updateInfo(TableContent &tc, int location, float fp, float threshold, int i);
-    
-    /* Returns whether the spike track button in the table has been toggled */
-    friend bool getSpikeSelect(TableContent& tc, int row);
-    
-    /* Returns whether the threshold track button in the table has been toggled*/
-    friend bool getThresholdSelect(TableContent& tc, int row);
-    
-    /* Returns an array of all the states of the buttons in a table*/
-    friend Array <bool> getRow(TableContent& tc, bool spike, bool threshold);
-    
-    /* Toggles the tracking of a threshold */
-    friend void selectThreshold(TableContent& tc, int row);
-    
-    /* Toggles the tracking of a spike */
-    friend void selectSpike(TableContent& tc, int row);
-    
-    /* Determines which row has been selected to delete*/
-    friend bool getRowToDelete(TableContent& tc, int row);
-    
-    /* Delete all data in a specific row */
-    friend void deleteSpikeAndThreshold(TableContent& tc, int row);
-
-    /* This structure is used to keep track of data to be displayed in the table*/
-    struct tableData {
-        int location;
-        float firingProb;
-        float threshold;
-    };
-
-    tableData info[4];
-
-    /* This is a custom class used to add custom cells with toggle buttons inside them, the helper functions above help */
-    class SelectableColumnComponent : public juce::ToggleButton
-    {
-    public:
-        SelectableColumnComponent(TableContent& tcon);
-        ~SelectableColumnComponent();
-
-        ScopedPointer<ToggleButton> toggleButton;
-
-    private:
-        TableContent& owner;
-
-    };
-    
-    /* This a custom class used to add custom cells that display data on tracked spike, with the updateInfo() function handling most of the work*/
-    class UpdatingTextColumnComponent : public juce::TextEditor
-                                       
-    {
-    public:
-        
-        UpdatingTextColumnComponent(TableContent& tcon, int rowNumber, int columnNumber);
-        ~UpdatingTextColumnComponent();
-
-        ScopedPointer<TextEditor> value;
-
-    private:
-        TableContent& owner;
-        juce::Colour textColour;
-
-    };
-    class DeleteComponent : public juce::TextButton
-
-    {
-    public:
-
-        DeleteComponent(TableContent& tcon);
-        ~DeleteComponent();
-
-        ScopedPointer<TextButton> del;
-
-    private:
-        TableContent& owner;
-
-    };
-
-
-private:    
-    
-    friend class LfpLatencyProcessorVisualizer;
-    friend class LfpLatencyProcessorVisulizerContentComponent;
-
-    bool trackSpikes[4];
-    bool newSpikeFound[4];
-    bool trackThresholds[4];
-    bool newThresholdFound[4];
-    bool keybind[4];
-
-    bool thresholdAlreadyTracked;
-    bool spikeAlreadyTracked;
-
-    bool deleteSpike[4];
-};
-
+#include "SpikeGroupTableContent.h"
 
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
@@ -162,7 +48,7 @@ private:
     friend class LfpLatencyProcessorVisualizer;
     friend class TableContent;
 
-    ScopedPointer<TableContent> spikeTrackerContent;
+    ScopedPointer<SpikeGroupTableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
     ScopedPointer<LfpLatencyOtherControlPanel> otherControlPanel;
     ScopedPointer<LfpLatencySpectrogramPanel> spectrogramPanel;
@@ -271,7 +157,7 @@ private:
     ScopedPointer<TextEditor> stimuliNumber;
     ScopedPointer<Label> stimuliNumberLabel;
 
-    TableContent tcon;
+    SpikeGroupTableContent tcon;
 
     //DEBUG
 

@@ -30,7 +30,7 @@
 //#include "/modules/juce_core/files/juce_File.h"
 //#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
 #include <map>
-#include "semaphore.hpp"
+#include <vector>
 
 //If the processor uses a custom editor, it needs its header to instantiate it
 //#include "ExampleEditor.h"
@@ -199,25 +199,32 @@ void LfpLatencyProcessor::handleEvent (const EventChannel* eventInfo, const Midi
 void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike){
     SpikeGroup s = {};
     s.templateSpike = templateSpike;
-    spikeGroups.push_back(s);
+    //spikeGroups.push_back(s);
 };
 void LfpLatencyProcessor::removeSpikeGroup(int i){
     spikeGroups.erase(spikeGroups.begin()+i);
+    
 };
-std::vector<LfpLatencyProcessor::SpikeGroup> LfpLatencyProcessor::getSpikeGroups(){
-    return spikeGroups;
+SpikeGroup LfpLatencyProcessor::getSpikeGroup(int i){
+    const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
+    return spikeGroups[i];
 }
+int LfpLatencyProcessor::getSpikeGroupCount(){
+    return spikeGroups.size();
+}
+
 void LfpLatencyProcessor::trackSpikes()
 {
-
+    const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
     for (int i = 0; i < spikeGroups.size(); i++)
     {
         // check if current sample is beyond the window (i.e. it should have data to check)
-        auto curSpikeGroup = spikeGroups[i];
-        auto templateSpike = spikeGroups[i].templateSpike;
+        
+        auto &curSpikeGroup = spikeGroups[i];
+        auto templateSpike = curSpikeGroup.templateSpike;
         if (currentSample < templateSpike.spikeSampleLatency + templateSpike.windowSize)
         {
-            curSpikeGroup.recentHistory.push_back(false);
+            //curSpikeGroup.recentHistory.push_back(false);
             continue;
         }
         auto curTrackBufferLoc = currentTrack * DATA_CACHE_SIZE_SAMPLES; // to index dataBuffer
@@ -226,7 +233,7 @@ void LfpLatencyProcessor::trackSpikes()
         auto maxValInWindow = std::max_element(startPtr, startPtr + (2 * templateSpike.windowSize));
         if (*maxValInWindow < templateSpike.threshold) // if there is a value > threshold
         {
-            curSpikeGroup.recentHistory.push_back(false); //add to array
+            //curSpikeGroup.recentHistory.push_back(false); //add to array
             continue;
         }
 
@@ -236,9 +243,9 @@ void LfpLatencyProcessor::trackSpikes()
         newSpike.threshold = templateSpike.threshold;
         newSpike.spikePeakValue = *maxValInWindow;
         newSpike.spikeSampleNumber = 0; //TODO figure out current sample number...
-        curSpikeGroup.spikeInfos.push_back(newSpike);
+        //curSpikeGroup.spikeHistory.push_back(newSpike);
 
-        curSpikeGroup.recentHistory.push_back(true);
+        //curSpikeGroup.recentHistory.push_back(true);
     }
 }
 void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
