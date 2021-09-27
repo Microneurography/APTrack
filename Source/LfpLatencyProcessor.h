@@ -67,16 +67,16 @@ struct SpikeInfo
     int spikeSampleNumber;  // the recording sample number of the spike
     int spikeSampleLatency; // the spike time relative to the stimulus
     int spikePeakValue;     // the peak value
-    int windowSize;         // the number of samples used to identify spike
+    int windowSize = 30;         // the number of samples used to identify spike
     int threshold;          // the threshold value for the spike, used to detect
     float stimulusVoltage;  // the stimulus voltage used to illicit the spike
 };
 class SpikeGroup
 {
-    public:
+public:
     SpikeGroup() : spikeHistory(100), recentHistory(10), templateSpike(), isTracking(false), isActive(false){};
     // ~SpikeGroup();
-    std::vector<SpikeInfo> spikeHistory; 
+    std::vector<SpikeInfo> spikeHistory;
     std::vector<bool> recentHistory;
     SpikeInfo templateSpike; // the information used to determine the spike
     bool isTracking;         // is the stimulus volt being tracked?
@@ -216,8 +216,16 @@ public:
     void addSpikeGroup(SpikeInfo templateSpike);
     void removeSpikeGroup(int i);
 
-    SpikeGroup* getSpikeGroup(int i);
+    SpikeGroup *getSpikeGroup(int i);
     int getSpikeGroupCount();
+    int getSelectedSpike();
+    void setSelectedSpike(int i);
+    void setSelectedSpikeLocation(int loc);
+    void setSelectedSpikeThreshold(float val);
+    void setSelectedSpikeWindow(int window);
+    
+    int getTrackingSpike();
+    void setTrackingSpike(int i);
 
 private:
     friend class ppController;

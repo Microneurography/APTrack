@@ -75,7 +75,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	: searchBoxLocation(150), subsamplesPerWindow(60), startingSample(0), colorStyle(1), tcon(processor)
 {
 	isSaving = false;
+	this->processor = processor;
 
+	// #TODO: replace this valuesMap with a struct
 	valuesMap = new unordered_map<string, juce::String>;
 
 	searchBoxLocation = 150;
@@ -342,7 +344,6 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	//MULTI SPIKE AND THRESHOLD TRACKING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 	addAndMakeVisible(spikeTracker = new juce::TableListBox("Tracked Spikes", &tcon));
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
@@ -638,6 +639,22 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress &k
 // if the bool is true, we are loading up, so do not update the xml
 // also need a way of passing the value and connecting to a slider, maybe as just a string and int
 
+int LfpLatencyProcessorVisualizerContentComponent::getSearchBoxSampleLocation(int x)
+{
+
+	return (searchBoxLocation * subsamplesPerWindow) + startingSample;
+}
+void LfpLatencyProcessorVisualizerContentComponent::setSearchBoxSampleLocation(int x)
+{
+
+	int out = ((x - startingSample) / subsamplesPerWindow);
+	if (out < 0)
+	{
+		out = 0;
+	}
+	spectrogramPanel->setSearchBoxValue(out);
+}
+
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *sliderThatWasMoved)
 {
 	if (sliderThatWasMoved == stimulusVoltageSlider)
@@ -678,27 +695,24 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 	}
 	if (sliderThatWasMoved->getName() == "Image Threshold")
 	{
-		cout << "Stuck here 4\n";
-
 		//Lower value
-		cout << "Stuck here 5\n";
 		lowImageThreshold = sliderThatWasMoved->getMinValue();
 		std::cout << "Slider lower: " << lowImageThreshold << std::endl;
 		(*valuesMap)["lowImageThreshold"] = String(lowImageThreshold, 1);
 		spectrogramControlPanel->setLowImageThresholdText(String(lowImageThreshold, 1) + " uV");
-		cout << "Stuck here 6\n";
+
 		//Upper value
 		highImageThreshold = sliderThatWasMoved->getMaxValue();
 		std::cout << "Slider upper: " << highImageThreshold << std::endl;
 		(*valuesMap)["highImageThreshold"] = String(highImageThreshold, 1);
 		spectrogramControlPanel->setHighImageThresholdText(String(highImageThreshold, 1) + " uV");
-		cout << "Stuck here 7\n";
+
 		//mid value
 		detectionThreshold = sliderThatWasMoved->getValue();
 		std::cout << "DetectionThehold" << detectionThreshold << std::endl;
 		(*valuesMap)["detectionThreshold"] = String(detectionThreshold, 1);
 		spectrogramControlPanel->setDetectionThresholdText(String(detectionThreshold, 1) + " uV");
-
+		processor->setSelectedSpikeThreshold(detectionThreshold);
 		if (highImageThreshold == lowImageThreshold)
 		{
 			if (lowImageThreshold == 0)
@@ -717,14 +731,16 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 	}
 	if (sliderThatWasMoved->getName() == "Search Box")
 	{
-		cout << "Stuck here 8\n";
+		// search box slider move
+
 		searchBoxLocation = sliderThatWasMoved->getValue();
+
+		processor->setSelectedSpikeLocation(this->getSearchBoxSampleLocation(searchBoxLocation));
 		(*valuesMap)["searchBoxLocation"] = String(searchBoxLocation);
 		std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
 	}
 	if (sliderThatWasMoved->getName() == "Subsamples Per Window")
 	{
-		cout << "Stuck here 9\n";
 		//auto subsamplesPerWindowOld = subsamplesPerWindow;
 		subsamplesPerWindow = sliderThatWasMoved->getValue();
 		(*valuesMap)["subsamplesPerWindow"] = String(subsamplesPerWindow);
@@ -742,7 +758,10 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 		cout << "Stuck here 11\n";
 		searchBoxWidth = sliderThatWasMoved->getValue();
 		(*valuesMap)["searchBoxWidth"] = String(searchBoxWidth);
+
+		processor->setSelectedSpikeWindow(searchBoxWidth*subsamplesPerWindow);
 		std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
+
 	}
 	if (sliderThatWasMoved == trackSpike_IncreaseRate_Slider)
 	{
@@ -925,7 +944,6 @@ void LfpLatencyProcessorVisualizerContentComponent::tryToSave()
 	}
 }
 
-
 int LfpLatencyProcessorVisualizerContentComponent::getStartingSample() const
 {
 	return startingSample;
@@ -994,7 +1012,7 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 	// {
 	// 	colour = Colours::lightyellow;
 	// }
-	colour = Colours::lightyellow;	
+	colour = Colours::lightyellow;
 	auto width = 8;
 	auto x = spectrogramPanel->getImageWidth() - width;
 	auto y = spectrogramPanel->getImageHeight() - (searchBoxLocation + searchBoxWidth);

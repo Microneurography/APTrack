@@ -47,7 +47,7 @@ public:
     
     
     /* This a custom class used to add custom cells that display data on tracked spike, with the updateInfo() function handling most of the work*/
-    class UpdatingTextColumnComponent : public juce::TextEditor
+    class UpdatingTextColumnComponent : public juce::Label
                                        
     {
     public:
@@ -55,7 +55,7 @@ public:
         UpdatingTextColumnComponent(SpikeGroupTableContent& tcon, int rowNumber, int columnNumber);
         ~UpdatingTextColumnComponent();
 
-        ScopedPointer<TextEditor> value;
+        ScopedPointer<Label> value;
 
     private:
         SpikeGroupTableContent& owner;

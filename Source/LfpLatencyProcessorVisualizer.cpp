@@ -158,6 +158,15 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 
 	//Update spectrogram image
 	updateSpectrogram();
+	
+	// TODO: update spike slider
+	int i = processor->getSelectedSpike();
+	if (i>=0){
+		auto spikeVal = processor->getSpikeGroup(i)->templateSpike.spikeSampleLatency;
+		
+		content.setSearchBoxSampleLocation(spikeVal);
+	}
+	
 
 	if (processor->checkEventReceived())
 	{

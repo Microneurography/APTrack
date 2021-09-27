@@ -39,7 +39,7 @@ std::mutex savingAndLoadingLock;
 
 LfpLatencyProcessor::LfpLatencyProcessor()
     : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages(),
-    spikeGroups(10)
+      spikeGroups(1)
 
 {
     setProcessorType(PROCESSOR_TYPE_SINK);
@@ -196,21 +196,95 @@ void LfpLatencyProcessor::handleEvent (const EventChannel* eventInfo, const Midi
     }
 }
 */
-void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike){
+void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike)
+{
     SpikeGroup s = {};
     s.templateSpike = templateSpike;
     //spikeGroups.push_back(s);
 };
-void LfpLatencyProcessor::removeSpikeGroup(int i){
-    spikeGroups.erase(spikeGroups.begin()+i);
-    
+void LfpLatencyProcessor::removeSpikeGroup(int i)
+{
+    spikeGroups.erase(spikeGroups.begin() + i);
 };
-SpikeGroup* LfpLatencyProcessor::getSpikeGroup(int i){
+SpikeGroup *LfpLatencyProcessor::getSpikeGroup(int i)
+{
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
     return &spikeGroups[i];
 }
-int LfpLatencyProcessor::getSpikeGroupCount(){
+int LfpLatencyProcessor::getSpikeGroupCount()
+{
     return spikeGroups.size();
+}
+
+int LfpLatencyProcessor::getSelectedSpike()
+{
+    for (int i = 0; i < spikeGroups.size(); i++)
+    {
+        if (spikeGroups[i].isActive)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int LfpLatencyProcessor::getTrackingSpike()
+{
+    for (int i = 0; i < spikeGroups.size(); i++)
+    {
+        if (spikeGroups[i].isTracking)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+void LfpLatencyProcessor::setSelectedSpike(int i)
+{
+    // Set the current selected spike. Only one allowed.
+    for (int x = 0; x < this->getSpikeGroupCount(); x++)
+    {
+        auto sg = this->getSpikeGroup(x);
+        sg->isActive = x == i;
+    }
+}
+
+void LfpLatencyProcessor::setSelectedSpikeLocation(int loc) 
+{
+    int i = getSelectedSpike();
+    if (i==-1){
+        return;
+    }
+    spikeGroups[i].templateSpike.spikeSampleLatency=loc;
+}
+
+void LfpLatencyProcessor::setSelectedSpikeThreshold(float val) 
+{
+    int i = getSelectedSpike();
+    if (i==-1){
+        return;
+    }
+    spikeGroups[i].templateSpike.threshold = val;
+}
+
+void LfpLatencyProcessor::setSelectedSpikeWindow(int window) 
+{
+    int i = getSelectedSpike();
+    if (i==-1){
+        return;
+    }
+    spikeGroups[i].templateSpike.windowSize = window;
+}
+void LfpLatencyProcessor::setTrackingSpike(int i)
+{
+    // Set the current tracking spike. Only one allowed.
+    for (int x = 0; x < this->getSpikeGroupCount(); x++)
+    {
+        auto sg = this->getSpikeGroup(x);
+        sg->isTracking = x == i;
+    }
 }
 
 void LfpLatencyProcessor::trackSpikes()
@@ -218,10 +292,8 @@ void LfpLatencyProcessor::trackSpikes()
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
     for (int i = 0; i < spikeGroups.size(); i++)
     {
-        // check if current sample is beyond the window (i.e. it should have data to check)
-        
         auto &curSpikeGroup = spikeGroups[i];
-        auto templateSpike = curSpikeGroup.templateSpike;
+        auto &templateSpike = curSpikeGroup.templateSpike;
         if (currentSample < templateSpike.spikeSampleLatency + templateSpike.windowSize)
         {
             //curSpikeGroup.recentHistory.push_back(false);
@@ -244,7 +316,7 @@ void LfpLatencyProcessor::trackSpikes()
         newSpike.spikePeakValue = *maxValInWindow;
         newSpike.spikeSampleNumber = 0; //TODO figure out current sample number...
         //curSpikeGroup.spikeHistory.push_back(newSpike);
-
+        spikeGroups[i].templateSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc));
         //curSpikeGroup.recentHistory.push_back(true);
     }
 }
@@ -252,7 +324,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 {
     int numChannels = buffer.getNumChannels();
 
-    if ((numChannels < 0) || ( numChannels <= dataChannel_idx ) || ( numChannels <= triggerChannel_idx)) // Avoids crashing when no data source connected
+    if ((numChannels < 0) || (numChannels <= dataChannel_idx) || (numChannels <= triggerChannel_idx)) // Avoids crashing when no data source connected
     {
         return;
     }
@@ -351,7 +423,7 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
 
     if (!output.openedOk())
     {
-        std::cout << "recoveryConfigFile didnt open corectly" << std::endl;
+        std::cout << "recoveryConfigFile did not open correctly" << std::endl;
     }
     else
     {

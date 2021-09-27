@@ -66,7 +66,7 @@ double LfpLatencyLabelSlider::getSliderMinimum() const {
 
 void LfpLatencyLabelSlider::setSliderValue(double newValue)
 {
-    slider->setValue(newValue);
+    slider->setValue(newValue, juce::NotificationType::dontSendNotification);
 }
 
 double LfpLatencyLabelSlider::getSliderValue() const

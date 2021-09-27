@@ -31,6 +31,9 @@ public:
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
 
+
+    int getSearchBoxSampleLocation(int x);
+    void setSearchBoxSampleLocation(int x);
     int getStartingSample() const;
     bool getExtendedColorScale() const;
     int getSubsamplesPerWindow() const;
@@ -48,6 +51,7 @@ private:
     friend class LfpLatencyProcessorVisualizer;
     friend class TableContent;
 
+    ScopedPointer<LfpLatencyProcessor> processor;
     ScopedPointer<SpikeGroupTableContent> spikeTrackerContent;
     ScopedPointer<LfpLatencySpectrogramControlPanel> spectrogramControlPanel;
     ScopedPointer<LfpLatencyOtherControlPanel> otherControlPanel;
