@@ -314,7 +314,7 @@ void LfpLatencyLabelLinearVerticalSliderNoTextBox::addSliderListener(Slider::Lis
 
 void LfpLatencyLabelLinearVerticalSliderNoTextBox::setSliderValue(double newValue)
 {
-    slider->setValue(newValue);
+    slider->setValue(newValue, juce::NotificationType::dontSendNotification);
 }
 
 double LfpLatencyLabelLinearVerticalSliderNoTextBox::getSliderValue() const
@@ -336,8 +336,10 @@ void LfpLatencySearchBox::paint(Graphics& g)
     auto area = getLocalBounds().toFloat();
     x = jmap(x, 0.0f, (float)spectrogram.getImageWidth(), area.getX(), area.getRight());
     width = jmap(width, 0.0f, (float)spectrogram.getImageWidth(), area.getX(), area.getRight());
-    y = jmap(y, 0.0f, (float)spectrogram.getImageHeight(), area.getY(), area.getBottom());
-    height = jmap(height, 0.0f, (float)spectrogram.getImageHeight(), area.getY(), area.getBottom());
+    // not sure if startingsample makes sense here...
+    // This currently works when subsamplesperwindow == 1. its very close... //TODO: FINISH HIM
+    y = jmap(y - content.getStartingSample(), 0.0f, (float)spectrogram.getImageHeight() * content.getSubsamplesPerWindow(), area.getY(), area.getBottom());
+    height = jmap(height, 0.0f, (float)spectrogram.getImageHeight() * content.getSubsamplesPerWindow(), area.getY(), area.getBottom());
 
     auto cornerSize = 1;
     auto lineThickness = 2;

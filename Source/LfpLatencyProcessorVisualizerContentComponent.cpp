@@ -647,12 +647,12 @@ int LfpLatencyProcessorVisualizerContentComponent::getSearchBoxSampleLocation(in
 void LfpLatencyProcessorVisualizerContentComponent::setSearchBoxSampleLocation(int x)
 {
 
-	int out = ((x - startingSample) / subsamplesPerWindow);
+	int out = ((x-startingSample) / subsamplesPerWindow);
 	if (out < 0)
 	{
 		out = 0;
 	}
-	spectrogramPanel->setSearchBoxValue(out);
+	spectrogramPanel->setSearchBoxValue(out); // This value expects relative to the bottom of the window #TODO: fix this madness
 }
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *sliderThatWasMoved)
@@ -1013,10 +1013,11 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 	// 	colour = Colours::lightyellow;
 	// }
 	colour = Colours::lightyellow;
-	auto width = 8;
+
+	auto width = 3;
 	auto x = spectrogramPanel->getImageWidth() - width;
 	auto y = spectrogramPanel->getImageHeight() - (searchBoxLocation + searchBoxWidth);
-	auto height = searchBoxWidth * 2 + 1;
+	auto height = (searchBoxWidth) * 2 + 1;
 
 	return {x, y, width, height, colour};
 }
