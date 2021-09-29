@@ -32,8 +32,9 @@ public:
 
 
 
-    int getSearchBoxSampleLocation(int x);
+    int getSearchBoxSampleLocation();
     void setSearchBoxSampleLocation(int x);
+
     int getStartingSample() const;
     bool getExtendedColorScale() const;
     int getSubsamplesPerWindow() const;

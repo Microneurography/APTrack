@@ -298,8 +298,8 @@ void LfpLatencyLabelLinearVerticalSliderNoTextBox::resized()
     auto area = getLocalBounds();
     auto sliderWidth = 15;
     slider->setBounds(area.removeFromLeft(sliderWidth));
-    auto labelHeight = 24;
-    label->setBounds(area.removeFromBottom(labelHeight));
+    // auto labelHeight = 24;
+    // label->setBounds(area.removeFromBottom(labelHeight));
 }
 
 void LfpLatencyLabelLinearVerticalSliderNoTextBox::setSliderRange(double newMinimum, double newMaximum, double newInterval)
@@ -328,6 +328,8 @@ LfpLatencySearchBox::LfpLatencySearchBox(const LfpLatencyProcessorVisualizerCont
 
 void LfpLatencySearchBox::paint(Graphics& g)
 {
+    // Ideally this would map directly to the same scaling as the visualizer window. move back into original render?
+
     Colour colour;
     float x, y, width, height;
     std::tie(x, y, width, height, colour) = content.getSearchBoxInfo();
@@ -336,12 +338,11 @@ void LfpLatencySearchBox::paint(Graphics& g)
     auto area = getLocalBounds().toFloat();
     x = jmap(x, 0.0f, (float)spectrogram.getImageWidth(), area.getX(), area.getRight());
     width = jmap(width, 0.0f, (float)spectrogram.getImageWidth(), area.getX(), area.getRight());
-    // not sure if startingsample makes sense here...
-    // This currently works when subsamplesperwindow == 1. its very close... //TODO: FINISH HIM
-    y = jmap(y - content.getStartingSample(), 0.0f, (float)spectrogram.getImageHeight() * content.getSubsamplesPerWindow(), area.getY(), area.getBottom());
+    // this is very confusing. it also doesn't work as the range of the slider isn't from 0->top of image. this leads to a small (and annoying) offset.
+    y = jmap(y, 0.0f, (float)spectrogram.getImageHeight(), area.getY(), area.getBottom());
     height = jmap(height, 0.0f, (float)spectrogram.getImageHeight() * content.getSubsamplesPerWindow(), area.getY(), area.getBottom());
 
     auto cornerSize = 1;
     auto lineThickness = 2;
-    g.drawRoundedRectangle(x, y, width, height, cornerSize, lineThickness);
+    g.drawRoundedRectangle(x, y-(height/2), width, height, cornerSize, lineThickness);
 }

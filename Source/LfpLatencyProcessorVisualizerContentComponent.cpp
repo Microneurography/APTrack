@@ -81,7 +81,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	valuesMap = new unordered_map<string, juce::String>;
 
 	searchBoxLocation = 150;
-	searchBoxWidth = 25;
+	searchBoxWidth = 100;
 	conductionDistance = 100;
 	subsamplesPerWindow = 60;
 
@@ -580,13 +580,13 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress &k
 	//Increase subsamplesperwindow
 	if ((k.getTextCharacter() == '=' || k.getTextCharacter() == '+' || k == KeyPress::numberPadAdd) && (subsamplesPerWindowValue < spectrogramControlPanel->getSubsamplesPerWindowMaximum()))
 	{
-		spectrogramControlPanel->changeSubsamplesPerWindowValue(5);
+		spectrogramControlPanel->changeSubsamplesPerWindowValue(500);
 		return true;
 	}
 	//Decrease subsamplesperwindow
 	else if ((k.getTextCharacter() == '-' || k == KeyPress::numberPadSubtract) && (subsamplesPerWindowValue > spectrogramControlPanel->getSubsamplesPerWindowMinimum()))
 	{
-		spectrogramControlPanel->changeSubsamplesPerWindowValue(-5);
+		spectrogramControlPanel->changeSubsamplesPerWindowValue(-500);
 		return true;
 	}
 
@@ -639,7 +639,7 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress &k
 // if the bool is true, we are loading up, so do not update the xml
 // also need a way of passing the value and connecting to a slider, maybe as just a string and int
 
-int LfpLatencyProcessorVisualizerContentComponent::getSearchBoxSampleLocation(int x)
+int LfpLatencyProcessorVisualizerContentComponent::getSearchBoxSampleLocation()
 {
 
 	return (searchBoxLocation * subsamplesPerWindow) + startingSample;
@@ -653,10 +653,12 @@ void LfpLatencyProcessorVisualizerContentComponent::setSearchBoxSampleLocation(i
 		out = 0;
 	}
 	spectrogramPanel->setSearchBoxValue(out); // This value expects relative to the bottom of the window #TODO: fix this madness
+	searchBoxLocation=out;
 }
 
 void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *sliderThatWasMoved)
 {
+	// TODO: identifying the slider by name is maddening. fix these references.
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
 		cout << "Stuck here 1\n";
@@ -735,7 +737,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 
 		searchBoxLocation = sliderThatWasMoved->getValue();
 
-		processor->setSelectedSpikeLocation(this->getSearchBoxSampleLocation(searchBoxLocation));
+		processor->setSelectedSpikeLocation(this->getSearchBoxSampleLocation());
 		(*valuesMap)["searchBoxLocation"] = String(searchBoxLocation);
 		std::cout << "searchBoxLocation" << searchBoxLocation << std::endl;
 	}
@@ -759,7 +761,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 		searchBoxWidth = sliderThatWasMoved->getValue();
 		(*valuesMap)["searchBoxWidth"] = String(searchBoxWidth);
 
-		processor->setSelectedSpikeWindow(searchBoxWidth*subsamplesPerWindow);
+		processor->setSelectedSpikeWindow(searchBoxWidth);
 		std::cout << "searchBoxWidth" << searchBoxWidth << std::endl;
 
 	}
@@ -1013,10 +1015,10 @@ std::tuple<float, float, float, float, Colour> LfpLatencyProcessorVisualizerCont
 	// 	colour = Colours::lightyellow;
 	// }
 	colour = Colours::lightyellow;
-
+	//#TODO: this refactoring makes it hard to know what is going on. 
 	auto width = 3;
 	auto x = spectrogramPanel->getImageWidth() - width;
-	auto y = spectrogramPanel->getImageHeight() - (searchBoxLocation + searchBoxWidth);
+	auto y = spectrogramPanel->getImageHeight() - searchBoxLocation;
 	auto height = (searchBoxWidth) * 2 + 1;
 
 	return {x, y, width, height, colour};
