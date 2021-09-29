@@ -151,11 +151,14 @@ SpikeGroupTableContent::SelectableColumnComponent::SelectableColumnComponent(Spi
 }
 void SpikeGroupTableContent::SelectableColumnComponent::buttonClicked(juce::Button *b)
 {
+	auto newSpikeID = -1;
 	if (b->getToggleState())
-		if (action == Action::ACTIVATE_SPIKE)
-			processor->setSelectedSpike(spikeID);
-		else if (action == Action::TRACK_SPIKE)
-			processor->setTrackingSpike(spikeID);
+		newSpikeID = spikeID;
+
+	if (action == Action::ACTIVATE_SPIKE)
+		processor->setSelectedSpike(newSpikeID);
+	else if (action == Action::TRACK_SPIKE)
+		processor->setTrackingSpike(newSpikeID);
 }
 void SpikeGroupTableContent::SelectableColumnComponent::setSpikeID(int spikeID)
 {

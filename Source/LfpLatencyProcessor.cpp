@@ -289,6 +289,10 @@ void LfpLatencyProcessor::setTrackingSpike(int i)
 
 void LfpLatencyProcessor::trackSpikes()
 {
+    // TODO: ensure update is only once per track. 
+    //currently this will update multiple times in a single run
+    // This pushes the template spike further up the signal. to visualise set threshold to 0 and watch what happens
+
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
     for (int i = 0; i < spikeGroups.size(); i++)
     {
