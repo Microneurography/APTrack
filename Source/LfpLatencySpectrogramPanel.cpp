@@ -50,7 +50,7 @@ void LfpLatencySpectrogramPanel::resized()
     auto widthOfSearchBox = 85;
     auto searchBoxArea = area.removeFromRight(widthOfSearchBox);
     auto offset = 5;
-    searchBoxArea.setX(searchBoxArea.getX() - offset);
+    // searchBoxArea.setX(searchBoxArea.getX() - offset); //disabled as the 'bobble' overlays the main viewer.
     searchBoxArea.setWidth(searchBoxArea.getWidth() + offset);
     searchBoxArea.setHeight(searchBoxArea.getHeight()+16); // #HACK! this is to keep search box in line with the margin of the scrollbar :(
     searchBoxArea.setY(searchBoxArea.getY()-8);

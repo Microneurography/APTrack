@@ -344,5 +344,8 @@ void LfpLatencySearchBox::paint(Graphics& g)
 
     auto cornerSize = 1;
     auto lineThickness = 2;
-    g.drawRoundedRectangle(x, y-(height/2), width, height, cornerSize, lineThickness);
+    g.fillRect(x,y-(height/2),width*2,2.0f);
+    g.fillRect(x,y+(height/2),width*2,2.0f);
+    //g.drawLine(x,y+(height/2),x+width,y+(height/2));
+    //g.drawRoundedRectangle(x, y-(height/2), width, height, cornerSize, lineThickness);
 }
