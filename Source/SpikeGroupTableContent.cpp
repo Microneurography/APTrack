@@ -45,7 +45,7 @@ void SpikeGroupTableContent::paintRowBackground(Graphics &g, int rowNumber, int 
 	}
 }
 
-Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component *existingComponetToUpdate)
+Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int columnId, bool rowIsSelected, Component *existingComponentToUpdate)
 {
 	if (rowNumber < getNumRows())
 	{
@@ -53,7 +53,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 		;
 		if (columnId == Columns::delete_button)
 		{
-			auto *deleteButton = static_cast<DeleteComponent *>(existingComponetToUpdate);
+			auto *deleteButton = static_cast<DeleteComponent *>(existingComponentToUpdate);
 
 			if (deleteButton == nullptr)
 			{
@@ -64,7 +64,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 		}
 		if (columnId == Columns::track_spike_button)
 		{
-			auto *selectionBox = static_cast<SelectableColumnComponent *>(existingComponetToUpdate);
+			auto *selectionBox = static_cast<SelectableColumnComponent *>(existingComponentToUpdate);
 
 			if (selectionBox == nullptr)
 			{
@@ -76,7 +76,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 		}
 		if (columnId == Columns::threshold_spike_button)
 		{
-			auto *selectionBox = static_cast<SelectableColumnComponent *>(existingComponetToUpdate);
+			auto *selectionBox = static_cast<SelectableColumnComponent *>(existingComponentToUpdate);
 			if (selectionBox == nullptr)
 			{
 				selectionBox = new SelectableColumnComponent(*this, rowNumber, SpikeGroupTableContent::SelectableColumnComponent::Action::TRACK_SPIKE, processor);
@@ -87,7 +87,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 		}
 		if (columnId == Columns::location_info)
 		{
-			auto *label = dynamic_cast<UpdatingTextColumnComponent *>(existingComponetToUpdate);
+			auto *label = dynamic_cast<UpdatingTextColumnComponent *>(existingComponentToUpdate);
 
 			if (label == nullptr)
 			{
@@ -99,7 +99,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 		}
 		if (columnId == Columns::firing_probability_info)
 		{
-			auto *label = dynamic_cast<UpdatingTextColumnComponent *>(existingComponetToUpdate);
+			auto *label = dynamic_cast<UpdatingTextColumnComponent *>(existingComponentToUpdate);
 
 			if (label == nullptr)
 			{
@@ -112,7 +112,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 		}
 		if (columnId == Columns::threshold_info)
 		{
-			auto *label = dynamic_cast<UpdatingTextColumnComponent *>(existingComponetToUpdate);
+			auto *label = dynamic_cast<UpdatingTextColumnComponent *>(existingComponentToUpdate);
 
 			if (label == nullptr)
 			{
@@ -124,7 +124,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			return label;
 		}
 	}
-	jassert(existingComponetToUpdate == nullptr);
+	jassert(existingComponentToUpdate == nullptr);
 	return nullptr;
 }
 
