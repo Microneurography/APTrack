@@ -40,6 +40,7 @@ public:
     void changeImageThresholdMinValue(double deltaValue);
     double getImageThresholdMaximum() const;
     double getImageThresholdMinimum() const;
+    void setDetectionThresholdValue(double newValue);
 
     static void loadParameters(const std::map<String, String>& newParameters);
 

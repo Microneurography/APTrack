@@ -162,11 +162,15 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	// TODO: update spike slider
 	int i = processor->getSelectedSpike();
 	if (i>=0){
-		auto spikeVal = processor->getSpikeGroup(i)->templateSpike.spikeSampleLatency;
+		// TODO: there should be a method that syncs the UI with the templateSpike.
+		auto ts = processor->getSpikeGroup(i)->templateSpike;
+		auto spikeVal = ts.spikeSampleLatency;
 		
 		content.setSearchBoxSampleLocation(spikeVal);
+		content.spectrogramPanel->setSearchBoxWidthValue(ts.windowSize);
+		content.spectrogramControlPanel->setDetectionThresholdValue(ts.threshold); //#TODO: this should be getter/setter
+
 	}
-	
 
 	if (processor->checkEventReceived())
 	{
