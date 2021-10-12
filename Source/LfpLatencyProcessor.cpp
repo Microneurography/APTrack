@@ -251,28 +251,31 @@ void LfpLatencyProcessor::setSelectedSpike(int i)
     }
 }
 
-void LfpLatencyProcessor::setSelectedSpikeLocation(int loc) 
+void LfpLatencyProcessor::setSelectedSpikeLocation(int loc)
 {
     int i = getSelectedSpike();
-    if (i==-1){
+    if (i == -1)
+    {
         return;
     }
-    spikeGroups[i].templateSpike.spikeSampleLatency=loc;
+    spikeGroups[i].templateSpike.spikeSampleLatency = loc;
 }
 
-void LfpLatencyProcessor::setSelectedSpikeThreshold(float val) 
+void LfpLatencyProcessor::setSelectedSpikeThreshold(float val)
 {
     int i = getSelectedSpike();
-    if (i==-1){
+    if (i == -1)
+    {
         return;
     }
     spikeGroups[i].templateSpike.threshold = val;
 }
 
-void LfpLatencyProcessor::setSelectedSpikeWindow(int window) 
+void LfpLatencyProcessor::setSelectedSpikeWindow(int window)
 {
     int i = getSelectedSpike();
-    if (i==-1){
+    if (i == -1)
+    {
         return;
     }
     spikeGroups[i].templateSpike.windowSize = window;
@@ -287,9 +290,14 @@ void LfpLatencyProcessor::setTrackingSpike(int i)
     }
 }
 
+void LfpLatencyProcessor::trackThreshold()
+{
+    // if the threshold is being tracked
+}
+
 void LfpLatencyProcessor::trackSpikes()
 {
-    // TODO: ensure update is only once per track. 
+    // TODO: ensure update is only once per track.
     //currently this will update multiple times in a single run
     // This pushes the template spike further up the signal. to visualise set threshold to 0 and watch what happens
 
@@ -298,18 +306,19 @@ void LfpLatencyProcessor::trackSpikes()
     {
         auto &curSpikeGroup = spikeGroups[i];
         auto &templateSpike = curSpikeGroup.templateSpike;
-        if (currentSample < templateSpike.spikeSampleLatency + templateSpike.windowSize)
+        if (currentSample != templateSpike.spikeSampleLatency + templateSpike.windowSize ||
+            (!curSpikeGroup.spikeHistory.empty() && curSpikeGroup.spikeHistory.back().trackIndex == currentTrack))
         {
-            //curSpikeGroup.recentHistory.push_back(false);
             continue;
         }
-        auto curTrackBufferLoc = currentTrack * DATA_CACHE_SIZE_SAMPLES; // to index dataBuffer
+        auto curTrackBufferLoc = (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES; // to index dataBuffer
         auto windowStartInBuffer = curTrackBufferLoc + templateSpike.spikeSampleLatency - templateSpike.windowSize;
         auto startPtr = dataCache + windowStartInBuffer;
         auto maxValInWindow = std::max_element(startPtr, startPtr + (2 * templateSpike.windowSize));
         if (*maxValInWindow < templateSpike.threshold) // if there is a value > threshold
         {
-            //curSpikeGroup.recentHistory.push_back(false); //add to array
+            curSpikeGroup.recentHistory.push_back(false); //add to array
+            curSpikeGroup.recentHistory.pop_front();
             continue;
         }
 
@@ -319,9 +328,11 @@ void LfpLatencyProcessor::trackSpikes()
         newSpike.threshold = templateSpike.threshold;
         newSpike.spikePeakValue = *maxValInWindow;
         newSpike.spikeSampleNumber = 0; //TODO figure out current sample number...
-        //curSpikeGroup.spikeHistory.push_back(newSpike);
+        newSpike.trackIndex = currentTrack;
+        curSpikeGroup.spikeHistory.push_back(newSpike);
         spikeGroups[i].templateSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc));
-        //curSpikeGroup.recentHistory.push_back(true);
+        curSpikeGroup.recentHistory.push_back(true);
+        curSpikeGroup.recentHistory.pop_front();
     }
 }
 void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
@@ -376,25 +387,26 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
             currentSample = 0;
 
             //increment row count
-            currentTrack < (DATA_CACHE_SIZE_TRACKS - 1) ? currentTrack++ : currentTrack = 0;
+            currentTrack++;
 
             //clear row
             for (auto ii = 0; ii < DATA_CACHE_SIZE_SAMPLES; ii++)
             {
-                dataCache[currentTrack * DATA_CACHE_SIZE_SAMPLES + ii] = 0.0f;
+                dataCache[(currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES + ii] = 0.0f;
             }
         }
 
         if (currentSample < (DATA_CACHE_SIZE_SAMPLES))
         {
 
-            dataCache[currentTrack * DATA_CACHE_SIZE_SAMPLES + currentSample] = 1.0f * std::abs(data);
+            dataCache[(currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES + currentSample] = 1.0f * std::abs(data);
 
             currentSample++;
         }
         trackSpikes();
     }
 
+    trackThreshold();
     while (!messages.empty())
     { // post pulsePal messages
         TextEventPtr event = TextEvent::createTextEvent(this->pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
@@ -560,7 +572,7 @@ void LfpLatencyProcessor::resetEventFlag()
 
 float *LfpLatencyProcessor::getdataCacheLastRow()
 {
-    float *rowPtr = (dataCache + currentTrack * DATA_CACHE_SIZE_SAMPLES);
+    float *rowPtr = (dataCache + (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES);
     return rowPtr;
 }
 
@@ -581,7 +593,7 @@ int LfpLatencyProcessor::getLatencyData(int track)
 
 void LfpLatencyProcessor::pushLatencyData(int latency)
 {
-    spikeLocation[currentTrack] = latency;
+    spikeLocation[currentTrack % DATA_CACHE_SIZE_TRACKS] = latency;
 }
 
 float *LfpLatencyProcessor::getdataCache()

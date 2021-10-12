@@ -66,18 +66,22 @@ struct SpikeInfo
 {
     int spikeSampleNumber;  // the recording sample number of the spike
     int spikeSampleLatency; // the spike time relative to the stimulus
-    int spikePeakValue;     // the peak value
+    float spikePeakValue;     // the peak value
     int windowSize = 30;         // the number of samples used to identify spike
-    int threshold;          // the threshold value for the spike, used to detect
+    float threshold;          // the threshold value for the spike, used to detect
     float stimulusVoltage;  // the stimulus voltage used to illicit the spike
+    int trackIndex; // the track index for the stimulus (currentTrack)
 };
 class SpikeGroup
 {
 public:
-    SpikeGroup() : spikeHistory(100), recentHistory(10), templateSpike(), isTracking(false), isActive(false){};
+    SpikeGroup() : spikeHistory(), recentHistory(10), templateSpike(), isTracking(false), isActive(false){
+        spikeHistory.reserve(1000);
+    };
     // ~SpikeGroup();
+    
     std::vector<SpikeInfo> spikeHistory;
-    std::vector<bool> recentHistory;
+    std::deque<bool> recentHistory;
     SpikeInfo templateSpike; // the information used to determine the spike
     bool isTracking;         // is the stimulus volt being tracked?
     bool isActive;           // is this spike currently active
@@ -241,11 +245,12 @@ private:
     void timerCallback(int timerID) override;
 
     void trackSpikes(); // updates the currently tracked spike group
+    void trackThreshold();
 
-    std::vector<SpikeGroup> spikeGroups; // The groups of spikes that have been traced
+    std::vector<SpikeGroup> spikeGroups; // The groups of spikes that have been traced 
     std::mutex spikeGroups_mutex;
 
-    float dataCache[DATA_CACHE_SIZE_TRACKS * DATA_CACHE_SIZE_SAMPLES];
+    float dataCache[(DATA_CACHE_SIZE_TRACKS+1) * DATA_CACHE_SIZE_SAMPLES]; // TODO convert to vector.
 
     int spikeLocation[DATA_CACHE_SIZE_TRACKS];
 
