@@ -156,6 +156,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	processor->changeParameter(4, content.dataChannelComboBox->getSelectedId() - 1);	 // pass channel Id -1 = channel index
 	processor->changeParameter(5, content.rightMiddlePanel->getTriggerThresholdValue()); // pass channel Id -1 = channel index
 
+	content.stimulusVoltageSlider->setValue(processor->pulsePalController->getStimulusVoltage(), juce::NotificationType::dontSendNotification);
 	//Update spectrogram image
 	updateSpectrogram();
 	

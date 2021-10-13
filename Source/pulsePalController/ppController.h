@@ -26,6 +26,7 @@ public:
 	~ppController();
 
 	void setStimulusVoltage(float newVoltage);
+	float getStimulusVoltage();
 	bool initializeConnection(); // returns false if connection fails
 	bool isProtocolRunning();
 private:
@@ -36,6 +37,8 @@ private:
 	int elementCount;
 
 	float stimulusVoltage;
+	float minStimulusVoltage = 0;
+	float maxStimulationVoltage = 10;
 
 	float protocolDuration;
 

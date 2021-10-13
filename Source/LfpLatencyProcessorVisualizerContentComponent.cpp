@@ -660,7 +660,6 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 	// TODO: identifying the slider by name is maddening. fix these references.
 	if (sliderThatWasMoved == stimulusVoltageSlider)
 	{
-		cout << "Stuck here 1\n";
 		//Lower value
 		stimulusVoltageMin = sliderThatWasMoved->getMinValue();
 		(*valuesMap)["stimulusVoltageMin"] = String(stimulusVoltageMin, 2);
@@ -692,6 +691,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 			// ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 			cout << "Updated stimulus voltage\n";
 		}
+		processor->pulsePalController->setStimulusVoltage(stimulusVoltage);
 		cout << "Done\n";
 	}
 	if (sliderThatWasMoved->getName() == "Image Threshold")
@@ -713,6 +713,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 		std::cout << "DetectionThehold" << detectionThreshold << std::endl;
 		(*valuesMap)["detectionThreshold"] = String(detectionThreshold, 1);
 		spectrogramControlPanel->setDetectionThresholdText(String(detectionThreshold, 1) + " uV");
+		
 		processor->setSelectedSpikeThreshold(detectionThreshold);
 		if (highImageThreshold == lowImageThreshold)
 		{

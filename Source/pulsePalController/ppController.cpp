@@ -82,8 +82,14 @@ void ppController::setStimulusVoltage(float newVoltage)
 {
 	std::cout << "moved to pp controller\n";
 	//TODO: Check bounds
-	processor->setStimulusVoltage(newVoltage);
-	stimulusVoltage = processor->getStimulusVoltage();
+	if (newVoltage>maxStimulationVoltage){
+		newVoltage = maxStimulationVoltage;
+	}
+	if (newVoltage<minStimulusVoltage){
+		newVoltage = minStimulusVoltage;
+	}
+
+	stimulusVoltage = newVoltage;
 
 	//Update channel voltages
 	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
@@ -96,6 +102,10 @@ void ppController::setStimulusVoltage(float newVoltage)
 
 	pulsePal->syncAllParams();
 	std::cout << "synced all params in pp\n";
+	processor->addMessage("setStimVoltage:" + std::to_string(newVoltage));
+}
+float ppController::getStimulusVoltage(){
+	return stimulusVoltage;
 }
 bool ppController::isProtocolRunning(){
 	return protocolRunning;

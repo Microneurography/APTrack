@@ -348,13 +348,17 @@ void LfpLatencyProcessor::trackSpikes()
         }
         if (curSpikeGroup.isTracking)
         {
+            float sv = this->pulsePalController->getStimulusVoltage();
             if (spikeDetected)
             {
                 // request increase
                 //this->pulsePalController;
+                
+                this->pulsePalController->setStimulusVoltage(sv-0.1);
             }
             else
             {
+                this->pulsePalController->setStimulusVoltage(sv+0.1);
                 // request decrease
             }
         }
