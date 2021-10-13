@@ -13,12 +13,13 @@
 ppControllerVisualizer::ppControllerVisualizer(LfpLatencyProcessor *processor)
 {
 	this->processor = processor;
-
-	while (!(this->processor->pulsePalController->initializeConnection()))
+	this->controller = processor->pulsePalController;
+	pulsePalConnected = true;
+	while (!(controller->initializeConnection()))
 	{
-
 		if (!AlertWindow::showOkCancelBox(juce::AlertWindow::AlertIconType::WarningIcon, "PulsePal not connected", "A PulsePal could not be found", "Search again", "Continue without PulsePal"))
 		{
+			//pulsePalConnected = false;
 			break;
 		}
 	}
@@ -76,6 +77,7 @@ ppControllerVisualizer::ppControllerVisualizer(LfpLatencyProcessor *processor)
 
 	addAndMakeVisible(protocolStepComment_label = new Label("protocolStepComment_label"));
 	protocolStepComment_label->setText("Comment", dontSendNotification);
+	startTimer(TIMER_UI, 100);
 }
 
 ppControllerVisualizer::~ppControllerVisualizer()
@@ -92,16 +94,16 @@ void ppControllerVisualizer::paintOverChildren(Graphics &g)
 {
 	if (!pulsePalConnected)
 	{
-		g.setColour(Colours::red);
+		// g.setColour(Colours::red);
 
-		juce::Line<float> line1(juce::Point<float>(5, 5),
-								juce::Point<float>(300, 125));
+		// juce::Line<float> line1(juce::Point<float>(5, 5),
+		// 						juce::Point<float>(300, 125));
 
-		juce::Line<float> line2(juce::Point<float>(5, 125),
-								juce::Point<float>(300, 5));
+		// juce::Line<float> line2(juce::Point<float>(5, 125),
+		// 						juce::Point<float>(300, 5));
 
-		g.drawLine(line1, 5.0f);
-		g.drawLine(line2, 5.0f);
+		// g.drawLine(line1, 5.0f);
+		// g.drawLine(line2, 5.0f);
 	}
 }
 
@@ -131,21 +133,31 @@ void ppControllerVisualizer::timerCallback(int timerID)
 	if (timerID == TIMER_UI) //UI refresh timer
 	{
 		// Calculate time left
-		// int64 millisecondsNow = Time::getMillisecondCounter();
+		int64 millisecondsNow = Time::getMillisecondCounter();
 
-		// RelativeTime protocolStepTimeLeft = RelativeTime::milliseconds(protocolStepEndingTime - millisecondsNow);
-		// RelativeTime protocolTimeLeft = RelativeTime::milliseconds(protocolEndingTime - millisecondsNow);
+		RelativeTime protocolStepTimeLeft = RelativeTime::milliseconds(controller->protocolStepEndingTime - millisecondsNow);
+		RelativeTime protocolTimeLeft = RelativeTime::milliseconds(controller->protocolEndingTime - millisecondsNow);
 
 		// // Update labels
+		if (controller->isProtocolRunning())
+		{
+			startStopButton->setLabel("[ ]");
+		}
+		else
+		{
+			startStopButton->setLabel(">");
+		}
 
 		// // time labels
-		// protocolStepTimeLeft_text->setText(formatTimeLeftToString(protocolStepTimeLeft, protocolData[protocolStepNumber].duration));
-		// protocolTimeLeft_text->setText(formatTimeLeftToString(protocolTimeLeft, protocolDuration));
+		if ((controller->protocolData.size() > 0) & (controller->protocolStepNumber >= 0))
+		{
+			protocolStepTimeLeft_text->setText(formatTimeLeftToString(protocolStepTimeLeft, controller->protocolData[controller->protocolStepNumber].duration));
+			protocolTimeLeft_text->setText(formatTimeLeftToString(protocolTimeLeft, controller->protocolDuration));
 
-		// // Update step labels
-		// protocolStepSummary_text->setText(String(protocolStepNumber + 1) + "/" + String(elementCount) + " at " + String(protocolData[protocolStepNumber].rate) + " Hz");
-		// protocolStepComment_text->setText(protocolData[protocolStepNumber].comment);
-
+			// // Update step labels
+			protocolStepSummary_text->setText(String(controller->protocolStepNumber + 1) + "/" + String(controller->elementCount) + " at " + String(controller->protocolData[controller->protocolStepNumber].rate) + " Hz");
+			protocolStepComment_text->setText(controller->protocolData[controller->protocolStepNumber].comment);
+		}
 		//Repaint
 		repaint();
 	}
@@ -153,11 +165,6 @@ void ppControllerVisualizer::timerCallback(int timerID)
 
 void ppControllerVisualizer::buttonClicked(Button *buttonThatWasClicked)
 {
-	// if (this->eventChannel != nullptr){
-	// 	auto te = TextEvent::createTextEvent(this->eventChannel,CoreServices::getGlobalTimestamp(),"hello :)",0);
-	// 	this->processor->addEvent(this->eventChannel,te,0);
-
-	// }
 
 	if (buttonThatWasClicked == getFileButton)
 	{
@@ -174,22 +181,28 @@ void ppControllerVisualizer::buttonClicked(Button *buttonThatWasClicked)
 
 		if (chooseProtocolFile.browseForFileToOpen())
 		{
-			// loadFile(chooseProtocolFile.getResult().getFullPathName());
-
-			std::cout << "Stim file path: " << chooseProtocolFile.getResult().getFullPathName() << std::endl;
+			auto res = chooseProtocolFile.getResult();
+			controller->loadFile(res.getFullPathName());
+			fileName_text->setText(res.getFileName());
+			std::cout << "Stim file path: " << res.getFullPathName() << std::endl;
+			startStopButton->setEnabled(true);
+		}
+		else
+		{
+			startStopButton->setEnabled(false);
 		}
 	}
 	if (buttonThatWasClicked == startStopButton)
 	{
-		// // start or stop the playlist
-		// if (isTimerRunning(TIMER_PROTOCOL)) // currently running
-		// {
-		// 	StopCurrentProtocol();
-		// }
-		// else
-		// { // currently stopped
-		// 	StartCurrentProtocol();
-		// }
+		// start or stop the playlist
+		if (controller->isProtocolRunning()) // currently running
+		{
+			controller->StopCurrentProtocol();
+		}
+		else
+		{ // currently stopped
+			controller->StartCurrentProtocol();
+		}
 	}
 }
 
@@ -197,5 +210,8 @@ String ppControllerVisualizer::formatTimeLeftToString(RelativeTime step_secondsR
 {
 	//Format mm:ss/mm:ss
 	// TODO: cleanup?
-	return String("");//(String(static_cast<int>(std::floor(step_secondsRemaining.inMinutes())) % 60).paddedLeft('0', 2) + ":" + String(static_cast<int>(std::floor(step_secondsRemaining.inSeconds())) % 60).paddedLeft('0', 2) + "/" + String(static_cast<int>(std::floor(RelativeTime(step_duration).inMinutes())) % 60).paddedLeft('0', 2) + ":" + String(static_cast<int>(std::floor(RelativeTime(step_duration).inSeconds())) % 60).paddedLeft('0', 2));
+	return (String(static_cast<int>(std::floor(step_secondsRemaining.inMinutes())) % 60).paddedLeft('0', 2) +
+			":" + String(static_cast<int>(std::floor(step_secondsRemaining.inSeconds())) % 60).paddedLeft('0', 2) +
+			"/" + String(static_cast<int>(std::floor(RelativeTime(step_duration).inMinutes())) % 60).paddedLeft('0', 2) + ":" +
+			String(static_cast<int>(std::floor(RelativeTime(step_duration).inSeconds())) % 60).paddedLeft('0', 2));
 }

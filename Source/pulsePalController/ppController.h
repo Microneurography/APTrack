@@ -4,8 +4,7 @@
 #include "serial/PulsePal.h"
 #include "../LfpLatencyProcessor.h"
 
-#define TIMER_UI 0
-#define TIMER_PROTOCOL 1
+#define TIMER_PROTOCOL 0
 
 class LfpLatencyProcessor;
 struct protocolDataElement {
@@ -16,19 +15,22 @@ struct protocolDataElement {
 };
 
 
-class ppController : 
+class ppController :
 	public MultiTimer
 {
+friend class ppControllerVisualizer;
 public:
 
-	ppController();
+	ppController(LfpLatencyProcessor *processor);
 
 	~ppController();
 
 	void setStimulusVoltage(float newVoltage);
 	bool initializeConnection(); // returns false if connection fails
+	bool isProtocolRunning();
 private:
 
+	bool protocolRunning;
 	int protocolStepNumber;
 
 	int elementCount;
@@ -52,7 +54,7 @@ private:
 
 	void timerCallback(int timerID) override;
 
-	PulsePal pulsePal;
+	PulsePal* pulsePal;
 	uint32_t pulsePalVersion;
 
 	bool pulsePalConnected;

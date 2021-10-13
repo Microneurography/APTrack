@@ -10,8 +10,9 @@
 /*
 	Pulse Pal controller
 */
-ppController::ppController()
+ppController::ppController(LfpLatencyProcessor *processor)
 {
+	this->processor = processor;
 	protocolStepNumber = -1;
 	protocolDuration = 0.0f;
 
@@ -22,18 +23,18 @@ ppController::ppController()
 ppController::~ppController()
 {
 	//Disconnect pulsePal
-	pulsePal.abortPulseTrains(); //Make sure we stop stimulating!
-	pulsePal.updateDisplay("Disconnected", "Click for menu");
-	pulsePal.end();
+	pulsePal->abortPulseTrains(); //Make sure we stop stimulating!
+	pulsePal->updateDisplay("Disconnected", "Click for menu");
+	pulsePal->end();
 }
 
 bool ppController::initializeConnection()
 {
-
-	pulsePal.initialize();
-	pulsePal.setDefaultParameters();
-	pulsePal.updateDisplay("GUI Connected", "Click for Menu");
-	pulsePalVersion = pulsePal.getFirmwareVersion();
+	pulsePal = new PulsePal();
+	pulsePal->initialize();
+	pulsePal->setDefaultParameters();
+	pulsePal->updateDisplay("GUI Connected", "Click for Menu");
+	pulsePalVersion = pulsePal->getFirmwareVersion();
 
 	if ((pulsePalVersion == 0))
 	{
@@ -46,34 +47,34 @@ bool ppController::initializeConnection()
 	std::cout << "pulsePalVersion " << pulsePalVersion << std::endl;
 
 	// abort pulse trains (if any)
-	pulsePal.abortPulseTrains();
+	pulsePal->abortPulseTrains();
 
 	// configure pulse pal
-	pulsePal.currentOutputParams[1].isBiphasic = 0;
-	pulsePal.currentOutputParams[1].restingVoltage = 0.0f;
-	pulsePal.currentOutputParams[1].phase1Duration = 0.0005f;
-	pulsePal.currentOutputParams[1].pulseTrainDuration = 1000.0f;
-	pulsePal.currentOutputParams[1].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[1].phase1Voltage = 0.0f;
-	pulsePal.currentOutputParams[1].phase2Voltage = 0.0f;
+	pulsePal->currentOutputParams[1].isBiphasic = 0;
+	pulsePal->currentOutputParams[1].restingVoltage = 0.0f;
+	pulsePal->currentOutputParams[1].phase1Duration = 0.0005f;
+	pulsePal->currentOutputParams[1].pulseTrainDuration = 1000.0f;
+	pulsePal->currentOutputParams[1].interPulseInterval = 2.0f;
+	pulsePal->currentOutputParams[1].phase1Voltage = 0.0f;
+	pulsePal->currentOutputParams[1].phase2Voltage = 0.0f;
 
-	pulsePal.currentOutputParams[2].isBiphasic = 0;
-	pulsePal.currentOutputParams[2].restingVoltage = 0.0f;
-	pulsePal.currentOutputParams[2].phase1Duration = 0.0005f;
-	pulsePal.currentOutputParams[2].pulseTrainDuration = 1000.0f;
-	pulsePal.currentOutputParams[2].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[2].phase1Voltage = 0.0f;
-	pulsePal.currentOutputParams[2].phase2Voltage = 0.0f;
+	pulsePal->currentOutputParams[2].isBiphasic = 0;
+	pulsePal->currentOutputParams[2].restingVoltage = 0.0f;
+	pulsePal->currentOutputParams[2].phase1Duration = 0.0005f;
+	pulsePal->currentOutputParams[2].pulseTrainDuration = 1000.0f;
+	pulsePal->currentOutputParams[2].interPulseInterval = 2.0f;
+	pulsePal->currentOutputParams[2].phase1Voltage = 0.0f;
+	pulsePal->currentOutputParams[2].phase2Voltage = 0.0f;
 
-	pulsePal.currentOutputParams[3].isBiphasic = 0;
-	pulsePal.currentOutputParams[3].restingVoltage = 0.0f;
-	pulsePal.currentOutputParams[3].phase1Duration = 0.0005f + (RELAY_TTL_delay_s * 2); //
-	pulsePal.currentOutputParams[3].pulseTrainDuration = 1000.0f;
-	pulsePal.currentOutputParams[3].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[3].phase1Voltage = 0.0f;
-	pulsePal.currentOutputParams[3].phase2Voltage = 0.0f;
+	pulsePal->currentOutputParams[3].isBiphasic = 0;
+	pulsePal->currentOutputParams[3].restingVoltage = 0.0f;
+	pulsePal->currentOutputParams[3].phase1Duration = 0.0005f + (RELAY_TTL_delay_s * 2); //
+	pulsePal->currentOutputParams[3].pulseTrainDuration = 1000.0f;
+	pulsePal->currentOutputParams[3].interPulseInterval = 2.0f;
+	pulsePal->currentOutputParams[3].phase1Voltage = 0.0f;
+	pulsePal->currentOutputParams[3].phase2Voltage = 0.0f;
 
-	pulsePal.syncAllParams();
+	pulsePal->syncAllParams();
 	return true;
 }
 
@@ -87,23 +88,23 @@ void ppController::setStimulusVoltage(float newVoltage)
 	//Update channel voltages
 	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
 
-	pulsePal.currentOutputParams[1].phase1Voltage = stimulusVoltage;
+	pulsePal->currentOutputParams[1].phase1Voltage = stimulusVoltage;
 	std::cout << "Updating stimulus voltage in pp \n";
-	pulsePal.currentOutputParams[2].phase1Voltage = 10.0f;
+	pulsePal->currentOutputParams[2].phase1Voltage = 10.0f;
 	std::cout << "updating max voltage in pp\n";
-	pulsePal.currentOutputParams[3].phase1Voltage = 3.0f;
+	pulsePal->currentOutputParams[3].phase1Voltage = 3.0f;
 
-	pulsePal.syncAllParams();
+	pulsePal->syncAllParams();
 	std::cout << "synced all params in pp\n";
 }
-
+bool ppController::isProtocolRunning(){
+	return protocolRunning;
+}
 void ppController::StartCurrentProtocol()
 {
-
+	protocolRunning = true;
 	protocolStepNumber = 0;
 
-	// Start UI refresh timer
-	startTimer(TIMER_UI, 500);
 
 	// send message to openephys (when playing)
 	this->processor->addMessage("starting stimulus protocol " + protocolName);
@@ -130,11 +131,10 @@ void ppController::StopCurrentProtocol()
 {
 	// TODO: There may be a race condition here.
 	// We want to stop the timer first to prevent further triggers, then abort the trains
-	stopTimer(TIMER_UI);	   // UI timer
 	stopTimer(TIMER_PROTOCOL); // protocol timer
 	//abort pulse train
-	pulsePal.abortPulseTrains();
-
+	pulsePal->abortPulseTrains();
+	protocolRunning=false;
 	protocolStepNumber = -1;
 }
 
@@ -146,7 +146,7 @@ void ppController::timerCallback(int timerID)
 		stopTimer(TIMER_PROTOCOL);
 
 		//PulsePal Specific
-		pulsePal.abortPulseTrains();
+		pulsePal->abortPulseTrains();
 
 		// Increment counter if there are any remaining steps in protocol
 		if (protocolStepNumber < (elementCount - 1))
@@ -167,7 +167,6 @@ void ppController::timerCallback(int timerID)
 		else
 		{
 			// If no more steps then stop timer
-			stopTimer(TIMER_UI);
 			StopCurrentProtocol();
 		}
 	}
@@ -233,11 +232,6 @@ void ppController::loadFile(String file) //, std::vector<protocolDataElement> cs
 	protocolStepNumber = 0;
 
 	protocolName = fileToRead.getFileName().toStdString();
-	// if (protocolData.size() > 0)
-	// {
-	// 	startStopButton->setEnabled(true);
-	// }
-	//StartCurrentProtocol();
 }
 
 void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataStep)
@@ -250,7 +244,7 @@ void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataSt
 	if (protocolDataStep.rate == 0)
 	{
 		// if rate is 0 the treat as pause and abort pulse trains
-		pulsePal.abortPulseTrains();
+		pulsePal->abortPulseTrains();
 	}
 	else
 	{
@@ -259,23 +253,23 @@ void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataSt
 		// HACK: currently we are providing a TTL to open/close relay on output.
 		// Set channel 3 high Xms, delay the others by the response
 
-		pulsePal.abortPulseTrains();
+		pulsePal->abortPulseTrains();
 		// Channel 1 - to the stimulator
-		pulsePal.currentOutputParams[1].pulseTrainDuration = protocolDataStep.duration; // in sec
-		pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod;
-		pulsePal.currentOutputParams[1].pulseTrainDelay = RELAY_TTL_delay_s; // in sec
+		pulsePal->currentOutputParams[1].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal->currentOutputParams[1].interPulseInterval = pulsePeriod;
+		pulsePal->currentOutputParams[1].pulseTrainDelay = RELAY_TTL_delay_s; // in sec
 		// Channel 2 - feedback to TTL on acquisition
-		pulsePal.currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
-		pulsePal.currentOutputParams[2].interPulseInterval = pulsePeriod;				// in sec
-		pulsePal.currentOutputParams[2].pulseTrainDelay = RELAY_TTL_delay_s;
+		pulsePal->currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal->currentOutputParams[2].interPulseInterval = pulsePeriod;				// in sec
+		pulsePal->currentOutputParams[2].pulseTrainDelay = RELAY_TTL_delay_s;
 		// Channel 3 - open/close relay
-		pulsePal.currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration; // duration of the TTL should start before the stimulus, and end after the stimulus
-		pulsePal.currentOutputParams[3].interPulseInterval = pulsePeriod - RELAY_TTL_delay_s * 2;
-		pulsePal.currentOutputParams[3].pulseTrainDelay = 0;
+		pulsePal->currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration; // duration of the TTL should start before the stimulus, and end after the stimulus
+		pulsePal->currentOutputParams[3].interPulseInterval = pulsePeriod - RELAY_TTL_delay_s * 2;
+		pulsePal->currentOutputParams[3].pulseTrainDelay = 0;
 
-		pulsePal.syncAllParams();
+		pulsePal->syncAllParams();
 
-		pulsePal.triggerChannels(1, 1, 1, 0);
+		pulsePal->triggerChannels(1, 1, 1, 0);
 	}
 }
 

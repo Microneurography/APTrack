@@ -42,6 +42,7 @@ LfpLatencyProcessor::LfpLatencyProcessor()
       spikeGroups(1)
 
 {
+    pulsePalController = new ppController(this);
     setProcessorType(PROCESSOR_TYPE_SINK);
 
     //Parameter controlling number of samples per subsample window

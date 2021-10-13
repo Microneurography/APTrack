@@ -5,8 +5,7 @@
 #include "../LfpLatencyProcessor.h"
 
 #define TIMER_UI 0
-#define TIMER_PROTOCOL 1
-using namespace juce;
+
 
 
 class ppControllerVisualizer : public Component,
@@ -46,6 +45,7 @@ private:
 	ScopedPointer<UtilityButton> startStopButton;
 	ScopedPointer<TextEditor> fileName_text;
 	LfpLatencyProcessor *processor;
+	ppController *controller;
 	File lastFilePath;
 
 	void timerCallback(int timerID) override;
