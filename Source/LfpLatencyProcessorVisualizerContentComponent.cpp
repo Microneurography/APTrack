@@ -182,8 +182,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	//
 	auto evtChannel = processor->getEventChannel(0);
 
-	addAndMakeVisible(ppControllerComponent = new ppController());
-	ppControllerComponent->setProcessor(processor);
+	addAndMakeVisible(ppControllerComponent = new ppControllerVisualizer(processor));
 
 	// Not added here because they appear in the setup box.
 	//stimulusVoltageSlider = new Slider("stimulusVoltage");
@@ -690,7 +689,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 			cout << "Made it past the 2nd if\n";
 			(*valuesMap)["stimulusVoltage"] = String(stimulusVoltage, 2);
 			stimulusVoltage_text->setText(String(stimulusVoltage, 2));
-			ppControllerComponent->setStimulusVoltage(stimulusVoltage);
+			// ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 			cout << "Updated stimulus voltage\n";
 		}
 		cout << "Done\n";

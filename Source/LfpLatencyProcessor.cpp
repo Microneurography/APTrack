@@ -119,6 +119,15 @@ void LfpLatencyProcessor::addSpike(std::string spike)
     spikes.push(spike);
 }
 
+float LfpLatencyProcessor::getStimulusVoltage()
+{
+    return stimulusVoltage;
+}
+void LfpLatencyProcessor::setStimulusVoltage(float sv)
+{
+    stimulusVoltage = sv;
+}
+
 // create event channel for pulsepal
 void LfpLatencyProcessor::createEventChannels()
 {
@@ -249,6 +258,7 @@ void LfpLatencyProcessor::setSelectedSpike(int i)
         auto sg = this->getSpikeGroup(x);
         sg->isActive = x == i;
     }
+    // #TODO: should update the UI to sync with spike group
 }
 
 void LfpLatencyProcessor::setSelectedSpikeLocation(int loc)
@@ -297,10 +307,6 @@ void LfpLatencyProcessor::trackThreshold()
 
 void LfpLatencyProcessor::trackSpikes()
 {
-    // TODO: ensure update is only once per track.
-    //currently this will update multiple times in a single run
-    // This pushes the template spike further up the signal. to visualise set threshold to 0 and watch what happens
-
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
     for (int i = 0; i < spikeGroups.size(); i++)
     {
@@ -314,25 +320,45 @@ void LfpLatencyProcessor::trackSpikes()
         auto curTrackBufferLoc = (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES; // to index dataBuffer
         auto windowStartInBuffer = curTrackBufferLoc + templateSpike.spikeSampleLatency - templateSpike.windowSize;
         auto startPtr = dataCache + windowStartInBuffer;
+        bool spikeDetected = false;
         auto maxValInWindow = std::max_element(startPtr, startPtr + (2 * templateSpike.windowSize));
         if (*maxValInWindow < templateSpike.threshold) // if there is a value > threshold
         {
+            // spike **not** detected
             curSpikeGroup.recentHistory.push_back(false); //add to array
             curSpikeGroup.recentHistory.pop_front();
-            continue;
+        }
+        else
+        {
+
+            // spike detected
+            SpikeInfo newSpike = {};
+            newSpike.spikeSampleLatency = (maxValInWindow - startPtr);
+            newSpike.windowSize = templateSpike.windowSize;
+            newSpike.threshold = templateSpike.threshold;
+            newSpike.spikePeakValue = *maxValInWindow;
+            newSpike.spikeSampleNumber = 0; //TODO figure out current sample number...
+            newSpike.trackIndex = currentTrack;
+            curSpikeGroup.spikeHistory.push_back(newSpike);
+            spikeGroups[i].templateSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc));
+            curSpikeGroup.recentHistory.push_back(true);
+            curSpikeGroup.recentHistory.pop_front();
+            spikeDetected = true;
+        }
+        if (curSpikeGroup.isTracking)
+        {
+            if (spikeDetected)
+            {
+                // request increase
+                //this->pulsePalController;
+            }
+            else
+            {
+                // request decrease
+            }
         }
 
-        SpikeInfo newSpike = {};
-        newSpike.spikeSampleLatency = (maxValInWindow - startPtr);
-        newSpike.windowSize = templateSpike.windowSize;
-        newSpike.threshold = templateSpike.threshold;
-        newSpike.spikePeakValue = *maxValInWindow;
-        newSpike.spikeSampleNumber = 0; //TODO figure out current sample number...
-        newSpike.trackIndex = currentTrack;
-        curSpikeGroup.spikeHistory.push_back(newSpike);
-        spikeGroups[i].templateSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc));
-        curSpikeGroup.recentHistory.push_back(true);
-        curSpikeGroup.recentHistory.pop_front();
+        // send message on digital channel
     }
 }
 void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)

@@ -6,6 +6,8 @@
 
 #define TIMER_UI 0
 #define TIMER_PROTOCOL 1
+
+class LfpLatencyProcessor;
 struct protocolDataElement {
 	float duration;
 	float rate;
@@ -14,28 +16,17 @@ struct protocolDataElement {
 };
 
 
-class ppController : public Component,
-	public ButtonListener,
+class ppController : 
 	public MultiTimer
 {
 public:
 
 	ppController();
 
-
-
 	~ppController();
 
-	void buttonClicked(Button* buttonThatWasClicked) override;
-
-	void paint(Graphics& g) override;
-
-	void paintOverChildren(Graphics& g) override;
-
-	void resized() override;
-
 	void setStimulusVoltage(float newVoltage);
-	void setProcessor(LfpLatencyProcessor* processor);
+	bool initializeConnection(); // returns false if connection fails
 private:
 
 	int protocolStepNumber;
@@ -55,23 +46,7 @@ private:
 
 	String formatTimeLeftToString(RelativeTime step_secondsRemaining, float step_duration);
 
-	ScopedPointer<TextEditor> protocolStepSummary_text;
-	ScopedPointer<Label> protocolStepSummary_label;
-
-	ScopedPointer<TextEditor> protocolTimeLeft_text;
-	ScopedPointer<Label> protocolTimeLeft_label;
-
-	ScopedPointer<TextEditor> protocolStepTimeLeft_text;
-	ScopedPointer<Label> protocolStepTimeLeft_label;
-
-	ScopedPointer<TextEditor> protocolStepComment_text;
-	ScopedPointer<Label> protocolStepComment_label;
-
-	ScopedPointer<UtilityButton> getFileButton;
-	ScopedPointer<UtilityButton> startStopButton;
-	ScopedPointer<TextEditor> fileName_text;
 	LfpLatencyProcessor * processor;
-	File lastFilePath;
 
 	void loadFile(String file);//, std::vector<protocolDataElement> data);
 

@@ -4,7 +4,7 @@
 #include <EditorHeaders.h>
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
-#include "pulsePalController/ppController.h"
+#include "pulsePalController/ppControllerVisualizer.h"
 
 #include "LfpLatencySpectrogram.h"
 #include "LfpLatencySpectrogramPanel.h"
@@ -16,21 +16,19 @@
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
                                                       public SliderListener,
                                                       public ButtonListener
-                                                 
+
 {
 public:
-    LfpLatencyProcessorVisualizerContentComponent(LfpLatencyProcessor* processor);
+    LfpLatencyProcessorVisualizerContentComponent(LfpLatencyProcessor *processor);
     ~LfpLatencyProcessorVisualizerContentComponent();
 
     void paint(Graphics &g) override;
     void resized() override;
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
-	bool keyPressed(const KeyPress& k) override;
+    bool keyPressed(const KeyPress &k) override;
     //std::function<void()> onTextChange override;
     //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
-
-
 
     int getSearchBoxSampleLocation();
     void setSearchBoxSampleLocation(int x);
@@ -88,20 +86,20 @@ private:
     int absPos;
 
     int stimuli = 4;
-    
+
     float stimulusVoltage;
 
     float stimulusVoltageMax;
 
     float stimulusVoltageMin;
 
-	bool voltageTooHighOkay;
-	bool alreadyAlerted = false;
+    bool voltageTooHighOkay;
+    bool alreadyAlerted = false;
     bool testSpikePls = false;
 
-    bool deletes[4] = { false, false, false, false };
+    bool deletes[4] = {false, false, false, false};
 
-    bool t_deletes[4] = { false, false, false, false };
+    bool t_deletes[4] = {false, false, false, false};
 
     float trackSpike_DecreaseRate;
     float trackSpike_IncreaseRate;
@@ -109,50 +107,50 @@ private:
     bool isSaving;
     unordered_map<string, juce::String> *valuesMap;
 
-	// setup
+    // setup
 
-	ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
-	ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
-	ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
+    ScopedPointer<Label> trackSpike_IncreaseRate_Slider_Label;
+    ScopedPointer<Slider> trackSpike_IncreaseRate_Slider;
+    ScopedPointer<TextEditor> trackSpike_IncreaseRate_Text;
 
-	ScopedPointer<Label> trackSpike_DecreaseRate_Slider_Label;
-	ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
-	ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
+    ScopedPointer<Label> trackSpike_DecreaseRate_Slider_Label;
+    ScopedPointer<Slider> trackSpike_DecreaseRate_Slider;
+    ScopedPointer<TextEditor> trackSpike_DecreaseRate_Text;
 
-	ScopedPointer<Slider> stimulusVoltageSlider;
-	ScopedPointer<Label> stimulusVoltageSliderLabel;
+    ScopedPointer<Slider> stimulusVoltageSlider;
+    ScopedPointer<Label> stimulusVoltageSliderLabel;
 
-	ScopedPointer<TextEditor> stimulusVoltageMax_text;
-	ScopedPointer<Label> stimulusVoltageMax_textLabel;
+    ScopedPointer<TextEditor> stimulusVoltageMax_text;
+    ScopedPointer<Label> stimulusVoltageMax_textLabel;
 
-	ScopedPointer<TextEditor> stimulusVoltage_text;
-	ScopedPointer<Label> stimulusVoltage_textLabel;
+    ScopedPointer<TextEditor> stimulusVoltage_text;
+    ScopedPointer<Label> stimulusVoltage_textLabel;
 
-	ScopedPointer<TextEditor> stimulusVoltageMin_text;
-	ScopedPointer<Label> stimulusVoltageMin_textLabel;
-	
-	// main GUI
+    ScopedPointer<TextEditor> stimulusVoltageMin_text;
+    ScopedPointer<Label> stimulusVoltageMin_textLabel;
+
+    // main GUI
     ScopedPointer<ComboBox> colorStyleComboBox;
-	ScopedPointer<Label> colorStyleComboBoxLabel;
-    
+    ScopedPointer<Label> colorStyleComboBoxLabel;
+
     ScopedPointer<ToggleButton> extendedColorScaleToggleButton;
     ScopedPointer<Label> extendedColorScaleToggleButtonLabel;
-	
+
     ScopedPointer<Label> cmLabel;
- 
+
     //ScopedPointer<GroupComponent> detectionControlGroup;
 
-	// Stimulus control
-	ScopedPointer<ppController> ppControllerComponent;
+    // Stimulus control
+    ScopedPointer<ppControllerVisualizer> ppControllerComponent;
 
     ScopedPointer<TextEditor> textBox1;
     ScopedPointer<TextEditor> textBox2;
 
     ScopedPointer<ComboBox> triggerChannelComboBox;
-	ScopedPointer<Label> triggerChannelComboBoxLabel;
+    ScopedPointer<Label> triggerChannelComboBoxLabel;
 
     ScopedPointer<ComboBox> dataChannelComboBox;
-	ScopedPointer<Label> dataChannelComboBoxLabel;
+    ScopedPointer<Label> dataChannelComboBoxLabel;
 
     ScopedPointer<Slider> Trigger_threshold; //TODO
 

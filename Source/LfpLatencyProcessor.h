@@ -38,6 +38,7 @@
 #include <unordered_map>
 #include <queue>
 #include <mutex>
+#include "pulsePalController/ppController.h"
 
 //fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
@@ -231,8 +232,14 @@ public:
     int getTrackingSpike();
     void setTrackingSpike(int i);
 
+    float getStimulusVoltage();
+    void setStimulusVoltage(float sv);
+
+    ppController* pulsePalController;
+
 private:
     friend class ppController;
+    float stimulusVoltage = 0;
 
     //debug
     float lastReceivedDACPulse;
