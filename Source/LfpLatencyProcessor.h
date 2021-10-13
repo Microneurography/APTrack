@@ -67,20 +67,21 @@ struct SpikeInfo
 {
     int spikeSampleNumber;  // the recording sample number of the spike
     int spikeSampleLatency; // the spike time relative to the stimulus
-    float spikePeakValue;     // the peak value
-    int windowSize = 30;         // the number of samples used to identify spike
-    float threshold;          // the threshold value for the spike, used to detect
+    float spikePeakValue;   // the peak value
+    int windowSize = 30;    // the number of samples used to identify spike
+    float threshold;        // the threshold value for the spike, used to detect
     float stimulusVoltage;  // the stimulus voltage used to illicit the spike
-    int trackIndex; // the track index for the stimulus (currentTrack)
+    int trackIndex;         // the track index for the stimulus (currentTrack)
 };
 class SpikeGroup
 {
 public:
-    SpikeGroup() : spikeHistory(), recentHistory(10), templateSpike(), isTracking(false), isActive(false){
+    SpikeGroup() : spikeHistory(), recentHistory(10), templateSpike(), isTracking(false), isActive(false)
+    {
         spikeHistory.reserve(1000);
     };
     // ~SpikeGroup();
-    
+
     std::vector<SpikeInfo> spikeHistory;
     std::deque<bool> recentHistory;
     SpikeInfo templateSpike; // the information used to determine the spike
@@ -228,19 +229,27 @@ public:
     void setSelectedSpikeLocation(int loc);
     void setSelectedSpikeThreshold(float val);
     void setSelectedSpikeWindow(int window);
-    
+
     int getTrackingSpike();
     void setTrackingSpike(int i);
 
     float getStimulusVoltage();
     void setStimulusVoltage(float sv);
 
-    ppController* pulsePalController;
+    float getTrackingIncreaseRate();
+    void setTrackingIncreaseRate(float sv);
+
+    float getTrackingDecreaseRate();
+    void setTrackingDecreaseRate(float sv);
+
+    ppController *pulsePalController;
 
 private:
     friend class ppController;
     float stimulusVoltage = 0;
 
+    float trackingIncreaseRate = 0.01;
+    float trackingDecreaseRate = 0.01;
     //debug
     float lastReceivedDACPulse;
 
@@ -254,10 +263,10 @@ private:
     void trackSpikes(); // updates the currently tracked spike group
     void trackThreshold();
 
-    std::vector<SpikeGroup> spikeGroups; // The groups of spikes that have been traced 
+    std::vector<SpikeGroup> spikeGroups; // The groups of spikes that have been traced
     std::mutex spikeGroups_mutex;
 
-    float dataCache[(DATA_CACHE_SIZE_TRACKS+1) * DATA_CACHE_SIZE_SAMPLES]; // TODO convert to vector.
+    float dataCache[(DATA_CACHE_SIZE_TRACKS + 1) * DATA_CACHE_SIZE_SAMPLES]; // TODO convert to vector.
 
     int spikeLocation[DATA_CACHE_SIZE_TRACKS];
 

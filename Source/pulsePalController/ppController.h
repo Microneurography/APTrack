@@ -27,6 +27,11 @@ public:
 
 	void setStimulusVoltage(float newVoltage);
 	float getStimulusVoltage();
+	void setMinStimulusVoltage(float newMinVoltage);
+	float getMinStimulusVoltage();
+	void setMaxStimulusVoltage(float newMaxVoltage);
+	float getMaxStimulusVoltage();
+	
 	bool initializeConnection(); // returns false if connection fails
 	bool isProtocolRunning();
 private:
@@ -38,7 +43,7 @@ private:
 
 	float stimulusVoltage;
 	float minStimulusVoltage = 0;
-	float maxStimulationVoltage = 10;
+	float maxStimulusVoltage = 10;
 
 	float protocolDuration;
 

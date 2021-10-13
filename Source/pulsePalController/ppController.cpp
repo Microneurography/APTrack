@@ -78,14 +78,47 @@ bool ppController::initializeConnection()
 	return true;
 }
 
+void ppController::setMinStimulusVoltage(float newMinVoltage)
+{
+	if (newMinVoltage<0){
+		newMinVoltage=0;
+	}
+	minStimulusVoltage = newMinVoltage;
+	if (stimulusVoltage<newMinVoltage){
+		setStimulusVoltage(newMinVoltage);
+	}
+}
+float ppController::getMinStimulusVoltage()
+{
+	return minStimulusVoltage;
+}
+void ppController::setMaxStimulusVoltage(float newMaxVoltage)
+{
+	if (newMaxVoltage > 10)
+	{ // #TODO: set as compiler macro
+		newMaxVoltage = 10;
+	}
+
+	maxStimulusVoltage = newMaxVoltage;
+	if (newMaxVoltage<stimulusVoltage){
+		setStimulusVoltage(newMaxVoltage);
+	}
+}
+float ppController::getMaxStimulusVoltage()
+{
+	return maxStimulusVoltage;
+}
+
 void ppController::setStimulusVoltage(float newVoltage)
 {
 	std::cout << "moved to pp controller\n";
-	//TODO: Check bounds
-	if (newVoltage>maxStimulationVoltage){
-		newVoltage = maxStimulationVoltage;
+	//TODO: Set/sync min/max stim voltages
+	if (newVoltage > maxStimulusVoltage)
+	{
+		newVoltage = maxStimulusVoltage;
 	}
-	if (newVoltage<minStimulusVoltage){
+	if (newVoltage < minStimulusVoltage)
+	{
 		newVoltage = minStimulusVoltage;
 	}
 
@@ -104,17 +137,18 @@ void ppController::setStimulusVoltage(float newVoltage)
 	std::cout << "synced all params in pp\n";
 	processor->addMessage("setStimVoltage:" + std::to_string(newVoltage));
 }
-float ppController::getStimulusVoltage(){
+float ppController::getStimulusVoltage()
+{
 	return stimulusVoltage;
 }
-bool ppController::isProtocolRunning(){
+bool ppController::isProtocolRunning()
+{
 	return protocolRunning;
 }
 void ppController::StartCurrentProtocol()
 {
 	protocolRunning = true;
 	protocolStepNumber = 0;
-
 
 	// send message to openephys (when playing)
 	this->processor->addMessage("starting stimulus protocol " + protocolName);
@@ -144,7 +178,7 @@ void ppController::StopCurrentProtocol()
 	stopTimer(TIMER_PROTOCOL); // protocol timer
 	//abort pulse train
 	pulsePal->abortPulseTrains();
-	protocolRunning=false;
+	protocolRunning = false;
 	protocolStepNumber = -1;
 }
 
@@ -270,7 +304,7 @@ void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataSt
 		pulsePal->currentOutputParams[1].pulseTrainDelay = RELAY_TTL_delay_s; // in sec
 		// Channel 2 - feedback to TTL on acquisition
 		pulsePal->currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
-		pulsePal->currentOutputParams[2].interPulseInterval = pulsePeriod;				// in sec
+		pulsePal->currentOutputParams[2].interPulseInterval = pulsePeriod;				 // in sec
 		pulsePal->currentOutputParams[2].pulseTrainDelay = RELAY_TTL_delay_s;
 		// Channel 3 - open/close relay
 		pulsePal->currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration; // duration of the TTL should start before the stimulus, and end after the stimulus

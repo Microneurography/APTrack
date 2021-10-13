@@ -156,21 +156,32 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	processor->changeParameter(4, content.dataChannelComboBox->getSelectedId() - 1);	 // pass channel Id -1 = channel index
 	processor->changeParameter(5, content.rightMiddlePanel->getTriggerThresholdValue()); // pass channel Id -1 = channel index
 
+	// update spike tracking details
 	content.stimulusVoltageSlider->setValue(processor->pulsePalController->getStimulusVoltage(), juce::NotificationType::dontSendNotification);
+	content.stimulusVoltage_text->setText(std::to_string(content.stimulusVoltageSlider->getValue()));
+
+	content.stimulusVoltageSlider->setMaxValue(processor->pulsePalController->getMaxStimulusVoltage(), juce::NotificationType::dontSendNotification);
+	content.stimulusVoltageMax_text->setText(std::to_string(content.stimulusVoltageSlider->getMaxValue()));
+
+	content.stimulusVoltageSlider->setMinValue(processor->pulsePalController->getMinStimulusVoltage(), juce::NotificationType::dontSendNotification);
+	content.stimulusVoltageMin_text->setText(std::to_string(content.stimulusVoltageSlider->getMinValue()));
+
+	content.trackSpike_DecreaseRate_Slider->setValue(processor->getTrackingDecreaseRate(), juce::NotificationType::dontSendNotification);
+	content.trackSpike_IncreaseRate_Slider->setValue(processor->getTrackingIncreaseRate(), juce::NotificationType::dontSendNotification);
 	//Update spectrogram image
 	updateSpectrogram();
-	
+
 	// TODO: update spike slider
 	int i = processor->getSelectedSpike();
-	if (i>=0){
+	if (i >= 0)
+	{
 		// TODO: there should be a method that syncs the UI with the templateSpike.
 		auto ts = processor->getSpikeGroup(i)->templateSpike;
 		auto spikeVal = ts.spikeSampleLatency;
-		
+
 		content.setSearchBoxSampleLocation(spikeVal);
 		content.spectrogramPanel->setSearchBoxWidthValue(ts.windowSize);
 		content.spectrogramControlPanel->setDetectionThresholdValue(ts.threshold); //#TODO: this should be getter/setter
-
 	}
 
 	if (processor->checkEventReceived())

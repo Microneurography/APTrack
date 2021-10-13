@@ -120,6 +120,7 @@ void LfpLatencyProcessor::addSpike(std::string spike)
     spikes.push(spike);
 }
 
+// TODO: remove these. stimulusVoltage is handled by ppController
 float LfpLatencyProcessor::getStimulusVoltage()
 {
     return stimulusVoltage;
@@ -259,7 +260,6 @@ void LfpLatencyProcessor::setSelectedSpike(int i)
         auto sg = this->getSpikeGroup(x);
         sg->isActive = x == i;
     }
-    // #TODO: should update the UI to sync with spike group
 }
 
 void LfpLatencyProcessor::setSelectedSpikeLocation(int loc)
@@ -306,6 +306,23 @@ void LfpLatencyProcessor::trackThreshold()
     // if the threshold is being tracked
 }
 
+float LfpLatencyProcessor::getTrackingIncreaseRate()
+{
+    return trackingIncreaseRate;
+}
+void LfpLatencyProcessor::setTrackingIncreaseRate(float sv)
+{
+    trackingIncreaseRate = sv;
+}
+float LfpLatencyProcessor::getTrackingDecreaseRate()
+{
+    return trackingDecreaseRate;
+}
+void LfpLatencyProcessor::setTrackingDecreaseRate(float sv)
+{
+    trackingDecreaseRate = sv;
+}
+
 void LfpLatencyProcessor::trackSpikes()
 {
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
@@ -337,28 +354,28 @@ void LfpLatencyProcessor::trackSpikes()
             newSpike.spikeSampleLatency = (maxValInWindow - startPtr);
             newSpike.windowSize = templateSpike.windowSize;
             newSpike.threshold = templateSpike.threshold;
+            newSpike.stimulusVoltage = this->pulsePalController->getStimulusVoltage();
             newSpike.spikePeakValue = *maxValInWindow;
-            newSpike.spikeSampleNumber = 0; //TODO figure out current sample number...
+            newSpike.spikeSampleNumber = 0; //#TODO figure out current sample number...
             newSpike.trackIndex = currentTrack;
             curSpikeGroup.spikeHistory.push_back(newSpike);
             spikeGroups[i].templateSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc));
             curSpikeGroup.recentHistory.push_back(true);
             curSpikeGroup.recentHistory.pop_front();
             spikeDetected = true;
+            // # TODO: post this information to the logs.
         }
-        if (curSpikeGroup.isTracking)
+        if (curSpikeGroup.isTracking) // threshold tracking
         {
             float sv = this->pulsePalController->getStimulusVoltage();
             if (spikeDetected)
             {
                 // request increase
-                //this->pulsePalController;
-                
-                this->pulsePalController->setStimulusVoltage(sv-0.1);
+                this->pulsePalController->setStimulusVoltage(sv - trackingDecreaseRate);
             }
             else
             {
-                this->pulsePalController->setStimulusVoltage(sv+0.1);
+                this->pulsePalController->setStimulusVoltage(sv + trackingIncreaseRate);
                 // request decrease
             }
         }

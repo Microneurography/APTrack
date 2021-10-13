@@ -285,7 +285,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	// Increase/Decrease rate of spike tracking
 	// Not added here as they are in the setup box.
 	trackSpike_IncreaseRate_Slider = new Slider("trackSpike_IncreaseRate_Slider");
-	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
+	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.01f);
 	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_IncreaseRate_Slider->addListener(this);
@@ -295,7 +295,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_IncreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
 
 	trackSpike_DecreaseRate_Slider = new Slider("trackSpike_DecreaseRate_Slider");
-	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.0001f);
+	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.01f);
 	trackSpike_DecreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_DecreaseRate_Slider->addListener(this);
@@ -379,10 +379,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	addAndMakeVisible(textBox1 = new TextEditor("selectedTriggerChanText"));
 	textBox1->setText("Trigger");
 
-	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
-	stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
-	stimulusVoltageSlider->setValue(stimulusVoltage);
-	stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
+	// stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
+	// stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
+	// stimulusVoltageSlider->setValue(stimulusVoltage);
+	// stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 
 	colorStyleComboBox->setSelectedId(1);
 	extendedColorScaleToggleButton->setToggleState(false, sendNotification);
@@ -664,16 +664,16 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 		stimulusVoltageMin = sliderThatWasMoved->getMinValue();
 		(*valuesMap)["stimulusVoltageMin"] = String(stimulusVoltageMin, 2);
 		stimulusVoltageMin_text->setText(String(stimulusVoltageMin, 2));
-		cout << "Stuck here 2\n";
+		
+
 		//Upper value
 		stimulusVoltageMax = sliderThatWasMoved->getMaxValue();
 		(*valuesMap)["stimulusVoltageMax"] = String(stimulusVoltageMax, 2);
 		stimulusVoltageMax_text->setText(String(stimulusVoltageMax, 2));
-		cout << "Stuck here 3\n";
+		;
 		//mid value
 		stimulusVoltage = sliderThatWasMoved->getValue();
 
-		cout << "Got here\n";
 		if (stimulusVoltage > 4 && alreadyAlerted == false)
 		{
 			cout << "Made it past the if\n";
@@ -691,8 +691,10 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 			// ppControllerComponent->setStimulusVoltage(stimulusVoltage);
 			cout << "Updated stimulus voltage\n";
 		}
+		processor->pulsePalController->setMaxStimulusVoltage(stimulusVoltageMax);
+		processor->pulsePalController->setMinStimulusVoltage(stimulusVoltageMin);
 		processor->pulsePalController->setStimulusVoltage(stimulusVoltage);
-		cout << "Done\n";
+
 	}
 	if (sliderThatWasMoved->getName() == "Image Threshold")
 	{
@@ -767,10 +769,10 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 	}
 	if (sliderThatWasMoved == trackSpike_IncreaseRate_Slider)
 	{
-		cout << "Stuck here 12\n";
 		trackSpike_IncreaseRate = sliderThatWasMoved->getValue();
 		(*valuesMap)["trackSpike_IncreaseRate"] = String(trackSpike_IncreaseRate, 0);
 		trackSpike_IncreaseRate_Text->setText("+" + String(trackSpike_IncreaseRate_Slider->getValue(), 0) + " V");
+		processor->setTrackingIncreaseRate(trackSpike_IncreaseRate);
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
@@ -778,6 +780,7 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
 		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
+		processor->setTrackingDecreaseRate(trackSpike_DecreaseRate);
 	}
 	if (sliderThatWasMoved == stimuliNumberSlider)
 	{
