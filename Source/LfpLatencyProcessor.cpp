@@ -39,11 +39,12 @@ std::mutex savingAndLoadingLock;
 
 LfpLatencyProcessor::LfpLatencyProcessor()
     : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages(),
-      spikeGroups(1)
+      spikeGroups(0)
 
 {
     pulsePalController = new ppController(this);
     setProcessorType(PROCESSOR_TYPE_SINK);
+    spikeGroups.reserve(100);
 
     //Parameter controlling number of samples per subsample window
     //auto parameter0 = new Parameter ("detectionThreshold", 1, 4000, 1000, 0);
@@ -211,11 +212,13 @@ void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike)
 {
     SpikeGroup s = {};
     s.templateSpike = templateSpike;
-    //spikeGroups.push_back(s);
+    s.spikeHistory.reserve(100);
+    spikeGroups.push_back(s);
 };
 void LfpLatencyProcessor::removeSpikeGroup(int i)
 {
-    spikeGroups.erase(spikeGroups.begin() + i);
+   
+    //spikeGroups.erase(std::advance(spikeGroups.begin(),i));
 };
 SpikeGroup *LfpLatencyProcessor::getSpikeGroup(int i)
 {
@@ -363,7 +366,8 @@ void LfpLatencyProcessor::trackSpikes()
             curSpikeGroup.recentHistory.push_back(true);
             curSpikeGroup.recentHistory.pop_front();
             spikeDetected = true;
-            // # TODO: post this information to the logs.
+            //addSpike()
+            // #TODO: post this information to the logs.
         }
         if (curSpikeGroup.isTracking) // threshold tracking
         {

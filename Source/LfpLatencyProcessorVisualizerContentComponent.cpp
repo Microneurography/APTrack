@@ -346,16 +346,18 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	addAndMakeVisible(spikeTracker = new juce::TableListBox("Tracked Spikes", &tcon));
 	spikeTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
-	spikeTracker->getHeader().addColumn("Spike", 1, 50);
+	spikeTracker->getHeader().addColumn("S", 1, 30);
 	spikeTracker->getHeader().addColumn("Location", 2, 100);
-	spikeTracker->getHeader().addColumn("Firing Proabability", 3, 120);
-	spikeTracker->getHeader().addColumn("Threshold Value", 4, 100);
-	spikeTracker->getHeader().addColumn("Track Spike", 5, 100);
-	spikeTracker->getHeader().addColumn("Track Threshold", 6, 100);
-	spikeTracker->getHeader().addColumn("Delete", 7, 50);
-	spikeTracker->autoSizeAllColumns();
+	spikeTracker->getHeader().addColumn("%", 3, 30);
+	spikeTracker->getHeader().addColumn("Detection Value", 4, 100);
+	spikeTracker->getHeader().addColumn("Track Spike", 5, 30);
+	spikeTracker->getHeader().addColumn("Track Threshold", 6, 30);
+	spikeTracker->getHeader().addColumn("Delete", 7, 30);
+	//spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
+	addAndMakeVisible(addNewSpikeButton = new juce::TextButton("+"));
+	addNewSpikeButton->addListener(this);
 	/*thresholdTrackerContent = new TableContent();
 	addAndMakeVisible(thresholdTracker = new TableListBox("Tracked Thresholds", thresholdTrackerContent));
 	thresholdTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
@@ -474,6 +476,7 @@ void LfpLatencyProcessorVisualizerContentComponent::paint(Graphics &g)
 	g.fillAll(Colours::grey);
 	g.setOpacity(1.0f);
 
+
 	//Paint is called constatnly, so the cells should be paiting the new number in them
 
 	//thresholdTracker->updateContent();
@@ -524,12 +527,16 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	auto boundsMap = otherControlPanel->getTableBounds();
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
-	spikeTracker->setBounds(boundsMap["spikeTracker"]);
+	auto st = boundsMap["spikeTracker"];
+	auto st_main = st.withTrimmedBottom(20);
+	auto st_button = st.removeFromBottom(20).removeFromRight(20);
+	spikeTracker->setBounds(st_main);
+	addNewSpikeButton->setBounds(st_button);
 	//thresholdTracker->setBounds(boundsMap["thresholdTracker"]);
 	//spikeTracker->setBounds(665, 40, 470, 200);
 
-	auto STtableX = boundsMap["spikeTracker"].getX();
-	auto STtableY = boundsMap["spikeTracker"].getY();
+	// auto STtableX = boundsMap["spikeTracker"].getX();
+	// auto STtableY = boundsMap["spikeTracker"].getY();
 
 	//trackSpike_button->setBounds(780, 126, 120, 24);
 	//trackSpike_button_Label->setBounds(665, 126, 120, 24);
@@ -554,6 +561,7 @@ bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress &k
 		return true;
 	}
 
+	// #TODO re-enable keyboard shortcuts
 	// else if (k == KeyPress::F1Key)
 	// {
 	// 	selectSpike(*spikeTrackerContent, 0);
@@ -934,7 +942,18 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
+	
+	if(buttonThatWasClicked==addNewSpikeButton){
+		SpikeInfo ts = {};
+		ts.threshold = detectionThreshold;
+		ts.spikeSampleLatency = getSearchBoxSampleLocation();
+		ts.windowSize = searchBoxWidth;
 
+		processor->addSpikeGroup(
+			ts
+		);
+		spikeTracker->updateContent();
+	}
 	printf("running save custom params\n");
 	tryToSave();
 }

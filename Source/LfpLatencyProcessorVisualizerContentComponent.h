@@ -155,6 +155,7 @@ private:
     ScopedPointer<Slider> Trigger_threshold; //TODO
 
     ScopedPointer<TableListBox> spikeTracker;
+    ScopedPointer<TextButton> addNewSpikeButton;
 
     ScopedPointer<Slider> stimuliNumberSlider;
     ScopedPointer<TextEditor> stimuliNumber;

@@ -170,6 +170,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	content.trackSpike_IncreaseRate_Slider->setValue(processor->getTrackingIncreaseRate(), juce::NotificationType::dontSendNotification);
 	//Update spectrogram image
 	updateSpectrogram();
+	content.spikeTracker->updateContent();
 
 	// TODO: update spike slider
 	int i = processor->getSelectedSpike();
