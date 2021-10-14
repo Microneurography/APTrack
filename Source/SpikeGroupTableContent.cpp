@@ -122,7 +122,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			}
 			std::ostringstream ss_threshold;
 			ss_threshold<< std::fixed << std::setprecision(2) << spikeGroup->templateSpike.threshold;
-			label->setText(ss_threshold, juce::NotificationType::dontSendNotification);
+			label->setText(ss_threshold.str(), juce::NotificationType::dontSendNotification);
 			label->repaint();
 
 			return label;
