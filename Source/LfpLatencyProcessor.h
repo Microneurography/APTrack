@@ -219,7 +219,7 @@ public:
 
     void addSpike(std::string spike);
 
-    void addSpikeGroup(SpikeInfo templateSpike);
+    void addSpikeGroup(SpikeInfo templateSpike, bool isSelected=false);
     void removeSpikeGroup(int i);
 
     SpikeGroup *getSpikeGroup(int i);

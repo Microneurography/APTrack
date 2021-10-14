@@ -93,7 +93,9 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
-			label->setText(std::to_string(spikeGroup->templateSpike.spikeSampleLatency), juce::NotificationType::dontSendNotification);
+			std::ostringstream ss_ms_latency;
+			ss_ms_latency << std::fixed << std::setprecision(2) << (spikeGroup->templateSpike.spikeSampleLatency * 1000) / processor->getSampleRate();
+			label->setText(ss_ms_latency.str() + "ms", juce::NotificationType::dontSendNotification);
 			label->repaint();
 			return label;
 		}
@@ -118,7 +120,9 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			{
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
-			label->setText(std::to_string(spikeGroup->templateSpike.threshold), juce::NotificationType::dontSendNotification);
+			std::ostringstream ss_threshold;
+			ss_threshold<< std::fixed << std::setprecision(2) << spikeGroup->templateSpike.threshold;
+			label->setText(ss_threshold, juce::NotificationType::dontSendNotification);
 			label->repaint();
 
 			return label;

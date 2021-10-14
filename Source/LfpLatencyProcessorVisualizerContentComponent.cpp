@@ -948,9 +948,10 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		ts.threshold = detectionThreshold;
 		ts.spikeSampleLatency = getSearchBoxSampleLocation();
 		ts.windowSize = searchBoxWidth;
+		
 
 		processor->addSpikeGroup(
-			ts
+			ts, true
 		);
 		spikeTracker->updateContent();
 	}

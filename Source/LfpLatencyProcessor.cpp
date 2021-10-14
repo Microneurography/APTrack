@@ -208,12 +208,14 @@ void LfpLatencyProcessor::handleEvent (const EventChannel* eventInfo, const Midi
     }
 }
 */
-void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike)
+void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike, bool isSelected)
 {
     SpikeGroup s = {};
     s.templateSpike = templateSpike;
     s.spikeHistory.reserve(100);
     spikeGroups.push_back(s);
+    if (isSelected)
+        setSelectedSpike(spikeGroups.size()-1);
 };
 void LfpLatencyProcessor::removeSpikeGroup(int i)
 {

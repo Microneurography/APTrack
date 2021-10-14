@@ -171,8 +171,10 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	//Update spectrogram image
 	updateSpectrogram();
 	content.spikeTracker->updateContent();
-
-	// TODO: update spike slider
+	std::ostringstream ss_ms_latency;
+	ss_ms_latency << std::fixed << std::setprecision(2) << (content.getSearchBoxSampleLocation() * 1000) / processor->getSampleRate();
+	content.rightMiddlePanel->setROISpikeLatencyText(ss_ms_latency.str());
+	//content.rightMiddlePanel->setROISpikeMagnitudeText("NaN");
 	int i = processor->getSelectedSpike();
 	if (i >= 0)
 	{
