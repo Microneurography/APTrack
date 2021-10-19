@@ -215,11 +215,10 @@ void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike, bool isSelected
     s.spikeHistory.reserve(100);
     spikeGroups.push_back(s);
     if (isSelected)
-        setSelectedSpike(spikeGroups.size()-1);
+        setSelectedSpike(spikeGroups.size() - 1);
 };
-void LfpLatencyProcessor::removeSpikeGroup(int i)
-{
-   
+void LfpLatencyProcessor::removeSpikeGroup(int i){
+
     //spikeGroups.erase(std::advance(spikeGroups.begin(),i));
 };
 SpikeGroup *LfpLatencyProcessor::getSpikeGroup(int i)
@@ -353,7 +352,6 @@ void LfpLatencyProcessor::trackSpikes()
         }
         else
         {
-
             // spike detected
             SpikeInfo newSpike = {};
             newSpike.spikeSampleLatency = (maxValInWindow - startPtr);
@@ -368,8 +366,22 @@ void LfpLatencyProcessor::trackSpikes()
             curSpikeGroup.recentHistory.push_back(true);
             curSpikeGroup.recentHistory.pop_front();
             spikeDetected = true;
-            //addSpike()
-            // #TODO: post this information to the logs.
+
+            // #TODO: move this to its own function
+            stringstream json_out;
+            auto s = &newSpike;
+            json_out << "{"
+                << "'spikeSampleLatency':" <<  s->spikeSampleLatency 
+                << ", 'windowSize':" << s->windowSize
+                << ", 'threshold':"<< s->windowSize
+                << ", 'stimulusVoltage':"<< s->stimulusVoltage
+                << ", 'spikePeakValue':" << s->spikePeakValue
+                << ", 'spikeSampleNumber':" << s->spikeSampleNumber
+                << ", 'trackIndex':" << s->trackIndex
+                << ", 'spikeGroup':" << i
+                << "}";
+            TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), json_out.str());
+            addEvent(spikeEventPtr, event, 0);
         }
         if (curSpikeGroup.isTracking) // threshold tracking
         {
