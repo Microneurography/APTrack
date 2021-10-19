@@ -188,7 +188,7 @@ public:
      */
     float *getdataCacheRow(int track);
 
-    void changeParameter(int parameterID, int value);
+    void changeParameter(int parameterID, float value);
 
     int getParameterInt(int parameterID);
 

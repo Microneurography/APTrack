@@ -410,7 +410,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
         return;
     }
     // get num of samples in buffer
-    int nSamples = getNumSamples(0);
+    int nSamples = getNumSamples(dataChannel_idx);
 
     //Data channel
     const float *bufPtr = buffer.getReadPointer(dataChannel_idx);
@@ -672,7 +672,7 @@ int LfpLatencyProcessor::getSamplesPerSubsampleWindow()
     return samplesPerSubsampleWindow;
 }
 
-void LfpLatencyProcessor::changeParameter(int parameterID, int value)
+void LfpLatencyProcessor::changeParameter(int parameterID, float value)
 {
     switch (parameterID)
     {
