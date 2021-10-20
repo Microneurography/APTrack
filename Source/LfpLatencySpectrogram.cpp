@@ -168,7 +168,14 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor& processor, const LfpLate
             samplesAfterStimulus++;
         }
 
+        
     }
+    // // draw search box
+    // juce::Graphics g (image);
+    // g.setColour(juce::Colours::red);
+    // auto box_x = getImageWidth() - pixelsPerTrack;
+    // auto sbl = content.getSearchBoxInfo();
+    // g.drawLine(box_x,get<1>(sbl),box_x+pixelsPerTrack,get<1>(sbl));
 
 }
 

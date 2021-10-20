@@ -10,204 +10,145 @@
 /*
 	Pulse Pal controller
 */
-ppController::ppController()
+ppController::ppController(LfpLatencyProcessor *processor)
 {
-
-	// Initialise variables
+	this->processor = processor;
 	protocolStepNumber = -1;
 	protocolDuration = 0.0f;
 
 	stimulusVoltage = 0.0f;
-	pulsePalConnected = true;
-
-	while (true)
-	{
-
-		pulsePal.initialize();
-		pulsePal.setDefaultParameters();
-		pulsePal.updateDisplay("GUI Connected", "Click for Menu");
-		pulsePalVersion = pulsePal.getFirmwareVersion();
-
-		if (!(pulsePalVersion == 0))
-		{
-			pulsePalConnected = true;
-			break;
-		}
-		if(!AlertWindow::showOkCancelBox(juce::AlertWindow::AlertIconType::WarningIcon, "PulsePal not connected", "A PulsePal could not be found", "Search again", "Continue without PulsePal")){
-			break;
-		}
-	}
-
-	std::cout << "pulsePalVersion " << pulsePalVersion << std::endl;
-
-	// abort pulse trains (if any)
-	pulsePal.abortPulseTrains();
-
-	// configure pulse pal
-	pulsePal.currentOutputParams[1].isBiphasic = 0;
-	pulsePal.currentOutputParams[1].restingVoltage = 0.0f;
-	pulsePal.currentOutputParams[1].phase1Duration = 0.0005f;
-	pulsePal.currentOutputParams[1].pulseTrainDuration = 1000.0f;
-	pulsePal.currentOutputParams[1].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[1].phase1Voltage = 0.0f;
-	pulsePal.currentOutputParams[1].phase2Voltage = 0.0f;
-
-	pulsePal.currentOutputParams[2].isBiphasic = 0;
-	pulsePal.currentOutputParams[2].restingVoltage = 0.0f;
-	pulsePal.currentOutputParams[2].phase1Duration = 0.0005f;
-	pulsePal.currentOutputParams[2].pulseTrainDuration = 1000.0f;
-	pulsePal.currentOutputParams[2].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[2].phase1Voltage = 0.0f;
-	pulsePal.currentOutputParams[2].phase2Voltage = 0.0f;
-
-	pulsePal.currentOutputParams[3].isBiphasic = 0;
-	pulsePal.currentOutputParams[3].restingVoltage = 0.0f;
-	pulsePal.currentOutputParams[3].phase1Duration = 0.0005f + (RELAY_TTL_delay_s*2); // 
-	pulsePal.currentOutputParams[3].pulseTrainDuration = 1000.0f;
-	pulsePal.currentOutputParams[3].interPulseInterval = 2.0f;
-	pulsePal.currentOutputParams[3].phase1Voltage = 0.0f;
-	pulsePal.currentOutputParams[3].phase2Voltage = 0.0f;
-
-	pulsePal.syncAllParams();
-
-	//Get last opened file path
-	lastFilePath = CoreServices::getDefaultUserSaveDirectory();
-
-	//Populate GUI
-	addAndMakeVisible(getFileButton = new UtilityButton("F", Font("Small Text", 13, Font::plain)));
-	getFileButton->setButtonText("F:");
-	getFileButton->addListener(this);
-	
-	addAndMakeVisible(startStopButton = new UtilityButton(">", Font("Small Text", 13, Font::plain)));
-	//startStopButton->setButtonText(">");
-	startStopButton->addListener(this);
-	startStopButton->setEnabled(false);
-
-	if (pulsePalConnected)
-	{
-		getFileButton->setEnabled(true);
-	}
-	else
-	{
-		getFileButton->setEnabled(false);
-	}
-
-	addAndMakeVisible(fileName_text = new TextEditor("fileName_text", 0));
-	fileName_text->setReadOnly(true);
-	fileName_text->setText("No file selected", dontSendNotification);
-
-	addAndMakeVisible(protocolStepSummary_text = new TextEditor("protocolStepSummary_text", 0));
-	protocolStepSummary_text->setReadOnly(true);
-	protocolStepSummary_text->setText("-", dontSendNotification);
-
-	addAndMakeVisible(protocolStepSummary_label = new Label("protocolStepSummary_label"));
-	protocolStepSummary_label->setText("Step summary", dontSendNotification);
-
-	addAndMakeVisible(protocolTimeLeft_text = new TextEditor("protocolTimeLeft_text", 0));
-	protocolTimeLeft_text->setReadOnly(true);
-	protocolTimeLeft_text->setText("-", dontSendNotification);
-
-	addAndMakeVisible(protocolTimeLeft_label = new Label("protocolTimeLeft_label"));
-	protocolTimeLeft_label->setText("Total time left", dontSendNotification);
-
-	addAndMakeVisible(protocolStepTimeLeft_text = new TextEditor("protocolStepTimeLeft_text", 0));
-	protocolStepTimeLeft_text->setReadOnly(true);
-	protocolStepTimeLeft_text->setText("-", dontSendNotification);
-
-	addAndMakeVisible(protocolStepTimeLeft_label = new Label("protocolStepTimeLeft_label"));
-	protocolStepTimeLeft_label->setText("Step time left", dontSendNotification);
-
-	addAndMakeVisible(protocolStepComment_text = new TextEditor("protocolStepComment_text", 0));
-	protocolStepComment_text->setReadOnly(true);
-	protocolStepComment_text->setText("-", dontSendNotification);
-
-	addAndMakeVisible(protocolStepComment_label = new Label("protocolStepComment_label"));
-	protocolStepComment_label->setText("Comment", dontSendNotification);
-
-
-}
-
-void ppController::setProcessor(LfpLatencyProcessor* processor){
-	this->processor = processor;
+	pulsePalConnected = false;
 }
 
 ppController::~ppController()
 {
 	//Disconnect pulsePal
-	pulsePal.abortPulseTrains(); //Make sure we stop stimulating!
-	pulsePal.updateDisplay("Disconnected", "Click for menu");
-	pulsePal.end();
+	pulsePal->abortPulseTrains(); //Make sure we stop stimulating!
+	pulsePal->updateDisplay("Disconnected", "Click for menu");
+	pulsePal->end();
 }
 
-void ppController::paint(Graphics &g)
+bool ppController::initializeConnection()
 {
-	g.setColour(Colours::darkslategrey);
-	g.drawRoundedRectangle(0, 0, 305, 130, 5, 1);
-}
+	pulsePal = new PulsePal();
+	pulsePal->initialize();
+	pulsePal->setDefaultParameters();
+	pulsePal->updateDisplay("GUI Connected", "Click for Menu");
+	pulsePalVersion = pulsePal->getFirmwareVersion();
 
-void ppController::paintOverChildren(Graphics &g)
-{
-	if (!pulsePalConnected)
+	if ((pulsePalVersion == 0))
 	{
-		g.setColour(Colours::red);
 
-		juce::Line<float> line1(juce::Point<float>(5, 5),
-								juce::Point<float>(300, 125));
+		return false;
+	}
 
-		juce::Line<float> line2(juce::Point<float>(5, 125),
-								juce::Point<float>(300, 5));
+	pulsePalConnected = true;
 
-		g.drawLine(line1, 5.0f);
-		g.drawLine(line2, 5.0f);
+	std::cout << "pulsePalVersion " << pulsePalVersion << std::endl;
+
+	// abort pulse trains (if any)
+	pulsePal->abortPulseTrains();
+
+	// configure pulse pal
+	pulsePal->currentOutputParams[1].isBiphasic = 0;
+	pulsePal->currentOutputParams[1].restingVoltage = 0.0f;
+	pulsePal->currentOutputParams[1].phase1Duration = 0.0005f;
+	pulsePal->currentOutputParams[1].pulseTrainDuration = 1000.0f;
+	pulsePal->currentOutputParams[1].interPulseInterval = 2.0f;
+	pulsePal->currentOutputParams[1].phase1Voltage = 0.0f;
+	pulsePal->currentOutputParams[1].phase2Voltage = 0.0f;
+
+	pulsePal->currentOutputParams[2].isBiphasic = 0;
+	pulsePal->currentOutputParams[2].restingVoltage = 0.0f;
+	pulsePal->currentOutputParams[2].phase1Duration = 0.0005f;
+	pulsePal->currentOutputParams[2].pulseTrainDuration = 1000.0f;
+	pulsePal->currentOutputParams[2].interPulseInterval = 2.0f;
+	pulsePal->currentOutputParams[2].phase1Voltage = 0.0f;
+	pulsePal->currentOutputParams[2].phase2Voltage = 0.0f;
+
+	pulsePal->currentOutputParams[3].isBiphasic = 0;
+	pulsePal->currentOutputParams[3].restingVoltage = 0.0f;
+	pulsePal->currentOutputParams[3].phase1Duration = 0.0005f + (RELAY_TTL_delay_s * 2); //
+	pulsePal->currentOutputParams[3].pulseTrainDuration = 1000.0f;
+	pulsePal->currentOutputParams[3].interPulseInterval = 2.0f;
+	pulsePal->currentOutputParams[3].phase1Voltage = 0.0f;
+	pulsePal->currentOutputParams[3].phase2Voltage = 0.0f;
+
+	pulsePal->syncAllParams();
+	return true;
+}
+
+void ppController::setMinStimulusVoltage(float newMinVoltage)
+{
+	if (newMinVoltage<0){
+		newMinVoltage=0;
+	}
+	minStimulusVoltage = newMinVoltage;
+	if (stimulusVoltage<newMinVoltage){
+		setStimulusVoltage(newMinVoltage);
 	}
 }
-
-void ppController::resized()
+float ppController::getMinStimulusVoltage()
 {
+	return minStimulusVoltage;
+}
+void ppController::setMaxStimulusVoltage(float newMaxVoltage)
+{
+	if (newMaxVoltage > 10)
+	{ // #TODO: set as compiler macro
+		newMaxVoltage = 10;
+	}
 
-	getFileButton->setBounds(5, 5, 30, 20);
-	fileName_text->setBounds(45, 5, 200, 20);
-	startStopButton->setBounds(255, 5, 30, 20);
-
-	protocolStepSummary_text->setBounds(5, 30, 150, 20);
-	protocolStepSummary_label->setBounds(160, 30, 150, 20);
-
-	protocolTimeLeft_text->setBounds(5, 55, 150, 20);
-	protocolTimeLeft_label->setBounds(160, 55, 150, 20);
-
-	protocolStepTimeLeft_text->setBounds(5, 80, 150, 20);
-	protocolStepTimeLeft_label->setBounds(160, 80, 150, 20);
-
-	protocolStepComment_text->setBounds(5, 105, 150, 20);
-	protocolStepComment_label->setBounds(160, 105, 150, 20);
+	maxStimulusVoltage = newMaxVoltage;
+	if (newMaxVoltage<stimulusVoltage){
+		setStimulusVoltage(newMaxVoltage);
+	}
+}
+float ppController::getMaxStimulusVoltage()
+{
+	return maxStimulusVoltage;
 }
 
 void ppController::setStimulusVoltage(float newVoltage)
 {
 	std::cout << "moved to pp controller\n";
-	//TODO: Check bounds
+	//TODO: Set/sync min/max stim voltages
+	if (newVoltage > maxStimulusVoltage)
+	{
+		newVoltage = maxStimulusVoltage;
+	}
+	if (newVoltage < minStimulusVoltage)
+	{
+		newVoltage = minStimulusVoltage;
+	}
+
 	stimulusVoltage = newVoltage;
 
 	//Update channel voltages
 	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
 
-	pulsePal.currentOutputParams[1].phase1Voltage = stimulusVoltage;
+	pulsePal->currentOutputParams[1].phase1Voltage = stimulusVoltage;
 	std::cout << "Updating stimulus voltage in pp \n";
-	pulsePal.currentOutputParams[2].phase1Voltage = 10.0f; 
+	pulsePal->currentOutputParams[2].phase1Voltage = 10.0f;
 	std::cout << "updating max voltage in pp\n";
-	pulsePal.currentOutputParams[3].phase1Voltage = 3.0f; 
+	pulsePal->currentOutputParams[3].phase1Voltage = 3.0f;
 
-	pulsePal.syncAllParams();
+	pulsePal->syncAllParams();
 	std::cout << "synced all params in pp\n";
+	processor->addMessage("setStimVoltage:" + std::to_string(newVoltage));
 }
-
-void ppController::StartCurrentProtocol(){
-
+float ppController::getStimulusVoltage()
+{
+	return stimulusVoltage;
+}
+bool ppController::isProtocolRunning()
+{
+	return protocolRunning;
+}
+void ppController::StartCurrentProtocol()
+{
+	protocolRunning = true;
 	protocolStepNumber = 0;
-
-
-	// Start UI refresh timer
-	startTimer(TIMER_UI, 500);
 
 	// send message to openephys (when playing)
 	this->processor->addMessage("starting stimulus protocol " + protocolName);
@@ -228,23 +169,17 @@ void ppController::StartCurrentProtocol(){
 	std::cout << "protocolDuration " << protocolDuration << std::endl;
 	std::cout << "msNow " << millisecondsNow << std::endl;
 	std::cout << "protocolEndingTime " << protocolEndingTime << std::endl;
-	startStopButton->setLabel("[ ]");
-	startStopButton->repaint();
 }
 
 void ppController::StopCurrentProtocol()
-{		
+{
 	// TODO: There may be a race condition here.
 	// We want to stop the timer first to prevent further triggers, then abort the trains
-	stopTimer(TIMER_UI); // UI timer
 	stopTimer(TIMER_PROTOCOL); // protocol timer
 	//abort pulse train
-	pulsePal.abortPulseTrains();
-
+	pulsePal->abortPulseTrains();
+	protocolRunning = false;
 	protocolStepNumber = -1;
-
-	startStopButton->setLabel(">");
-	startStopButton->repaint();
 }
 
 void ppController::timerCallback(int timerID)
@@ -255,10 +190,10 @@ void ppController::timerCallback(int timerID)
 		stopTimer(TIMER_PROTOCOL);
 
 		//PulsePal Specific
-		pulsePal.abortPulseTrains();
+		pulsePal->abortPulseTrains();
 
 		// Increment counter if there are any remaining steps in protocol
-		if (protocolStepNumber < (elementCount-1))
+		if (protocolStepNumber < (elementCount - 1))
 		{
 			protocolStepNumber++;
 
@@ -276,82 +211,8 @@ void ppController::timerCallback(int timerID)
 		else
 		{
 			// If no more steps then stop timer
-			stopTimer(TIMER_UI);
 			StopCurrentProtocol();
-			// update label and prompt info window
-			protocolStepSummary_text->setText("Protocol completed");
-			protocolStepComment_text->setText("-");
-			protocolStepTimeLeft_text->setText("-");
-
-			AlertWindow::showMessageBoxAsync(juce::AlertWindow::AlertIconType::InfoIcon, "Protocol info", "Protocol complete");
 		}
-
-		//Repaint
-		repaint();
-	}
-	else if (timerID == TIMER_UI) //UI refresh timer
-	{
-		// Calculate time left
-		int64 millisecondsNow = Time::getMillisecondCounter();
-
-		RelativeTime protocolStepTimeLeft = RelativeTime::milliseconds(protocolStepEndingTime - millisecondsNow);
-		RelativeTime protocolTimeLeft = RelativeTime::milliseconds(protocolEndingTime - millisecondsNow);
-
-		// Update labels
-
-		// time labels
-		protocolStepTimeLeft_text->setText(formatTimeLeftToString(protocolStepTimeLeft, protocolData[protocolStepNumber].duration));
-		protocolTimeLeft_text->setText(formatTimeLeftToString(protocolTimeLeft, protocolDuration));
-
-		// Update step labels
-		protocolStepSummary_text->setText(String(protocolStepNumber + 1) + "/" + String(elementCount) + " at " + String(protocolData[protocolStepNumber].rate) + " Hz");
-		protocolStepComment_text->setText(protocolData[protocolStepNumber].comment);
-
-		//Repaint
-		repaint();
-	}
-}
-
-void ppController::buttonClicked(Button *buttonThatWasClicked)
-{
-	// if (this->eventChannel != nullptr){
-	// 	auto te = TextEvent::createTextEvent(this->eventChannel,CoreServices::getGlobalTimestamp(),"hello :)",0);
-	// 	this->processor->addEvent(this->eventChannel,te,0);
-		
-	// }
-	
-	if (buttonThatWasClicked == getFileButton)
-	{
-		//If loading new file
-
-		//TODO: Think about how this button should behave when there is already a file loaded.
-		// TODO: implement drag/drop?
-		// TODO: check extensions eg StringArray extensions hardcode for now
-		String supportedExtensions = "*.csv";
-
-		FileChooser chooseProtocolFile("Please select protocol file that you want to load",
-									   lastFilePath,
-									   supportedExtensions);
-		
-		if (chooseProtocolFile.browseForFileToOpen())
-		{
-			loadFile(chooseProtocolFile.getResult().getFullPathName());
-
-			std::cout << "Stim file path: " << chooseProtocolFile.getResult().getFullPathName() << std::endl;
-		}
-
-	}
-	if (buttonThatWasClicked == startStopButton){
-		// start or stop the playlist
-		if(isTimerRunning(TIMER_PROTOCOL)) // currently running
-			{
-			StopCurrentProtocol();
-			}
-		else{ // currently stopped
-			StartCurrentProtocol();
-
-		}
-
 	}
 }
 
@@ -359,7 +220,7 @@ void ppController::loadFile(String file) //, std::vector<protocolDataElement> cs
 {
 	File fileToRead(file);
 	//lastFilePath = fileToRead.getParentDirectory();
-	fileName_text->setText(fileToRead.getFileName(), dontSendNotification);
+	// fileName_text->setText(fileToRead.getFileName(), dontSendNotification);
 
 	// TODO: Read line by line
 	StringArray protocolData_raw;
@@ -412,14 +273,9 @@ void ppController::loadFile(String file) //, std::vector<protocolDataElement> cs
 		//store protocol step
 		protocolData.push_back(tempObj);
 	}
-		protocolStepNumber = 0;
-
+	protocolStepNumber = 0;
 
 	protocolName = fileToRead.getFileName().toStdString();
-	if (protocolData.size() > 0){
-		startStopButton->setEnabled(true);
-	}
-	//StartCurrentProtocol();
 }
 
 void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataStep)
@@ -427,38 +283,37 @@ void ppController::sendProtocolStepToPulsePal(protocolDataElement protocolDataSt
 	std::stringstream ss;
 	ss << "voltage:" << protocolDataStep.voltage << "; rate:" << protocolDataStep.rate << "; duration:" << protocolDataStep.duration;
 	this->processor->addMessage(ss.str()); // Send message to openephys stack.
-	if (!pulsePalConnected) // Debug mode - no pulsepal connected.
+	if (!pulsePalConnected)				   // Debug mode - no pulsepal connected.
 		return;
 	if (protocolDataStep.rate == 0)
 	{
 		// if rate is 0 the treat as pause and abort pulse trains
-		pulsePal.abortPulseTrains();
+		pulsePal->abortPulseTrains();
 	}
 	else
 	{
 		// if rate is nonzero then calculate pulse period and send to pulsepal
 		float pulsePeriod = (1.0f / protocolDataStep.rate);
-		// HACK: currently we are providing a TTL to open/close relay on output. 
-		// Set channel 3 high Xms, delay the others by the response  
+		// HACK: currently we are providing a TTL to open/close relay on output.
+		// Set channel 3 high Xms, delay the others by the response
 
-	
-		pulsePal.abortPulseTrains();
+		pulsePal->abortPulseTrains();
 		// Channel 1 - to the stimulator
-		pulsePal.currentOutputParams[1].pulseTrainDuration = protocolDataStep.duration; // in sec
-		pulsePal.currentOutputParams[1].interPulseInterval = pulsePeriod;
-		pulsePal.currentOutputParams[1].pulseTrainDelay = RELAY_TTL_delay_s;				// in sec
+		pulsePal->currentOutputParams[1].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal->currentOutputParams[1].interPulseInterval = pulsePeriod;
+		pulsePal->currentOutputParams[1].pulseTrainDelay = RELAY_TTL_delay_s; // in sec
 		// Channel 2 - feedback to TTL on acquisition
-		pulsePal.currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
-		pulsePal.currentOutputParams[2].interPulseInterval = pulsePeriod;				// in sec
-		pulsePal.currentOutputParams[2].pulseTrainDelay = RELAY_TTL_delay_s;
+		pulsePal->currentOutputParams[2].pulseTrainDuration = protocolDataStep.duration; // in sec
+		pulsePal->currentOutputParams[2].interPulseInterval = pulsePeriod;				 // in sec
+		pulsePal->currentOutputParams[2].pulseTrainDelay = RELAY_TTL_delay_s;
 		// Channel 3 - open/close relay
-		pulsePal.currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration ; // duration of the TTL should start before the stimulus, and end after the stimulus
-		pulsePal.currentOutputParams[3].interPulseInterval = pulsePeriod - RELAY_TTL_delay_s*2;
-		pulsePal.currentOutputParams[3].pulseTrainDelay = 0;
+		pulsePal->currentOutputParams[3].pulseTrainDuration = protocolDataStep.duration; // duration of the TTL should start before the stimulus, and end after the stimulus
+		pulsePal->currentOutputParams[3].interPulseInterval = pulsePeriod - RELAY_TTL_delay_s * 2;
+		pulsePal->currentOutputParams[3].pulseTrainDelay = 0;
 
-		pulsePal.syncAllParams();
+		pulsePal->syncAllParams();
 
-		pulsePal.triggerChannels(1, 1, 1, 0);
+		pulsePal->triggerChannels(1, 1, 1, 0);
 	}
 }
 

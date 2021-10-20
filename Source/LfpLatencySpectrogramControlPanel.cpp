@@ -160,6 +160,18 @@ double LfpLatencySpectrogramControlPanel::getImageThresholdMaxValue() const
 {
     return imageThreshold->getSliderMaxValue();
 }
+void LfpLatencySpectrogramControlPanel::setDetectionThresholdValue(double newValue)
+{
+    if (newValue>imageThreshold->getSliderMaxValue()){
+        imageThreshold->setSliderMaxValue(newValue);
+    }
+    if (newValue<imageThreshold->getSliderMinValue()){
+        imageThreshold->setSliderMinValue(newValue);
+    }
+    imageThreshold->setSliderValue(newValue);
+
+    
+}
 
 void LfpLatencySpectrogramControlPanel::setImageThresholdMaxValue(double newValue)
 {
