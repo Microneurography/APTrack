@@ -3,6 +3,7 @@
 #include <functional>
 #include "serial/PulsePal.h"
 #include "../LfpLatencyProcessor.h"
+#include "serial/UStepper.h"
 
 #define TIMER_PROTOCOL 0
 
@@ -72,5 +73,7 @@ private:
 	void StartCurrentProtocol();
 
 	void sendProtocolStepToPulsePal(protocolDataElement protocol);
+
+	std::unique_ptr<UStepper> ustepper;
 
 };

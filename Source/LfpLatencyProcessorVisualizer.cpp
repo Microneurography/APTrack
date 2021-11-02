@@ -30,7 +30,7 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer(LfpLatencyProcessor
 	addAndMakeVisible(&content);
 
 	// Set Visualizer refresh rate
-	refreshRate = 20; // 5 Hz default refresh rate
+	refreshRate = 100; // 5 Hz default refresh rate
 
 	/** NOTE: This should be called by the "beginAnimation()" method, so that is run after the user clicks play.
     However that does not seem to be working (begin/endAnimation() are not called at all?) so its now called in the constructor

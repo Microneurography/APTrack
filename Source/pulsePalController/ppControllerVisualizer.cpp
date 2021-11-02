@@ -77,7 +77,7 @@ ppControllerVisualizer::ppControllerVisualizer(LfpLatencyProcessor *processor)
 
 	addAndMakeVisible(protocolStepComment_label = new Label("protocolStepComment_label"));
 	protocolStepComment_label->setText("Comment", dontSendNotification);
-	startTimer(TIMER_UI, 100);
+	startTimer(TIMER_UI, 30); // 30fps
 }
 
 ppControllerVisualizer::~ppControllerVisualizer()

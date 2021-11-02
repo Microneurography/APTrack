@@ -110,7 +110,9 @@ void PulsePal::initialize()
        {
            std::cout << "Found Pulse Pal with firmware version " << firmwareVersion << std::endl;
            foundDevice = true;
+           break;
        }
+        serial.close();
    }
 
    if (foundDevice) { // AB 29/9/17: check if PulsePal 1st or 2nd generation is connected

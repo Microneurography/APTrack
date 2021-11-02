@@ -30,17 +30,24 @@ ppController::~ppController()
 
 bool ppController::initializeConnection()
 {
+	ustepper = std::unique_ptr<UStepper>(new UStepper());
+	ustepper->initialize();
+
 	pulsePal = new PulsePal();
 	pulsePal->initialize();
 	pulsePal->setDefaultParameters();
 	pulsePal->updateDisplay("GUI Connected", "Click for Menu");
 	pulsePalVersion = pulsePal->getFirmwareVersion();
 
+
 	if ((pulsePalVersion == 0))
 	{
 
 		return false;
 	}
+
+
+
 
 	pulsePalConnected = true;
 
@@ -122,6 +129,9 @@ void ppController::setStimulusVoltage(float newVoltage)
 		newVoltage = minStimulusVoltage;
 	}
 
+	// update the uStepper (TODO.. only do this every second...)
+	ustepper->setRelativePosition(newVoltage-stimulusVoltage);
+
 	stimulusVoltage = newVoltage;
 
 	//Update channel voltages
@@ -136,6 +146,8 @@ void ppController::setStimulusVoltage(float newVoltage)
 	pulsePal->syncAllParams();
 	std::cout << "synced all params in pp\n";
 	processor->addMessage("setStimVoltage:" + std::to_string(newVoltage));
+
+	
 }
 float ppController::getStimulusVoltage()
 {
