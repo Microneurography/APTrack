@@ -21,7 +21,6 @@ void UStepper::initialize()
 
     std::cout << "Searching for UStepper..." << std::endl;
 
-
     vector<ofSerialDeviceInfo> devices = serial.getDeviceList();
 
     string path, name;
@@ -31,7 +30,7 @@ void UStepper::initialize()
         int id = devices[i].getDeviceID();
         path = devices[i].getDevicePath();
         name = devices[i].getDeviceName();
-        
+
         std::cout << "    looking on " << name << std::endl;
         serial.setup(id, 19200);
         //Sleep(1000);
@@ -47,13 +46,11 @@ void UStepper::initialize()
 bool UStepper::isConnected()
 {
     Sleep(5000);
-    unsigned char handshakeMessage[6] = {'V','\n','V','\n','V','\n'};
+    unsigned char handshakeMessage[6] = {'V', '\n', 'V', '\n', 'V', '\n'};
     auto written = serial.writeBytes(handshakeMessage, 6);
     //serial.flush();
     Sleep(1000);
 
-    
-    
     uint8_t responseBytes[5] = {0};
     auto read = serial.readBytes(responseBytes, 5);
     serial.flush();
@@ -62,23 +59,25 @@ bool UStepper::isConnected()
         std::cout << "Found UStepper! " << std::endl;
         return true;
     }
-    
+
     return false;
 }
 
-void UStepper::setPosition(float voltage){
+void UStepper::setPosition(float voltage)
+{
     std::string str_message = ("S" + std::to_string(voltage) + "\n");
-    uint8_t* message = (uint8_t*)str_message.c_str();
+    uint8_t *message = (uint8_t *)str_message.c_str();
     int response = serial.writeBytes(message, str_message.length());
-    while(serial.available()){
+    while (serial.available())
+    {
         serial.readByte();
     }
-  
 }
 
-void UStepper::setRelativePosition(float voltage){
+void UStepper::setRelativePosition(float voltage)
+{
     std::string str_message = ("D" + std::to_string(voltage) + "\n");
-    uint8_t* message = (uint8_t*)str_message.c_str();
+    uint8_t *message = (uint8_t *)str_message.c_str();
     int response = serial.writeBytes(message, str_message.length());
     //Sleep(1000);
     //serial.drain();
