@@ -6,6 +6,7 @@
 #include "serial/UStepper.h"
 
 #define TIMER_PROTOCOL 0
+#define TIMER_USTEPPER 1
 
 class LfpLatencyProcessor;
 struct protocolDataElement {

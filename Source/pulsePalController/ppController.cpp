@@ -32,6 +32,9 @@ bool ppController::initializeConnection()
 {
 	ustepper = std::unique_ptr<UStepper>(new UStepper());
 	ustepper->initialize();
+	if (ustepper->isConnected()){
+		startTimer(TIMER_USTEPPER, 1000);
+	}
 
 	pulsePal = new PulsePal();
 	pulsePal->initialize();
@@ -130,7 +133,7 @@ void ppController::setStimulusVoltage(float newVoltage)
 	}
 
 	// update the uStepper (TODO.. only do this every second...)
-	ustepper->setRelativePosition(newVoltage-stimulusVoltage);
+	//ustepper->setRelativePosition(newVoltage-stimulusVoltage);
 
 	stimulusVoltage = newVoltage;
 
@@ -196,6 +199,9 @@ void ppController::StopCurrentProtocol()
 
 void ppController::timerCallback(int timerID)
 {
+	if (timerID == TIMER_USTEPPER){
+		ustepper->setPosition(stimulusVoltage);
+	}
 	if (timerID == TIMER_PROTOCOL) // Protocol step timer
 	{
 		//Stop old Timer
