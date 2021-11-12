@@ -33,7 +33,7 @@ bool ppController::initializeConnection()
 	ustepper = std::unique_ptr<UStepper>(new UStepper());
 	ustepper->initialize();
 	if (ustepper->isConnected()){
-		startTimer(TIMER_USTEPPER, 1000);
+		startTimer(TIMER_USTEPPER, 500);
 	}
 
 	pulsePal = new PulsePal();

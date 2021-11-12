@@ -67,7 +67,7 @@ bool UStepper::isConnected()
 }
 
 void UStepper::setPosition(float voltage){
-    std::string str_message = ("S" + std::to_string(voltage*10) + "\n");
+    std::string str_message = ("S" + std::to_string(voltage) + "\n");
     uint8_t* message = (uint8_t*)str_message.c_str();
     int response = serial.writeBytes(message, str_message.length());
     while(serial.available()){
