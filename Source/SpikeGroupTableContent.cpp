@@ -128,7 +128,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			return label;
 		}
 	}
-	jassert(existingComponentToUpdate == nullptr);
+	//jassert(existingComponentToUpdate == nullptr);
 	return nullptr;
 }
 

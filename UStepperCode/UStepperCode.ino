@@ -17,6 +17,7 @@
 #include <uStepperSLite.h>
 #include <EEPROM.h>
 #define EEPROMIDX 1
+#define DEGREE_PER_UA 360
 
 uStepperSLite stepper(100000, 500);
 
@@ -97,7 +98,7 @@ void loop()
             Serial.println(String(v));
         }
         float diff = 0;
-        oldValue = -1 * stepper.encoder.getAngleMoved() / 36;
+        oldValue = -1 * stepper.encoder.getAngleMoved() / DEGREE_PER_UA;
         if (readIn.substring(0, 1) == "S")
         { // set the value absolute
             float newValue = readIn.substring(1).toFloat();
@@ -117,11 +118,11 @@ void loop()
                 Serial.println("Requested < 0");
             }
 
-            if (abs(diff * 36 * stepper.stepConversion) > 1)
+            if (abs(diff * DEGREE_PER_UA * stepper.stepConversion) > 1)
             {
                 Serial.println("Diff:" + String(diff));
 
-                stepper.moveAngle(diff * 36, SOFT);
+                stepper.moveAngle(diff * DEGREE_PER_UA, SOFT);
 
                 oldValue = oldValue + diff;
             }
