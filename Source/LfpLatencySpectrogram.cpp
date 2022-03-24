@@ -179,10 +179,10 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
         for (int x = 0; x < tracksAmount / 2; x++)
         {
             juce::Path path;
-            path.startNewSubPath(getImageWidth() - ((x)*pixelsPerTrack * 2), getImageHeight());
+            path.startNewSubPath(getImageWidth() - ((x+2)*pixelsPerTrack * 2), getImageHeight());
             for (int y = 0; y < getImageHeight(); y++)
             {
-                path.lineTo(getImageWidth() - ((x + 1) * pixelsPerTrack * 2) + ((1 - bmap[x][y]) * (pixelsPerTrack * 2)), getImageHeight() - y);
+                path.lineTo(getImageWidth() - ((x + 2) * pixelsPerTrack * 2) + ((1 - bmap[x][y]) * (pixelsPerTrack * 2)), getImageHeight() - y);
             }
             g.strokePath(path, juce::PathStrokeType(0.5));
         }
