@@ -17,7 +17,7 @@
 #include <uStepperSLite.h>
 #include <EEPROM.h>
 #define EEPROMIDX 1
-#define DEGREE_PER_UA 360
+#define DEGREE_PER_UA 36
 
 uStepperSLite stepper(100000, 500);
 

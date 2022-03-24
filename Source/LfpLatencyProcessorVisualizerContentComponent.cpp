@@ -228,6 +228,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	colorStyleComboBox->addItem("BHOT", 2);
 	colorStyleComboBox->addItem("WHOT,PLAIN", 3);
 	colorStyleComboBox->addItem("BHOT,PLAIN", 4);
+	colorStyleComboBox->addItem("Lines", 5);
 	colorStyleComboBoxLabel = new Label("Color_Style_Combo_Box_Label");
 	colorStyleComboBoxLabel->setText("Color Style Combination", sendNotification);
 
