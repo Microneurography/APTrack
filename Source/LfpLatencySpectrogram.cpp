@@ -84,7 +84,6 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
 {
     // TODO: Following comments beside variable represent it's original source in visualizer: field variable in class.
     //       But most of them are not used in other places, so potentially some of them can be removed from the class definition.
-    int tracksAmount = 60;                               // LfpLatencyProcessorVisualizer.tracksAmount = 60;
     int pixelsPerTrack = getImageWidth() / tracksAmount; // LfpLatencyProcessorVisualizer.pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
     float bmap[tracksAmount][DATA_CACHE_SIZE_SAMPLES];
     for (int track = 0; track < tracksAmount; track++)
