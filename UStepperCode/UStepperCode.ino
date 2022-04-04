@@ -19,7 +19,7 @@
 #define EEPROMIDX 1
 #define DEGREE_PER_UA 36
 
-uStepperSLite stepper(100000, 500);
+uStepperSLite stepper(100000, 1000);
 
 float oldValue = 0;
 uint16_t numRotationsSinceReset = 1;

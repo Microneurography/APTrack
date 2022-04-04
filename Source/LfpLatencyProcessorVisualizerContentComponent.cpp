@@ -286,7 +286,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	// Increase/Decrease rate of spike tracking
 	// Not added here as they are in the setup box.
 	trackSpike_IncreaseRate_Slider = new Slider("trackSpike_IncreaseRate_Slider");
-	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.01f);
+	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.1f, 0.01f);
 	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_IncreaseRate_Slider->addListener(this);
@@ -296,7 +296,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_IncreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
 
 	trackSpike_DecreaseRate_Slider = new Slider("trackSpike_DecreaseRate_Slider");
-	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.01f);
+	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.1f, 0.01f);
 	trackSpike_DecreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_DecreaseRate_Slider->addListener(this);
