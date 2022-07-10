@@ -2,9 +2,9 @@
 
 #ifndef LFPLATENCYSPECTROGRAM_H
 #define LFPLATENCYSPECTROGRAM_H
+#define tracksAmount 60
 
 #include <EditorHeaders.h>
-
 #include "LfpLatencyProcessor.h"
 
 class LfpLatencyProcessorVisualizerContentComponent;
