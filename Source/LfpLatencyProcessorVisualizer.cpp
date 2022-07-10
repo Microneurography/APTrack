@@ -25,27 +25,28 @@
 
 LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer(LfpLatencyProcessor *processor_pointer) : content(processor_pointer)
 {
-	//m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
-	//content.setLookAndFeel (m_contentLookAndFeel);
+	// m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
+	// content.setLookAndFeel (m_contentLookAndFeel);
 	addAndMakeVisible(&content);
+	this->getLookAndFeel().setColour(juce::Label::textColourId, Colours::white);
 
 	// Set Visualizer refresh rate
 	refreshRate = 100; // 5 Hz default refresh rate
 
 	/** NOTE: This should be called by the "beginAnimation()" method, so that is run after the user clicks play.
-    However that does not seem to be working (begin/endAnimation() are not called at all?) so its now called in the constructor
-    */
+	However that does not seem to be working (begin/endAnimation() are not called at all?) so its now called in the constructor
+	*/
 
-	//windowSampleCount = 0;
-	//lastWindowPeak = 0;
+	// windowSampleCount = 0;
+	// lastWindowPeak = 0;
 
-	//tracksAmount = 60;
+	// tracksAmount = 60;
 
-	//pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
+	// pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
 
-	//imageLinePoint = 0;
+	// imageLinePoint = 0;
 
-	//samplesAfterStimulus = 0;
+	// samplesAfterStimulus = 0;
 
 	startCallbacks();
 
@@ -56,7 +57,7 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer(LfpLatencyProcessor
 LfpLatencyProcessorVisualizer::~LfpLatencyProcessorVisualizer()
 {
 	processor = nullptr;
-	stopCallbacks(); //MM For the time being...
+	stopCallbacks(); // MM For the time being...
 }
 
 void LfpLatencyProcessorVisualizer::resized()
@@ -74,18 +75,18 @@ void LfpLatencyProcessorVisualizer::update()
 {
 	std::cout << "LfpLatencyProcessorVisualizer::update2" << std::endl;
 
-	//Get number of availiable channels and update label
-	// HACK: harcoded to 24
+	// Get number of availiable channels and update label
+	//  HACK: harcoded to 24
 	int numAvailiableChannels = processor->getTotalDataChannels();
 
 	std::cout << "LfpLatencyProcessorVisualizer::numAvailiableChannels" << numAvailiableChannels << std::endl;
 
-	//Populate combobox with new channels, keep current selection if availiable
-	// get current selection
+	// Populate combobox with new channels, keep current selection if availiable
+	//  get current selection
 	int last_triggerChannelId = content.triggerChannelComboBox->getSelectedId();
 	int last_dataChannelID = content.dataChannelComboBox->getSelectedId();
 
-	//Clear old values and repopulate combobox
+	// Clear old values and repopulate combobox
 	content.triggerChannelComboBox->clear();
 	content.dataChannelComboBox->clear();
 
@@ -130,7 +131,7 @@ void LfpLatencyProcessorVisualizer::update()
 
 void LfpLatencyProcessorVisualizer::refresh()
 {
-	//std::cout << "LfpLatencyProcessorVisualizer::refresh" << std::endl;
+	// std::cout << "LfpLatencyProcessorVisualizer::refresh" << std::endl;
 	repaint();
 }
 
@@ -149,7 +150,7 @@ void LfpLatencyProcessorVisualizer::endAnimation()
 void LfpLatencyProcessorVisualizer::timerCallback()
 {
 
-	//std::cout << "LfpLatencyProcessorVisualizer::timerCallback" << std::endl;
+	// std::cout << "LfpLatencyProcessorVisualizer::timerCallback" << std::endl;
 	processor->changeParameter(1, content.subsamplesPerWindow);
 	processor->changeParameter(2, content.startingSample);
 	processor->changeParameter(3, content.triggerChannelComboBox->getSelectedId() - 1);	 // pass channel Id -1 = channel index
@@ -168,13 +169,13 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 
 	content.trackSpike_DecreaseRate_Slider->setValue(processor->getTrackingDecreaseRate(), juce::NotificationType::dontSendNotification);
 	content.trackSpike_IncreaseRate_Slider->setValue(processor->getTrackingIncreaseRate(), juce::NotificationType::dontSendNotification);
-	//Update spectrogram image
+	// Update spectrogram image
 	updateSpectrogram();
 	content.spikeTracker->updateContent();
 	std::ostringstream ss_ms_latency;
 	ss_ms_latency << std::fixed << std::setprecision(2) << (content.getSearchBoxSampleLocation() * 1000) / processor->getSampleRate();
 	content.rightMiddlePanel->setROISpikeLatencyText(ss_ms_latency.str());
-	//content.rightMiddlePanel->setROISpikeMagnitudeText("NaN");
+	// content.rightMiddlePanel->setROISpikeMagnitudeText("NaN");
 	int i = processor->getSelectedSpike();
 	if (i >= 0)
 	{
@@ -190,11 +191,11 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	if (processor->checkEventReceived())
 	{
 		processor->resetEventFlag();
-		//processTrack();
+		// processTrack();
 		content.spikeTracker->visibilityChanged();
 	}
 
-	//Refresh canvas (redraw)
+	// Refresh canvas (redraw)
 	refresh();
 }
 
