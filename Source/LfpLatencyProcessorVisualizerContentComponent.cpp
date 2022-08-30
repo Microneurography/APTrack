@@ -353,6 +353,8 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Detection Value", 4, 100);
 	spikeTracker->getHeader().addColumn("Track Spike", 5, 30);
 	spikeTracker->getHeader().addColumn("Track Threshold", 6, 30);
+	spikeTracker->getHeader().addColumn("Threshold uA", 8, 30);
+	
 	spikeTracker->getHeader().addColumn("Delete", 7, 30);
 	//spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
@@ -533,17 +535,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto st_button = st.removeFromBottom(20).removeFromRight(20);
 	spikeTracker->setBounds(st_main);
 	addNewSpikeButton->setBounds(st_button);
-	//thresholdTracker->setBounds(boundsMap["thresholdTracker"]);
-	//spikeTracker->setBounds(665, 40, 470, 200);
 
-	// auto STtableX = boundsMap["spikeTracker"].getX();
-	// auto STtableY = boundsMap["spikeTracker"].getY();
-
-	//trackSpike_button->setBounds(780, 126, 120, 24);
-	//trackSpike_button_Label->setBounds(665, 126, 120, 24);
-
-	//trackThreshold_button->setBounds(780, 155, 120, 24);
-	//trackThreshold_button_Label->setBounds(665, 155, 120, 24);
 }
 
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress &k)

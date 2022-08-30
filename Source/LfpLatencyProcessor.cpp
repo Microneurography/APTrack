@@ -371,14 +371,14 @@ void LfpLatencyProcessor::trackSpikes()
             stringstream json_out;
             auto s = &newSpike;
             json_out << "{"
-                << "'spikeSampleLatency':" <<  s->spikeSampleLatency 
-                << ", 'windowSize':" << s->windowSize
-                << ", 'threshold':"<< s->windowSize
-                << ", 'stimulusVoltage':"<< s->stimulusVoltage
-                << ", 'spikePeakValue':" << s->spikePeakValue
-                << ", 'spikeSampleNumber':" << s->spikeSampleNumber
-                << ", 'trackIndex':" << s->trackIndex
-                << ", 'spikeGroup':" << i
+                << "\"spikeSampleLatency\":" <<  s->spikeSampleLatency 
+                << ", \"windowSize\":" << s->windowSize
+                << ", \"threshold\":"<< s->windowSize
+                << ", \"stimulusVoltage\":"<< s->stimulusVoltage
+                << ", \"spikePeakValue\":" << s->spikePeakValue
+                << ", \"spikeSampleNumber\":" << s->spikeSampleNumber
+                << ", \"trackIndex\":" << s->trackIndex
+                << ", \"spikeGroup\":" << i
                 << "}";
             TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), json_out.str());
             addEvent(spikeEventPtr, event, 0);
@@ -395,6 +395,17 @@ void LfpLatencyProcessor::trackSpikes()
             {
                 this->pulsePalController->setStimulusVoltage(sv + trackingIncreaseRate);
                 // request decrease
+            }
+            // #TODO: update 50pct threshold if at 50pct
+            auto curPct = std::count(curSpikeGroup.recentHistory.begin(), curSpikeGroup.recentHistory.end(), true)/curSpikeGroup.recentHistory.size();
+            if (curPct == 0.5){
+                float o = 0;
+                for(int i = 0; i<curSpikeGroup.recentHistory.size();i++){
+                    auto sp = curSpikeGroup.spikeHistory.end()-i;
+                    o+=sp->stimulusVoltage;
+                }
+                o = o/curSpikeGroup.recentHistory.size();
+               curSpikeGroup.stimulusVoltage50pct = o;
             }
         }
 
