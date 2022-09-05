@@ -32,7 +32,7 @@
 #include <map>
 #include <vector>
 
-//If the processor uses a custom editor, it needs its header to instantiate it
+// If the processor uses a custom editor, it needs its header to instantiate it
 //#include "ExampleEditor.h"
 
 std::mutex savingAndLoadingLock;
@@ -46,22 +46,22 @@ LfpLatencyProcessor::LfpLatencyProcessor()
     setProcessorType(PROCESSOR_TYPE_SINK);
     spikeGroups.reserve(100);
 
-    //Parameter controlling number of samples per subsample window
-    //auto parameter0 = new Parameter ("detectionThreshold", 1, 4000, 1000, 0);
-    //parameters.add (parameter0);
+    // Parameter controlling number of samples per subsample window
+    // auto parameter0 = new Parameter ("detectionThreshold", 1, 4000, 1000, 0);
+    // parameters.add (parameter0);
 
     // auto parameter1 = new Parameter ("highThresholdColor", 1.0f, 1000.0f, 300.0f, 0);
-    //parameters.add (parameter1);
+    // parameters.add (parameter1);
     //	auto parameter2 = new Parameter ("lowThresholdColor", 1.0f, 1000.0f, 60.0f, 0);
     //   parameters.add (parameter2);
 
-    //Initialize array
+    // Initialize array
     for (auto ii = 0; ii < DATA_CACHE_SIZE_TRACKS * DATA_CACHE_SIZE_SAMPLES; ii++)
     {
         dataCache[ii] = 0.0f;
     }
 
-    //Initialize array
+    // Initialize array
     for (auto ii = 0; ii < DATA_CACHE_SIZE_TRACKS; ii++)
     {
         spikeLocation[ii] = 0.0f;
@@ -107,7 +107,7 @@ AudioProcessorEditor *LfpLatencyProcessor::createEditor()
 {
     editor = new LfpLatencyProcessorEditor(this, true);
 
-    //std::cout << "Creating editor." << std::endl;
+    // std::cout << "Creating editor." << std::endl;
 
     return editor;
 }
@@ -150,15 +150,15 @@ void LfpLatencyProcessor::createEventChannels()
 }
 
 // create chanel for storing spike data
-//void LfpLatencyProcessor::createSpikeChannels() {
+// void LfpLatencyProcessor::createSpikeChannels() {
 
-//pikeChannel* spikechan = new SpikeChannel(SpikeChannel::typeFromNumChannels(), this);
-// SpikeEvent::SpikeBuffer buf = SpikeEvent::SpikeBuffer::SpikeBuffer(spikechan);
-//}
+// pikeChannel* spikechan = new SpikeChannel(SpikeChannel::typeFromNumChannels(), this);
+//  SpikeEvent::SpikeBuffer buf = SpikeEvent::SpikeBuffer::SpikeBuffer(spikechan);
+// }
 
-//void LfpLatencyProcessor::createSpikeChannels(){
-//SpikeChannel* spikes = new SpikeChannel()
-//}
+// void LfpLatencyProcessor::createSpikeChannels(){
+// SpikeChannel* spikes = new SpikeChannel()
+// }
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
 {
@@ -166,7 +166,7 @@ void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
     editor->updateParameterButtons(parameterIndex);
 
     // Save parameter value
-    //TODO: use switch(parameterIndex) statement
+    // TODO: use switch(parameterIndex) statement
 
     if (parameterIndex == 0)
     {
@@ -175,7 +175,7 @@ void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
     }
 }
 
-//NOTE NOT CURRENTLY USED! Events detected in process() instead
+// NOTE NOT CURRENTLY USED! Events detected in process() instead
 /**
 void LfpLatencyProcessor::handleEvent (const EventChannel* eventInfo, const MidiMessage& event, int sampleNum)
 {
@@ -201,7 +201,7 @@ void LfpLatencyProcessor::handleEvent (const EventChannel* eventInfo, const Midi
 
             //clear buffer
             for (size_t i = 0; i < FIFO_BUFFER_SIZE;++i) {
-    	        fifo[i] = 0.0;
+                fifo[i] = 0.0;
             }
 
         }
@@ -219,7 +219,7 @@ void LfpLatencyProcessor::addSpikeGroup(SpikeInfo templateSpike, bool isSelected
 };
 void LfpLatencyProcessor::removeSpikeGroup(int i){
 
-    //spikeGroups.erase(std::advance(spikeGroups.begin(),i));
+    // spikeGroups.erase(std::advance(spikeGroups.begin(),i));
 };
 SpikeGroup *LfpLatencyProcessor::getSpikeGroup(int i)
 {
@@ -347,7 +347,7 @@ void LfpLatencyProcessor::trackSpikes()
         if (*maxValInWindow < templateSpike.threshold) // if there is a value > threshold
         {
             // spike **not** detected
-            curSpikeGroup.recentHistory.push_back(false); //add to array
+            curSpikeGroup.recentHistory.push_back(false); // add to array
             curSpikeGroup.recentHistory.pop_front();
         }
         else
@@ -371,15 +371,15 @@ void LfpLatencyProcessor::trackSpikes()
             stringstream json_out;
             auto s = &newSpike;
             json_out << "{"
-                << "\"spikeSampleLatency\":" <<  s->spikeSampleLatency 
-                << ", \"windowSize\":" << s->windowSize
-                << ", \"threshold\":"<< s->windowSize
-                << ", \"stimulusVoltage\":"<< s->stimulusVoltage
-                << ", \"spikePeakValue\":" << s->spikePeakValue
-                << ", \"spikeSampleNumber\":" << s->spikeSampleNumber
-                << ", \"trackIndex\":" << s->trackIndex
-                << ", \"spikeGroup\":" << i
-                << "}";
+                     << "\"spikeSampleLatency\":" << s->spikeSampleLatency
+                     << ", \"windowSize\":" << s->windowSize
+                     << ", \"threshold\":" << s->windowSize
+                     << ", \"stimulusVoltage\":" << s->stimulusVoltage
+                     << ", \"spikePeakValue\":" << s->spikePeakValue
+                     << ", \"spikeSampleNumber\":" << s->spikeSampleNumber
+                     << ", \"trackIndex\":" << s->trackIndex
+                     << ", \"spikeGroup\":" << i
+                     << "}";
             TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), json_out.str());
             addEvent(spikeEventPtr, event, 0);
         }
@@ -396,16 +396,20 @@ void LfpLatencyProcessor::trackSpikes()
                 this->pulsePalController->setStimulusVoltage(sv + trackingIncreaseRate);
                 // request decrease
             }
+
             // #TODO: update 50pct threshold if at 50pct
-            auto curPct = std::count(curSpikeGroup.recentHistory.begin(), curSpikeGroup.recentHistory.end(), true)/curSpikeGroup.recentHistory.size();
-            if (curPct == 0.5){
+            float curPct = std::count(curSpikeGroup.recentHistory.begin(), curSpikeGroup.recentHistory.end(), true);
+
+            if (curPct ==(int) (curSpikeGroup.recentHistory.size()/2) && curSpikeGroup.spikeHistory.size()>= curSpikeGroup.recentHistory.size())
+            {
                 float o = 0;
-                for(int i = 0; i<curSpikeGroup.recentHistory.size();i++){
-                    auto sp = curSpikeGroup.spikeHistory.end()-i;
-                    o+=sp->stimulusVoltage;
+                for (int i = 0; i < curSpikeGroup.recentHistory.size(); i++)
+                {
+                    SpikeInfo sp = curSpikeGroup.spikeHistory[curSpikeGroup.spikeHistory.size() - i-1];
+                    o += sp.stimulusVoltage;
                 }
-                o = o/curSpikeGroup.recentHistory.size();
-               curSpikeGroup.stimulusVoltage50pct = o;
+                o = o / curSpikeGroup.recentHistory.size();
+                curSpikeGroup.stimulusVoltage50pct = o;
             }
         }
 
@@ -423,50 +427,50 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     // get num of samples in buffer
     int nSamples = getNumSamples(dataChannel_idx);
 
-    //Data channel
+    // Data channel
     const float *bufPtr = buffer.getReadPointer(dataChannel_idx);
 
     // Trigger channel
     const float *bufPtr_pulses = buffer.getReadPointer(triggerChannel_idx);
 
     // Debug channel, used to explore scalings
-    //const float* bufPtr_test = buffer.getReadPointer(23);
+    // const float* bufPtr_test = buffer.getReadPointer(23);
 
-    //For each sample in buffer
+    // For each sample in buffer
     for (auto n = 0; n < nSamples; ++n)
     {
-        //Read sample from DATA buffer
+        // Read sample from DATA buffer
         float data = *(bufPtr + n) * 1.0f;
 
-        //Read sample from TRIGGER (ADC) buffer
+        // Read sample from TRIGGER (ADC) buffer
         float data_pulses = *(bufPtr_pulses + n);
 
-        //Read sample from Debug buffer
-        //float test_pulses = *(bufPtr_test + n);
+        // Read sample from Debug buffer
+        // float test_pulses = *(bufPtr_test + n);
 
-        //If data is above threshold, and no event received lately
+        // If data is above threshold, and no event received lately
         if (std::abs(data_pulses) > stimulus_threshold && !eventReceived)
         {
-            //DEBUG
-            //lastReceivedDACPulse=test_pulses;
+            // DEBUG
+            // lastReceivedDACPulse=test_pulses;
 
-            //Print to console
-            //std::cout << "Peak with amplitude: " << data_pulses << std::endl;
+            // Print to console
+            // std::cout << "Peak with amplitude: " << data_pulses << std::endl;
 
             // TODO: this is an antipattern. We should get the global timestamp instead.
-            //Set flags
+            // Set flags
             eventReceived = true;
             // We have a pulse, start refactoery period timer
-            startTimer(1, 200); //from 600
+            startTimer(1, 200); // from 600
 
-            //Reset fifo index (so that buffer overwrites
+            // Reset fifo index (so that buffer overwrites
             fifoIndex = 0;
             currentSample = 0;
 
-            //increment row count
+            // increment row count
             currentTrack++;
 
-            //clear row
+            // clear row
             for (auto ii = 0; ii < DATA_CACHE_SIZE_SAMPLES; ii++)
             {
                 dataCache[(currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES + ii] = 0.0f;
@@ -644,7 +648,7 @@ bool LfpLatencyProcessor::checkEventReceived()
 
 void LfpLatencyProcessor::resetEventFlag()
 {
-    //eventReceived = false;
+    // eventReceived = false;
 }
 
 float *LfpLatencyProcessor::getdataCacheLastRow()
@@ -675,7 +679,7 @@ void LfpLatencyProcessor::pushLatencyData(int latency)
 
 float *LfpLatencyProcessor::getdataCache()
 {
-    //float* rowPtr = (dataCache+currentTrack*DATA_CACHE_SIZE_SAMPLES);
+    // float* rowPtr = (dataCache+currentTrack*DATA_CACHE_SIZE_SAMPLES);
     return dataCache;
 }
 int LfpLatencyProcessor::getSamplesPerSubsampleWindow()

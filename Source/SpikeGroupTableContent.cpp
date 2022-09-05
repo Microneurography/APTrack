@@ -58,7 +58,6 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			if (deleteButton == nullptr)
 			{
 				deleteButton = new DeleteComponent(*this);
-				// deleteButton->addListener(this);
 			}
 			return deleteButton;
 		}
@@ -136,7 +135,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			}
 			if (spikeGroup->stimulusVoltage50pct != -1){
 				std::ostringstream ss_threshold;
-				ss_threshold << std::fixed << std::setprecision(2) << spikeGroup->stimulusVoltage50pct;	
+				ss_threshold << std::fixed << std::setprecision(2) << spikeGroup->stimulusVoltage50pct << " mA";	
 				label->setText(ss_threshold.str(), juce::NotificationType::dontSendNotification);
 
 			}
@@ -182,8 +181,7 @@ void SpikeGroupTableContent::SelectableColumnComponent::buttonClicked(juce::Butt
 		processor->setSelectedSpike(newSpikeID);
 	else if (action == Action::TRACK_SPIKE)
 		processor->setTrackingSpike(newSpikeID);
-	else if (action == Action::DELETE_SPIKE)
-		processor->removeSpikeGroup(spikeID);
+
 }
 void SpikeGroupTableContent::SelectableColumnComponent::setSpikeID(int spikeID)
 {
@@ -204,3 +202,7 @@ SpikeGroupTableContent::DeleteComponent::~DeleteComponent()
 {
 	del = nullptr;
 }
+// void SpikeGroupTableContent::DeleteComponent::buttonClicked(juce::Button *b){
+	
+// 	processor->removeSpikeGroup(spikeID);
+// }

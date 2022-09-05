@@ -353,7 +353,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Detection Value", 4, 100);
 	spikeTracker->getHeader().addColumn("Track Spike", 5, 30);
 	spikeTracker->getHeader().addColumn("Track Threshold", 6, 30);
-	spikeTracker->getHeader().addColumn("Threshold uA", 8, 30);
+	spikeTracker->getHeader().addColumn("Threshold", 8, 30);
 	
 	spikeTracker->getHeader().addColumn("Delete", 7, 30);
 	//spikeTracker->autoSizeAllColumns();
@@ -777,7 +777,6 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
-		cout << "Stuck here 13\n";
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
 		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
