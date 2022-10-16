@@ -28,7 +28,6 @@ LfpLatencyProcessorVisualizer::LfpLatencyProcessorVisualizer(LfpLatencyProcessor
 	// m_contentLookAndFeel = new LOOKANDFEELCLASSNAME();
 	// content.setLookAndFeel (m_contentLookAndFeel);
 	addAndMakeVisible(&content);
-	this->getLookAndFeel().setColour(juce::Label::textColourId, Colours::white);
 
 	// Set Visualizer refresh rate
 	refreshRate = 100; // 5 Hz default refresh rate

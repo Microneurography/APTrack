@@ -7,6 +7,7 @@
 LfpLatencyLabelTextEditor::LfpLatencyLabelTextEditor(const String& labelText)
 {  
     label = new Label("Label", labelText);
+    label->setColour(juce::Label::textColourId, juce::Colours::white);
     textEditor = new TextEditor("TextEditor");
 
     label->setJustificationType(juce::Justification::centred);
@@ -30,6 +31,7 @@ void LfpLatencyLabelTextEditor::setTextEditorText(const String& newText) {
 LfpLatencyLabelSlider::LfpLatencyLabelSlider(const String& labelText)
 {
     label = new Label("Label", labelText);
+    label->setColour(juce::Label::textColourId, juce::Colours::white);
     slider = new Slider(Slider::Rotary, Slider::TextBoxRight);
     slider->setName(labelText);
 
@@ -78,6 +80,7 @@ double LfpLatencyLabelSlider::getSliderValue() const
 LfpLatencyLabelVerticalSlider::LfpLatencyLabelVerticalSlider(const String& labelText)
 {
     label = new Label("Label", labelText);
+    label->setColour(juce::Label::textColourId, juce::Colours::white);
     slider = new Slider(Slider::ThreeValueVertical, Slider::NoTextBox);
     slider->setName(labelText);
 
@@ -148,6 +151,7 @@ double LfpLatencyLabelVerticalSlider::getSliderMinValue() const
 LfpLatencyLabelComboBox::LfpLatencyLabelComboBox(const String& labelText)
 {
     label = new Label("Label", labelText);
+    label->setColour(juce::Label::textColourId, juce::Colours::white);
     comboBox = new ComboBox("ComboBox");
 
     label->setJustificationType(juce::Justification::centred);
@@ -207,6 +211,7 @@ void LfpLatencyLabelComboBox::clearComboBox()
 LfpLatencyLabelToggleButton::LfpLatencyLabelToggleButton(const String& labelText)
 {
     label = new Label("Label", labelText);
+    label->setColour(juce::Label::textColourId, juce::Colours::white);
     toggleButton = new ToggleButton("");
 
     label->setJustificationType(juce::Justification::centred);
@@ -284,6 +289,7 @@ double LfpLatencyLabelSliderNoTextBox::getSliderValue() const
 LfpLatencyLabelLinearVerticalSliderNoTextBox::LfpLatencyLabelLinearVerticalSliderNoTextBox(const String& labelText)
 {
     label = new Label("Label", labelText);
+    label->setColour(juce::Label::textColourId, juce::Colours::white);
     slider = new Slider(Slider::LinearVertical, Slider::NoTextBox);
     slider->setName(labelText);
 
