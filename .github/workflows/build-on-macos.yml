@@ -42,13 +42,13 @@ jobs:
         run: |
           mkdir -p Build
           cd Build
-          cmake ..
-          cmake --build . --config Release
+          cmake -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -G "Unix Makefiles" ..
+          make
           tar -zcvf OE-plugin-latency-tracker.bundle.tar.gz OE-plugin-latency-tracker.bundle
       - uses: actions/upload-artifact@v2
         with:
           name: oe-plugin-latency-tracker
-          path: OEPlugins/OE-plugin-latency-tracker/Build/OE-plugin-latency-tracker.bundle
+          path: OEPlugins/OE-plugin-latency-tracker/Build/OE-plugin-latency-tracker.bundle.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v1
 #         if: startsWith(github.ref, 'refs/tags/')
