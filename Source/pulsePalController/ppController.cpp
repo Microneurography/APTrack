@@ -121,6 +121,7 @@ float ppController::getMaxStimulusVoltage()
 
 void ppController::setStimulusVoltage(float newVoltage)
 {
+	
 	std::cout << "moved to pp controller\n";
 	//TODO: Set/sync min/max stim voltages
 	if (newVoltage > maxStimulusVoltage)
@@ -139,7 +140,10 @@ void ppController::setStimulusVoltage(float newVoltage)
 
 	//Update channel voltages
 	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
-
+	if (!this->pulsePalConnected){
+		
+		return;
+	}
 	pulsePal->currentOutputParams[1].phase1Voltage = stimulusVoltage;
 	std::cout << "Updating stimulus voltage in pp \n";
 	pulsePal->currentOutputParams[2].phase1Voltage = 10.0f;

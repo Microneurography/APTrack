@@ -45,6 +45,7 @@ LfpLatencyProcessor::LfpLatencyProcessor()
     pulsePalController = new ppController(this);
     setProcessorType(PROCESSOR_TYPE_SINK);
     spikeGroups.reserve(100);
+    dataCacheTimestamps.reserve(3000); // resrve 3k timestamps
 
     // Parameter controlling number of samples per subsample window
     // auto parameter0 = new Parameter ("detectionThreshold", 1, 4000, 1000, 0);
@@ -67,7 +68,7 @@ LfpLatencyProcessor::LfpLatencyProcessor()
         spikeLocation[ii] = 0.0f;
     }
 
-    currentTrack = 0;
+    currentTrack = -1; //currentTrack increments before adding first row.
 
     // Set default channels
     dataChannel_idx = 0;
@@ -327,7 +328,7 @@ void LfpLatencyProcessor::setTrackingDecreaseRate(float sv)
     trackingDecreaseRate = sv;
 }
 
-void LfpLatencyProcessor::trackSpikes()
+void LfpLatencyProcessor::trackSpikes() 
 {
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
     for (int i = 0; i < spikeGroups.size(); i++)
@@ -339,7 +340,7 @@ void LfpLatencyProcessor::trackSpikes()
         {
             continue;
         }
-        auto curTrackBufferLoc = (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES; // to index dataBuffer
+        auto curTrackBufferLoc = (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES; // /TODO: this should take the current read buffer
         auto windowStartInBuffer = curTrackBufferLoc + templateSpike.spikeSampleLatency - templateSpike.windowSize;
         auto startPtr = dataCache + windowStartInBuffer;
         bool spikeDetected = false;
@@ -354,15 +355,15 @@ void LfpLatencyProcessor::trackSpikes()
         {
             // spike detected
             SpikeInfo newSpike = {};
-            newSpike.spikeSampleLatency = (maxValInWindow - startPtr);
+            newSpike.spikeSampleLatency = (maxValInWindow - (dataCache+curTrackBufferLoc)); // scary pointer arithmetic. find the position in array of the max - start of current track
             newSpike.windowSize = templateSpike.windowSize;
             newSpike.threshold = templateSpike.threshold;
             newSpike.stimulusVoltage = this->pulsePalController->getStimulusVoltage();
             newSpike.spikePeakValue = *maxValInWindow;
-            newSpike.spikeSampleNumber = 0; //#TODO figure out current sample number...
+            newSpike.spikeSampleNumber = this->dataCacheTimestamps[currentTrack] + newSpike.spikeSampleLatency ; 
             newSpike.trackIndex = currentTrack;
             curSpikeGroup.spikeHistory.push_back(newSpike);
-            spikeGroups[i].templateSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc));
+            spikeGroups[i].templateSpike.spikeSampleLatency = newSpike.spikeSampleLatency;
             curSpikeGroup.recentHistory.push_back(true);
             curSpikeGroup.recentHistory.pop_front();
             spikeDetected = true;
@@ -373,14 +374,14 @@ void LfpLatencyProcessor::trackSpikes()
             json_out << "{"
                      << "\"spikeSampleLatency\":" << s->spikeSampleLatency
                      << ", \"windowSize\":" << s->windowSize
-                     << ", \"threshold\":" << s->windowSize
+                     << ", \"threshold\":" << s->threshold
                      << ", \"stimulusVoltage\":" << s->stimulusVoltage
                      << ", \"spikePeakValue\":" << s->spikePeakValue
                      << ", \"spikeSampleNumber\":" << s->spikeSampleNumber
                      << ", \"trackIndex\":" << s->trackIndex
                      << ", \"spikeGroup\":" << i
                      << "}";
-            TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), json_out.str());
+            TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, this->getTimestamp(this->triggerChannel_idx), json_out.str());
             addEvent(spikeEventPtr, event, 0);
         }
         if (curSpikeGroup.isTracking) // threshold tracking
@@ -424,6 +425,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     {
         return;
     }
+    auto ts = this->getTimestamp(this->triggerChannel_idx);
     // get num of samples in buffer
     int nSamples = getNumSamples(dataChannel_idx);
 
@@ -449,32 +451,31 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
         // float test_pulses = *(bufPtr_test + n);
 
         // If data is above threshold, and no event received lately
-        if (std::abs(data_pulses) > stimulus_threshold && !eventReceived)
+        if (std::abs(data_pulses) > stimulus_threshold && !eventReceived) // this detects the current tracked spike
         {
-            // DEBUG
-            // lastReceivedDACPulse=test_pulses;
-
-            // Print to console
-            // std::cout << "Peak with amplitude: " << data_pulses << std::endl;
 
             // TODO: this is an antipattern. We should get the global timestamp instead.
             // Set flags
             eventReceived = true;
-            // We have a pulse, start refactoery period timer
+            // We have a pulse, start refactoy period timer
             startTimer(1, 200); // from 600
 
             // Reset fifo index (so that buffer overwrites
             fifoIndex = 0;
             currentSample = 0;
-
             // increment row count
-            currentTrack++;
+            currentTrack++; 
+            
 
             // clear row
             for (auto ii = 0; ii < DATA_CACHE_SIZE_SAMPLES; ii++)
             {
                 dataCache[(currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES + ii] = 0.0f;
+               
             }
+            // write the timestamps
+            dataCacheTimestamps.push_back(ts + n); // #TODO: need to check this aligns with the datacache currentTrack
+           
         }
 
         if (currentSample < (DATA_CACHE_SIZE_SAMPLES))
@@ -484,7 +485,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
             currentSample++;
         }
-        trackSpikes();
+        trackSpikes(); // TODO: trackSpikes does not use the correct sample number for the message
     }
 
     trackThreshold();

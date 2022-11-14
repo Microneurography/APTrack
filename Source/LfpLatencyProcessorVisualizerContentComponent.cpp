@@ -100,7 +100,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_DecreaseRate = 0.01;
 
 	LfpLatencyProcessor::loadRecoveryData(valuesMap);
-
+	// #TODO: refactor this valuesmap to single loop.
 	if (valuesMap->find("trackSpike_IncreaseRate") != valuesMap->end())
 	{
 		trackSpike_IncreaseRate = stof((*valuesMap)["trackSpike_IncreaseRate"].toStdString());
