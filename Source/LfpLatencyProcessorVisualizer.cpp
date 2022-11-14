@@ -172,7 +172,7 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 	updateSpectrogram();
 	content.spikeTracker->updateContent();
 	std::ostringstream ss_ms_latency;
-	ss_ms_latency << std::fixed << std::setprecision(2) << (content.getSearchBoxSampleLocation() * 1000) / processor->getSampleRate();
+	ss_ms_latency << std::fixed << std::setprecision(2) << (content.getSearchBoxSampleLocation() * 1000) / CoreServices::getGlobalSampleRate();
 	content.rightMiddlePanel->setROISpikeLatencyText(ss_ms_latency.str());
 	// content.rightMiddlePanel->setROISpikeMagnitudeText("NaN");
 	int i = processor->getSelectedSpike();
