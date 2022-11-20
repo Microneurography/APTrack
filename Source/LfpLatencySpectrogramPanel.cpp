@@ -79,12 +79,14 @@ void LfpLatencySpectrogramPanel::paint(Graphics& g)
     
     g.setColour(Colours::white);
     g.fillRect(searchBoxArea);
-
-    for (int y = searchBoxArea.getY(); y <= searchBoxArea.getY()+searchBoxArea.getHeight(); y += (searchBoxArea.getY() + searchBoxArea.getHeight()) / 30)
-    {
-        g.fillRect(searchBoxArea.getX(), y, 14, 2);
-        //g.drawText(to_string(y), searchBoxArea.getX() + 25, y, 25, 25, Justification::centredRight);
-    }
+    
+    // auto starting_sample = (this->content.getStartingSample()/this->content.getSubsamplesPerWindow());
+    // for (int y = searchBoxArea.getY(); y <= searchBoxArea.getY()+searchBoxArea.getHeight(); y += CoreServices::getGlobalSampleRate()/10/ this->content.getSubsamplesPerWindow())
+    // {
+    //     g.fillRect(searchBoxArea.getX(), y, 14, 2); // #TODO: this is upside down, and needs to be offset by starting sample, not sure this is possible. the scaling will alter the number of y-pixels per track.
+    //     // TODO: refactor into LfpLatencySpectrogram?
+    //     //g.drawText(to_string(y), searchBoxArea.getX() + 25, y, 25, 25, Justification::centredRight);
+    // }
 
 }
 

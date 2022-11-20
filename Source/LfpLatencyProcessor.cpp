@@ -38,7 +38,7 @@
 std::mutex savingAndLoadingLock;
 
 LfpLatencyProcessor::LfpLatencyProcessor()
-    : GenericProcessor("LfpLatency"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages(),
+    : GenericProcessor("APTrack"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages(),
       spikeGroups(0)
 
 {
@@ -89,6 +89,7 @@ void LfpLatencyProcessor::timerCallback(int timerID)
 
 LfpLatencyProcessor::~LfpLatencyProcessor()
 {
+    
 }
 
 void LfpLatencyProcessor::resetDataChannel()

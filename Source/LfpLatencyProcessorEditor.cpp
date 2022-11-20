@@ -30,7 +30,7 @@ static const int EDITOR_DESIRED_WIDTH = 300;
 LfpLatencyProcessorEditor::LfpLatencyProcessorEditor (GenericProcessor* parentNode, bool useDefaultParameterEditors = true)
     : VisualizerEditor (parentNode, useDefaultParameterEditors)
 {
-    tabText = "LfpLatency";
+    tabText = "APTrack";
 
     // why not use processor = static_cast<LfpLatencyProcessor*>(parentNode);?
     processor = (LfpLatencyProcessor*) this->getProcessor();

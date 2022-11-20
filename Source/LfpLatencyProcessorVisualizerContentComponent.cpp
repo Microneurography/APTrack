@@ -361,19 +361,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	addAndMakeVisible(addNewSpikeButton = new juce::TextButton("+"));
 	addNewSpikeButton->addListener(this);
-	/*thresholdTrackerContent = new TableContent();
-	addAndMakeVisible(thresholdTracker = new TableListBox("Tracked Thresholds", thresholdTrackerContent));
-	thresholdTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
-	thresholdTracker->getHeader().addColumn("Threshold", 1, 100);
-	thresholdTracker->getHeader().addColumn("Value", 2, 100);
-	thresholdTracker->getHeader().addColumn("Select", 3, 50);
-	thresholdTracker->getHeader().addColumn("Delete", 4, 50);
-	thresholdTracker->autoSizeAllColumns();
-	thresholdTracker->updateContent();*/
 
-	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-	//Debug
 
 	addAndMakeVisible(cmLabel = new Label("cm_label"));
 	cmLabel->setText("cm", dontSendNotification);
@@ -383,6 +371,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	addAndMakeVisible(textBox1 = new TextEditor("selectedTriggerChanText"));
 	textBox1->setText("Trigger");
+
+	stimulusSettingsView = createSetupView();
+	addAndMakeVisible(stimulusSettingsView);
 
 	// stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 	// stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
@@ -496,31 +487,39 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
 	auto area = getLocalBounds();
 
-	auto spectrogramPanelWidth = getWidth() * 0.5;
-	spectrogramPanel->setBounds(area.removeFromLeft(spectrogramPanelWidth));
+	auto rightPane = area.removeFromRight(300);
+	auto leftPane = area;
+
+	auto leftTop = leftPane.withTrimmedBottom(0.2*leftPane.getHeight());
+	auto leftBottom = leftPane.withTrimmedTop(0.8*leftPane.getHeight());
+
+	spectrogramControlPanel->setBounds(leftBottom.removeFromLeft(500));
+	spectrogramPanel->setBounds(leftTop);
 
 	auto panelHeight = (getHeight() - PPCONTROLLER_HEIGHT) * 0.5;
 
-	otherControlPanel->setBounds(area.removeFromTop(panelHeight));
+	// #TODO: rename otherControlPanel to SpikeTable
+	otherControlPanel->setBounds(rightPane.removeFromTop(50));
 
-	auto middleArea = area.removeFromTop(PPCONTROLLER_HEIGHT);
-	ppControllerComponent->setBounds(middleArea.removeFromLeft(PPCONTROLLER_WIDTH));
-	rightMiddlePanel->setBounds(middleArea);
+	ppControllerComponent->setBounds(rightPane.removeFromTop(PPCONTROLLER_HEIGHT));
+	
+	stimulusSettingsView->setBounds(rightPane.removeFromTop(400));
+	
+	rightMiddlePanel->setBounds(rightPane);
+	
 
-	spectrogramControlPanel->setBounds(area);
+	auto st_main = leftBottom.withTrimmedBottom(20);
+	auto st_button = leftBottom.removeFromBottom(20).removeFromRight(20);
+	spikeTracker->setBounds(st_main);
+	addNewSpikeButton->setBounds(st_button);
 
 	// Grace's group
-	colorStyleComboBox->setBounds(785, 10, 120, 24);
-	colorStyleComboBoxLabel->setBounds(665, 10, 120, 24);
+	//colorStyleComboBox->setBounds(785, 10, 120, 24);
+	//colorStyleComboBoxLabel->setBounds(665, 10, 120, 24);
 
 	extendedColorScaleToggleButton->setBounds(780, 39, 24, 24);
 	extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24);
 
-	// Lucy's Group
-
-	// channel control
-	//textBox1->setBounds(10, 320, 72, 24);
-	//textBox2->setBounds(10, 350, 72, 24);
 
 	triggerChannelComboBox->setBounds(785, 68, 120, 24);
 	triggerChannelComboBoxLabel->setBounds(665, 68, 120, 24);
@@ -530,11 +529,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	auto boundsMap = otherControlPanel->getTableBounds();
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
-	auto st = boundsMap["spikeTracker"];
-	auto st_main = st.withTrimmedBottom(20);
-	auto st_button = st.removeFromBottom(20).removeFromRight(20);
-	spikeTracker->setBounds(st_main);
-	addNewSpikeButton->setBounds(st_button);
+
+	
 
 }
 
@@ -824,26 +820,7 @@ void LfpLatencyProcessorVisualizerContentComponent::mouseWheelMove(const MouseEv
 }
  */
 
-void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *buttonThatWasClicked)
-{
-	if (buttonThatWasClicked == extendedColorScaleToggleButton)
-	{
-		if (buttonThatWasClicked->getToggleState() == true)
-		{
-			// If using extended scale (eg when using file reader)
-			spectrogramControlPanel->setImageThresholdRange(0, 1000, 0);
-			(*valuesMap)["extendedColorScale"] = "1";
-		}
-		else
-		{
-			// If using regular scale (eg when using FPGA real time data)
-			spectrogramControlPanel->setImageThresholdRange(0, 100, 0);
-			(*valuesMap)["extendedColorScale"] = "0";
-		}
-	}
-	if (buttonThatWasClicked->getName() == "Setup")
-	{
-
+Viewport* LfpLatencyProcessorVisualizerContentComponent::createSetupView(){
 		Viewport *view = new Viewport("viewTest");
 		view->setLookAndFeel(&this->getLookAndFeel());
 		view->addAndMakeVisible(stimulusVoltageSlider);
@@ -887,6 +864,29 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		stimulusVoltageMax_textLabel->setBounds(156, 5, 105, 24); // x inverted
 
 		view->setSize(270, 325);
+		return view;
+}
+void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *buttonThatWasClicked)
+{
+	if (buttonThatWasClicked == extendedColorScaleToggleButton)
+	{
+		if (buttonThatWasClicked->getToggleState() == true)
+		{
+			// If using extended scale (eg when using file reader)
+			spectrogramControlPanel->setImageThresholdRange(0, 1000, 0);
+			(*valuesMap)["extendedColorScale"] = "1";
+		}
+		else
+		{
+			// If using regular scale (eg when using FPGA real time data)
+			spectrogramControlPanel->setImageThresholdRange(0, 100, 0);
+			(*valuesMap)["extendedColorScale"] = "0";
+		}
+	}
+	if (buttonThatWasClicked->getName() == "Setup")
+	{
+		auto view = this->createSetupView();
+
 
 		auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getSetupBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());

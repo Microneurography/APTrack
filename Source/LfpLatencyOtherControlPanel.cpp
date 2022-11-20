@@ -8,7 +8,7 @@ LfpLatencyOtherControlPanel::LfpLatencyOtherControlPanel(LfpLatencyProcessorVisu
 {
 	outline = new GroupComponent("Other control");
 	options = new TextButton("Options");
-	setup = new TextButton("Setup");
+	//setup = new TextButton("Setup");
 	//colorStyle = new LfpLatencyLabelComboBox("Color Style Combination");
 	//extendedColorScale = new LfpLatencyLabelToggleButton("Extended Scale");
 	//triggerChannel = new LfpLatencyLabelComboBox("Trigger Channel");
@@ -19,8 +19,8 @@ LfpLatencyOtherControlPanel::LfpLatencyOtherControlPanel(LfpLatencyProcessorVisu
 	options->addListener(content);
 	options->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
-	setup->addListener(content);
-	setup->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
+	//setup->addListener(content);
+	//setup->setColour(TextButton::ColourIds::buttonColourId, Colours::lightgrey);
 
 	//colorStyle->addComboBoxItem("WHOT", 1);
 	//colorStyle->addComboBoxItem("BHOT", 2);
@@ -64,10 +64,10 @@ void LfpLatencyOtherControlPanel::resized()
 	auto buttonHeight = 24;
 	auto buttonWidth = 120;
 	auto buttonArea = area.removeFromTop(buttonHeight);
-	auto optionsArea = buttonArea.removeFromLeft(buttonArea.getWidth() / 2).withSizeKeepingCentre(buttonWidth, buttonHeight);
+	auto optionsArea = buttonArea.withSizeKeepingCentre(buttonWidth, buttonHeight);
 	options->setBounds(optionsArea);
-	auto setupArea = buttonArea.withSizeKeepingCentre(buttonWidth, buttonHeight);
-	setup->setBounds(setupArea);
+	//auto setupArea = buttonArea.withSizeKeepingCentre(buttonWidth, buttonHeight);
+	//setup->setBounds(setupArea);
 
 	/*
 	auto rightSideArea = area.removeFromRight(area.getWidth() / 2);
