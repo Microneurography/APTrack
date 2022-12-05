@@ -68,7 +68,7 @@ LfpLatencyProcessor::LfpLatencyProcessor()
         spikeLocation[ii] = 0.0f;
     }
 
-    currentTrack = -1; //currentTrack increments before adding first row.
+    currentTrack = 0; //currentTrack increments before adding first row.
 
     // Set default channels
     dataChannel_idx = 0;

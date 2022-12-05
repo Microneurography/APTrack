@@ -6,7 +6,7 @@
 LfpLatencySpectrogram::LfpLatencySpectrogram(int imageWidth, int imageHeight)
     : image(Image::RGB, imageWidth, imageHeight, true)
 {
-    //Paint image
+    // Paint image
     paintAll(Colours::yellowgreen);
 }
 
@@ -58,20 +58,20 @@ void LfpLatencySpectrogram::paintAll(Colour colour)
 }
 
 // theorised function the index way
-/* 
+/*
 const Image& LfpLatencySpectrogram::loadImage(std::vector newParametersAsVector) // I don't actually know if this is how you pass a vector
 {
-	// int loadingIndex = 0;
-	for (auto ii = 0; ii < getImageWidth(); ii++)
-	{
-		for (auto jj = 0; jj < getImageHeight(); jj++)
-		{
-			image.setPixelAt(ii, jj, colour);
-			//  xmlElementName->setAttribute(ii, jj, newParametersAsVector[loadingIndex]); 
-			// loadingIndex++;
-		}
-	}
-	std::cout << "finished loading paint" << std::endl;
+    // int loadingIndex = 0;
+    for (auto ii = 0; ii < getImageWidth(); ii++)
+    {
+        for (auto jj = 0; jj < getImageHeight(); jj++)
+        {
+            image.setPixelAt(ii, jj, colour);
+            //  xmlElementName->setAttribute(ii, jj, newParametersAsVector[loadingIndex]);
+            // loadingIndex++;
+        }
+    }
+    std::cout << "finished loading paint" << std::endl;
 }
 */
 
@@ -89,15 +89,15 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
     float bmap[tracksAmount][DATA_CACHE_SIZE_SAMPLES];
     for (int track = 0; track < tracksAmount; track++)
     {
-        //Get image dimension
+        // Get image dimension
         int draw_imageHeight = getImageHeight();                           // LfpLatencyProcessorVisualizer.draw_imageHeight;
         int draw_rightHandEdge = getImageWidth() - track * pixelsPerTrack; // LfpLatencyProcessorVisualizer.draw_rightHandEdge;
         int imageLinePoint = 0;
 
-        //Get data array
+        // Get data array
         float *dataToPrint = processor.getdataCacheRow(track);
 
-        //Reset subsampling flags
+        // Reset subsampling flags
         int samplesAfterStimulus = content.getStartingSample(); // LfpLatencyProcessorVisualizer.samplesAfterStimulus = 0;
         float lastWindowPeak = 0.0f;                            // LfpLatencyProcessorVisualizer.lastWindowPeak = 0.0f;
         int windowSampleCount = 0;                              // LfpLatencyProcessorVisualizer.windowSampleCount = 0;
@@ -106,20 +106,20 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
 
             auto sample = dataToPrint[ii];
 
-            //If current sample is larger than previously stored peak, store sample as new peak
+            // If current sample is larger than previously stored peak, store sample as new peak
             if (sample > lastWindowPeak)
             {
                 lastWindowPeak = sample;
             }
 
-            //Increment window sample counter
+            // Increment window sample counter
             ++windowSampleCount;
 
-            //If window is full, push window's peak into fifo
-            if (windowSampleCount >= content.getSubsamplesPerWindow()) //76
+            // If window is full, push window's peak into fifo
+            if (windowSampleCount >= content.getSubsamplesPerWindow()) // 76
             {
 
-                //If fifo not full, store peak into fifo
+                // If fifo not full, store peak into fifo
                 if (imageLinePoint < getImageHeight())
                 {
 
@@ -131,33 +131,33 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
                     {
                         int x = draw_rightHandEdge - jj - 1;           // x in [draw_rightHandEdge-pixelsPerTrack, ..., draw_rightHandEdge-1]
                         int y = draw_imageHeight - imageLinePoint - 1; // y in [0, ..., getImageHeight]
-                        //Update spectrogram with selected color scheme
+                        // Update spectrogram with selected color scheme
                         switch (comboBoxSelectedId)
                         {
                         case 1:
-                            //WHOT
+                            // WHOT
                             drawHot(x, y, lastWindowPeak, content, wLevel);
                             break;
                         case 2:
-                            //BHOT
+                            // BHOT
                             drawHot(x, y, lastWindowPeak, content, bLevel);
                             break;
                         case 3:
-                            //WHOT, only grayscale
+                            // WHOT, only grayscale
                             drawHotGrayScale(x, y, wLevel);
                             break;
                         case 4:
-                            //BHOT, only grayscale
+                            // BHOT, only grayscale
                             drawHotGrayScale(x, y, bLevel);
                             break;
                         default:
                             break;
                         }
                     }
-                    //Go to next line
+                    // Go to next line
                     imageLinePoint++;
                 }
-                //Reset subsampling flags
+                // Reset subsampling flags
                 lastWindowPeak = 0.0f;
                 windowSampleCount = 0;
             }
@@ -166,6 +166,7 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
         }
     }
 
+    auto detectionThreshold_scaled = jmap(content.getDetectionThreshold(), content.getLowImageThreshold(), content.getHighImageThreshold(), 0.0f, 1.0f);
     int comboBoxSelectedId = content.getColorStyleComboBoxSelectedId();
     if (comboBoxSelectedId == 5)
     {
@@ -173,19 +174,60 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
         // draw lines instead
         juce::Graphics g(image);
         g.fillAll(juce::Colours::black);
-        g.setColour(juce::Colours::white);
         g.setOpacity(1);
-        //g.setFillType(juce::FillType(juce::Colours::orange));
+        // g.setFillType(juce::FillType(juce::Colours::orange));
+
         for (int x = 0; x < tracksAmount / 2; x++)
         {
+            auto xOffset =  getImageWidth() - ((x + 2) * pixelsPerTrack * 2) ;
             juce::Path path;
-            path.startNewSubPath(getImageWidth() - ((x+2)*pixelsPerTrack * 2), getImageHeight());
+            juce::Path highlightPath;
+            bool isHighlighting = false;
+            path.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack * 2), getImageHeight());
             for (int y = 0; y < getImageHeight(); y++)
             {
-                path.lineTo(getImageWidth() - ((x + 2) * pixelsPerTrack * 2) + ((1 - bmap[x][y]) * (pixelsPerTrack * 2)), getImageHeight() - y);
+                auto curX = xOffset + ((1 - bmap[x][y]) * (pixelsPerTrack * 2));
+                auto curY = getImageHeight() - y;
+                path.lineTo(curX, curY);
+
+                // highlight where threshold crossings occur
+                if ((bmap[x][y]) > detectionThreshold_scaled)
+                {
+                    juce::Path p;
+                    p.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack * 2),curY);
+                    p.lineTo(getImageWidth() -((x + 2 -1) * pixelsPerTrack * 2),curY);
+                    g.setColour(juce::Colours::red);
+                    g.strokePath(p, juce::PathStrokeType(0.5));
+                    if (!isHighlighting)
+                    {
+                        highlightPath.startNewSubPath(curX, curY);
+                        isHighlighting = true;
+                    }
+                    else
+                    {
+                        highlightPath.lineTo(curX, curY);
+                    }
+                }
+                else
+                {
+                    if (isHighlighting){
+                    highlightPath.lineTo(curX, curY);
+                    isHighlighting = false;
+                    }
+
+                }
             }
+            g.setColour(juce::Colours::white);
             g.strokePath(path, juce::PathStrokeType(0.5));
+            g.setColour(juce::Colours::red);
+            //g.strokePath(highlightPath, juce::PathStrokeType(0.5));
         }
+        juce::Path refPath;
+        auto curX =  getImageWidth() - (2 * pixelsPerTrack * 2) + ((1 - detectionThreshold_scaled) * (pixelsPerTrack * 2));
+        refPath.startNewSubPath(curX, 0);
+        refPath.lineTo(curX, getImageHeight());
+        g.setColour(juce::Colours::green);
+        g.strokePath(refPath, juce::PathStrokeType(0.5));
     }
     // // draw search box
     // juce::Graphics g (image);
@@ -199,17 +241,17 @@ void LfpLatencySpectrogram::drawHot(int x, int y, float lastWindowPeak, const Lf
 {
     if (lastWindowPeak > content.getDetectionThreshold() && lastWindowPeak < content.getHighImageThreshold())
     {
-        //Detected peak
+        // Detected peak
         image.setPixelAt(x, y, Colours::yellowgreen);
     }
     else if (lastWindowPeak > content.getHighImageThreshold())
     {
-        //Excessive peak
+        // Excessive peak
         image.setPixelAt(x, y, Colours::red);
     }
     else
     {
-        //grayscale
+        // grayscale
         image.setPixelAt(x, y, Colour::fromFloatRGBA(level, level, level, 1.0f));
     }
 }
