@@ -24,6 +24,7 @@ public:
 	void paintOverChildren(Graphics &g) override;
 
 	void resized() override;
+	void initialize();
 
 
 private:
@@ -44,6 +45,7 @@ private:
 	ScopedPointer<UtilityButton> getFileButton;
 	ScopedPointer<UtilityButton> startStopButton;
 	ScopedPointer<TextEditor> fileName_text;
+	ScopedPointer<TextButton> reconnect_button;
 	LfpLatencyProcessor *processor;
 	ppController *controller;
 	File lastFilePath;
