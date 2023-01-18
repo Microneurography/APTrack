@@ -210,7 +210,7 @@ public:
 
     int fifoIndex;
 
-    uint currentTrack;
+    uint32_t currentTrack;
     int currentSample;
 
     //debug
