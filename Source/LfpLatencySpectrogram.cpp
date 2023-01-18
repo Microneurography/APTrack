@@ -177,16 +177,16 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
         g.setOpacity(1);
         // g.setFillType(juce::FillType(juce::Colours::orange));
 
-        for (int x = 0; x < tracksAmount / 2; x++)
+        for (int x = 0; x < tracksAmount ; x++)
         {
-            auto xOffset =  getImageWidth() - ((x + 2) * pixelsPerTrack * 2) ;
+            auto xOffset =  getImageWidth() - ((x + 2) * pixelsPerTrack ) ;
             juce::Path path;
             juce::Path highlightPath;
             bool isHighlighting = false;
-            path.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack * 2), getImageHeight());
+            path.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack ), getImageHeight());
             for (int y = 0; y < getImageHeight(); y++)
             {
-                auto curX = xOffset + ((1 - bmap[x][y]) * (pixelsPerTrack * 2));
+                auto curX = xOffset + ((1 - bmap[x][y]) * (pixelsPerTrack ));
                 auto curY = getImageHeight() - y;
                 path.lineTo(curX, curY);
 
@@ -194,8 +194,8 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
                 if ((bmap[x][y]) > detectionThreshold_scaled)
                 {
                     juce::Path p;
-                    p.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack * 2),curY);
-                    p.lineTo(getImageWidth() -((x + 2 -1) * pixelsPerTrack * 2),curY);
+                    p.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack ),curY);
+                    p.lineTo(getImageWidth() -((x + 2 -1) * pixelsPerTrack ),curY);
                     g.setColour(juce::Colours::red);
                     g.strokePath(p, juce::PathStrokeType(0.5));
                     if (!isHighlighting)

@@ -166,7 +166,8 @@ void LfpLatencyProcessorVisualizer::timerCallback()
 		auto spikeVal = ts.spikeSampleLatency;
 
 		content.setSearchBoxSampleLocation(spikeVal);
-		content.spectrogramPanel->setSearchBoxWidthValue(ts.windowSize);
+		
+		content.spectrogramControlPanel->setSearchBoxWidthValue(ts.windowSize);
 		content.spectrogramControlPanel->setDetectionThresholdValue(ts.threshold); //#TODO: this should be getter/setter
 	}
 
@@ -195,7 +196,7 @@ void LfpLatencyProcessorVisualizer::setConfig(int i)
 	{
 		content.spectrogramControlPanel->setStartingSampleValue(SL[i].startingSample);
 		content.spectrogramControlPanel->setSubsamplesPerWindowValue(SL[i].subsamples);
-		content.spectrogramPanel->setSearchBoxWidthValue(SL[i].searchBoxWidth);
+		content.spectrogramControlPanel->setSearchBoxWidthValue(SL[i].searchBoxWidth);
 	}
 }
 

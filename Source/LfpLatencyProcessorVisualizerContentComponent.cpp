@@ -424,10 +424,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spectrogramPanel = new LfpLatencySpectrogramPanel(this);
 	addAndMakeVisible(spectrogramPanel);
 	spectrogramPanel->setSearchBoxValue(searchBoxLocation);
-	spectrogramPanel->setSearchBoxWidthValue(searchBoxWidth);
+	spectrogramControlPanel->setSearchBoxWidthValue(searchBoxWidth);
 
 	rightMiddlePanel = new LfpLatencyRightMiddlePanel(this);
-	addAndMakeVisible(rightMiddlePanel);
+	//addAndMakeVisible(rightMiddlePanel);
 
 	rightMiddlePanel->setROISpikeLatencyText(String(searchBoxLocation));
 	rightMiddlePanel->setROISpikeMagnitudeText("NaN");
@@ -476,13 +476,6 @@ void LfpLatencyProcessorVisualizerContentComponent::paint(Graphics &g)
 	//thresholdTracker->updateContent();
 }
 
-// If you want to move something down, you have to increase the y value
-// If you want something to move left, increase the x value
-// Sometimes this isn't true, as the coordinates are relative to the top-left of the component's parent
-// But I don't know how to find the parent, so this section of code was pain and suffering to make.
-// This also means you can't relate the location of one thing to another.
-// Please leave all arguments as you found them. Thank you <3
-// set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
 	auto area = getLocalBounds();
@@ -493,7 +486,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	auto leftTop = leftPane.withTrimmedBottom(0.2*leftPane.getHeight());
 	auto leftBottom = leftPane.withTrimmedTop(0.8*leftPane.getHeight());
 
-	spectrogramControlPanel->setBounds(leftBottom.removeFromLeft(500));
+	spectrogramControlPanel->setBounds(leftTop.removeFromBottom(100));
 	spectrogramPanel->setBounds(leftTop);
 
 	auto panelHeight = (getHeight() - PPCONTROLLER_HEIGHT) * 0.5;
@@ -505,9 +498,8 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 	
 	stimulusSettingsView->setBounds(rightPane.removeFromTop(400));
 	
-	rightMiddlePanel->setBounds(rightPane);
 	
-
+	
 	auto st_main = leftBottom.withTrimmedBottom(20);
 	auto st_button = leftBottom.removeFromBottom(20).removeFromRight(20);
 	spikeTracker->setBounds(st_main);
@@ -519,7 +511,6 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	extendedColorScaleToggleButton->setBounds(780, 39, 24, 24);
 	extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24);
-
 
 	triggerChannelComboBox->setBounds(785, 68, 120, 24);
 	triggerChannelComboBoxLabel->setBounds(665, 68, 120, 24);
@@ -842,6 +833,7 @@ Viewport* LfpLatencyProcessorVisualizerContentComponent::createSetupView(){
 		view->addAndMakeVisible(trackSpike_DecreaseRate_Slider);
 		view->addAndMakeVisible(trackSpike_DecreaseRate_Text);
 		view->addAndMakeVisible(trackSpike_DecreaseRate_Slider_Label);
+		view->addAndMakeVisible(rightMiddlePanel);
 
 		trackSpike_IncreaseRate_Text->setBounds(84, 101, 72, 24);
 		trackSpike_IncreaseRate_Slider->setBounds(120, 130, 72, 72);
@@ -912,6 +904,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		view->addAndMakeVisible(stimuliNumber);
 		view->addAndMakeVisible(stimuliNumberLabel);
 		view->addAndMakeVisible(stimuliNumberSlider);
+		view->addAndMakeVisible(rightMiddlePanel);
 
 		colorStyleComboBox->setBounds(135, 10, 120, 24);
 		colorStyleComboBoxLabel->setBounds(10, 10, 120, 24);
@@ -925,11 +918,11 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		dataChannelComboBox->setBounds(135, 100, 120, 24);
 		dataChannelComboBoxLabel->setBounds(10, 100, 120, 24); // fine
 
-		stimuliNumberSlider->setBounds(114, 160, 72, 72);
-		stimuliNumber->setBounds(135, 130, 72, 24);
-		stimuliNumberLabel->setBounds(10, 130, 120, 24);
-
-		view->setSize(300, 260);
+		// stimuliNumberSlider->setBounds(114, 160, 72, 72);
+		// stimuliNumber->setBounds(135, 130, 72, 24);
+		// stimuliNumberLabel->setBounds(10, 130, 120, 24);
+		rightMiddlePanel->setBounds(10, 160, 280, 140);
+		view->setSize(300, 360);
 
 		auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());

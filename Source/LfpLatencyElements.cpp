@@ -77,11 +77,11 @@ double LfpLatencyLabelSlider::getSliderValue() const
 }
 
 // -------------------------------------------------------------
-LfpLatencyLabelVerticalSlider::LfpLatencyLabelVerticalSlider(const String& labelText)
+LfpLatencyLabelHorizontalSlider::LfpLatencyLabelHorizontalSlider(const String& labelText)
 {
     label = new Label("Label", labelText);
     label->setColour(juce::Label::textColourId, juce::Colours::white);
-    slider = new Slider(Slider::ThreeValueVertical, Slider::NoTextBox);
+    slider = new Slider(Slider::ThreeValueHorizontal, Slider::NoTextBox);
     slider->setName(labelText);
 
     label->setJustificationType(juce::Justification::centred);
@@ -90,7 +90,7 @@ LfpLatencyLabelVerticalSlider::LfpLatencyLabelVerticalSlider(const String& label
     addAndMakeVisible(slider);
 }
 
-void LfpLatencyLabelVerticalSlider::resized()
+void LfpLatencyLabelHorizontalSlider::resized()
 {
     auto labelHeight = 24;
     slider->setBounds(0, 0, getWidth(), getHeight() - labelHeight);
@@ -99,50 +99,50 @@ void LfpLatencyLabelVerticalSlider::resized()
     label->setBounds(0, slider->getY() + slider->getHeight() , getWidth(), labelHeight);
 }
 
-void LfpLatencyLabelVerticalSlider::setSliderRange(double newMinimum, double newMaximum, double newInterval)
+void LfpLatencyLabelHorizontalSlider::setSliderRange(double newMinimum, double newMaximum, double newInterval)
 {
     slider->setRange(newMinimum, newMaximum, newInterval);
 }
 
-void LfpLatencyLabelVerticalSlider::addSliderListener(Slider::Listener* listener)
+void LfpLatencyLabelHorizontalSlider::addSliderListener(Slider::Listener* listener)
 {
     slider->addListener(listener);
 }
 
-double LfpLatencyLabelVerticalSlider::getSliderMaximum() const {
+double LfpLatencyLabelHorizontalSlider::getSliderMaximum() const {
     return slider->getMaximum();
 }
 
-double LfpLatencyLabelVerticalSlider::getSliderMinimum() const {
+double LfpLatencyLabelHorizontalSlider::getSliderMinimum() const {
     return slider->getMinimum();
 }
 
-void LfpLatencyLabelVerticalSlider::setSliderValue(double newValue)
+void LfpLatencyLabelHorizontalSlider::setSliderValue(double newValue)
 {
     slider->setValue(newValue);
 }
 
-double LfpLatencyLabelVerticalSlider::getSliderValue() const
+double LfpLatencyLabelHorizontalSlider::getSliderValue() const
 {
     return slider->getValue();
 }
 
-void LfpLatencyLabelVerticalSlider::setSliderMaxValue(double newValue)
+void LfpLatencyLabelHorizontalSlider::setSliderMaxValue(double newValue)
 {
     slider->setMaxValue(newValue);
 }
 
-double LfpLatencyLabelVerticalSlider::getSliderMaxValue() const
+double LfpLatencyLabelHorizontalSlider::getSliderMaxValue() const
 {
     return slider->getMaxValue();
 }
 
-void LfpLatencyLabelVerticalSlider::setSliderMinValue(double newValue)
+void LfpLatencyLabelHorizontalSlider::setSliderMinValue(double newValue)
 {
     slider->setMinValue(newValue);
 }
 
-double LfpLatencyLabelVerticalSlider::getSliderMinValue() const
+double LfpLatencyLabelHorizontalSlider::getSliderMinValue() const
 {
     return slider->getMinValue();
 }
