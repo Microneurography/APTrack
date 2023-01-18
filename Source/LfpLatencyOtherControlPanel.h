@@ -8,6 +8,8 @@
 #define LFPLATENCYOTHERCONTROLPANEL_H
 
 #include <EditorHeaders.h>
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
+#include "LfpLatencyElements.h"
 
 class LfpLatencyLabelComboBox;
 class LfpLatencyLabelToggleButton;

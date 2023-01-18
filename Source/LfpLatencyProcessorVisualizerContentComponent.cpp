@@ -1,5 +1,5 @@
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
-#include "LfpLatencyProcessor.h"
+
 
 // So we can make the setup box less dark.
 class CustomLookAndFeel : public juce::LookAndFeel_V3
@@ -779,37 +779,28 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 	tryToSave();
 }
 
-/*
-void LfpLatencyProcessorVisualizerContentComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
-{
-    if (comboBoxThatHasChanged == nullptr)
-    {
-        switch (comboBoxThatHasChanged->getSelectedId()) {
-            case 1: colorStyle = 1; break;
-            case 2: colorStyle = 2; break;
-            default: break;
-        }
-    }
-}
- */
 
-/*
-void LfpLatencyProcessorVisualizerContentComponent::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+void LfpLatencyProcessorVisualizerContentComponent::mouseWheelMove(const juce::MouseEvent &e, const juce::MouseWheelDetails &wheel)
 {
     //e.getEventRelativeTo();
-    int Ypos = e.getScreenY();
-    int deltax = wheel.deltaX;
-    int deltay = wheel.deltaY;
-    
-    subsamplesPerWindow = round(subsamplesPerWindow + 20*((std::abs (wheel.deltaX) > std::abs (wheel.deltaY)? -wheel.deltaX : wheel.deltaY)* (wheel.isReversed ? -1.0f : 1.0f)));
-    
-    std::cout << "ypos" << Ypos << std::endl;
-    
-    std::cout << "deltax " << deltax << " deltaY "<< deltay << " totpos "<<subsamplesPerWindow <<std::endl;
+    float deltaY = wheel.deltaY * (wheel.isReversed ? -1.0f : 1.0f);
+	const float scale_factor = 1000;
+    const float scale_factor_pan = 1000;
+	if (e.mods.isCtrlDown()){
+		// zoom as control is down
+		
+		subsamplesPerWindow = max(int((deltaY*scale_factor) + subsamplesPerWindow),0);
+		
+	}
+	else{
+		// pan the window
+		startingSample = max(int((deltaY*scale_factor_pan) + startingSample),0);
+
+
+	}
 
     
 }
- */
 
 Viewport* LfpLatencyProcessorVisualizerContentComponent::createSetupView(){
 		Viewport *view = new Viewport("viewTest");
@@ -877,11 +868,12 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 	}
 	if (buttonThatWasClicked->getName() == "Setup")
 	{
-		auto view = this->createSetupView();
+		// #TODO: re-enable
+		//auto view = this->createSetupView();
 
 
-		auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getSetupBoundsInPanelParent(), this);
-		setupBox.setLookAndFeel(new CustomLookAndFeel());
+		//auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getSetupBoundsInPanelParent(), this);
+		//setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 	if (buttonThatWasClicked->getName() == "Options")
 	{
@@ -923,9 +915,9 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		// stimuliNumberLabel->setBounds(10, 130, 120, 24);
 		rightMiddlePanel->setBounds(10, 160, 280, 140);
 		view->setSize(300, 360);
-
-		auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
-		setupBox.setLookAndFeel(new CustomLookAndFeel());
+		// #TODO: re-enable
+		//	auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
+		// setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 	
 	if(buttonThatWasClicked==addNewSpikeButton){

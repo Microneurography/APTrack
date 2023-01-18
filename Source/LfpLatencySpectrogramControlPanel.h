@@ -4,6 +4,8 @@
 #define LFPLATENCYSPECTROGRAMCONTROLPANEL_H
 
 #include <EditorHeaders.h>
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
+#include "LfpLatencyElements.h"
 
 class LfpLatencyProcessorVisualizerContentComponent;
 class LfpLatencyLabelTextEditor;

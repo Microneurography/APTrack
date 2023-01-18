@@ -5,6 +5,8 @@
 
 #include <EditorHeaders.h>
 
+#include "LfpLatencySpectrogram.h"
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyElements.h"
 

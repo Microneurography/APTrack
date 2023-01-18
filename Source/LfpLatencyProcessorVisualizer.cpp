@@ -59,7 +59,7 @@ void LfpLatencyProcessorVisualizer::update()
 {
 
 	// Get number of availiable channels and update label
-	int numAvailiableChannels = processor->getTotalDataChannels();
+	int numAvailiableChannels = processor->getNumDataStreams();//processor->getTotalDataChannels();
 
 	std::cout << "LfpLatencyProcessorVisualizer::numAvailiableChannels" << numAvailiableChannels << std::endl;
 
@@ -77,16 +77,17 @@ void LfpLatencyProcessorVisualizer::update()
 
 	for (int ii = 0; ii < numAvailiableChannels; ii++)
 	{
-		if (processor->getDataChannel(ii)->getChannelType() == DataChannel::HEADSTAGE_CHANNEL)
-		{
-			content.triggerChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
-			content.dataChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
-		}
-		else if (processor->getDataChannel(ii)->getChannelType() == DataChannel::ADC_CHANNEL)
-		{
-			content.triggerChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
-			content.dataChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
-		}
+		content.triggerChannelComboBox->addItem(processor->getDataStream(ii)->getName(),ii+1);
+		// if (processor->getDataStream(ii)->get->getChannelType() == DataChannel::HEADSTAGE_CHANNEL)
+		// {
+		// 	content.triggerChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
+		// 	content.dataChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
+		// }
+		// else if (processor->getDataChannel(ii)->getChannelType() == DataChannel::ADC_CHANNEL)
+		// {
+		// 	content.triggerChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
+		// 	//content.dataChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
+		// }
 	}
 	// If channel still availaible, keep selection, otherwise no don't select anything
 	// Trigger chanel combobox
@@ -200,10 +201,4 @@ void LfpLatencyProcessorVisualizer::setConfig(int i)
 	}
 }
 
-void LfpLatencyProcessorVisualizer::setParameter(int parameter, float newValue)
-{
-}
-
-void LfpLatencyProcessorVisualizer::setParameter(int parameter, int val1, int val2, float newValue)
-{
-}
+void LfpLatencyProcessorVisualizer::loadCustomParametersFromXml(XmlElement* xml) { }

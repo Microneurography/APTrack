@@ -23,7 +23,7 @@
 
 #ifndef LFPLATENCYPROCESSOR_H_INCLUDED
 #define LFPLATENCYPROCESSOR_H_INCLUDED
-
+#include <ProcessorHeaders.h>
 #ifdef _WIN32
 
 #define NOGDI
@@ -32,7 +32,7 @@
 #include <Windows.h>
 #endif
 #include <string>
-#include <ProcessorHeaders.h>
+
 #include <functional>
 #include <map>
 #include <unordered_map>
@@ -137,9 +137,9 @@ public:
     virtual void saveCustomParametersToXml(XmlElement *parentElement) override;
 
     /** Load custom settings from XML*/
-    virtual void loadCustomParametersFromXml() override;
+    virtual void loadCustomParametersFromXml(XmlElement* customParamsXml) override;
 
-    virtual void createEventChannels() override;
+    virtual void createEventChannels() ;
 
     //virtual void createSpikeChannels() override;
 

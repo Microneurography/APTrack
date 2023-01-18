@@ -43,7 +43,6 @@ LfpLatencyProcessor::LfpLatencyProcessor()
 
 {
     pulsePalController = new ppController(this);
-    setProcessorType(PROCESSOR_TYPE_SINK);
     spikeGroups.reserve(100);
     dataCacheTimestamps.reserve(3000); // resrve 3k timestamps
 
@@ -107,11 +106,11 @@ void LfpLatencyProcessor::resetTriggerChannel()
 */
 AudioProcessorEditor *LfpLatencyProcessor::createEditor()
 {
-    editor = new LfpLatencyProcessorEditor(this, true);
+    editor =std::make_unique<LfpLatencyProcessorEditor>(this, true);
 
     // std::cout << "Creating editor." << std::endl;
 
-    return editor;
+    return editor.get();
 }
 void LfpLatencyProcessor::addMessage(std::string message)
 {
@@ -137,18 +136,24 @@ void LfpLatencyProcessor::setStimulusVoltage(float sv)
 void LfpLatencyProcessor::createEventChannels()
 {
 
-    EventChannel *pulsepalEvents = new EventChannel(EventChannel::TEXT, 1, 1000, CoreServices::getGlobalSampleRate(), this);
+    // EventChannel *pulsepalEvents = new EventChannel(
+    //     (EventChannel::Settings){
+    //         .type=EventChannel::Type::TEXT,
+    //         .name="PulsePal Messages",
+    //         .identifier="pulsepal.event",
+    //         .stream = getDataStream(1)
+    //     }
+    //     );
 
-    pulsepalEvents->setName(getName() + " PulsePal Messages");
-    pulsepalEvents->setDescription("Messages from the pulsepal runner");
-    pulsepalEvents->setIdentifier("pulsepal.event");
-    pulsePalEventPtr = eventChannelArray.add(pulsepalEvents);
+    // #TODO: RE-ENABLE
+    //pulsePalEventPtr = eventChannelArray.add(pulsepalEvents);
 
-    EventChannel *spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, CoreServices::getGlobalSampleRate(), this);
-    spikeEvents->setName("Spike Data");
-    spikeEvents->setDescription("Details of spikes found");
-    spikeEvents->setIdentifier("spike.event");
-    spikeEventPtr = eventChannelArray.add(spikeEvents);
+    
+    // EventChannel *spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, CoreServices::getGlobalSampleRate(), this);
+    // spikeEvents->setName("Spike Data");
+    // spikeEvents->setDescription("Details of spikes found");
+    // spikeEvents->setIdentifier("spike.event");
+    // spikeEventPtr = eventChannelArray.add(spikeEvents);
 }
 
 // create chanel for storing spike data
@@ -164,17 +169,7 @@ void LfpLatencyProcessor::createEventChannels()
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
 {
-    GenericProcessor::setParameter(parameterIndex, newValue);
-    editor->updateParameterButtons(parameterIndex);
 
-    // Save parameter value
-    // TODO: use switch(parameterIndex) statement
-
-    if (parameterIndex == 0)
-    {
-        peakThreshold = newValue;
-        std::cout << "New value for peakThreshold: " << peakThreshold << std::endl;
-    }
 }
 
 // NOTE NOT CURRENTLY USED! Events detected in process() instead
@@ -382,8 +377,9 @@ void LfpLatencyProcessor::trackSpikes()
                      << ", \"trackIndex\":" << s->trackIndex
                      << ", \"spikeGroup\":" << i
                      << "}";
-            TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, this->getTimestamp(this->triggerChannel_idx), json_out.str());
-            addEvent(spikeEventPtr, event, 0);
+            //#TODO: re-enable
+            // TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, this->getTimestamp(this->triggerChannel_idx), json_out.str());
+            // addEvent(spikeEventPtr, event, 0);
         }
         if (curSpikeGroup.isTracking) // threshold tracking
         {
@@ -426,9 +422,10 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     {
         return;
     }
-    auto ts = this->getTimestamp(this->triggerChannel_idx);
+    auto ts = this->getFirstTimestampForBlock(this->triggerChannel_idx);
     // get num of samples in buffer
-    int nSamples = getNumSamples(dataChannel_idx);
+   
+    int nSamples = buffer.getNumSamples();//getNumSamples(dataChannel_idx);
 
     // Data channel
     const float *bufPtr = buffer.getReadPointer(dataChannel_idx);
@@ -476,6 +473,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
             }
             // write the timestamps
             dataCacheTimestamps.push_back(ts + n); // #TODO: need to check this aligns with the datacache currentTrack
+
            
         }
 
@@ -493,13 +491,15 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     while (!messages.empty())
     { // post pulsePal messages
         TextEventPtr event = TextEvent::createTextEvent(this->pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
-        addEvent(pulsePalEventPtr, event, 0);
+        // # TODO: re-enable
+        //addEvent(pulsePalEventPtr, event, 0);
         messages.pop();
     }
     while (!spikes.empty())
     { // post Spike detected events
         TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), spikes.front());
-        addEvent(spikeEventPtr, event, 0);
+        // # TODO: re-enable
+        //addEvent(spikeEventPtr, event, 0);
         spikes.pop();
     }
 }
@@ -529,7 +529,7 @@ void LfpLatencyProcessor::saveRecoveryData(std::unordered_map<std::string, juce:
         output.setPosition(0);
         output.truncate();
         output.setNewLineString("\n");
-        output.writeText(cfgText, false, false);
+        output.writeText(cfgText, false, false, "\n");
         output.flush();
 
         if (output.getStatus().failed())
@@ -591,57 +591,59 @@ void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce:
 
 void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
 {
-    XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
-    mainNode->setAttribute("numParameters", getNumParameters());
+    // #TODO: re-enable
+    // XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
+    // mainNode->setAttribute("numParameters", getNumParameters());
 
-    for (int i = 0; i < getNumParameters(); ++i)
-    {
-        XmlElement *parameterNode = mainNode->createNewChildElement("Parameter");
+    // for (int i = 0; i < getNumParameters(); ++i)
+    // {
+    //     XmlElement *parameterNode = mainNode->createNewChildElement("Parameter");
 
-        auto parameter = getParameterObject(i);
-        parameterNode->setAttribute("name", parameter->getName());
-        parameterNode->setAttribute("type", parameter->getParameterTypeString());
+    //     auto parameter = getParameterObject(i);
+    //     parameterNode->setAttribute("name", parameter->getName());
+    //     parameterNode->setAttribute("type", parameter->getParameterTypeString());
 
-        auto parameterValue = getParameterVar(i, currentChannel);
+    //     auto parameterValue = getParameterVar(i, currentChannel);
 
-        if (parameter->isBoolean())
-            parameterNode->setAttribute("value", (int)parameterValue);
-        else if (parameter->isContinuous() || parameter->isDiscrete() || parameter->isNumerical())
-            parameterNode->setAttribute("value", (double)parameterValue);
-    }
+    //     if (parameter->isBoolean())
+    //         parameterNode->setAttribute("value", (int)parameterValue);
+    //     else if (parameter->isContinuous() || parameter->isDiscrete() || parameter->isNumerical())
+    //         parameterNode->setAttribute("value", (double)parameterValue);
+    // }
 }
 
-void LfpLatencyProcessor::loadCustomParametersFromXml()
+void LfpLatencyProcessor::loadCustomParametersFromXml(XmlElement* customParamsXml)
 {
-    if (parametersAsXml == nullptr) // prevent double-loading
-        return;
-
-    // use parametersAsXml to restore state
-
-    forEachXmlChildElement(*parametersAsXml, mainNode)
-    {
-        if (mainNode->hasTagName("LfpLatencyProcessor"))
-        {
-            int parameterIdx = -1;
-
-            forEachXmlChildElement(*mainNode, parameterNode)
-            {
-                if (parameterNode->hasTagName("Parameter"))
-                {
-                    ++parameterIdx;
-
-                    String parameterType = parameterNode->getStringAttribute("type");
-                    if (parameterType == "Boolean")
-                        setParameter(parameterIdx, parameterNode->getBoolAttribute("value"));
-                    else if (parameterType == "Continuous" || parameterType == "Numerical")
-                        setParameter(parameterIdx, parameterNode->getDoubleAttribute("value"));
-                    else if (parameterType == "Discrete")
-                        setParameter(parameterIdx, parameterNode->getIntAttribute("value"));
-                }
-            }
-        }
-    }
 }
+//     if (parametersAsXml == nullptr) // prevent double-loading
+//         return;
+
+//     // use parametersAsXml to restore state
+
+//     forEachXmlChildElement(*parametersAsXml, mainNode)
+//     {
+//         if (mainNode->hasTagName("LfpLatencyProcessor"))
+//         {
+//             int parameterIdx = -1;
+
+//             forEachXmlChildElement(*mainNode, parameterNode)
+//             {
+//                 if (parameterNode->hasTagName("Parameter"))
+//                 {
+//                     ++parameterIdx;
+
+//                     String parameterType = parameterNode->getStringAttribute("type");
+//                     if (parameterType == "Boolean")
+//                         setParameter(parameterIdx, parameterNode->getBoolAttribute("value"));
+//                     else if (parameterType == "Continuous" || parameterType == "Numerical")
+//                         setParameter(parameterIdx, parameterNode->getDoubleAttribute("value"));
+//                     else if (parameterType == "Discrete")
+//                         setParameter(parameterIdx, parameterNode->getIntAttribute("value"));
+//                 }
+//             }
+//         }
+//     }
+// }
 
 bool LfpLatencyProcessor::checkEventReceived()
 {

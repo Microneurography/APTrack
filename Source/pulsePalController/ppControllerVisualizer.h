@@ -7,9 +7,8 @@
 #define TIMER_UI 0
 
 
-
 class ppControllerVisualizer : public Component,
-							   public ButtonListener,
+							   public Button::Listener,
 							   public MultiTimer
 {
 public:
