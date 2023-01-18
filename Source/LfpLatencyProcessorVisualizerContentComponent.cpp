@@ -373,7 +373,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	textBox1->setText("Trigger");
 
 	stimulusSettingsView = createSetupView();
-	addAndMakeVisible(stimulusSettingsView);
+	addAndMakeVisible(stimulusSettingsView.get());
 
 	// stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 	// stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
@@ -802,8 +802,8 @@ void LfpLatencyProcessorVisualizerContentComponent::mouseWheelMove(const juce::M
     
 }
 
-Viewport* LfpLatencyProcessorVisualizerContentComponent::createSetupView(){
-		Viewport *view = new Viewport("viewTest");
+std::unique_ptr<Component> LfpLatencyProcessorVisualizerContentComponent::createSetupView(){
+		std::unique_ptr<Component>  view = std::make_unique<Component>("viewTest");
 		view->setLookAndFeel(&this->getLookAndFeel());
 		view->addAndMakeVisible(stimulusVoltageSlider);
 		view->addAndMakeVisible(stimulusVoltageSliderLabel);
@@ -869,16 +869,16 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 	if (buttonThatWasClicked->getName() == "Setup")
 	{
 		// #TODO: re-enable
-		//auto view = this->createSetupView();
+		auto view = this->createSetupView();
 
 
-		//auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getSetupBoundsInPanelParent(), this);
-		//setupBox.setLookAndFeel(new CustomLookAndFeel());
+		auto &setupBox = juce::CallOutBox::launchAsynchronously(std::move(view), otherControlPanel->getSetupBoundsInPanelParent(), this);
+		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 	if (buttonThatWasClicked->getName() == "Options")
 	{
 
-		Viewport *view = new Viewport("viewTest");
+		std::unique_ptr<Component> view = std::make_unique<Component>("viewTest");
 		view->setLookAndFeel(&this->getLookAndFeel());
 
 		view->addAndMakeVisible(colorStyleComboBox);
@@ -916,8 +916,8 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		rightMiddlePanel->setBounds(10, 160, 280, 140);
 		view->setSize(300, 360);
 		// #TODO: re-enable
-		//	auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
-		// setupBox.setLookAndFeel(new CustomLookAndFeel());
+		auto &setupBox = juce::CallOutBox::launchAsynchronously(std::move(view), otherControlPanel->getOptionsBoundsInPanelParent(), this);
+		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
 	
 	if(buttonThatWasClicked==addNewSpikeButton){

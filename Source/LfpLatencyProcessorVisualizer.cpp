@@ -59,7 +59,7 @@ void LfpLatencyProcessorVisualizer::update()
 {
 
 	// Get number of availiable channels and update label
-	int numAvailiableChannels = processor->getNumDataStreams();//processor->getTotalDataChannels();
+	int numAvailiableChannels = processor->getTotalContinuousChannels();//processor->getTotalDataChannels();
 
 	std::cout << "LfpLatencyProcessorVisualizer::numAvailiableChannels" << numAvailiableChannels << std::endl;
 
@@ -77,7 +77,9 @@ void LfpLatencyProcessorVisualizer::update()
 
 	for (int ii = 0; ii < numAvailiableChannels; ii++)
 	{
-		content.triggerChannelComboBox->addItem(processor->getDataStream(ii)->getName(),ii+1);
+		auto datastream = processor->getContinuousChannel(ii);
+		content.triggerChannelComboBox->addItem(datastream->getName(),ii+1);
+		content.dataChannelComboBox->addItem(datastream->getName(),ii+1);
 		// if (processor->getDataStream(ii)->get->getChannelType() == DataChannel::HEADSTAGE_CHANNEL)
 		// {
 		// 	content.triggerChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);

@@ -170,8 +170,8 @@ private:
 
     SpikeGroupTableContent tcon;
 
-    Viewport* createSetupView();
-    Viewport* stimulusSettingsView;
+    std::unique_ptr<Component>  createSetupView();
+    std::unique_ptr<Component>  stimulusSettingsView;
 
     //DEBUG
 

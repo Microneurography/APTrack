@@ -422,7 +422,9 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     {
         return;
     }
-    auto ts = this->getFirstTimestampForBlock(this->triggerChannel_idx);
+    
+    //#TODO: re-find the timestamp for the start of the buffer
+    auto ts = 0; //this->getFirstTimestampForBlock(0);
     // get num of samples in buffer
    
     int nSamples = buffer.getNumSamples();//getNumSamples(dataChannel_idx);
