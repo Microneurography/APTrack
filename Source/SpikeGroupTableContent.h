@@ -9,7 +9,7 @@ class SpikeGroupTableContent : public TableListBoxModel, public ButtonListener
                      
 {
 public:
-    enum Columns{spike_id_info=1, location_info=2, firing_probability_info=3, threshold_info=4, track_spike_button=5, threshold_spike_button=6, delete_button=7};
+    enum Columns{spike_id_info=1, location_info=2, firing_probability_info=3, threshold_info=4, track_spike_button=5, threshold_spike_button=6, delete_button=7, pct50stimulus=8};
     const juce::Colour colorWheel[4] = {Colours::lightsteelblue, Colours::lightskyblue,Colours::darkgreen,Colours::orange};
     SpikeGroupTableContent(LfpLatencyProcessor* processor);
     ~SpikeGroupTableContent();
@@ -29,7 +29,7 @@ public:
     class SelectableColumnComponent : public juce::ToggleButton, public juce::ToggleButton::Listener
     {
     public:
-        enum Action{TRACK_SPIKE,ACTIVATE_SPIKE};
+        enum Action{TRACK_SPIKE,ACTIVATE_SPIKE, DELETE_SPIKE};
         SelectableColumnComponent(SpikeGroupTableContent& tcon, int spikeID, Action action,LfpLatencyProcessor* processor);
         ~SelectableColumnComponent();
         void buttonClicked (juce::Button* b);
@@ -59,7 +59,7 @@ public:
 
     private:
         SpikeGroupTableContent& owner;
-        juce::Colour textColour;
+        juce::Colour textColour = juce::Colours::black;
 
     };
     class DeleteComponent : public juce::TextButton

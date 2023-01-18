@@ -13,7 +13,7 @@ SpikeGroupTableContent::SpikeGroupTableContent(LfpLatencyProcessor *processor)
 SpikeGroupTableContent::~SpikeGroupTableContent()
 {
 }
-//void SpikeGroupTableContent::ButtonListener::buttonClicked (Button* button){};
+// void SpikeGroupTableContent::ButtonListener::buttonClicked (Button* button){};
 void SpikeGroupTableContent::paintCell(Graphics &g, int rowNumber, int columnId, int width, int height, bool rowIsSelected)
 {
 
@@ -23,7 +23,7 @@ void SpikeGroupTableContent::paintCell(Graphics &g, int rowNumber, int columnId,
 
 	if (columnId == Columns::spike_id_info)
 	{
-		auto text = std::to_string(rowNumber + 1);
+		auto text = std::to_string(rowNumber + 1); // #TODO this should get ID from spikeGroup
 
 		g.drawText(text, 2, 0, width - 4, height, juce::Justification::centredLeft, true); // [6]
 	}
@@ -58,7 +58,6 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 			if (deleteButton == nullptr)
 			{
 				deleteButton = new DeleteComponent(*this);
-				//deleteButton->addListener(this);
 			}
 			return deleteButton;
 		}
@@ -94,7 +93,7 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
 			std::ostringstream ss_ms_latency;
-			ss_ms_latency << std::fixed << std::setprecision(2) << (spikeGroup->templateSpike.spikeSampleLatency * 1000) / processor->getSampleRate();
+			ss_ms_latency << std::fixed << std::setprecision(2) << (spikeGroup->templateSpike.spikeSampleLatency * 1000) / CoreServices::getGlobalSampleRate();
 			label->setText(ss_ms_latency.str() + "ms", juce::NotificationType::dontSendNotification);
 			label->repaint();
 			return label;
@@ -121,14 +120,33 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
 			std::ostringstream ss_threshold;
-			ss_threshold<< std::fixed << std::setprecision(2) << spikeGroup->templateSpike.threshold;
+			ss_threshold << std::fixed << std::setprecision(2) << spikeGroup->templateSpike.threshold;
 			label->setText(ss_threshold.str(), juce::NotificationType::dontSendNotification);
 			label->repaint();
 
 			return label;
 		}
+		if (columnId == Columns::pct50stimulus){
+			auto *label = dynamic_cast<UpdatingTextColumnComponent *>(existingComponentToUpdate);
+
+			if (label == nullptr)
+			{
+				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
+			}
+			if (spikeGroup->stimulusVoltage50pct != -1){
+				std::ostringstream ss_threshold;
+				ss_threshold << std::fixed << std::setprecision(2) << spikeGroup->stimulusVoltage50pct << " mA";	
+				label->setText(ss_threshold.str(), juce::NotificationType::dontSendNotification);
+
+			}
+			else{
+				label->setText("...", juce::NotificationType::dontSendNotification);
+			}
+			label->repaint();
+			return label;
+		}
 	}
-	jassert(existingComponentToUpdate == nullptr);
+	// jassert(existingComponentToUpdate == nullptr);
 	return nullptr;
 }
 
@@ -151,7 +169,7 @@ SpikeGroupTableContent::SelectableColumnComponent::SelectableColumnComponent(Spi
 	this->processor = processor;
 	addAndMakeVisible(toggleButton = new ToggleButton);
 	this->addListener(this);
-	//toggleButton->addListener(this);
+	// toggleButton->addListener(this);
 }
 void SpikeGroupTableContent::SelectableColumnComponent::buttonClicked(juce::Button *b)
 {
@@ -163,6 +181,7 @@ void SpikeGroupTableContent::SelectableColumnComponent::buttonClicked(juce::Butt
 		processor->setSelectedSpike(newSpikeID);
 	else if (action == Action::TRACK_SPIKE)
 		processor->setTrackingSpike(newSpikeID);
+
 }
 void SpikeGroupTableContent::SelectableColumnComponent::setSpikeID(int spikeID)
 {
@@ -183,3 +202,7 @@ SpikeGroupTableContent::DeleteComponent::~DeleteComponent()
 {
 	del = nullptr;
 }
+// void SpikeGroupTableContent::DeleteComponent::buttonClicked(juce::Button *b){
+	
+// 	processor->removeSpikeGroup(spikeID);
+// }

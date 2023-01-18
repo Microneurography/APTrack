@@ -73,6 +73,8 @@ struct SpikeInfo
     float stimulusVoltage;  // the stimulus voltage used to illicit the spike
     int trackIndex;         // the track index for the stimulus (currentTrack)
 };
+
+
 class SpikeGroup
 {
 public:
@@ -87,6 +89,7 @@ public:
     SpikeInfo templateSpike; // the information used to determine the spike
     bool isTracking;         // is the stimulus volt being tracked?
     bool isActive;           // is this spike currently active
+    float stimulusVoltage50pct = -1; // the last known 50pct firing voltage
     //const uint16 uid; // Unique identifier for the spike group #TODO: create uid
 };
 class LfpLatencyProcessor : public GenericProcessor, public MultiTimer
@@ -207,7 +210,7 @@ public:
 
     int fifoIndex;
 
-    int currentTrack;
+    uint currentTrack;
     int currentSample;
 
     //debug
@@ -267,7 +270,7 @@ private:
     std::mutex spikeGroups_mutex;
 
     float dataCache[(DATA_CACHE_SIZE_TRACKS + 1) * DATA_CACHE_SIZE_SAMPLES]; // TODO convert to vector.
-
+    std::vector<int> dataCacheTimestamps;
     int spikeLocation[DATA_CACHE_SIZE_TRACKS];
 
     bool eventReceived;

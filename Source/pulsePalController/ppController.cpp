@@ -30,17 +30,27 @@ ppController::~ppController()
 
 bool ppController::initializeConnection()
 {
+	ustepper = std::unique_ptr<UStepper>(new UStepper());
+	ustepper->initialize();
+	if (ustepper->isConnected()){
+		startTimer(TIMER_USTEPPER, 500);
+	}
+
 	pulsePal = new PulsePal();
 	pulsePal->initialize();
 	pulsePal->setDefaultParameters();
 	pulsePal->updateDisplay("GUI Connected", "Click for Menu");
 	pulsePalVersion = pulsePal->getFirmwareVersion();
 
+
 	if ((pulsePalVersion == 0))
 	{
 
 		return false;
 	}
+
+
+
 
 	pulsePalConnected = true;
 
@@ -111,6 +121,7 @@ float ppController::getMaxStimulusVoltage()
 
 void ppController::setStimulusVoltage(float newVoltage)
 {
+	
 	std::cout << "moved to pp controller\n";
 	//TODO: Set/sync min/max stim voltages
 	if (newVoltage > maxStimulusVoltage)
@@ -122,11 +133,17 @@ void ppController::setStimulusVoltage(float newVoltage)
 		newVoltage = minStimulusVoltage;
 	}
 
+	// update the uStepper (TODO.. only do this every second...)
+	//ustepper->setRelativePosition(newVoltage-stimulusVoltage);
+
 	stimulusVoltage = newVoltage;
 
 	//Update channel voltages
 	std::cout << "New stimulus voltage " << stimulusVoltage << std::endl;
-
+	if (!this->pulsePalConnected){
+		
+		return;
+	}
 	pulsePal->currentOutputParams[1].phase1Voltage = stimulusVoltage;
 	std::cout << "Updating stimulus voltage in pp \n";
 	pulsePal->currentOutputParams[2].phase1Voltage = 10.0f;
@@ -136,6 +153,8 @@ void ppController::setStimulusVoltage(float newVoltage)
 	pulsePal->syncAllParams();
 	std::cout << "synced all params in pp\n";
 	processor->addMessage("setStimVoltage:" + std::to_string(newVoltage));
+
+	
 }
 float ppController::getStimulusVoltage()
 {
@@ -184,6 +203,9 @@ void ppController::StopCurrentProtocol()
 
 void ppController::timerCallback(int timerID)
 {
+	if (timerID == TIMER_USTEPPER){
+		ustepper->setPosition(stimulusVoltage);
+	}
 	if (timerID == TIMER_PROTOCOL) // Protocol step timer
 	{
 		//Stop old Timer

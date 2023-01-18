@@ -49,6 +49,7 @@ private:
     // so the editor will have access to all methods and variables of this component.
     friend class LfpLatencyProcessorVisualizer;
     friend class TableContent;
+    friend class LfpLatencySpectrogramControlPanel;
 
     ScopedPointer<LfpLatencyProcessor> processor;
     ScopedPointer<SpikeGroupTableContent> spikeTrackerContent;
@@ -162,6 +163,9 @@ private:
     ScopedPointer<Label> stimuliNumberLabel;
 
     SpikeGroupTableContent tcon;
+
+    Viewport* createSetupView();
+    Viewport* stimulusSettingsView;
 
     //DEBUG
 

@@ -71,9 +71,6 @@ public:
     /** Shuffle spectrogram to left*/
     void updateSpectrogram();
 
-    /** Process new track*/
-    void processTrack();
-
     /*Update spike info structs*/
     void updateSpikeInfo(int i);
 

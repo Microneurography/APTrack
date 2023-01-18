@@ -15,14 +15,7 @@ ppControllerVisualizer::ppControllerVisualizer(LfpLatencyProcessor *processor)
 	this->processor = processor;
 	this->controller = processor->pulsePalController;
 	pulsePalConnected = true;
-	while (!(controller->initializeConnection()))
-	{
-		if (!AlertWindow::showOkCancelBox(juce::AlertWindow::AlertIconType::WarningIcon, "PulsePal not connected", "A PulsePal could not be found", "Search again", "Continue without PulsePal"))
-		{
-			//pulsePalConnected = false;
-			break;
-		}
-	}
+	//initialize();
 
 	//Get last opened file path
 	lastFilePath = CoreServices::getDefaultUserSaveDirectory();
@@ -37,14 +30,7 @@ ppControllerVisualizer::ppControllerVisualizer(LfpLatencyProcessor *processor)
 	startStopButton->addListener(this);
 	startStopButton->setEnabled(false);
 
-	if (pulsePalConnected)
-	{
-		getFileButton->setEnabled(true);
-	}
-	else
-	{
-		getFileButton->setEnabled(false);
-	}
+
 
 	addAndMakeVisible(fileName_text = new TextEditor("fileName_text", 0));
 	fileName_text->setReadOnly(true);
@@ -77,7 +63,33 @@ ppControllerVisualizer::ppControllerVisualizer(LfpLatencyProcessor *processor)
 
 	addAndMakeVisible(protocolStepComment_label = new Label("protocolStepComment_label"));
 	protocolStepComment_label->setText("Comment", dontSendNotification);
-	startTimer(TIMER_UI, 100);
+	startTimer(TIMER_UI, 30); // 30fps
+
+	addAndMakeVisible(reconnect_button = new TextButton("connect") );
+	reconnect_button->addListener(this);
+}
+void ppControllerVisualizer::initialize(){
+
+	pulsePalConnected = true;
+
+	while (!(controller->initializeConnection()))
+	{
+		if (!AlertWindow::showOkCancelBox(juce::AlertWindow::AlertIconType::WarningIcon, "PulsePal not connected", "A PulsePal could not be found", "Search again", "Continue without PulsePal"))
+		{
+			pulsePalConnected = false;
+			break;
+		}
+	}
+		if (pulsePalConnected)
+	{
+		getFileButton->setEnabled(true);
+	}
+	else
+	{
+		getFileButton->setEnabled(false);
+	}
+
+
 }
 
 ppControllerVisualizer::~ppControllerVisualizer()
@@ -125,6 +137,8 @@ void ppControllerVisualizer::resized()
 
 	protocolStepComment_text->setBounds(5, 105, 150, 20);
 	protocolStepComment_label->setBounds(160, 105, 150, 20);
+
+	reconnect_button -> setBounds(255,105,30,20);
 }
 
 void ppControllerVisualizer::timerCallback(int timerID)
@@ -203,6 +217,9 @@ void ppControllerVisualizer::buttonClicked(Button *buttonThatWasClicked)
 		{ // currently stopped
 			controller->StartCurrentProtocol();
 		}
+	}
+	if (buttonThatWasClicked == reconnect_button){
+		initialize();
 	}
 }
 

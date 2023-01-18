@@ -8,7 +8,8 @@
 class LfpLatencyProcessorVisualizerContentComponent;
 class LfpLatencyLabelTextEditor;
 class LfpLatencyLabelSlider;
-class LfpLatencyLabelVerticalSlider;
+class LfpLatencyLabelHorizontalSlider;
+class LfpLatencyLabelSliderNoTextBox;
 
 class LfpLatencySpectrogramControlPanel : public Component
 {
@@ -41,21 +42,23 @@ public:
     double getImageThresholdMaximum() const;
     double getImageThresholdMinimum() const;
     void setDetectionThresholdValue(double newValue);
+    void setSearchBoxWidthValue(double newValue);
 
     static void loadParameters(const std::map<String, String>& newParameters);
 
 private:
     ScopedPointer<GroupComponent> outline;
 
-    static ScopedPointer<LfpLatencyLabelVerticalSlider> imageThreshold;
+    static ScopedPointer<LfpLatencyLabelHorizontalSlider> imageThreshold;
 
     static ScopedPointer<LfpLatencyLabelTextEditor> highImageThreshold;
     static ScopedPointer<LfpLatencyLabelTextEditor> detectionThreshold;
     static ScopedPointer<LfpLatencyLabelTextEditor> lowImageThreshold;
 
-    static ScopedPointer<LfpLatencyLabelSlider> subsamplesPerWindow;
-    static ScopedPointer<LfpLatencyLabelSlider> startingSample;
-    static ScopedPointer<LfpLatencyLabelSlider> conductionDistance;
+    static ScopedPointer<LfpLatencyLabelSlider> subsamplesPerWindowSlider;
+    static ScopedPointer<LfpLatencyLabelSlider> startingSampleSlider;
+    static ScopedPointer<LfpLatencyLabelSlider> conductionDistanceSlider;
+    static ScopedPointer<LfpLatencyLabelSliderNoTextBox> searchBoxWidthSlider;
 };
 
 #endif

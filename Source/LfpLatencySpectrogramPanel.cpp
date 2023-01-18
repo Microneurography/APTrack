@@ -28,7 +28,6 @@ LfpLatencySpectrogramPanel::LfpLatencySpectrogramPanel(LfpLatencyProcessorVisual
     addAndMakeVisible(outline);
     addAndMakeVisible(spectrogram);
     addAndMakeVisible(searchBox);
-    addAndMakeVisible(searchBoxWidth);
     addAndMakeVisible(searchBoxRectangle);
     addAndMakeVisible(spikeIndicator);
 }
@@ -41,13 +40,9 @@ void LfpLatencySpectrogramPanel::resized()
     auto borderWidth = 20;
     area = area.withSizeKeepingCentre(getWidth() - 2 * borderWidth, getHeight() - 2 * borderWidth);
 
-    auto sliderHeight = 64;
-    auto searchBoxWidthArea = area.removeFromBottom(sliderHeight);
+    auto sliderHeight = 20;
 
-    auto searchBoxWidthMaxWidth = 175;
-    searchBoxWidth->setBounds(searchBoxWidthArea.removeFromRight(searchBoxWidthMaxWidth));
-
-    auto widthOfSearchBox = 85;
+    auto widthOfSearchBox = 15;
     auto searchBoxArea = area.removeFromRight(widthOfSearchBox);
     auto offset = 5;
     // searchBoxArea.setX(searchBoxArea.getX() - offset); //disabled as the 'bobble' overlays the main viewer.
@@ -61,7 +56,7 @@ void LfpLatencySpectrogramPanel::resized()
     
     
     
-    spikeIndicator->setBounds(searchBoxWidthArea.removeFromLeft(area.getWidth()));
+    //spikeIndicator->setBounds(searchBoxWidthArea.removeFromLeft(area.getWidth()));
 
     searchBoxRectangle->setBounds(area);
 }
@@ -79,12 +74,14 @@ void LfpLatencySpectrogramPanel::paint(Graphics& g)
     
     g.setColour(Colours::white);
     g.fillRect(searchBoxArea);
-
-    for (int y = searchBoxArea.getY(); y <= searchBoxArea.getY()+searchBoxArea.getHeight(); y += (searchBoxArea.getY() + searchBoxArea.getHeight()) / 30)
-    {
-        g.fillRect(searchBoxArea.getX(), y, 14, 2);
-        //g.drawText(to_string(y), searchBoxArea.getX() + 25, y, 25, 25, Justification::centredRight);
-    }
+    
+    // auto starting_sample = (this->content.getStartingSample()/this->content.getSubsamplesPerWindow());
+    // for (int y = searchBoxArea.getY(); y <= searchBoxArea.getY()+searchBoxArea.getHeight(); y += CoreServices::getGlobalSampleRate()/10/ this->content.getSubsamplesPerWindow())
+    // {
+    //     g.fillRect(searchBoxArea.getX(), y, 14, 2); // #TODO: this is upside down, and needs to be offset by starting sample, not sure this is possible. the scaling will alter the number of y-pixels per track.
+    //     // TODO: refactor into LfpLatencySpectrogram?
+    //     //g.drawText(to_string(y), searchBoxArea.getX() + 25, y, 25, 25, Justification::centredRight);
+    // }
 
 }
 

@@ -100,7 +100,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_DecreaseRate = 0.01;
 
 	LfpLatencyProcessor::loadRecoveryData(valuesMap);
-
+	// #TODO: refactor this valuesmap to single loop.
 	if (valuesMap->find("trackSpike_IncreaseRate") != valuesMap->end())
 	{
 		trackSpike_IncreaseRate = stof((*valuesMap)["trackSpike_IncreaseRate"].toStdString());
@@ -228,6 +228,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	colorStyleComboBox->addItem("BHOT", 2);
 	colorStyleComboBox->addItem("WHOT,PLAIN", 3);
 	colorStyleComboBox->addItem("BHOT,PLAIN", 4);
+	colorStyleComboBox->addItem("Lines", 5);
 	colorStyleComboBoxLabel = new Label("Color_Style_Combo_Box_Label");
 	colorStyleComboBoxLabel->setText("Color Style Combination", sendNotification);
 
@@ -285,7 +286,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	// Increase/Decrease rate of spike tracking
 	// Not added here as they are in the setup box.
 	trackSpike_IncreaseRate_Slider = new Slider("trackSpike_IncreaseRate_Slider");
-	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.05f, 0.01f);
+	trackSpike_IncreaseRate_Slider->setRange(0.0f, 0.1f, 0.01f);
 	trackSpike_IncreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_IncreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_IncreaseRate_Slider->addListener(this);
@@ -295,7 +296,7 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	trackSpike_IncreaseRate_Slider_Label->setColour(Label::ColourIds::textColourId, Colours::white);
 
 	trackSpike_DecreaseRate_Slider = new Slider("trackSpike_DecreaseRate_Slider");
-	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.05f, 0.01f);
+	trackSpike_DecreaseRate_Slider->setRange(0.0f, 0.1f, 0.01f);
 	trackSpike_DecreaseRate_Slider->setSliderStyle(Slider::Rotary);
 	trackSpike_DecreaseRate_Slider->setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
 	trackSpike_DecreaseRate_Slider->addListener(this);
@@ -352,25 +353,15 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spikeTracker->getHeader().addColumn("Detection Value", 4, 100);
 	spikeTracker->getHeader().addColumn("Track Spike", 5, 30);
 	spikeTracker->getHeader().addColumn("Track Threshold", 6, 30);
+	spikeTracker->getHeader().addColumn("Threshold", 8, 30);
+	
 	spikeTracker->getHeader().addColumn("Delete", 7, 30);
 	//spikeTracker->autoSizeAllColumns();
 	spikeTracker->updateContent();
 
 	addAndMakeVisible(addNewSpikeButton = new juce::TextButton("+"));
 	addNewSpikeButton->addListener(this);
-	/*thresholdTrackerContent = new TableContent();
-	addAndMakeVisible(thresholdTracker = new TableListBox("Tracked Thresholds", thresholdTrackerContent));
-	thresholdTracker->setColour(ListBox::backgroundColourId, Colours::lightgrey);
-	thresholdTracker->getHeader().addColumn("Threshold", 1, 100);
-	thresholdTracker->getHeader().addColumn("Value", 2, 100);
-	thresholdTracker->getHeader().addColumn("Select", 3, 50);
-	thresholdTracker->getHeader().addColumn("Delete", 4, 50);
-	thresholdTracker->autoSizeAllColumns();
-	thresholdTracker->updateContent();*/
 
-	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-	//Debug
 
 	addAndMakeVisible(cmLabel = new Label("cm_label"));
 	cmLabel->setText("cm", dontSendNotification);
@@ -380,6 +371,9 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 
 	addAndMakeVisible(textBox1 = new TextEditor("selectedTriggerChanText"));
 	textBox1->setText("Trigger");
+
+	stimulusSettingsView = createSetupView();
+	addAndMakeVisible(stimulusSettingsView);
 
 	// stimulusVoltageSlider->setMinValue(stimulusVoltageMin);
 	// stimulusVoltageSlider->setMaxValue(stimulusVoltageMax);
@@ -430,10 +424,10 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
 	spectrogramPanel = new LfpLatencySpectrogramPanel(this);
 	addAndMakeVisible(spectrogramPanel);
 	spectrogramPanel->setSearchBoxValue(searchBoxLocation);
-	spectrogramPanel->setSearchBoxWidthValue(searchBoxWidth);
+	spectrogramControlPanel->setSearchBoxWidthValue(searchBoxWidth);
 
 	rightMiddlePanel = new LfpLatencyRightMiddlePanel(this);
-	addAndMakeVisible(rightMiddlePanel);
+	//addAndMakeVisible(rightMiddlePanel);
 
 	rightMiddlePanel->setROISpikeLatencyText(String(searchBoxLocation));
 	rightMiddlePanel->setROISpikeMagnitudeText("NaN");
@@ -482,42 +476,41 @@ void LfpLatencyProcessorVisualizerContentComponent::paint(Graphics &g)
 	//thresholdTracker->updateContent();
 }
 
-// If you want to move something down, you have to increase the y value
-// If you want something to move left, increase the x value
-// Sometimes this isn't true, as the coordinates are relative to the top-left of the component's parent
-// But I don't know how to find the parent, so this section of code was pain and suffering to make.
-// This also means you can't relate the location of one thing to another.
-// Please leave all arguments as you found them. Thank you <3
-// set bounds argument order is x y width height
 void LfpLatencyProcessorVisualizerContentComponent::resized()
 {
 	auto area = getLocalBounds();
 
-	auto spectrogramPanelWidth = getWidth() * 0.5;
-	spectrogramPanel->setBounds(area.removeFromLeft(spectrogramPanelWidth));
+	auto rightPane = area.removeFromRight(300);
+	auto leftPane = area;
+
+	auto leftTop = leftPane.withTrimmedBottom(0.2*leftPane.getHeight());
+	auto leftBottom = leftPane.withTrimmedTop(0.8*leftPane.getHeight());
+
+	spectrogramControlPanel->setBounds(leftTop.removeFromBottom(100));
+	spectrogramPanel->setBounds(leftTop);
 
 	auto panelHeight = (getHeight() - PPCONTROLLER_HEIGHT) * 0.5;
 
-	otherControlPanel->setBounds(area.removeFromTop(panelHeight));
+	// #TODO: rename otherControlPanel to SpikeTable
+	otherControlPanel->setBounds(rightPane.removeFromTop(50));
 
-	auto middleArea = area.removeFromTop(PPCONTROLLER_HEIGHT);
-	ppControllerComponent->setBounds(middleArea.removeFromLeft(PPCONTROLLER_WIDTH));
-	rightMiddlePanel->setBounds(middleArea);
-
-	spectrogramControlPanel->setBounds(area);
+	ppControllerComponent->setBounds(rightPane.removeFromTop(PPCONTROLLER_HEIGHT));
+	
+	stimulusSettingsView->setBounds(rightPane.removeFromTop(400));
+	
+	
+	
+	auto st_main = leftBottom.withTrimmedBottom(20);
+	auto st_button = leftBottom.removeFromBottom(20).removeFromRight(20);
+	spikeTracker->setBounds(st_main);
+	addNewSpikeButton->setBounds(st_button);
 
 	// Grace's group
-	colorStyleComboBox->setBounds(785, 10, 120, 24);
-	colorStyleComboBoxLabel->setBounds(665, 10, 120, 24);
+	//colorStyleComboBox->setBounds(785, 10, 120, 24);
+	//colorStyleComboBoxLabel->setBounds(665, 10, 120, 24);
 
 	extendedColorScaleToggleButton->setBounds(780, 39, 24, 24);
 	extendedColorScaleToggleButtonLabel->setBounds(665, 39, 120, 24);
-
-	// Lucy's Group
-
-	// channel control
-	//textBox1->setBounds(10, 320, 72, 24);
-	//textBox2->setBounds(10, 350, 72, 24);
 
 	triggerChannelComboBox->setBounds(785, 68, 120, 24);
 	triggerChannelComboBoxLabel->setBounds(665, 68, 120, 24);
@@ -527,22 +520,9 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
 
 	auto boundsMap = otherControlPanel->getTableBounds();
 	//trackSpikeComboBox->setBounds(950, 97, 120, 24);
-	auto st = boundsMap["spikeTracker"];
-	auto st_main = st.withTrimmedBottom(20);
-	auto st_button = st.removeFromBottom(20).removeFromRight(20);
-	spikeTracker->setBounds(st_main);
-	addNewSpikeButton->setBounds(st_button);
-	//thresholdTracker->setBounds(boundsMap["thresholdTracker"]);
-	//spikeTracker->setBounds(665, 40, 470, 200);
 
-	// auto STtableX = boundsMap["spikeTracker"].getX();
-	// auto STtableY = boundsMap["spikeTracker"].getY();
+	
 
-	//trackSpike_button->setBounds(780, 126, 120, 24);
-	//trackSpike_button_Label->setBounds(665, 126, 120, 24);
-
-	//trackThreshold_button->setBounds(780, 155, 120, 24);
-	//trackThreshold_button_Label->setBounds(665, 155, 120, 24);
 }
 
 bool LfpLatencyProcessorVisualizerContentComponent::keyPressed(const KeyPress &k)
@@ -784,7 +764,6 @@ void LfpLatencyProcessorVisualizerContentComponent::sliderValueChanged(Slider *s
 	}
 	if (sliderThatWasMoved == trackSpike_DecreaseRate_Slider)
 	{
-		cout << "Stuck here 13\n";
 		trackSpike_DecreaseRate = sliderThatWasMoved->getValue();
 		(*valuesMap)["trackSpike_DecreaseRate"] = String(trackSpike_DecreaseRate, 0);
 		trackSpike_DecreaseRate_Text->setText("-" + String(trackSpike_DecreaseRate_Slider->getValue(), 0) + " V");
@@ -832,26 +811,7 @@ void LfpLatencyProcessorVisualizerContentComponent::mouseWheelMove(const MouseEv
 }
  */
 
-void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *buttonThatWasClicked)
-{
-	if (buttonThatWasClicked == extendedColorScaleToggleButton)
-	{
-		if (buttonThatWasClicked->getToggleState() == true)
-		{
-			// If using extended scale (eg when using file reader)
-			spectrogramControlPanel->setImageThresholdRange(0, 1000, 0);
-			(*valuesMap)["extendedColorScale"] = "1";
-		}
-		else
-		{
-			// If using regular scale (eg when using FPGA real time data)
-			spectrogramControlPanel->setImageThresholdRange(0, 100, 0);
-			(*valuesMap)["extendedColorScale"] = "0";
-		}
-	}
-	if (buttonThatWasClicked->getName() == "Setup")
-	{
-
+Viewport* LfpLatencyProcessorVisualizerContentComponent::createSetupView(){
 		Viewport *view = new Viewport("viewTest");
 		view->setLookAndFeel(&this->getLookAndFeel());
 		view->addAndMakeVisible(stimulusVoltageSlider);
@@ -873,6 +833,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		view->addAndMakeVisible(trackSpike_DecreaseRate_Slider);
 		view->addAndMakeVisible(trackSpike_DecreaseRate_Text);
 		view->addAndMakeVisible(trackSpike_DecreaseRate_Slider_Label);
+		view->addAndMakeVisible(rightMiddlePanel);
 
 		trackSpike_IncreaseRate_Text->setBounds(84, 101, 72, 24);
 		trackSpike_IncreaseRate_Slider->setBounds(120, 130, 72, 72);
@@ -895,6 +856,29 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		stimulusVoltageMax_textLabel->setBounds(156, 5, 105, 24); // x inverted
 
 		view->setSize(270, 325);
+		return view;
+}
+void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *buttonThatWasClicked)
+{
+	if (buttonThatWasClicked == extendedColorScaleToggleButton)
+	{
+		if (buttonThatWasClicked->getToggleState() == true)
+		{
+			// If using extended scale (eg when using file reader)
+			spectrogramControlPanel->setImageThresholdRange(0, 1000, 0);
+			(*valuesMap)["extendedColorScale"] = "1";
+		}
+		else
+		{
+			// If using regular scale (eg when using FPGA real time data)
+			spectrogramControlPanel->setImageThresholdRange(0, 100, 0);
+			(*valuesMap)["extendedColorScale"] = "0";
+		}
+	}
+	if (buttonThatWasClicked->getName() == "Setup")
+	{
+		auto view = this->createSetupView();
+
 
 		auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getSetupBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
@@ -920,6 +904,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		view->addAndMakeVisible(stimuliNumber);
 		view->addAndMakeVisible(stimuliNumberLabel);
 		view->addAndMakeVisible(stimuliNumberSlider);
+		view->addAndMakeVisible(rightMiddlePanel);
 
 		colorStyleComboBox->setBounds(135, 10, 120, 24);
 		colorStyleComboBoxLabel->setBounds(10, 10, 120, 24);
@@ -933,11 +918,11 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		dataChannelComboBox->setBounds(135, 100, 120, 24);
 		dataChannelComboBoxLabel->setBounds(10, 100, 120, 24); // fine
 
-		stimuliNumberSlider->setBounds(114, 160, 72, 72);
-		stimuliNumber->setBounds(135, 130, 72, 24);
-		stimuliNumberLabel->setBounds(10, 130, 120, 24);
-
-		view->setSize(300, 260);
+		// stimuliNumberSlider->setBounds(114, 160, 72, 72);
+		// stimuliNumber->setBounds(135, 130, 72, 24);
+		// stimuliNumberLabel->setBounds(10, 130, 120, 24);
+		rightMiddlePanel->setBounds(10, 160, 280, 140);
+		view->setSize(300, 360);
 
 		auto &setupBox = juce::CallOutBox::launchAsynchronously(view, otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());

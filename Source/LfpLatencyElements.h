@@ -35,10 +35,10 @@ private:
     ScopedPointer<Slider> slider;
 };
 
-class LfpLatencyLabelVerticalSlider : public Component
+class LfpLatencyLabelHorizontalSlider : public Component
 {
 public:
-    LfpLatencyLabelVerticalSlider(const String& labelText);
+    LfpLatencyLabelHorizontalSlider(const String& labelText);
     void resized() override;
 
     void setSliderRange(double newMinimum, double newMaximum, double newInterval = 0);

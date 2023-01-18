@@ -60,7 +60,7 @@ extern "C" EXPORT int getPluginInfo (int index, Plugin::PluginInfo* info)
             info->type = Plugin::PLUGIN_TYPE_PROCESSOR;
 
             //For processor
-            info->processor.name = "LfpLatency"; //Processor name shown in the GUI
+            info->processor.name = "APTrack"; //Processor name shown in the GUI
 
             //Type of processor. Can be FilterProcessor, SourceProcessor, SinkProcessor or UtilityProcessor. Specifies where on the processor list will appear
             //info->processor.type = info->processor.type = Plugin::SinkProcessor;;
