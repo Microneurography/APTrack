@@ -75,6 +75,7 @@ LfpLatencyProcessor::LfpLatencyProcessor()
 
     // Set default stimulus threshold
     stimulus_threshold = 2.5f;
+
 }
 
 void LfpLatencyProcessor::timerCallback(int timerID)
@@ -132,28 +133,48 @@ void LfpLatencyProcessor::setStimulusVoltage(float sv)
     stimulusVoltage = sv;
 }
 
+
+void LfpLatencyProcessor::updateSettings(){
+    createEventChannels();
+}
 // create event channel for pulsepal
 void LfpLatencyProcessor::createEventChannels()
 {
 
-    // EventChannel *pulsepalEvents = new EventChannel(
+    if (getNumDataStreams()==0){
+        return;
+    }
+
+
+    //#TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547 
+    //pulsePalEventPtr->addProcessor(processorInfo.get());
+    // eventChannels.add(new EventChannel(
     //     (EventChannel::Settings){
     //         .type=EventChannel::Type::TEXT,
     //         .name="PulsePal Messages",
     //         .identifier="pulsepal.event",
-    //         .stream = getDataStream(1)
+    //         .stream = dataStreams.getLast()
     //     }
-    //     );
+    //     ));
+   // pulsePalEventPtr = eventChannels.getLast();
 
-    // #TODO: RE-ENABLE
-    //pulsePalEventPtr = eventChannelArray.add(pulsepalEvents);
 
-    
-    // EventChannel *spikeEvents = new EventChannel(EventChannel::TEXT, 1, 1000, CoreServices::getGlobalSampleRate(), this);
-    // spikeEvents->setName("Spike Data");
-    // spikeEvents->setDescription("Details of spikes found");
-    // spikeEvents->setIdentifier("spike.event");
-    // spikeEventPtr = eventChannelArray.add(spikeEvents);
+
+    //spikeEventPtr->addProcessor(processorInfo.get());
+    // eventChannels.add(new EventChannel(
+    //     (EventChannel::Settings){
+    //         .type=EventChannel::Type::TEXT,
+    //         .name="Spike Data",
+    //         .description="Details of spikes found",
+    //         .identifier="spike.event",
+    //         .stream = dataStreams.getLast()
+    //     }
+    //     ));
+
+    // spikeEventPtr = eventChannels.getLast();
+    //spikeEventPtr->addProcessor(processorInfo.get());
+
+
 }
 
 // create chanel for storing spike data
@@ -377,9 +398,11 @@ void LfpLatencyProcessor::trackSpikes()
                      << ", \"trackIndex\":" << s->trackIndex
                      << ", \"spikeGroup\":" << i
                      << "}";
-            //#TODO: re-enable
-            // TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, this->getTimestamp(this->triggerChannel_idx), json_out.str());
-            // addEvent(spikeEventPtr, event, 0);
+            //#TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547 
+            // TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, s->spikeSampleNumber, json_out.str());
+            // addEvent(event, s->spikeSampleLatency);
+            broadcastMessage(json_out.str());
+            
         }
         if (curSpikeGroup.isTracking) // threshold tracking
         {
@@ -423,8 +446,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
         return;
     }
     
-    //#TODO: re-find the timestamp for the start of the buffer
-    auto ts = 0; //this->getFirstTimestampForBlock(0);
+    auto ts = this->getFirstSampleNumberForBlock(getDataStreams()[0]->getStreamId());
     // get num of samples in buffer
    
     int nSamples = buffer.getNumSamples();//getNumSamples(dataChannel_idx);
@@ -492,16 +514,19 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     trackThreshold();
     while (!messages.empty())
     { // post pulsePal messages
-        TextEventPtr event = TextEvent::createTextEvent(this->pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
-        // # TODO: re-enable
+        //#TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547
+        //TextEventPtr event = TextEvent::createTextEvent(pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
+        // addEvent(event,0);
         //addEvent(pulsePalEventPtr, event, 0);
+        broadcastMessage(messages.front());
         messages.pop();
     }
     while (!spikes.empty())
     { // post Spike detected events
-        TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), spikes.front());
         // # TODO: re-enable
-        //addEvent(spikeEventPtr, event, 0);
+        // TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, CoreServices::getGlobalTimestamp(), spikes.front());
+        // addEvent(event, 0);
+        broadcastMessage(spikes.front());
         spikes.pop();
     }
 }

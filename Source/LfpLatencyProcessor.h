@@ -104,7 +104,6 @@ public:
 
     /** Indicates if the processor has a custom editor. Defaults to false */
     //bool hasEditor() const { return true; }
-
     /** If the processor has a custom editor, this method must be defined to instantiate it. */
     AudioProcessorEditor *createEditor() override;
 
@@ -114,7 +113,6 @@ public:
     /** Convenient interface for responding to incoming events. */
     //NOTE NOT CURRENTLY USED! Events detected in process() instead
     //void handleEvent (const EventChannel* eventInfo, const MidiMessage& event, int sampleNum) override;
-
     /** Defines the functionality of the processor.
         The process method is called every time a new data buffer is available.
     */
@@ -150,7 +148,7 @@ public:
         information regarding the input and output channels as well as other signal related parameters. Said
         structure shouldn't be manipulated outside of this method.
     */
-    //void updateSettings();
+    void updateSettings() override;
 
     // Channel used for the recording of spike data
     //virtual void createSpikeChannels() override;
@@ -210,7 +208,7 @@ public:
 
     int fifoIndex;
 
-    uint currentTrack;
+    uint32_t currentTrack;
     int currentSample;
 
     //debug
@@ -277,6 +275,8 @@ private:
 
     EventChannel *pulsePalEventPtr;
     EventChannel *spikeEventPtr;
+
+    
 
     //int currentSample;
 

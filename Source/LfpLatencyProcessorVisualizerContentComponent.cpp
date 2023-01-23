@@ -868,7 +868,6 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 	}
 	if (buttonThatWasClicked->getName() == "Setup")
 	{
-		// #TODO: re-enable
 		auto view = this->createSetupView();
 
 
@@ -915,7 +914,6 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
 		// stimuliNumberLabel->setBounds(10, 130, 120, 24);
 		rightMiddlePanel->setBounds(10, 160, 280, 140);
 		view->setSize(300, 360);
-		// #TODO: re-enable
 		auto &setupBox = juce::CallOutBox::launchAsynchronously(std::move(view), otherControlPanel->getOptionsBoundsInPanelParent(), this);
 		setupBox.setLookAndFeel(new CustomLookAndFeel());
 	}
