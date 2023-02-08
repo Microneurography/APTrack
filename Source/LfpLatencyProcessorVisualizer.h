@@ -59,11 +59,6 @@ public:
     /** Called when data acquisition ends.*/
     void endAnimation() override;
 
-    /** Called by an editor to initiate a parameter change.*/
-    void setParameter(int, float) override;
-
-    /** Called by an editor to initiate a parameter change.*/
-    void setParameter(int, int, int, float) override;
 
     /** Updates spectrogram*/
     void timerCallback() override;
@@ -76,6 +71,7 @@ public:
 
     /*Set settings to right level to find spike*/
     void setConfig(int i);
+    void loadCustomParametersFromXml(XmlElement* xml) override;
 
 private:
 

@@ -20,17 +20,16 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 #include "LfpLatencyProcessorEditor.h"
-#include "LfpLatencyProcessor.h"
-#include "LfpLatencyProcessorVisualizer.h"
+
 
 static const int EDITOR_DESIRED_WIDTH = 300;
 
 
 LfpLatencyProcessorEditor::LfpLatencyProcessorEditor (GenericProcessor* parentNode, bool useDefaultParameterEditors = true)
-    : VisualizerEditor (parentNode, useDefaultParameterEditors)
+    : VisualizerEditor (parentNode,"APTrack")
 {
-    tabText = "APTrack";
 
     // why not use processor = static_cast<LfpLatencyProcessor*>(parentNode);?
     processor = (LfpLatencyProcessor*) this->getProcessor();
@@ -75,37 +74,7 @@ void LfpLatencyProcessorEditor::resized()
 }
 
 
-/**
-    The listener method that reacts to the button click. The same method is called for all buttons
-    on the editor, so the button variable, which cointains a pointer to the button that called the method
-    has to be checked to know which function to perform.
-*/
-void LfpLatencyProcessorEditor::buttonEvent (Button* button)
-{
-    //if (button == exampleButton)
-    //{
-    //    //Do Stuff
 
-    //    //a typical  example:
-    //    if (button->getToggleState()) //Button is pressed
-    //    {
-    //        getProcessor()->setParameter(0, 1);
-    //    }
-    //    else
-    //    {
-    //        getProcessor()->setParameter(0, 0);
-    //    }
-    //}
-}
-
-
-/**
-    The listener method that reacts to the changes of the particular slider of the editor.
-    We should check which slider was changed and perofrm appropriate functions.
-*/
-void LfpLatencyProcessorEditor::sliderEvent (Slider* slider)
-{
-}
 
 
 Visualizer* LfpLatencyProcessorEditor::createNewCanvas()

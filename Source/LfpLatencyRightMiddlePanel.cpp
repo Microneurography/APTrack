@@ -2,8 +2,7 @@
 
 #include "LfpLatencyRightMiddlePanel.h"
 
-#include "LfpLatencyElements.h"
-#include "LfpLatencyProcessorVisualizerContentComponent.h"
+
 
 LfpLatencyRightMiddlePanel::LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisualizerContentComponent* content)
 {
@@ -12,6 +11,7 @@ LfpLatencyRightMiddlePanel::LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisual
     triggerThreshold = new LfpLatencyLabelSlider("Trigger Threshold");
 
     triggerThreshold->setSliderRange(0.1, 150);
+    
     triggerThreshold->addSliderListener(content);
     triggerThreshold->setSliderValue(2.5);
 

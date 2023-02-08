@@ -1,8 +1,7 @@
 // LfpLatencySpectrogramControlPanel.cpp
 
-#include "LfpLatencyProcessorVisualizerContentComponent.h"
 #include "LfpLatencySpectrogramControlPanel.h"
-#include "LfpLatencyElements.h"
+
 
 ScopedPointer<LfpLatencyLabelHorizontalSlider> LfpLatencySpectrogramControlPanel::imageThreshold; // = new LfpLatencyLabelVerticalSlider("Image Threshold")
 ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::highImageThreshold; // = new LfpLatencyLabelTextEditor("High Image Threshold")

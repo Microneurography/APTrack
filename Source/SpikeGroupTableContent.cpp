@@ -93,7 +93,8 @@ Component *SpikeGroupTableContent::refreshComponentForCell(int rowNumber, int co
 				label = new UpdatingTextColumnComponent(*this, rowNumber, columnId);
 			}
 			std::ostringstream ss_ms_latency;
-			ss_ms_latency << std::fixed << std::setprecision(2) << (spikeGroup->templateSpike.spikeSampleLatency * 1000) / CoreServices::getGlobalSampleRate();
+			
+			ss_ms_latency << std::fixed << std::setprecision(2) << (spikeGroup->templateSpike.spikeSampleLatency * 1000)/ this->processor->getSampleRate(0);
 			label->setText(ss_ms_latency.str() + "ms", juce::NotificationType::dontSendNotification);
 			label->repaint();
 			return label;

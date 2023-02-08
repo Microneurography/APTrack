@@ -46,7 +46,7 @@ extern "C" EXPORT void getLibInfo (Plugin::LibraryInfo* info)
     info->name = "LfpLatency plugin library";
 
     //Version of the library, used only for information
-    info->libVersion = 1;
+    info->libVersion = "1.0";
     info->numPlugins = NUM_PLUGINS;
 }
 
@@ -57,16 +57,17 @@ extern "C" EXPORT int getPluginInfo (int index, Plugin::PluginInfo* info)
         //one case per plugin. This example is for a processor which connects directly to the signal chain
         case 0:
             //Type of plugin. See "Source/Processors/PluginManager/OpenEphysPlugin.h" for complete info about the different type structures
-            info->type = Plugin::PLUGIN_TYPE_PROCESSOR;
+            info->type = Plugin::PROCESSOR;
 
             //For processor
             info->processor.name = "APTrack"; //Processor name shown in the GUI
 
             //Type of processor. Can be FilterProcessor, SourceProcessor, SinkProcessor or UtilityProcessor. Specifies where on the processor list will appear
             //info->processor.type = info->processor.type = Plugin::SinkProcessor;;
-            info->processor.type = Plugin::SinkProcessor;
+            info->processor.type = Plugin::Processor::SINK;
 
             //Class factory pointer. Replace "ExampleProcessor" with the name of your class.
+            
             info->processor.creator = &(Plugin::createProcessor<LfpLatencyProcessor>);
         break;
         /**

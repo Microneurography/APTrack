@@ -1,8 +1,7 @@
 // LfpLatencySpectrogramPanel.cpp
 
 #include "LfpLatencySpectrogramPanel.h"
-#include "LfpLatencySpectrogram.h"
-#include "LfpLatencyProcessorVisualizerContentComponent.h"
+
 
 LfpLatencySpectrogramPanel::LfpLatencySpectrogramPanel(LfpLatencyProcessorVisualizerContentComponent* content)
     : content(*content)

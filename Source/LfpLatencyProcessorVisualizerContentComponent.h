@@ -13,9 +13,14 @@
 #include "LfpLatencyRightMiddlePanel.h"
 #include "SpikeGroupTableContent.h"
 
+class LfpLatencySpectrogramControlPanel;
+class LfpLatencyOtherControlPanel;
+class LfpLatencyRightMiddlePanel;
+class SpikeGroupTableContent;
+class LfpLatencySpectrogramPanel;
 class LfpLatencyProcessorVisualizerContentComponent : public Component,
-                                                      public SliderListener,
-                                                      public ButtonListener
+                                                      public Slider::Listener,
+                                                      public Button::Listener
 
 {
 public:
@@ -28,7 +33,7 @@ public:
     void buttonClicked(Button *buttonThatWasClicked) override;
     bool keyPressed(const KeyPress &k) override;
     //std::function<void()> onTextChange override;
-    //void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
+    void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
     int getSearchBoxSampleLocation();
     void setSearchBoxSampleLocation(int x);
@@ -69,6 +74,7 @@ private:
     //LfpLatencyProcessorVisualizer content;
 
     //SearchBoxParams
+
     int searchBoxLocation;
 
     int searchBoxWidth;
@@ -164,8 +170,8 @@ private:
 
     SpikeGroupTableContent tcon;
 
-    Viewport* createSetupView();
-    Viewport* stimulusSettingsView;
+    std::unique_ptr<Component>  createSetupView();
+    std::unique_ptr<Component>  stimulusSettingsView;
 
     //DEBUG
 

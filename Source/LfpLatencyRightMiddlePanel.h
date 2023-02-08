@@ -4,6 +4,8 @@
 #define LFPLATENCYRIGHTMIDDLEPANEL_H
 
 #include <EditorHeaders.h>
+#include "LfpLatencyElements.h"
+#include "LfpLatencyProcessorVisualizerContentComponent.h"
 
 class LfpLatencyLabelTextEditor;
 class LfpLatencyLabelSlider;

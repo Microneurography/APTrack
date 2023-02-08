@@ -1,8 +1,7 @@
 // LfpLatencyOtherControlPanel.cpp
 
-#include "LfpLatencyProcessorVisualizerContentComponent.h"
 #include "LfpLatencyOtherControlPanel.h"
-#include "LfpLatencyElements.h"
+
 
 LfpLatencyOtherControlPanel::LfpLatencyOtherControlPanel(LfpLatencyProcessorVisualizerContentComponent* content)
 {

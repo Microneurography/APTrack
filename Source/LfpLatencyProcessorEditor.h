@@ -24,7 +24,9 @@
 #define LFPLATENCYPROCESSOREDITOR_H_INCLUDED
 
 #include <VisualizerEditorHeaders.h>
+#include <EditorHeaders.h>
 #include "LfpLatencyProcessor.h"
+#include "LfpLatencyProcessorVisualizer.h"
 
 
 /**
@@ -53,12 +55,6 @@ public:
 
     /** This method executes each time editor is resized. */
     void resized() override;
-
-    /** This method executes whenever a custom button is pressed */
-    void buttonEvent (Button* button) override;
-
-    /** This method executes whenever a custom slider's value has been changed. */
-    void sliderEvent (Slider* slider) override;
 
     /** Creates new canvas for visualizer editor. */
     Visualizer* createNewCanvas() override;

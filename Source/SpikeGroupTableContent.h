@@ -5,7 +5,7 @@
 
 class LfpLatencyProcessor;
 
-class SpikeGroupTableContent : public TableListBoxModel, public ButtonListener
+class SpikeGroupTableContent : public TableListBoxModel, public Button::Listener
                      
 {
 public:
