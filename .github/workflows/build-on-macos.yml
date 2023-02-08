@@ -21,7 +21,7 @@ jobs:
         with:
           repository: open-ephys/plugin-GUI
           path: plugin-GUI
-          ref: v0.5.2.2
+          ref: v0.6.3
         
 #       - name: Cache oe
 #         id: cache-oe
