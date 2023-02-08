@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -56,8 +56,8 @@ public:
     void sliderValueChanged(Slider *sliderThatWasMoved) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
     bool keyPressed(const KeyPress &k) override;
-    //std::function<void()> onTextChange override;
-    void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
+    // std::function<void()> onTextChange override;
+    void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel) override;
 
     int getSearchBoxSampleLocation();
     void setSearchBoxSampleLocation(int x);
@@ -87,7 +87,7 @@ private:
     ScopedPointer<LfpLatencySpectrogramPanel> spectrogramPanel;
     ScopedPointer<LfpLatencyRightMiddlePanel> rightMiddlePanel;
 
-    //Image thresholds
+    // Image thresholds
     float lowImageThreshold;
     float highImageThreshold;
     int colorStyle;
@@ -95,9 +95,9 @@ private:
     int draw_imageHeight;
     int draw_rightHandEdge;
 
-    //LfpLatencyProcessorVisualizer content;
+    // LfpLatencyProcessorVisualizer content;
 
-    //SearchBoxParams
+    // SearchBoxParams
 
     int searchBoxLocation;
 
@@ -169,7 +169,7 @@ private:
 
     ScopedPointer<Label> cmLabel;
 
-    //ScopedPointer<GroupComponent> detectionControlGroup;
+    // ScopedPointer<GroupComponent> detectionControlGroup;
 
     // Stimulus control
     ScopedPointer<ppControllerVisualizer> ppControllerComponent;
@@ -183,7 +183,7 @@ private:
     ScopedPointer<ComboBox> dataChannelComboBox;
     ScopedPointer<Label> dataChannelComboBoxLabel;
 
-    ScopedPointer<Slider> Trigger_threshold; //TODO
+    ScopedPointer<Slider> Trigger_threshold; // TODO
 
     ScopedPointer<TableListBox> spikeTracker;
     ScopedPointer<TextButton> addNewSpikeButton;
@@ -194,10 +194,10 @@ private:
 
     SpikeGroupTableContent tcon;
 
-    std::unique_ptr<Component>  createSetupView();
-    std::unique_ptr<Component>  stimulusSettingsView;
+    std::unique_ptr<Component> createSetupView();
+    std::unique_ptr<Component> stimulusSettingsView;
 
-    //DEBUG
+    // DEBUG
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorVisualizerContentComponent)
 };

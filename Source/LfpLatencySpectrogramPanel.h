@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -40,11 +40,11 @@ class LfpLatencyProcessorVisualizerContentComponent;
 class LfpLatencySpectrogramPanel : public Component
 {
 public:
-    LfpLatencySpectrogramPanel(LfpLatencyProcessorVisualizerContentComponent* content);
+    LfpLatencySpectrogramPanel(LfpLatencyProcessorVisualizerContentComponent *content);
     void resized() override;
-    void paint(Graphics& g) override;
+    void paint(Graphics &g) override;
 
-    void updateSpectrogram(LfpLatencyProcessor& processor, const LfpLatencyProcessorVisualizerContentComponent& content);
+    void updateSpectrogram(LfpLatencyProcessor &processor, const LfpLatencyProcessorVisualizerContentComponent &content);
     void setSearchBoxValue(double newValue);
     double getSearchBoxValue() const;
     void changeSearchBoxValue(double deltaValue);
@@ -52,6 +52,7 @@ public:
     void spikeIndicatorTrue(bool spikeFound);
     int getImageHeight() const;
     int getImageWidth() const;
+
 private:
     ScopedPointer<GroupComponent> outline;
     ScopedPointer<LfpLatencySpectrogram> spectrogram;
@@ -60,7 +61,7 @@ private:
     ScopedPointer<LfpLatencySearchBox> searchBoxRectangle;
     ScopedPointer<Label> spikeIndicator;
 
-    const LfpLatencyProcessorVisualizerContentComponent& content;
+    const LfpLatencyProcessorVisualizerContentComponent &content;
 };
 
 #endif

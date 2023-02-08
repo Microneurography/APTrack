@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -42,11 +42,11 @@
 #include <mutex>
 #include "pulsePalController/ppController.h"
 
-//fifo buffer size. height in pixels of spectrogram image
+// fifo buffer size. height in pixels of spectrogram image
 #define FIFO_BUFFER_SIZE 30000
 
-//Width in pixels of spectrogram image
-//300 pixels = 300 tracks approx 5 min
+// Width in pixels of spectrogram image
+// 300 pixels = 300 tracks approx 5 min
 #define SPECTROGRAM_WIDTH 300
 
 #define SPECTROGRAM_HEIGHT 300
@@ -61,7 +61,7 @@
 
 #define DATA_CACHE_SIZE_TRACKS 300
 
-//for debug
+// for debug
 #define SEARCH_BOX_WIDTH 3
 
 class ppController;
@@ -76,7 +76,6 @@ struct SpikeInfo
     int trackIndex;         // the track index for the stimulus (currentTrack)
 };
 
-
 class SpikeGroup
 {
 public:
@@ -88,11 +87,11 @@ public:
 
     std::vector<SpikeInfo> spikeHistory;
     std::deque<bool> recentHistory;
-    SpikeInfo templateSpike; // the information used to determine the spike
-    bool isTracking;         // is the stimulus volt being tracked?
-    bool isActive;           // is this spike currently active
+    SpikeInfo templateSpike;         // the information used to determine the spike
+    bool isTracking;                 // is the stimulus volt being tracked?
+    bool isActive;                   // is this spike currently active
     float stimulusVoltage50pct = -1; // the last known 50pct firing voltage
-    //const uint16 uid; // Unique identifier for the spike group #TODO: create uid
+    // const uint16 uid; // Unique identifier for the spike group #TODO: create uid
 };
 class LfpLatencyProcessor : public GenericProcessor, public MultiTimer
 
@@ -105,16 +104,16 @@ public:
     ~LfpLatencyProcessor();
 
     /** Indicates if the processor has a custom editor. Defaults to false */
-    //bool hasEditor() const { return true; }
+    // bool hasEditor() const { return true; }
     /** If the processor has a custom editor, this method must be defined to instantiate it. */
     AudioProcessorEditor *createEditor() override;
 
     /** Optional method that informs the GUI if the processor is ready to function. If false acquisition cannot start. Defaults to true */
-    //bool isReady();
+    // bool isReady();
 
     /** Convenient interface for responding to incoming events. */
-    //NOTE NOT CURRENTLY USED! Events detected in process() instead
-    //void handleEvent (const EventChannel* eventInfo, const MidiMessage& event, int sampleNum) override;
+    // NOTE NOT CURRENTLY USED! Events detected in process() instead
+    // void handleEvent (const EventChannel* eventInfo, const MidiMessage& event, int sampleNum) override;
     /** Defines the functionality of the processor.
         The process method is called every time a new data buffer is available.
     */
@@ -126,22 +125,22 @@ public:
     void setParameter(int parameterIndex, float newValue) override;
 
     /** This method is a critical section, protected a mutex lock. Allows you to save slider values, and maybe
-	some data if you wanted in a file called LastLfpLatencyPluginComponents */
+    some data if you wanted in a file called LastLfpLatencyPluginComponents */
     static void saveRecoveryData(std::unordered_map<std::string, juce::String> *valuesMap);
 
-    /** Starts by asking the user if they would like to load data from LastLfpLatencyPluginComponents, 
-	the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
+    /** Starts by asking the user if they would like to load data from LastLfpLatencyPluginComponents,
+    the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
     static void loadRecoveryData(std::unordered_map<std::string, juce::String> *valuesMap);
 
     /** Saving custom settings to XML. */
     virtual void saveCustomParametersToXml(XmlElement *parentElement) override;
 
     /** Load custom settings from XML*/
-    virtual void loadCustomParametersFromXml(XmlElement* customParamsXml) override;
+    virtual void loadCustomParametersFromXml(XmlElement *customParamsXml) override;
 
-    virtual void createEventChannels() ;
+    virtual void createEventChannels();
 
-    //virtual void createSpikeChannels() override;
+    // virtual void createSpikeChannels() override;
 
     /** Optional method called every time the signal chain is refreshed or changed in any way.
 
@@ -153,7 +152,7 @@ public:
     void updateSettings() override;
 
     // Channel used for the recording of spike data
-    //virtual void createSpikeChannels() override;
+    // virtual void createSpikeChannels() override;
 
     /** Method to allow the visualizer to check eventDetection flag*/
     bool checkEventReceived();
@@ -174,20 +173,20 @@ public:
      */
     float *getdataCache();
 
-    //Sets data channel back to default
+    // Sets data channel back to default
     void resetDataChannel();
 
-    //Sets trigger channle to default
+    // Sets trigger channle to default
     void resetTriggerChannel();
 
     /**
      Returns pointer stored latency track data, one track at a time
      - Parameter track: index of track (0 being current (earliest) track)
-     
+
      - Throws: 'std::out_of_range'
                 if 'track' index is out of range
      - Returns: pointer to first element of latency track
-     
+
      */
     float *getdataCacheRow(int track);
 
@@ -202,9 +201,9 @@ public:
     int getLatencyData(int track);
     /*
     int windowSampleCount;
-    
+
     float lastWindowPeak;
-    
+
     int samplesAfterStimulus;
  */
 
@@ -213,16 +212,16 @@ public:
     uint32_t currentTrack;
     int currentSample;
 
-    //debug
+    // debug
     float getParameterFloat(int parameterID);
-    //Result makingFile;
+    // Result makingFile;
 
-    //Functions used to save data
+    // Functions used to save data
     void addMessage(std::string message);
 
     void addSpike(std::string spike);
 
-    void addSpikeGroup(SpikeInfo templateSpike, bool isSelected=false);
+    void addSpikeGroup(SpikeInfo templateSpike, bool isSelected = false);
     void removeSpikeGroup(int i);
 
     SpikeGroup *getSpikeGroup(int i);
@@ -253,7 +252,7 @@ private:
 
     float trackingIncreaseRate = 0.01;
     float trackingDecreaseRate = 0.01;
-    //debug
+    // debug
     float lastReceivedDACPulse;
 
     int dataChannel_idx;
@@ -278,13 +277,11 @@ private:
     EventChannel *pulsePalEventPtr;
     EventChannel *spikeEventPtr;
 
-    
-
-    //int currentSample;
+    // int currentSample;
 
     int samplesPerSubsampleWindow;
 
-    //int currentTrack;
+    // int currentTrack;
 
     int peakThreshold;
 

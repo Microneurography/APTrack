@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -31,7 +31,6 @@
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorVisualizer.h"
 
-
 /**
     This class serves as a template for creating new editors.
 
@@ -45,7 +44,7 @@ class LfpLatencyProcessorEditor : public VisualizerEditor
 {
 public:
     /** The class constructor, used to initialize any members. */
-    LfpLatencyProcessorEditor (GenericProcessor* parentNode, bool useDefaultParameterEditors);
+    LfpLatencyProcessorEditor(GenericProcessor *parentNode, bool useDefaultParameterEditors);
 
     /** The class destructor, used to deallocate memory */
     ~LfpLatencyProcessorEditor();
@@ -60,34 +59,32 @@ public:
     void resized() override;
 
     /** Creates new canvas for visualizer editor. */
-    Visualizer* createNewCanvas() override;
+    Visualizer *createNewCanvas() override;
 
     /** Called to inform the editor that acquisition is about to start*/
-    //void startAcquisition();
+    // void startAcquisition();
 
     /** Called to inform the editor that acquisition has just stopped*/
-    //void stopAcquisition();
+    // void stopAcquisition();
 
     /** Called whenever there is a change in the signal chain or it refreshes.
       It's called after the processors' same named method.
       */
-    //void updateSettings();
-
+    // void updateSettings();
 
 private:
-    LfpLatencyProcessor* processor;
+    LfpLatencyProcessor *processor;
 
-    //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
+    // ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
     /**
         Here would be all the required internal variables.
         In this case, we have a single button.
     */
-    //Always use JUCE RAII classes instead of pure pointers.
-    //ScopedPointer<Button> exampleButton;
+    // Always use JUCE RAII classes instead of pure pointers.
+    // ScopedPointer<Button> exampleButton;
 
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfpLatencyProcessorEditor);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorEditor);
 };
 
 #endif // LFPLATENCYPROCESSOREDITOR_H_INCLUDED

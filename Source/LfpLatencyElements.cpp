@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -28,8 +28,8 @@
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
 
 // -------------------------------------------------------------
-LfpLatencyLabelTextEditor::LfpLatencyLabelTextEditor(const String& labelText)
-{  
+LfpLatencyLabelTextEditor::LfpLatencyLabelTextEditor(const String &labelText)
+{
     label = new Label("Label", labelText);
     label->setColour(juce::Label::textColourId, juce::Colours::white);
     textEditor = new TextEditor("TextEditor");
@@ -47,12 +47,13 @@ void LfpLatencyLabelTextEditor::resized()
     textEditor->setBounds(textEditorLeft, 0, getWidth() - textEditorLeft, getHeight());
 }
 
-void LfpLatencyLabelTextEditor::setTextEditorText(const String& newText) {
+void LfpLatencyLabelTextEditor::setTextEditorText(const String &newText)
+{
     textEditor->setText(newText);
 }
 
 // -------------------------------------------------------------
-LfpLatencyLabelSlider::LfpLatencyLabelSlider(const String& labelText)
+LfpLatencyLabelSlider::LfpLatencyLabelSlider(const String &labelText)
 {
     label = new Label("Label", labelText);
     label->setColour(juce::Label::textColourId, juce::Colours::white);
@@ -77,16 +78,18 @@ void LfpLatencyLabelSlider::setSliderRange(double newMinimum, double newMaximum,
     slider->setRange(newMinimum, newMaximum, newInterval);
 }
 
-void LfpLatencyLabelSlider::addSliderListener(Slider::Listener* listener)
+void LfpLatencyLabelSlider::addSliderListener(Slider::Listener *listener)
 {
     slider->addListener(listener);
 }
 
-double LfpLatencyLabelSlider::getSliderMaximum() const {
+double LfpLatencyLabelSlider::getSliderMaximum() const
+{
     return slider->getMaximum();
 }
 
-double LfpLatencyLabelSlider::getSliderMinimum() const {
+double LfpLatencyLabelSlider::getSliderMinimum() const
+{
     return slider->getMinimum();
 }
 
@@ -101,7 +104,7 @@ double LfpLatencyLabelSlider::getSliderValue() const
 }
 
 // -------------------------------------------------------------
-LfpLatencyLabelHorizontalSlider::LfpLatencyLabelHorizontalSlider(const String& labelText)
+LfpLatencyLabelHorizontalSlider::LfpLatencyLabelHorizontalSlider(const String &labelText)
 {
     label = new Label("Label", labelText);
     label->setColour(juce::Label::textColourId, juce::Colours::white);
@@ -109,7 +112,7 @@ LfpLatencyLabelHorizontalSlider::LfpLatencyLabelHorizontalSlider(const String& l
     slider->setName(labelText);
 
     label->setJustificationType(juce::Justification::centred);
-    
+
     addAndMakeVisible(label);
     addAndMakeVisible(slider);
 }
@@ -120,7 +123,7 @@ void LfpLatencyLabelHorizontalSlider::resized()
     slider->setBounds(0, 0, getWidth(), getHeight() - labelHeight);
 
     // Label::attachToComponent() only attach to left or top; have to config it manually
-    label->setBounds(0, slider->getY() + slider->getHeight() , getWidth(), labelHeight);
+    label->setBounds(0, slider->getY() + slider->getHeight(), getWidth(), labelHeight);
 }
 
 void LfpLatencyLabelHorizontalSlider::setSliderRange(double newMinimum, double newMaximum, double newInterval)
@@ -128,16 +131,18 @@ void LfpLatencyLabelHorizontalSlider::setSliderRange(double newMinimum, double n
     slider->setRange(newMinimum, newMaximum, newInterval);
 }
 
-void LfpLatencyLabelHorizontalSlider::addSliderListener(Slider::Listener* listener)
+void LfpLatencyLabelHorizontalSlider::addSliderListener(Slider::Listener *listener)
 {
     slider->addListener(listener);
 }
 
-double LfpLatencyLabelHorizontalSlider::getSliderMaximum() const {
+double LfpLatencyLabelHorizontalSlider::getSliderMaximum() const
+{
     return slider->getMaximum();
 }
 
-double LfpLatencyLabelHorizontalSlider::getSliderMinimum() const {
+double LfpLatencyLabelHorizontalSlider::getSliderMinimum() const
+{
     return slider->getMinimum();
 }
 
@@ -172,7 +177,7 @@ double LfpLatencyLabelHorizontalSlider::getSliderMinValue() const
 }
 
 // -------------------------------------------------------------
-LfpLatencyLabelComboBox::LfpLatencyLabelComboBox(const String& labelText)
+LfpLatencyLabelComboBox::LfpLatencyLabelComboBox(const String &labelText)
 {
     label = new Label("Label", labelText);
     label->setColour(juce::Label::textColourId, juce::Colours::white);
@@ -206,7 +211,7 @@ void LfpLatencyLabelComboBox::setComboBoxSelectedId(int newItemId)
     comboBox->setSelectedId(newItemId);
 }
 
-void LfpLatencyLabelComboBox::setComboBoxTextWhenNothingSelected(const String& newMessage)
+void LfpLatencyLabelComboBox::setComboBoxTextWhenNothingSelected(const String &newMessage)
 {
     comboBox->setTextWhenNothingSelected(newMessage);
 }
@@ -216,12 +221,12 @@ int LfpLatencyLabelComboBox::getComboBoxNumItems() const
     return comboBox->getNumItems();
 }
 
-void LfpLatencyLabelComboBox::addComboBoxItem(const String& newItemText, int newItemId)
+void LfpLatencyLabelComboBox::addComboBoxItem(const String &newItemText, int newItemId)
 {
     comboBox->addItem(newItemText, newItemId);
 }
 
-void LfpLatencyLabelComboBox::addComboBoxSectionHeading(const String& headingName)
+void LfpLatencyLabelComboBox::addComboBoxSectionHeading(const String &headingName)
 {
     comboBox->addSectionHeading(headingName);
 }
@@ -232,7 +237,7 @@ void LfpLatencyLabelComboBox::clearComboBox()
 }
 
 // -------------------------------------------------------------
-LfpLatencyLabelToggleButton::LfpLatencyLabelToggleButton(const String& labelText)
+LfpLatencyLabelToggleButton::LfpLatencyLabelToggleButton(const String &labelText)
 {
     label = new Label("Label", labelText);
     label->setColour(juce::Label::textColourId, juce::Colours::white);
@@ -254,7 +259,7 @@ void LfpLatencyLabelToggleButton::resized()
     toggleButton->setBounds(getLocalBounds().withTrimmedLeft(toggleButtonLeft));
 }
 
-void LfpLatencyLabelToggleButton::addToggleButtonListener(Button::Listener* listener)
+void LfpLatencyLabelToggleButton::addToggleButtonListener(Button::Listener *listener)
 {
     toggleButton->addListener(listener);
 }
@@ -270,7 +275,7 @@ void LfpLatencyLabelToggleButton::setToggleButtonState(bool shouldBeOn, Notifica
 }
 
 // -------------------------------------------------------------
-LfpLatencyLabelSliderNoTextBox::LfpLatencyLabelSliderNoTextBox(const String& labelText)
+LfpLatencyLabelSliderNoTextBox::LfpLatencyLabelSliderNoTextBox(const String &labelText)
 {
     label = new Label("Label", labelText);
     slider = new Slider(Slider::Rotary, Slider::NoTextBox);
@@ -294,7 +299,7 @@ void LfpLatencyLabelSliderNoTextBox::setSliderRange(double newMinimum, double ne
     slider->setRange(newMinimum, newMaximum, newInterval);
 }
 
-void LfpLatencyLabelSliderNoTextBox::addSliderListener(Slider::Listener* listener)
+void LfpLatencyLabelSliderNoTextBox::addSliderListener(Slider::Listener *listener)
 {
     slider->addListener(listener);
 }
@@ -310,7 +315,7 @@ double LfpLatencyLabelSliderNoTextBox::getSliderValue() const
 }
 
 // -------------------------------------------------------------
-LfpLatencyLabelLinearVerticalSliderNoTextBox::LfpLatencyLabelLinearVerticalSliderNoTextBox(const String& labelText)
+LfpLatencyLabelLinearVerticalSliderNoTextBox::LfpLatencyLabelLinearVerticalSliderNoTextBox(const String &labelText)
 {
     label = new Label("Label", labelText);
     label->setColour(juce::Label::textColourId, juce::Colours::white);
@@ -337,7 +342,7 @@ void LfpLatencyLabelLinearVerticalSliderNoTextBox::setSliderRange(double newMini
     slider->setRange(newMinimum, newMaximum, newInterval);
 }
 
-void LfpLatencyLabelLinearVerticalSliderNoTextBox::addSliderListener(Slider::Listener* listener)
+void LfpLatencyLabelLinearVerticalSliderNoTextBox::addSliderListener(Slider::Listener *listener)
 {
     slider->addListener(listener);
 }
@@ -353,10 +358,10 @@ double LfpLatencyLabelLinearVerticalSliderNoTextBox::getSliderValue() const
 }
 
 // -------------------------------------------------------------
-LfpLatencySearchBox::LfpLatencySearchBox(const LfpLatencyProcessorVisualizerContentComponent& content, const LfpLatencySpectrogram& spectrogram)
-:content(content), spectrogram(spectrogram) {}
+LfpLatencySearchBox::LfpLatencySearchBox(const LfpLatencyProcessorVisualizerContentComponent &content, const LfpLatencySpectrogram &spectrogram)
+    : content(content), spectrogram(spectrogram) {}
 
-void LfpLatencySearchBox::paint(Graphics& g)
+void LfpLatencySearchBox::paint(Graphics &g)
 {
     // Ideally this would map directly to the same scaling as the visualizer window. move back into original render?
 
@@ -374,8 +379,8 @@ void LfpLatencySearchBox::paint(Graphics& g)
 
     auto cornerSize = 1;
     auto lineThickness = 2;
-    g.fillRect(x,y-(height/2),width*2,2.0f);
-    g.fillRect(x,y+(height/2),width*2,2.0f);
-    //g.drawLine(x,y+(height/2),x+width,y+(height/2));
-    //g.drawRoundedRectangle(x, y-(height/2), width, height, cornerSize, lineThickness);
+    g.fillRect(x, y - (height / 2), width * 2, 2.0f);
+    g.fillRect(x, y + (height / 2), width * 2, 2.0f);
+    // g.drawLine(x,y+(height/2),x+width,y+(height/2));
+    // g.drawRoundedRectangle(x, y-(height/2), width, height, cornerSize, lineThickness);
 }

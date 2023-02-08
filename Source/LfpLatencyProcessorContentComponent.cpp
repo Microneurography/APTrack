@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -46,25 +46,22 @@
 
 #include "LfpLatencyProcessorContentComponent.h"
 
-
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 //[/MiscUserDefs]
 
 //==============================================================================
-LfpLatencyProcessorContentComponent::LfpLatencyProcessorContentComponent ()
+LfpLatencyProcessorContentComponent::LfpLatencyProcessorContentComponent()
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (300, 200);
-
+    setSize(300, 200);
 
     //[Constructor] You can add your own custom stuff here..
-    //float rate = lfpProcessor->getSubprocessorSampleRate();
+    // float rate = lfpProcessor->getSubprocessorSampleRate();
     //[/Constructor]
 }
 
@@ -73,14 +70,12 @@ LfpLatencyProcessorContentComponent::~LfpLatencyProcessorContentComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-
-
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
 }
 
 //==============================================================================
-void LfpLatencyProcessorContentComponent::paint (Graphics& g)
+void LfpLatencyProcessorContentComponent::paint(Graphics &g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -98,11 +93,8 @@ void LfpLatencyProcessorContentComponent::resized()
     //[/UserResized]
 }
 
-
-
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 //[/MiscUserCode]
-
 
 //==============================================================================
 #if 0
@@ -123,7 +115,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
-
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]

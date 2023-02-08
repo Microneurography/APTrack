@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -24,8 +24,8 @@
 
 */
 
-// TODO: the commented out code in this component was originally wrote 
-//       for the old design of the top right panel. Kept them for potential 
+// TODO: the commented out code in this component was originally wrote
+//       for the old design of the top right panel. Kept them for potential
 //       future use when extracting the popup box into a seperate component/
 
 #ifndef LFPLATENCYOTHERCONTROLPANEL_H
@@ -41,7 +41,7 @@ class LfpLatencyLabelToggleButton;
 class LfpLatencyOtherControlPanel : public Component
 {
 public:
-    LfpLatencyOtherControlPanel(LfpLatencyProcessorVisualizerContentComponent* content);
+    LfpLatencyOtherControlPanel(LfpLatencyProcessorVisualizerContentComponent *content);
     void resized() override;
 
     /** Get options button bounds in this panel's parent, which should be LfpLatencyProcessorVisualizerContentComponent.
@@ -78,14 +78,14 @@ public:
     */
 
     /* If shouldBeEnabled set to false, will also toggle the button to false. */
-    //void setTrackThresholdEnabled(bool shouldBeEnabled);
+    // void setTrackThresholdEnabled(bool shouldBeEnabled);
 private:
     ScopedPointer<GroupComponent> outline;
 
     ScopedPointer<TextButton> setup;
     ScopedPointer<TextButton> options;
 
-    Rectangle<int> getBoundsInPanelParent(const Rectangle<int>& bounds) const;
+    Rectangle<int> getBoundsInPanelParent(const Rectangle<int> &bounds) const;
 
     /*
     ScopedPointer<LfpLatencyLabelComboBox> colorStyle;

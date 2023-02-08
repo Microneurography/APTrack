@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -24,18 +24,18 @@
 */
 /*
  * UStepper controller code
- * 
+ *
  * A simple interface into the uStepper.
- * 
- * This code can control a potentiometer for stimulus. 
+ *
+ * This code can control a potentiometer for stimulus.
  * It stores the number of rotations in case of power failure in EEPROM
- * 
+ *
  * The commands are 'S' for set, 'D' for diff
  * 'V' for printing the version
  * 'T' for Telling the current
  * 'A' for the Angle of the device
  * 'E' for printing the number of rotations stored in EEPROM
- * 
+ *
  */
 
 #include <uStepperSLite.h>
@@ -53,7 +53,7 @@ void setup()
     // put your setup code here, to run once:
     stepper.setup(NORMAL, SIXTEEN, 10.0, 5.0, true);
     Serial.begin(19200);
-    //while ( !Serial );
+    // while ( !Serial );
     stepper.stop(false);
     EEPROM.get(EEPROMIDX, numRotationsSinceReset);
     setNRotations();
@@ -66,26 +66,26 @@ void setNRotations()
     TIMSK1 &= ~(1 << OCIE1A);
     I2C.read(ENCODERADDR, ANGLE, 2, data);
     TIMSK1 |= (1 << OCIE1A);
-    stepper.encoder.encoderOffset = 0; //assume the encoder is constant
-    
+    stepper.encoder.encoderOffset = 0; // assume the encoder is constant
+
     stepper.encoder.angle = (((uint16_t)data[0]) << 8) | (uint16_t)data[1];
     stepper.encoder.oldAngle = (((uint16_t)data[0]) << 8) | (uint16_t)data[1];
 
-    stepper.encoder.angleMoved = ((float)((((uint16_t)data[0]) << 8) | (uint16_t)data[1]) - ((360.0f / 0.087890625) * (numRotationsSinceReset+1)));
+    stepper.encoder.angleMoved = ((float)((((uint16_t)data[0]) << 8) | (uint16_t)data[1]) - ((360.0f / 0.087890625) * (numRotationsSinceReset + 1)));
     stepper.stepsSinceReset = 0;
 }
 
 void loop()
 {
     // put your main code here, to run repeatedly:
-    //while(stepper.getMotorState()!=0);
-    //stepper.stop(true);
+    // while(stepper.getMotorState()!=0);
+    // stepper.stop(true);
     if (Serial.available())
     {
 
         String readIn = Serial.readStringUntil('\n');
 
-        //Serial.println(readIn);
+        // Serial.println(readIn);
         if (readIn.substring(0, 1) == "V")
         {
             Serial.println("1");
@@ -108,7 +108,7 @@ void loop()
         }
         else if (readIn.substring(0, 1) == "H")
         {
-            //stepper.encoder.setHome();
+            // stepper.encoder.setHome();
             EEPROM.put(EEPROMIDX, (uint16_t)0);
             numRotationsSinceReset = 0;
             setNRotations();
@@ -116,7 +116,7 @@ void loop()
         }
         else if (readIn.substring(0, 1) == "E")
         {
-            //stepper.encoder.setHome();
+            // stepper.encoder.setHome();
             uint16_t v;
             EEPROM.get(EEPROMIDX, v);
             Serial.println(String(v));
@@ -133,7 +133,7 @@ void loop()
             float newValue = readIn.substring(1).toFloat();
             diff = newValue;
         }
-        //oldValue = stepper.encoder.getAngle();
+        // oldValue = stepper.encoder.getAngle();
         if ((readIn.substring(0, 1) == "D") || (readIn.substring(0, 1) == "S"))
         {
             if (oldValue + diff < 0)
@@ -155,7 +155,7 @@ void loop()
     uint16_t newRotations = (uint16_t)ceil(-round(stepper.encoder.getAngleMoved()) / 360);
     if (numRotationsSinceReset != newRotations)
     {
-        //Serial.println("updating EEPROM");
+        // Serial.println("updating EEPROM");
         EEPROM.put(EEPROMIDX, newRotations);
         numRotationsSinceReset = newRotations;
     }

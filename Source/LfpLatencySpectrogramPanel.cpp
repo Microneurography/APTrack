@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -26,8 +26,7 @@
 
 #include "LfpLatencySpectrogramPanel.h"
 
-
-LfpLatencySpectrogramPanel::LfpLatencySpectrogramPanel(LfpLatencyProcessorVisualizerContentComponent* content)
+LfpLatencySpectrogramPanel::LfpLatencySpectrogramPanel(LfpLatencyProcessorVisualizerContentComponent *content)
     : content(*content)
 {
     outline = new GroupComponent("Spectrogram");
@@ -36,7 +35,7 @@ LfpLatencySpectrogramPanel::LfpLatencySpectrogramPanel(LfpLatencyProcessorVisual
     searchBoxWidth = new LfpLatencyLabelSliderNoTextBox("Search Box Width");
     searchBoxRectangle = new LfpLatencySearchBox(*content, *spectrogram);
     spikeIndicator = new Label("Spike Found");
-    
+
     spikeIndicator->setText("Spike Tracked", sendNotification);
     spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::grey);
 
@@ -70,34 +69,32 @@ void LfpLatencySpectrogramPanel::resized()
     auto offset = 5;
     // searchBoxArea.setX(searchBoxArea.getX() - offset); //disabled as the 'bobble' overlays the main viewer.
     searchBoxArea.setWidth(searchBoxArea.getWidth() + offset);
-    searchBoxArea.setHeight(searchBoxArea.getHeight()+16); // #HACK! this is to keep search box in line with the margin of the scrollbar :(
-    searchBoxArea.setY(searchBoxArea.getY()-8);
-    
+    searchBoxArea.setHeight(searchBoxArea.getHeight() + 16); // #HACK! this is to keep search box in line with the margin of the scrollbar :(
+    searchBoxArea.setY(searchBoxArea.getY() - 8);
+
     searchBox->setBounds(searchBoxArea);
 
     spectrogram->setBounds(area);
-    
-    
-    
-    //spikeIndicator->setBounds(searchBoxWidthArea.removeFromLeft(area.getWidth()));
+
+    // spikeIndicator->setBounds(searchBoxWidthArea.removeFromLeft(area.getWidth()));
 
     searchBoxRectangle->setBounds(area);
 }
 
-void LfpLatencySpectrogramPanel::paint(Graphics& g)
+void LfpLatencySpectrogramPanel::paint(Graphics &g)
 {
     auto area = getLocalBounds();
-    
+
     auto widthOfSearchBox = 80;
     auto searchBoxArea = area.removeFromRight(widthOfSearchBox);
     searchBoxArea.setX(searchBoxArea.getX() - 25);
     searchBoxArea.setWidth(searchBoxArea.getWidth() - 78);
     searchBoxArea.setHeight(area.getHeight() - 104);
     searchBoxArea.setY(area.getY() + 20);
-    
+
     g.setColour(Colours::white);
     g.fillRect(searchBoxArea);
-    
+
     // auto starting_sample = (this->content.getStartingSample()/this->content.getSubsamplesPerWindow());
     // for (int y = searchBoxArea.getY(); y <= searchBoxArea.getY()+searchBoxArea.getHeight(); y += CoreServices::getGlobalSampleRate()/10/ this->content.getSubsamplesPerWindow())
     // {
@@ -105,10 +102,9 @@ void LfpLatencySpectrogramPanel::paint(Graphics& g)
     //     // TODO: refactor into LfpLatencySpectrogram?
     //     //g.drawText(to_string(y), searchBoxArea.getX() + 25, y, 25, 25, Justification::centredRight);
     // }
-
 }
 
-void LfpLatencySpectrogramPanel::updateSpectrogram(LfpLatencyProcessor& processor, const LfpLatencyProcessorVisualizerContentComponent& content)
+void LfpLatencySpectrogramPanel::updateSpectrogram(LfpLatencyProcessor &processor, const LfpLatencyProcessorVisualizerContentComponent &content)
 {
     spectrogram->update(processor, content);
 }
@@ -138,10 +134,12 @@ int LfpLatencySpectrogramPanel::getImageHeight() const
     return spectrogram->getImageHeight();
 }
 
-void LfpLatencySpectrogramPanel::spikeIndicatorTrue(bool spikeFound) 
+void LfpLatencySpectrogramPanel::spikeIndicatorTrue(bool spikeFound)
 {
-    if (spikeFound == true) spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::green);
-    else if (spikeFound == false) spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::grey);
+    if (spikeFound == true)
+        spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::green);
+    else if (spikeFound == false)
+        spikeIndicator->setColour(Label::ColourIds::textColourId, Colours::grey);
 }
 
 int LfpLatencySpectrogramPanel::getImageWidth() const

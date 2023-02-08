@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -201,16 +201,16 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
         g.setOpacity(1);
         // g.setFillType(juce::FillType(juce::Colours::orange));
 
-        for (int x = 0; x < tracksAmount ; x++)
+        for (int x = 0; x < tracksAmount; x++)
         {
-            auto xOffset =  getImageWidth() - ((x + 2) * pixelsPerTrack ) ;
+            auto xOffset = getImageWidth() - ((x + 2) * pixelsPerTrack);
             juce::Path path;
             juce::Path highlightPath;
             bool isHighlighting = false;
-            path.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack ), getImageHeight());
+            path.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack), getImageHeight());
             for (int y = 0; y < getImageHeight(); y++)
             {
-                auto curX = xOffset + ((1 - bmap[x][y]) * (pixelsPerTrack ));
+                auto curX = xOffset + ((1 - bmap[x][y]) * (pixelsPerTrack));
                 auto curY = getImageHeight() - y;
                 path.lineTo(curX, curY);
 
@@ -218,8 +218,8 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
                 if ((bmap[x][y]) > detectionThreshold_scaled)
                 {
                     juce::Path p;
-                    p.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack ),curY);
-                    p.lineTo(getImageWidth() -((x + 2 -1) * pixelsPerTrack ),curY);
+                    p.startNewSubPath(getImageWidth() - ((x + 2) * pixelsPerTrack), curY);
+                    p.lineTo(getImageWidth() - ((x + 2 - 1) * pixelsPerTrack), curY);
                     g.setColour(juce::Colours::red);
                     g.strokePath(p, juce::PathStrokeType(0.5));
                     if (!isHighlighting)
@@ -234,20 +234,20 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
                 }
                 else
                 {
-                    if (isHighlighting){
-                    highlightPath.lineTo(curX, curY);
-                    isHighlighting = false;
+                    if (isHighlighting)
+                    {
+                        highlightPath.lineTo(curX, curY);
+                        isHighlighting = false;
                     }
-
                 }
             }
             g.setColour(juce::Colours::white);
             g.strokePath(path, juce::PathStrokeType(0.5));
             g.setColour(juce::Colours::red);
-            //g.strokePath(highlightPath, juce::PathStrokeType(0.5));
+            // g.strokePath(highlightPath, juce::PathStrokeType(0.5));
         }
         juce::Path refPath;
-        auto curX =  getImageWidth() - (2 * pixelsPerTrack * 2) + ((1 - detectionThreshold_scaled) * (pixelsPerTrack * 2));
+        auto curX = getImageWidth() - (2 * pixelsPerTrack * 2) + ((1 - detectionThreshold_scaled) * (pixelsPerTrack * 2));
         refPath.startNewSubPath(curX, 0);
         refPath.lineTo(curX, getImageHeight());
         g.setColour(juce::Colours::green);

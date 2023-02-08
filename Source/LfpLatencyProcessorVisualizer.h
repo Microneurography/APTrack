@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -39,7 +39,7 @@ class LfpLatencyProcessorVisualizer : public Visualizer
 {
 public:
     /** The class constructor, used to initialize any members. */
-    LfpLatencyProcessorVisualizer(LfpLatencyProcessor* processor);
+    LfpLatencyProcessorVisualizer(LfpLatencyProcessor *processor);
 
     /** The class destructor, used to deallocate memory */
     ~LfpLatencyProcessorVisualizer();
@@ -62,7 +62,6 @@ public:
     /** Called when data acquisition ends.*/
     void endAnimation() override;
 
-
     /** Updates spectrogram*/
     void timerCallback() override;
 
@@ -74,14 +73,14 @@ public:
 
     /*Set settings to right level to find spike*/
     void setConfig(int i);
-    void loadCustomParametersFromXml(XmlElement* xml) override;
+    void loadCustomParametersFromXml(XmlElement *xml) override;
 
 private:
-
-    struct spikeinfo {
-        float* lastRowData;
+    struct spikeinfo
+    {
+        float *lastRowData;
         int searchBoxLocationAbsolute; // Search Box Location Absolute (not sure what this is for, doesn't seem to change?)
-        int searchBoxWidthAbsolute; // Search Box Width Absolute
+        int searchBoxWidthAbsolute;    // Search Box Width Absolute
         float MAXLEVEL;
         int SearchLocationAbsolute; // Search Location Absolute
         int SearchLocationRelative; // Search Box Location Relative
@@ -90,14 +89,14 @@ private:
         int subsamples;
         int searchBoxWidth;
         float firingNumber = 0;
-        Array <float> firingNumbers;
+        Array<float> firingNumbers;
         float firingProbability = 0;
         bool isFull = false;
         float stimVol = 0;
         float bigStim = 0;
         bool thresholdFull = false; // not sure what this does.
     };
-    
+
     float level;
 
     int missCounter;
@@ -105,44 +104,42 @@ private:
     int hitCounter;
 
     int prevLocation;
-    
+
     float lastWindowPeak;
 
     int windowSampleCount;
-    
-    spikeinfo SL[4]; //spikeLocations
+
+    spikeinfo SL[4]; // spikeLocations
 
     int lastSearchBoxLocation;
 
+    Array<int> availableSpace = {0, 1, 2, 3};
 
-    Array <int> availableSpace = { 0, 1, 2, 3 };
+    Array<int> availableThresholdSpace = {0, 1, 2, 3};
 
-    Array <int> availableThresholdSpace = { 0, 1, 2, 3 };
-    
     int q = 0;
 
     int i;
-    
-    //int draw_imageHeight;
-    //int draw_rightHandEdge;
 
-    //Pointer to processor
-    LfpLatencyProcessor* processor;
-    
+    // int draw_imageHeight;
+    // int draw_rightHandEdge;
+
+    // Pointer to processor
+    LfpLatencyProcessor *processor;
+
     friend class LfpLatencyProcessorVisualizerContentComponent;
     friend class TableContent;
-    //friend class TableContent::UpdatingTextColumnComponent;
-    //friend class TableContent::SelectableColumnComponent;
+    // friend class TableContent::UpdatingTextColumnComponent;
+    // friend class TableContent::SelectableColumnComponent;
 
     // This component contains all components and graphics that were added using Projucer.
     // It's bounds initially have same bounds as the canvas itself.
     LfpLatencyProcessorVisualizerContentComponent content;
 
-    //ScopedPointer<LookAndFeel> m_contentLookAndFeel;
+    // ScopedPointer<LookAndFeel> m_contentLookAndFeel;
 
     // ========================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LfpLatencyProcessorVisualizer);
 };
-
 
 #endif // LFPLATENCYPROCESSORVISUALIZER_H_INCLUDED

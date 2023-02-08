@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -28,50 +28,50 @@
 #include <string>
 
 #ifdef WIN32
-    #include <Windows.h>
-    #define EXPORT __declspec(dllexport)
+#include <Windows.h>
+#define EXPORT __declspec(dllexport)
 #else
-    #define EXPORT __attribute__((visibility("default")))
+#define EXPORT __attribute__((visibility("default")))
 #endif
 
 using namespace Plugin;
-//Number of plugins defined on the library. Can be of different types (Processors, RecordEngines, etc...)
+// Number of plugins defined on the library. Can be of different types (Processors, RecordEngines, etc...)
 #define NUM_PLUGINS 1
 
-extern "C" EXPORT void getLibInfo (Plugin::LibraryInfo* info)
+extern "C" EXPORT void getLibInfo(Plugin::LibraryInfo *info)
 {
-    /* API version, defined by the GUI source. 
+    /* API version, defined by the GUI source.
        Should not be changed to ensure it is always equal to the one used in the latest codebase.
        The GUI refueses to load plugins with mismatched API versions */
-    info->apiVersion = PLUGIN_API_VER; 
+    info->apiVersion = PLUGIN_API_VER;
 
-    //Name of the Library, used only for information
+    // Name of the Library, used only for information
     info->name = "LfpLatency plugin library";
 
-    //Version of the library, used only for information
+    // Version of the library, used only for information
     info->libVersion = "1.0";
     info->numPlugins = NUM_PLUGINS;
 }
 
-extern "C" EXPORT int getPluginInfo (int index, Plugin::PluginInfo* info)
+extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo *info)
 {
     switch (index)
     {
-        //one case per plugin. This example is for a processor which connects directly to the signal chain
-        case 0:
-            //Type of plugin. See "Source/Processors/PluginManager/OpenEphysPlugin.h" for complete info about the different type structures
-            info->type = Plugin::PROCESSOR;
+    // one case per plugin. This example is for a processor which connects directly to the signal chain
+    case 0:
+        // Type of plugin. See "Source/Processors/PluginManager/OpenEphysPlugin.h" for complete info about the different type structures
+        info->type = Plugin::PROCESSOR;
 
-            //For processor
-            info->processor.name = "APTrack"; //Processor name shown in the GUI
+        // For processor
+        info->processor.name = "APTrack"; // Processor name shown in the GUI
 
-            //Type of processor. Can be FilterProcessor, SourceProcessor, SinkProcessor or UtilityProcessor. Specifies where on the processor list will appear
-            //info->processor.type = info->processor.type = Plugin::SinkProcessor;;
-            info->processor.type = Plugin::Processor::SINK;
+        // Type of processor. Can be FilterProcessor, SourceProcessor, SinkProcessor or UtilityProcessor. Specifies where on the processor list will appear
+        // info->processor.type = info->processor.type = Plugin::SinkProcessor;;
+        info->processor.type = Plugin::Processor::SINK;
 
-            //Class factory pointer. Replace "ExampleProcessor" with the name of your class.
-            
-            info->processor.creator = &(Plugin::createProcessor<LfpLatencyProcessor>);
+        // Class factory pointer. Replace "ExampleProcessor" with the name of your class.
+
+        info->processor.creator = &(Plugin::createProcessor<LfpLatencyProcessor>);
         break;
         /**
           Examples for other plugin types
@@ -97,17 +97,17 @@ extern "C" EXPORT int getPluginInfo (int index, Plugin::PluginInfo* info)
           info->fileSource.creator = &(Plugin::createFileSource<FileSourceClassName>);
          **/
 
-        default:
-            return -1;
+    default:
+        return -1;
         break;
     }
     return 0;
 }
 
 #ifdef WIN32
-BOOL WINAPI DllMain (IN HINSTANCE hDllHandle,
-                     IN DWORD     nReason,
-                     IN LPVOID    Reserved)
+BOOL WINAPI DllMain(IN HINSTANCE hDllHandle,
+                    IN DWORD nReason,
+                    IN LPVOID Reserved)
 {
     return TRUE;
 }

@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -38,16 +38,17 @@ class LfpLatencyProcessorVisualizerContentComponent;
 class LfpLatencyRightMiddlePanel : public Component
 {
 public:
-    LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisualizerContentComponent* content);
+    LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisualizerContentComponent *content);
     void resized() override;
 
     /* Just pass in the value string, " ms" will be auto added. */
-    void setROISpikeLatencyText(const String& newText);
+    void setROISpikeLatencyText(const String &newText);
 
     /* Just pass in the value string, " uV" will be auto added. */
-    void setROISpikeMagnitudeText(const String& newText);
+    void setROISpikeMagnitudeText(const String &newText);
 
     double getTriggerThresholdValue() const;
+
 private:
     ScopedPointer<LfpLatencyLabelTextEditor> ROISpikeLatency;
     ScopedPointer<LfpLatencyLabelTextEditor> ROISpikeMagnitude;

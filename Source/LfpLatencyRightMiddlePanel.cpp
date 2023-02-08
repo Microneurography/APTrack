@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -26,16 +26,14 @@
 
 #include "LfpLatencyRightMiddlePanel.h"
 
-
-
-LfpLatencyRightMiddlePanel::LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisualizerContentComponent* content)
+LfpLatencyRightMiddlePanel::LfpLatencyRightMiddlePanel(LfpLatencyProcessorVisualizerContentComponent *content)
 {
     ROISpikeLatency = new LfpLatencyLabelTextEditor("ROI Spike Location");
     ROISpikeMagnitude = new LfpLatencyLabelTextEditor("ROI Spike Value");
     triggerThreshold = new LfpLatencyLabelSlider("Trigger Threshold");
 
     triggerThreshold->setSliderRange(0.1, 150);
-    
+
     triggerThreshold->addSliderListener(content);
     triggerThreshold->setSliderValue(2.5);
 
@@ -60,12 +58,12 @@ void LfpLatencyRightMiddlePanel::resized()
     triggerThreshold->setBounds(area.removeFromTop(triggerThresholdHeight));
 }
 
-void LfpLatencyRightMiddlePanel::setROISpikeLatencyText(const String& newText)
+void LfpLatencyRightMiddlePanel::setROISpikeLatencyText(const String &newText)
 {
     ROISpikeLatency->setTextEditorText(newText + " ms");
 }
 
-void LfpLatencyRightMiddlePanel::setROISpikeMagnitudeText(const String& newText)
+void LfpLatencyRightMiddlePanel::setROISpikeMagnitudeText(const String &newText)
 {
     ROISpikeMagnitude->setTextEditorText(newText + " uV");
 }

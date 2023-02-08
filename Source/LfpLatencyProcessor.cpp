@@ -2,7 +2,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -29,13 +29,13 @@
 #include "LfpLatencyProcessor.h"
 #include "LfpLatencyProcessorEditor.h"
 #include "LfpLatencySpectrogramControlPanel.h"
-//#include "/modules/juce_core/files/juce_File.h"
-//#include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
+// #include "/modules/juce_core/files/juce_File.h"
+// #include "C:\\Users\\gsboo\\source\\repos\\plugin-GUI\\JuceLibraryCode\\modules\\juce_core\\misc\\juce_Result.h"
 #include <map>
 #include <vector>
 
 // If the processor uses a custom editor, it needs its header to instantiate it
-//#include "ExampleEditor.h"
+// #include "ExampleEditor.h"
 
 std::mutex savingAndLoadingLock;
 
@@ -69,7 +69,7 @@ LfpLatencyProcessor::LfpLatencyProcessor()
         spikeLocation[ii] = 0.0f;
     }
 
-    currentTrack = 0; //currentTrack increments before adding first row.
+    currentTrack = 0; // currentTrack increments before adding first row.
 
     // Set default channels
     dataChannel_idx = 0;
@@ -77,7 +77,6 @@ LfpLatencyProcessor::LfpLatencyProcessor()
 
     // Set default stimulus threshold
     stimulus_threshold = 2.5f;
-
 }
 
 void LfpLatencyProcessor::timerCallback(int timerID)
@@ -91,7 +90,6 @@ void LfpLatencyProcessor::timerCallback(int timerID)
 
 LfpLatencyProcessor::~LfpLatencyProcessor()
 {
-    
 }
 
 void LfpLatencyProcessor::resetDataChannel()
@@ -109,7 +107,7 @@ void LfpLatencyProcessor::resetTriggerChannel()
 */
 AudioProcessorEditor *LfpLatencyProcessor::createEditor()
 {
-    editor =std::make_unique<LfpLatencyProcessorEditor>(this, true);
+    editor = std::make_unique<LfpLatencyProcessorEditor>(this, true);
 
     // std::cout << "Creating editor." << std::endl;
 
@@ -135,48 +133,44 @@ void LfpLatencyProcessor::setStimulusVoltage(float sv)
     stimulusVoltage = sv;
 }
 
-
-void LfpLatencyProcessor::updateSettings(){
+void LfpLatencyProcessor::updateSettings()
+{
     createEventChannels();
 }
 // create event channel for pulsepal
 void LfpLatencyProcessor::createEventChannels()
 {
 
-    if (getNumDataStreams()==0){
+    if (getNumDataStreams() == 0)
+    {
         return;
     }
 
+    // #TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547
+    // pulsePalEventPtr->addProcessor(processorInfo.get());
+    //  eventChannels.add(new EventChannel(
+    //      (EventChannel::Settings){
+    //          .type=EventChannel::Type::TEXT,
+    //          .name="PulsePal Messages",
+    //          .identifier="pulsepal.event",
+    //          .stream = dataStreams.getLast()
+    //      }
+    //      ));
+    // pulsePalEventPtr = eventChannels.getLast();
 
-    //#TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547 
-    //pulsePalEventPtr->addProcessor(processorInfo.get());
-    // eventChannels.add(new EventChannel(
-    //     (EventChannel::Settings){
-    //         .type=EventChannel::Type::TEXT,
-    //         .name="PulsePal Messages",
-    //         .identifier="pulsepal.event",
-    //         .stream = dataStreams.getLast()
-    //     }
-    //     ));
-   // pulsePalEventPtr = eventChannels.getLast();
-
-
-
-    //spikeEventPtr->addProcessor(processorInfo.get());
-    // eventChannels.add(new EventChannel(
-    //     (EventChannel::Settings){
-    //         .type=EventChannel::Type::TEXT,
-    //         .name="Spike Data",
-    //         .description="Details of spikes found",
-    //         .identifier="spike.event",
-    //         .stream = dataStreams.getLast()
-    //     }
-    //     ));
+    // spikeEventPtr->addProcessor(processorInfo.get());
+    //  eventChannels.add(new EventChannel(
+    //      (EventChannel::Settings){
+    //          .type=EventChannel::Type::TEXT,
+    //          .name="Spike Data",
+    //          .description="Details of spikes found",
+    //          .identifier="spike.event",
+    //          .stream = dataStreams.getLast()
+    //      }
+    //      ));
 
     // spikeEventPtr = eventChannels.getLast();
-    //spikeEventPtr->addProcessor(processorInfo.get());
-
-
+    // spikeEventPtr->addProcessor(processorInfo.get());
 }
 
 // create chanel for storing spike data
@@ -192,7 +186,6 @@ void LfpLatencyProcessor::createEventChannels()
 
 void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
 {
-
 }
 
 // NOTE NOT CURRENTLY USED! Events detected in process() instead
@@ -347,7 +340,7 @@ void LfpLatencyProcessor::setTrackingDecreaseRate(float sv)
     trackingDecreaseRate = sv;
 }
 
-void LfpLatencyProcessor::trackSpikes() 
+void LfpLatencyProcessor::trackSpikes()
 {
     const std::lock_guard<std::mutex> lock(spikeGroups_mutex);
     for (int i = 0; i < spikeGroups.size(); i++)
@@ -374,12 +367,12 @@ void LfpLatencyProcessor::trackSpikes()
         {
             // spike detected
             SpikeInfo newSpike = {};
-            newSpike.spikeSampleLatency = (maxValInWindow - (dataCache+curTrackBufferLoc)); // scary pointer arithmetic. find the position in array of the max - start of current track
+            newSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc)); // scary pointer arithmetic. find the position in array of the max - start of current track
             newSpike.windowSize = templateSpike.windowSize;
             newSpike.threshold = templateSpike.threshold;
             newSpike.stimulusVoltage = this->pulsePalController->getStimulusVoltage();
             newSpike.spikePeakValue = *maxValInWindow;
-            newSpike.spikeSampleNumber = this->dataCacheTimestamps[currentTrack] + newSpike.spikeSampleLatency ; 
+            newSpike.spikeSampleNumber = this->dataCacheTimestamps[currentTrack] + newSpike.spikeSampleLatency;
             newSpike.trackIndex = currentTrack;
             curSpikeGroup.spikeHistory.push_back(newSpike);
             spikeGroups[i].templateSpike.spikeSampleLatency = newSpike.spikeSampleLatency;
@@ -400,11 +393,10 @@ void LfpLatencyProcessor::trackSpikes()
                      << ", \"trackIndex\":" << s->trackIndex
                      << ", \"spikeGroup\":" << i
                      << "}";
-            //#TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547 
-            // TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, s->spikeSampleNumber, json_out.str());
-            // addEvent(event, s->spikeSampleLatency);
+            // #TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547
+            //  TextEventPtr event = TextEvent::createTextEvent(spikeEventPtr, s->spikeSampleNumber, json_out.str());
+            //  addEvent(event, s->spikeSampleLatency);
             broadcastMessage(json_out.str());
-            
         }
         if (curSpikeGroup.isTracking) // threshold tracking
         {
@@ -423,12 +415,12 @@ void LfpLatencyProcessor::trackSpikes()
             // #TODO: update 50pct threshold if at 50pct
             float curPct = std::count(curSpikeGroup.recentHistory.begin(), curSpikeGroup.recentHistory.end(), true);
 
-            if (curPct ==(int) (curSpikeGroup.recentHistory.size()/2) && curSpikeGroup.spikeHistory.size()>= curSpikeGroup.recentHistory.size())
+            if (curPct == (int)(curSpikeGroup.recentHistory.size() / 2) && curSpikeGroup.spikeHistory.size() >= curSpikeGroup.recentHistory.size())
             {
                 float o = 0;
                 for (int i = 0; i < curSpikeGroup.recentHistory.size(); i++)
                 {
-                    SpikeInfo sp = curSpikeGroup.spikeHistory[curSpikeGroup.spikeHistory.size() - i-1];
+                    SpikeInfo sp = curSpikeGroup.spikeHistory[curSpikeGroup.spikeHistory.size() - i - 1];
                     o += sp.stimulusVoltage;
                 }
                 o = o / curSpikeGroup.recentHistory.size();
@@ -447,11 +439,11 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     {
         return;
     }
-    
+
     auto ts = this->getFirstSampleNumberForBlock(getDataStreams()[0]->getStreamId());
     // get num of samples in buffer
-   
-    int nSamples = buffer.getNumSamples();//getNumSamples(dataChannel_idx);
+
+    int nSamples = buffer.getNumSamples(); // getNumSamples(dataChannel_idx);
 
     // Data channel
     const float *bufPtr = buffer.getReadPointer(dataChannel_idx);
@@ -488,19 +480,15 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
             fifoIndex = 0;
             currentSample = 0;
             // increment row count
-            currentTrack++; 
-            
+            currentTrack++;
 
             // clear row
             for (auto ii = 0; ii < DATA_CACHE_SIZE_SAMPLES; ii++)
             {
                 dataCache[(currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES + ii] = 0.0f;
-               
             }
             // write the timestamps
             dataCacheTimestamps.push_back(ts + n); // #TODO: need to check this aligns with the datacache currentTrack
-
-           
         }
 
         if (currentSample < (DATA_CACHE_SIZE_SAMPLES))
@@ -516,10 +504,10 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     trackThreshold();
     while (!messages.empty())
     { // post pulsePal messages
-        //#TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547
-        //TextEventPtr event = TextEvent::createTextEvent(pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
-        // addEvent(event,0);
-        //addEvent(pulsePalEventPtr, event, 0);
+        // #TODO: re-enable - v0.6 genericprocessor breaks custom text streams. see https://github.com/open-ephys/plugin-GUI/issues/547
+        // TextEventPtr event = TextEvent::createTextEvent(pulsePalEventPtr, CoreServices::getGlobalTimestamp(), messages.front());
+        //  addEvent(event,0);
+        // addEvent(pulsePalEventPtr, event, 0);
         broadcastMessage(messages.front());
         messages.pop();
     }
@@ -641,7 +629,7 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
     // }
 }
 
-void LfpLatencyProcessor::loadCustomParametersFromXml(XmlElement* customParamsXml)
+void LfpLatencyProcessor::loadCustomParametersFromXml(XmlElement *customParamsXml)
 {
 }
 //     if (parametersAsXml == nullptr) // prevent double-loading

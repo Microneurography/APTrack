@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -26,24 +26,23 @@
 
 #include "LfpLatencySpectrogramControlPanel.h"
 
-
-ScopedPointer<LfpLatencyLabelHorizontalSlider> LfpLatencySpectrogramControlPanel::imageThreshold; // = new LfpLatencyLabelVerticalSlider("Image Threshold")
-ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::highImageThreshold; // = new LfpLatencyLabelTextEditor("High Image Threshold")
-ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::detectionThreshold; // = new LfpLatencyLabelTextEditor("Detection Threshold")
-ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::lowImageThreshold; // = new LfpLatencyLabelTextEditor("Low Image Threshold")
-ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::subsamplesPerWindowSlider; // = new LfpLatencyLabelSlider("Subsamples Per Window")
-ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::startingSampleSlider; // = new LfpLatencyLabelSlider("Starting Sample")
-ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::conductionDistanceSlider; // = new LfpLatencyLabelSlider("Conduction Distance")
+ScopedPointer<LfpLatencyLabelHorizontalSlider> LfpLatencySpectrogramControlPanel::imageThreshold;      // = new LfpLatencyLabelVerticalSlider("Image Threshold")
+ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::highImageThreshold;        // = new LfpLatencyLabelTextEditor("High Image Threshold")
+ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::detectionThreshold;        // = new LfpLatencyLabelTextEditor("Detection Threshold")
+ScopedPointer<LfpLatencyLabelTextEditor> LfpLatencySpectrogramControlPanel::lowImageThreshold;         // = new LfpLatencyLabelTextEditor("Low Image Threshold")
+ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::subsamplesPerWindowSlider;     // = new LfpLatencyLabelSlider("Subsamples Per Window")
+ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::startingSampleSlider;          // = new LfpLatencyLabelSlider("Starting Sample")
+ScopedPointer<LfpLatencyLabelSlider> LfpLatencySpectrogramControlPanel::conductionDistanceSlider;      // = new LfpLatencyLabelSlider("Conduction Distance")
 ScopedPointer<LfpLatencyLabelSliderNoTextBox> LfpLatencySpectrogramControlPanel::searchBoxWidthSlider; // = new LfpLatencyLabelSlider("Conduction Distance")
 
-
-LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyProcessorVisualizerContentComponent* content)
+LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyProcessorVisualizerContentComponent *content)
 {
     outline = new GroupComponent("Color control");
 
-    // #TODO: convert to horizontal 
+    // #TODO: convert to horizontal
     imageThreshold = new LfpLatencyLabelHorizontalSlider("Image Threshold");
-    if (content->getExtendedColorScale()) {
+    if (content->getExtendedColorScale())
+    {
         imageThreshold->setSliderRange(0, 1000, 0);
     }
     else
@@ -54,14 +53,14 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     imageThreshold->setSliderMaxValue(content->getHighImageThreshold());
     imageThreshold->setSliderValue(content->getDetectionThreshold());
     imageThreshold->setSliderMinValue(content->getLowImageThreshold());
-    
+
     highImageThreshold = new LfpLatencyLabelTextEditor("High Image Threshold");
     highImageThreshold->setTextEditorText(String(imageThreshold->getSliderMaximum()) + " uV");
     detectionThreshold = new LfpLatencyLabelTextEditor("Detection Threshold");
     detectionThreshold->setTextEditorText(String(imageThreshold->getSliderValue()) + " uV");
     lowImageThreshold = new LfpLatencyLabelTextEditor("Low Image Threshold");
     lowImageThreshold->setTextEditorText(String(imageThreshold->getSliderMinimum()) + " uV");
-    
+
     subsamplesPerWindowSlider = new LfpLatencyLabelSlider("Subsamples Per Window");
     int maxSubsample = std::round(DATA_CACHE_SIZE_SAMPLES / SPECTROGRAM_HEIGHT); // TODO: remove constants
     subsamplesPerWindowSlider->setSliderRange(1, maxSubsample, 1);
@@ -81,8 +80,7 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     this->searchBoxWidthSlider = new LfpLatencyLabelSliderNoTextBox("Search Box Width");
     this->searchBoxWidthSlider->setSliderRange(1, 1000, 10);
     this->searchBoxWidthSlider->addSliderListener(content);
-    this->searchBoxWidthSlider->setSliderValue(3); 
-
+    this->searchBoxWidthSlider->setSliderValue(3);
 
     addAndMakeVisible(outline);
     addAndMakeVisible(imageThreshold);
@@ -107,7 +105,7 @@ void LfpLatencySpectrogramControlPanel::resized()
     area.removeFromLeft(borderWidth);
     area.removeFromRight(borderWidth);
 
-    auto sliderWidth = getWidth()/3;
+    auto sliderWidth = getWidth() / 3;
     imageThreshold->setBounds(area.removeFromRight(sliderWidth));
 
     auto textItemHeight = area.getHeight() * 0.1;
@@ -121,19 +119,23 @@ void LfpLatencySpectrogramControlPanel::resized()
     this->searchBoxWidthSlider->setBounds(area.removeFromLeft(sliderItemHeight));
 }
 
-void LfpLatencySpectrogramControlPanel::setImageThresholdRange(double newMinimum, double newMaximum, double newInterval) {
+void LfpLatencySpectrogramControlPanel::setImageThresholdRange(double newMinimum, double newMaximum, double newInterval)
+{
     imageThreshold->setSliderRange(newMinimum, newMaximum, newInterval);
 }
 
-void LfpLatencySpectrogramControlPanel::setHighImageThresholdText(const String& newText) {
+void LfpLatencySpectrogramControlPanel::setHighImageThresholdText(const String &newText)
+{
     highImageThreshold->setTextEditorText(newText);
 }
 
-void LfpLatencySpectrogramControlPanel::setDetectionThresholdText(const String& newText) {
+void LfpLatencySpectrogramControlPanel::setDetectionThresholdText(const String &newText)
+{
     detectionThreshold->setTextEditorText(newText);
 }
 
-void LfpLatencySpectrogramControlPanel::setLowImageThresholdText(const String& newText) {
+void LfpLatencySpectrogramControlPanel::setLowImageThresholdText(const String &newText)
+{
     lowImageThreshold->setTextEditorText(newText);
 }
 
@@ -193,15 +195,15 @@ double LfpLatencySpectrogramControlPanel::getImageThresholdMaxValue() const
 }
 void LfpLatencySpectrogramControlPanel::setDetectionThresholdValue(double newValue)
 {
-    if (newValue>imageThreshold->getSliderMaxValue()){
+    if (newValue > imageThreshold->getSliderMaxValue())
+    {
         imageThreshold->setSliderMaxValue(newValue);
     }
-    if (newValue<imageThreshold->getSliderMinValue()){
+    if (newValue < imageThreshold->getSliderMinValue())
+    {
         imageThreshold->setSliderMinValue(newValue);
     }
     imageThreshold->setSliderValue(newValue);
-
-    
 }
 
 void LfpLatencySpectrogramControlPanel::setImageThresholdMaxValue(double newValue)
@@ -243,9 +245,9 @@ void LfpLatencySpectrogramControlPanel::setSearchBoxWidthValue(double newValue)
     searchBoxWidthSlider->setSliderValue(newValue);
 }
 
-void LfpLatencySpectrogramControlPanel::loadParameters(const std::map<String, String>& newParameters)
+void LfpLatencySpectrogramControlPanel::loadParameters(const std::map<String, String> &newParameters)
 {
-	imageThreshold->setSliderValue(newParameters.at("Image Threshold").getDoubleValue());
+    imageThreshold->setSliderValue(newParameters.at("Image Threshold").getDoubleValue());
     subsamplesPerWindowSlider->setSliderValue(newParameters.at("Subsamples Per Window").getDoubleValue());
     startingSampleSlider->setSliderValue(newParameters.at("Starting Sample").getDoubleValue());
     conductionDistanceSlider->setSliderValue(newParameters.at("Conduction Distance").getDoubleValue());

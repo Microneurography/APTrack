@@ -3,7 +3,7 @@
     ------------------------------------------------------------------
 
     This file is part of APTrack, a plugin for the Open-Ephys Gui
-    
+
     Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
     Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
@@ -40,14 +40,14 @@ class LfpLatencyLabelSliderNoTextBox;
 class LfpLatencySpectrogramControlPanel : public Component
 {
 public:
-    LfpLatencySpectrogramControlPanel(LfpLatencyProcessorVisualizerContentComponent* content);
+    LfpLatencySpectrogramControlPanel(LfpLatencyProcessorVisualizerContentComponent *content);
 
     void resized() override;
 
     void setImageThresholdRange(double newMinimum, double newMaximum, double newInterval = 0);
-    void setHighImageThresholdText(const String& newText);
-    void setDetectionThresholdText(const String& newText);
-    void setLowImageThresholdText(const String& newText);
+    void setHighImageThresholdText(const String &newText);
+    void setDetectionThresholdText(const String &newText);
+    void setLowImageThresholdText(const String &newText);
 
     void setStartingSampleValue(double newValue);
     void setSubsamplesPerWindowValue(double newValue);
@@ -70,7 +70,7 @@ public:
     void setDetectionThresholdValue(double newValue);
     void setSearchBoxWidthValue(double newValue);
 
-    static void loadParameters(const std::map<String, String>& newParameters);
+    static void loadParameters(const std::map<String, String> &newParameters);
 
 private:
     ScopedPointer<GroupComponent> outline;
