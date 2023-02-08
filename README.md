@@ -244,9 +244,8 @@ Please note, this plugin is still in development. Any suggestions/questions shou
 
 APTrack, a plugin for the Open-Ephys Gui
 
-Copyright (C) 2019-2023 Aidan Nickerson, Eli Lilly and Company, University of Bristol,
-Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez, Open Ephys
-
+Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
+Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 ------------------------------------------------------------------
 
 This program is free software: you can redistribute it and/or modify
