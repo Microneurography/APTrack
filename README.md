@@ -1,9 +1,11 @@
-# Latency Tracker Plugin
+# APTrack - latency tracking plugin for open-ephys
+
 This plugin extends the functionality of the [Open Ephys GUI](https://github.com/open-ephys/plugin-GUI) to support experiments in microneurography, and track constant latency evoked responses.
 
 ## Resources
 
 The Open Ephys team is moving their documentation from [atlassian](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491527/Open+Ephys+GUI) to [GitHub](https://open-ephys.github.io/gui-docs/User-Manual/Installing-the-GUI.html), however this has not yet been completed so I would suggest referring to the atlassian documentation for now.
+
 ### Getting Started with Open-Ephys and LfpLatency Plugin
 #### Step 1: Compiling Open-Ephys
 **Pre-requisities: cmake, git, (git bash for Windows), (Virtual Studio 2019 for Windows)**
