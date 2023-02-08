@@ -1,8 +1,10 @@
 /*
     ------------------------------------------------------------------
 
-    This file is part of the Open Ephys GUI
-    Copyright (C) 2016 Open Ephys
+    This file is part of APTrack, a plugin for the Open-Ephys Gui
+    
+    Copyright (C) 2019-2023 Eli Lilly and Company, University of Bristol, Open Ephys
+    Authors: Aidan Nickerson, Grace Stangroome, Merle Zhang, James O'Sullivan, Manuel Martinez
 
     ------------------------------------------------------------------
 
