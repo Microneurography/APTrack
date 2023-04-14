@@ -28,7 +28,7 @@
 #include "LfpLatencyProcessorVisualizerContentComponent.h"
 
 LfpLatencySpectrogram::LfpLatencySpectrogram(int imageWidth, int imageHeight)
-    : image(Image::RGB, imageWidth, imageHeight, true)
+    : image(Image::RGB, imageWidth, imageHeight, true), bmap(tracksAmount, vector<float>(DATA_CACHE_SIZE_SAMPLES))
 {
     // Paint image
     paintAll(Colours::yellowgreen);
@@ -110,7 +110,7 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
     //       But most of them are not used in other places, so potentially some of them can be removed from the class definition.
     int pixelsPerTrack = getImageWidth() / tracksAmount; // LfpLatencyProcessorVisualizer.pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
     // #TODO: bmap should be const declared outside of here. otherwise dynamic allocation
-    float bmap[tracksAmount][DATA_CACHE_SIZE_SAMPLES];
+    
     for (int track = 0; track < tracksAmount; track++)
     {
         // Get image dimension

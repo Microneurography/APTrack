@@ -47,6 +47,7 @@ public:
 
 private:
     Image image;
+    std::vector<vector<float>> bmap;
 
     void paintAll(Colour colour);
     void drawHot(int x, int y, float lastWindowPeak, const LfpLatencyProcessorVisualizerContentComponent &content, float level);
