@@ -1,4 +1,4 @@
-name: Build LfpLatency without_docker
+name: Build on publish
 on:
   push:
     tags:
