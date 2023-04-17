@@ -108,10 +108,16 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
 {
     // TODO: Following comments beside variable represent it's original source in visualizer: field variable in class.
     //       But most of them are not used in other places, so potentially some of them can be removed from the class definition.
-    int pixelsPerTrack = getImageWidth() / tracksAmount; // LfpLatencyProcessorVisualizer.pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
-    // #TODO: bmap should be const declared outside of here. otherwise dynamic allocation
-    
-    for (int track = 0; track < tracksAmount; track++)
+    int comboBoxSelectedId = content.getColorStyleComboBoxSelectedId();
+    int tracksAmount2 = tracksAmount;
+    if (comboBoxSelectedId == 5)
+    {
+        tracksAmount2 = max(tracksAmount2 / 2, 1);
+    }
+
+    int pixelsPerTrack = getImageWidth() / tracksAmount2; // LfpLatencyProcessorVisualizer.pixelsPerTrack = SPECTROGRAM_WIDTH / tracksAmount;
+
+    for (int track = 0; track < tracksAmount2; track++)
     {
         // Get image dimension
         int draw_imageHeight = getImageHeight();                           // LfpLatencyProcessorVisualizer.draw_imageHeight;
@@ -191,7 +197,6 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
     }
 
     auto detectionThreshold_scaled = jmap(content.getDetectionThreshold(), content.getLowImageThreshold(), content.getHighImageThreshold(), 0.0f, 1.0f);
-    int comboBoxSelectedId = content.getColorStyleComboBoxSelectedId();
     if (comboBoxSelectedId == 5)
     {
 
@@ -201,7 +206,7 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
         g.setOpacity(1);
         // g.setFillType(juce::FillType(juce::Colours::orange));
 
-        for (int x = 0; x < tracksAmount; x++)
+        for (int x = 0; x < tracksAmount2; x++)
         {
             auto xOffset = getImageWidth() - ((x + 2) * pixelsPerTrack);
             juce::Path path;
@@ -247,7 +252,7 @@ void LfpLatencySpectrogram::update(LfpLatencyProcessor &processor, const LfpLate
             // g.strokePath(highlightPath, juce::PathStrokeType(0.5));
         }
         juce::Path refPath;
-        auto curX = getImageWidth() - (2 * pixelsPerTrack * 2) + ((1 - detectionThreshold_scaled) * (pixelsPerTrack * 2));
+        auto curX = getImageWidth() - (2 * pixelsPerTrack) + ((1 - detectionThreshold_scaled) * (pixelsPerTrack));
         refPath.startNewSubPath(curX, 0);
         refPath.lineTo(curX, getImageHeight());
         g.setColour(juce::Colours::green);
