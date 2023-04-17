@@ -453,12 +453,20 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
     // Debug channel, used to explore scalings
     // const float* bufPtr_test = buffer.getReadPointer(23);
+    bool is_adc = getDataStreams()[0]->getContinuousChannels()[dataChannel_idx]->getType() == ContinuousChannel::Type::ADC;
 
     // For each sample in buffer
     for (auto n = 0; n < nSamples; ++n)
     {
         // Read sample from DATA buffer
         float data = *(bufPtr + n) * 1.0f;
+
+        // if current channel is ADC multiply by 1000 as the value is stored in V (https://open-ephys.github.io/gui-docs/Developer-Guide/Open-Ephys-Plugin-API/Processor-Plugins.html)
+
+        if (is_adc)
+        {
+            data = data * 1000.0f;
+        }
 
         // Read sample from TRIGGER (ADC) buffer
         float data_pulses = *(bufPtr_pulses + n);
