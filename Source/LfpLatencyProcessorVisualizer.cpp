@@ -203,5 +203,3 @@ void LfpLatencyProcessorVisualizer::setConfig(int i)
         content.spectrogramControlPanel->setSearchBoxWidthValue(SL[i].searchBoxWidth);
     }
 }
-
-void LfpLatencyProcessorVisualizer::loadCustomParametersFromXml(XmlElement *xml) {}

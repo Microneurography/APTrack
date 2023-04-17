@@ -629,9 +629,9 @@ void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
     // }
 }
 
-void LfpLatencyProcessor::loadCustomParametersFromXml(XmlElement *customParamsXml)
-{
-}
+// void LfpLatencyProcessor::loadCustomParametersFromXml(XmlElement *customParamsXml)
+// {
+// }
 //     if (parametersAsXml == nullptr) // prevent double-loading
 //         return;
 

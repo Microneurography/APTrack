@@ -73,8 +73,6 @@ public:
 
     /*Set settings to right level to find spike*/
     void setConfig(int i);
-    void loadCustomParametersFromXml(XmlElement *xml) override;
-
 private:
     struct spikeinfo
     {

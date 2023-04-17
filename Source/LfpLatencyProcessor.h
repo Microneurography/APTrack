@@ -133,10 +133,10 @@ public:
     static void loadRecoveryData(std::unordered_map<std::string, juce::String> *valuesMap);
 
     /** Saving custom settings to XML. */
-    virtual void saveCustomParametersToXml(XmlElement *parentElement) override;
+    // virtual void saveCustomParametersToXml(XmlElement *parentElement);
 
     /** Load custom settings from XML*/
-    virtual void loadCustomParametersFromXml(XmlElement *customParamsXml) override;
+    // virtual void loadCustomParametersFromXml(XmlElement *customParamsXml);
 
     virtual void createEventChannels();
 
