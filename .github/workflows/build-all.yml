@@ -1,0 +1,116 @@
+name: Build LfpLatency without_docker
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+
+  build:
+    name: Compile action
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            release_suffix: ubuntu
+          - os: macos-latest
+            release_suffix: mac
+          - os: windows-latest
+            release_suffix: windows
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: OEPlugins/OE-plugin-latency-tracker
+      - name: Checkout
+        uses: actions/checkout@v2
+
+        with:
+          repository: open-ephys/plugin-GUI
+          path: plugin-GUI
+      
+      # Linux build specific
+      - name: LINUX setup env
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: plugin-GUI/Resources/Scripts
+        env:
+          CC: gcc-8
+          CXX: g++-8
+        run: |
+          sudo apt-get update
+          sudo apt install gcc-8 g++-8
+          sudo ./install_linux_dependencies.sh
+          cd ../../Build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+      - name: LINUX Build plugin
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          CC: gcc-8
+          CXX: g++-8
+        working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
+        run: |
+          cmake -G "Unix Makefiles" ..
+          make      
+      - name: LINUX upload binary
+        if: matrix.os == 'ubuntu-latest'
+        uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: 'OEPlugins/OE-plugin-latency-tracker/Build/*.so'
+
+      # Windows build specific
+
+      - name: WINDOWS ensure msbuild
+        if: matrix.os == 'windows-latest'
+        uses: microsoft/setup-msbuild@v1.0.2
+        
+      - name: WINDOWS setup env
+        if: matrix.os == 'windows-latest'
+        working-directory: plugin-GUI/Build
+        run: |   
+         cmake -G "Visual Studio 17 2022" -A x64 ..
+         curl -L -o oebuild.zip https://github.com/open-ephys/plugin-GUI/releases/download/v0.6.4/open-ephys-v0.6.4-windows.zip
+         7z x oebuild.zip
+         mkdir Release
+         mv open-ephys/* Release
+         
+      - name: WINDOWS Build plugin
+        if: matrix.os == 'windows-latest'
+        working-directory: OEPlugins/OE-plugin-latency-tracker/Build 
+        run: |
+          cmake -G "Visual Studio 17 2022" -A x64 ..
+          cd ..
+          msbuild Build/ALL_BUILD.vcxproj -p:Configuration=Release -p:Platform=x64
+          
+      - name: WINDOWS Upload binary
+        if: matrix.os == 'windows-latest'
+        uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: 'OEPlugins/OE-plugin-latency-tracker/Build/Release/*.dll'
+    
+      - name: OSX build oe
+        if: matrix.os == 'macos-latest'
+#         if: steps.cache-oe.outputs.cache-hit != 'true'
+        working-directory: plugin-GUI
+        run: | 
+          mkdir -p Build
+          cd Build
+          cmake ..
+          cmake --build . --config Release --target open-ephys -j 2
+      - name: OSX build plugin
+        working-directory: OEPlugins/OE-plugin-latency-tracker
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p Build
+          cd Build
+          cmake -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -G "Unix Makefiles" ..
+          make
+          tar -zcvf OE-plugin-latency-tracker.bundle.tar.gz OE-plugin-latency-tracker.bundle
+      - name: OSX Upload Binary 
+        uses: softprops/action-gh-release@v1
+        if: matrix.os == 'macos-latest'
+#         if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: 'OEPlugins/OE-plugin-latency-tracker/Build/OE-plugin-latency-tracker.bundle.tar.gz'
