@@ -465,7 +465,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
         if (is_adc)
         {
-            data = data * 1000.0f;
+            data = data * 1000000.0f;
         }
 
         // Read sample from TRIGGER (ADC) buffer
