@@ -39,6 +39,7 @@ LfpLatencyProcessorEditor::LfpLatencyProcessorEditor(GenericProcessor *parentNod
     //  addAndMakeVisible (&content);
     //  content.toBack(); // to be able to see parameters components
     setDesiredWidth(EDITOR_DESIRED_WIDTH);
+    addSelectedChannelsParameterEditor("data_channel", 0, 0);
 
     ////Most used buttons are UtilityButton, which shows a simple button with text and ElectrodeButton, which is an on-off button which displays a channel.
     // exampleButton = new UtilityButton ("Button text", Font ("Default", 15, Font::plain));

@@ -269,11 +269,13 @@ LfpLatencyProcessorVisualizerContentComponent::LfpLatencyProcessorVisualizerCont
     triggerChannelComboBoxLabel = new Label("Trigger_Channel_Combo_Box_Label");
     triggerChannelComboBoxLabel->setText("Trigger Channel", sendNotification);
 
-    dataChannelComboBox = new ComboBox("Data Channel");
-    dataChannelComboBox->setEditableText(false);
-    dataChannelComboBox->setJustificationType(Justification::centredLeft);
-    dataChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
-    dataChannelComboBox->addSectionHeading("Data");
+    dataChannelSelector = new SelectedChannelsParameterEditor(processor->getParameter("data_channel"));
+
+    // dataChannelComboBox = new ComboBox("Data Channel");
+    // dataChannelComboBox->setEditableText(false);
+    // dataChannelComboBox->setJustificationType(Justification::centredLeft);
+    // dataChannelComboBox->setTextWhenNothingSelected(TRANS("None"));
+    // dataChannelComboBox->addSectionHeading("Data");
     dataChannelComboBoxLabel = new Label("Data_Channel_Combo_Box_Label");
     dataChannelComboBoxLabel->setText("Data Channel", sendNotification);
 
@@ -534,7 +536,7 @@ void LfpLatencyProcessorVisualizerContentComponent::resized()
     triggerChannelComboBox->setBounds(785, 68, 120, 24);
     triggerChannelComboBoxLabel->setBounds(665, 68, 120, 24);
 
-    dataChannelComboBox->setBounds(785, 97, 120, 24);
+    dataChannelSelector->setBounds(785, 97, 120, 24);
     dataChannelComboBoxLabel->setBounds(665, 97, 120, 24); // fine
 
     auto boundsMap = otherControlPanel->getTableBounds();
@@ -898,7 +900,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
         view->addAndMakeVisible(triggerChannelComboBox);
         view->addAndMakeVisible(triggerChannelComboBoxLabel);
 
-        view->addAndMakeVisible(dataChannelComboBox);
+        view->addAndMakeVisible(dataChannelSelector);
         view->addAndMakeVisible(dataChannelComboBoxLabel);
 
         view->addAndMakeVisible(stimuliNumber);
@@ -915,7 +917,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
         triggerChannelComboBox->setBounds(135, 70, 120, 24);
         triggerChannelComboBoxLabel->setBounds(10, 70, 120, 24);
 
-        dataChannelComboBox->setBounds(135, 100, 120, 24);
+        dataChannelSelector->setBounds(135, 100, 120, 24);
         dataChannelComboBoxLabel->setBounds(10, 100, 120, 24); // fine
 
         // stimuliNumberSlider->setBounds(114, 160, 72, 72);

@@ -180,6 +180,7 @@ private:
     ScopedPointer<ComboBox> triggerChannelComboBox;
     ScopedPointer<Label> triggerChannelComboBoxLabel;
 
+    ScopedPointer<SelectedChannelsParameterEditor> dataChannelSelector;
     ScopedPointer<ComboBox> dataChannelComboBox;
     ScopedPointer<Label> dataChannelComboBoxLabel;
 

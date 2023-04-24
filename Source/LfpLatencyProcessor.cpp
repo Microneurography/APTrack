@@ -47,6 +47,8 @@ LfpLatencyProcessor::LfpLatencyProcessor()
     pulsePalController = new ppController(this);
     spikeGroups.reserve(100);
     dataCacheTimestamps.reserve(3000); // resrve 3k timestamps
+    addSelectedChannelsParameter(
+        Parameter::STREAM_SCOPE, "data_channel", "", 1);
 
     // Parameter controlling number of samples per subsample window
     // auto parameter0 = new Parameter ("detectionThreshold", 1, 4000, 1000, 0);
@@ -78,6 +80,13 @@ LfpLatencyProcessor::LfpLatencyProcessor()
     // Set default stimulus threshold
     stimulus_threshold = 2.5f;
 }
+void LfpLatencyProcessor::parameterValueChanged(Parameter *param)
+{
+    if (param->getName() == "data_channel")
+    {
+        dataChannel_idx = (static_cast<SelectedChannelsParameter *>(param))->getArrayValue()[0];
+    }
+};
 
 void LfpLatencyProcessor::timerCallback(int timerID)
 {
@@ -183,10 +192,6 @@ void LfpLatencyProcessor::createEventChannels()
 // void LfpLatencyProcessor::createSpikeChannels(){
 // SpikeChannel* spikes = new SpikeChannel()
 // }
-
-void LfpLatencyProcessor::setParameter(int parameterIndex, float newValue)
-{
-}
 
 // NOTE NOT CURRENTLY USED! Events detected in process() instead
 /**
@@ -609,32 +614,33 @@ void LfpLatencyProcessor::loadRecoveryData(std::unordered_map<std::string, juce:
     savingAndLoadingLock.unlock();
 }
 
-void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
-{
-    // #TODO: re-enable
-    // XmlElement *mainNode = parentElement->createNewChildElement("LfpLatencyProcessor");
-    // mainNode->setAttribute("numParameters", getNumParameters());
+// void LfpLatencyProcessor::saveCustomParametersToXml(XmlElement *parentElement)
+// {
+//     // #TODO: re-enable
+//     // XmlElement *mainNode = parentElement->createNewChildElement("APTrack");
+//     // mainNode->setAttribute("numParameters", getNumParameters());
+//     // mainNode->createNewChildElement("dataChannel")->setText(String(this->dataChannel_idx));
 
-    // for (int i = 0; i < getNumParameters(); ++i)
-    // {
-    //     XmlElement *parameterNode = mainNode->createNewChildElement("Parameter");
+//     // for (int i = 0; i < getNumParameters(); ++i)
+//     // {
+//     //     XmlElement *parameterNode = mainNode->createNewChildElement("Parameter");
 
-    //     auto parameter = getParameterObject(i);
-    //     parameterNode->setAttribute("name", parameter->getName());
-    //     parameterNode->setAttribute("type", parameter->getParameterTypeString());
+//     //     auto parameter = getParameterObject(i);
+//     //     parameterNode->setAttribute("name", parameter->getName());
+//     //     parameterNode->setAttribute("type", parameter->getParameterTypeString());
 
-    //     auto parameterValue = getParameterVar(i, currentChannel);
+//     //     auto parameterValue = getParameterVar(i, currentChannel);
 
-    //     if (parameter->isBoolean())
-    //         parameterNode->setAttribute("value", (int)parameterValue);
-    //     else if (parameter->isContinuous() || parameter->isDiscrete() || parameter->isNumerical())
-    //         parameterNode->setAttribute("value", (double)parameterValue);
-    // }
-}
+//     //     if (parameter->isBoolean())
+//     //         parameterNode->setAttribute("value", (int)parameterValue);
+//     //     else if (parameter->isContinuous() || parameter->isDiscrete() || parameter->isNumerical())
+//     //         parameterNode->setAttribute("value", (double)parameterValue);
+//     // }
+// }
 
-void LfpLatencyProcessor::loadCustomParametersFromXml(XmlElement *customParamsXml)
-{
-}
+// void LfpLatencyProcessor::loadCustomParametersFromXml(XmlElement *customParamsXml)
+// {
+// }
 //     if (parametersAsXml == nullptr) // prevent double-loading
 //         return;
 
@@ -711,89 +717,89 @@ int LfpLatencyProcessor::getSamplesPerSubsampleWindow()
     return samplesPerSubsampleWindow;
 }
 
-void LfpLatencyProcessor::changeParameter(int parameterID, float value)
-{
-    switch (parameterID)
-    {
-    case 1:
-        samplesPerSubsampleWindow = value;
-        break;
-    case 2:
-        samplesAfterStimulusStart = value;
-        break;
-    case 3:
-        // change current trigger chan
-        if (value >= 0 && value < 25)
-            triggerChannel_idx = value;
-        break;
-    case 4:
-        // change current trigger chan
-        if (value >= 0 && value < 25)
-            dataChannel_idx = value;
-        break;
-    case 5:
-        // change current strimulus detection threshold
-        if (value >= 0)
-            stimulus_threshold = value;
-        break;
-    }
-    /*if (parameterID == 1)
-    {
-        samplesPerSubsampleWindow = value;
-    }
-    if (parameterID == 2)
-    {
-        samplesAfterStimulusStart = value;
-    }
-    if (parameterID == 3)
-    {
-        // change current trigger chan
-        if (value >= 0 && value < 25)
-        {
-            triggerChannel_idx = value;
-        }
-    }
-    if (parameterID == 4)
-    {
-        // change current trigger chan
-        if (value >= 0 && value < 25)
-        {
-            dataChannel_idx = value;
-        }
-    }
-    if (parameterID == 5)
-    {
-        // change current strimulus detection threshold
-        if (value >= 0)
-        {
-            stimulus_threshold = value;
-        }
-    }*/
-}
+// void LfpLatencyProcessor::changeParameter(int parameterID, float value)
+// {
+//     switch (parameterID)
+//     {
+//     case 1:
+//         samplesPerSubsampleWindow = value;
+//         break;
+//     case 2:
+//         samplesAfterStimulusStart = value;
+//         break;
+//     case 3:
+//         // change current trigger chan
+//         if (value >= 0 && value < 25)
+//             triggerChannel_idx = value;
+//         break;
+//     case 4:
+//         // change current trigger chan
+//         if (value >= 0 && value < 25)
+//             dataChannel_idx = value;
+//         break;
+//     case 5:
+//         // change current strimulus detection threshold
+//         if (value >= 0)
+//             stimulus_threshold = value;
+//         break;
+//     }
+//     /*if (parameterID == 1)
+//     {
+//         samplesPerSubsampleWindow = value;
+//     }
+//     if (parameterID == 2)
+//     {
+//         samplesAfterStimulusStart = value;
+//     }
+//     if (parameterID == 3)
+//     {
+//         // change current trigger chan
+//         if (value >= 0 && value < 25)
+//         {
+//             triggerChannel_idx = value;
+//         }
+//     }
+//     if (parameterID == 4)
+//     {
+//         // change current trigger chan
+//         if (value >= 0 && value < 25)
+//         {
+//             dataChannel_idx = value;
+//         }
+//     }
+//     if (parameterID == 5)
+//     {
+//         // change current strimulus detection threshold
+//         if (value >= 0)
+//         {
+//             stimulus_threshold = value;
+//         }
+//     }*/
+// }
 
-int LfpLatencyProcessor::getParameterInt(int parameterID)
-{
-    int value = -1;
+// int LfpLatencyProcessor::getParameterInt(int parameterID)
+// {
+//     int value = -1;
 
-    if (parameterID == 1)
-    {
-        value = triggerChannel_idx;
-    }
-    if (parameterID == 2)
-    {
-        value = dataChannel_idx;
-    }
+//     if (parameterID == 1)
+//     {
+//         value = triggerChannel_idx;
+//     }
+//     if (parameterID == 2)
+//     {
+//         value = dataChannel_idx;
+//     }
 
-    return value;
-}
+//     return value;
+// }
 
-float LfpLatencyProcessor::getParameterFloat(int parameterID)
-{
-    float value = -1;
+// float LfpLatencyProcessor::getParameterFloat(int parameterID)
+// {
+//     float value = -1;
 
-    if (parameterID == 1)
-    {
-        value = lastReceivedDACPulse;
-    }
-    return value;
-}
+//     if (parameterID == 1)
+//     {
+//         value = lastReceivedDACPulse;
+//     }
+//     return value;
+// }

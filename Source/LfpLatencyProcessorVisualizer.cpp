@@ -68,30 +68,30 @@ void LfpLatencyProcessorVisualizer::update()
     // Populate combobox with new channels, keep current selection if availiable
     //  get current selection
     int last_triggerChannelId = content.triggerChannelComboBox->getSelectedId();
-    int last_dataChannelID = content.dataChannelComboBox->getSelectedId();
+    // int last_dataChannelID = content.dataChannelComboBox->getSelectedId();
 
     // Clear old values and repopulate combobox
     content.triggerChannelComboBox->clear();
-    content.dataChannelComboBox->clear();
+    // content.dataChannelComboBox->clear();
 
     content.triggerChannelComboBox->addSectionHeading("Trigger");
-    content.dataChannelComboBox->addSectionHeading("Data");
+    // content.dataChannelComboBox->addSectionHeading("Data");
 
     for (int ii = 0; ii < numAvailiableChannels; ii++)
     {
         auto datastream = processor->getContinuousChannel(ii);
         content.triggerChannelComboBox->addItem(datastream->getName(), ii + 1);
-        content.dataChannelComboBox->addItem(datastream->getName(), ii + 1);
-        // if (processor->getDataStream(ii)->get->getChannelType() == DataChannel::HEADSTAGE_CHANNEL)
-        // {
-        // 	content.triggerChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
-        // 	content.dataChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
-        // }
-        // else if (processor->getDataChannel(ii)->getChannelType() == DataChannel::ADC_CHANNEL)
-        // {
-        // 	content.triggerChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
-        // 	//content.dataChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
-        // }
+        // content.dataChannelComboBox->addItem(datastream->getName(), ii + 1);
+        //  if (processor->getDataStream(ii)->get->getChannelType() == DataChannel::HEADSTAGE_CHANNEL)
+        //  {
+        //  	content.triggerChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
+        //  	content.dataChannelComboBox->addItem("CH" + String(ii + 1), ii + 1);
+        //  }
+        //  else if (processor->getDataChannel(ii)->getChannelType() == DataChannel::ADC_CHANNEL)
+        //  {
+        //  	content.triggerChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
+        //  	//content.dataChannelComboBox->addItem("ADC" + String(ii + 1), ii + 1);
+        //  }
     }
     // If channel still availaible, keep selection, otherwise no don't select anything
     // Trigger chanel combobox
@@ -105,15 +105,15 @@ void LfpLatencyProcessorVisualizer::update()
         processor->resetTriggerChannel();
     }
     // data channel combobox
-    if (content.dataChannelComboBox->getNumItems() <= last_dataChannelID)
-    {
-        content.dataChannelComboBox->setSelectedId(last_dataChannelID);
-    }
-    else
-    {
-        content.triggerChannelComboBox->setSelectedId(0);
-        processor->resetDataChannel();
-    }
+    // if (content.dataChannelComboBox->getNumItems() <= last_dataChannelID)
+    // {
+    //     content.dataChannelComboBox->setSelectedId(last_dataChannelID);
+    // }
+    // else
+    // {
+    //     content.triggerChannelComboBox->setSelectedId(0);
+    //     processor->resetDataChannel();
+    // }
 }
 
 void LfpLatencyProcessorVisualizer::refresh()
@@ -138,11 +138,11 @@ void LfpLatencyProcessorVisualizer::timerCallback()
     // #TODO: Why is this calle deach time the page refreshes?
     // #TODO: move away from this methodology.
 
-    processor->changeParameter(1, content.subsamplesPerWindow);
-    processor->changeParameter(2, content.startingSample);
-    processor->changeParameter(3, content.triggerChannelComboBox->getSelectedId() - 1);  // pass channel Id -1 = channel index
-    processor->changeParameter(4, content.dataChannelComboBox->getSelectedId() - 1);     // pass channel Id -1 = channel index
-    processor->changeParameter(5, content.rightMiddlePanel->getTriggerThresholdValue()); // pass channel Id -1 = channel index
+    // processor->changeParameter(1, content.subsamplesPerWindow);
+    // processor->changeParameter(2, content.startingSample);
+    // processor->changeParameter(3, content.triggerChannelComboBox->getSelectedId() - 1);  // pass channel Id -1 = channel index
+    // processor->changeParameter(4, content.dataChannelComboBox->getSelectedId() - 1);     // pass channel Id -1 = channel index
+    // processor->changeParameter(5, content.rightMiddlePanel->getTriggerThresholdValue()); // pass channel Id -1 = channel index
 
     // update spike tracking details
     content.stimulusVoltageSlider->setValue(processor->pulsePalController->getStimulusVoltage(), juce::NotificationType::dontSendNotification);

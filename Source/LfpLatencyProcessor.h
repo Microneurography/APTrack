@@ -119,11 +119,6 @@ public:
     */
     void process(AudioSampleBuffer &buffer) override;
 
-    /** The method that standard controls on the editor will call.
-        It is recommended that any variables used by the "process" function
-        are modified only through this method while data acquisition is active. */
-    void setParameter(int parameterIndex, float newValue) override;
-
     /** This method is a critical section, protected a mutex lock. Allows you to save slider values, and maybe
     some data if you wanted in a file called LastLfpLatencyPluginComponents */
     static void saveRecoveryData(std::unordered_map<std::string, juce::String> *valuesMap);
@@ -132,11 +127,7 @@ public:
     the rest is a critical section protected by the same mutex lock as saveRecoveryData. */
     static void loadRecoveryData(std::unordered_map<std::string, juce::String> *valuesMap);
 
-    /** Saving custom settings to XML. */
-    virtual void saveCustomParametersToXml(XmlElement *parentElement) override;
-
-    /** Load custom settings from XML*/
-    virtual void loadCustomParametersFromXml(XmlElement *customParamsXml) override;
+    void parameterValueChanged(Parameter *param) override;
 
     virtual void createEventChannels();
 
@@ -190,9 +181,9 @@ public:
      */
     float *getdataCacheRow(int track);
 
-    void changeParameter(int parameterID, float value);
+    // void changeParameter(int parameterID, float value);
 
-    int getParameterInt(int parameterID);
+    // int getParameterInt(int parameterID);
 
     int getSamplesPerSubsampleWindow();
 
@@ -213,7 +204,7 @@ public:
     int currentSample;
 
     // debug
-    float getParameterFloat(int parameterID);
+    // float getParameterFloat(int parameterID);
     // Result makingFile;
 
     // Functions used to save data
