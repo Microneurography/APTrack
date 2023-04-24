@@ -1,10 +1,8 @@
 name: Build LfpLatency on windows
 on: 
-  workflow_dispatch:
-    inputs:
-      release_name: 
-        description: The name of the release to attach the build artefacts
-
+  push:
+    tags:
+      - v*
 jobs:
 
   build:
@@ -46,7 +44,7 @@ jobs:
         uses: softprops/action-gh-release@v1
 #         if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ github.event.inputs.release_name }}
+          tag_name: ${{github.ref_name}}
           files: 'OEPlugins/OE-plugin-latency-tracker/Build/Release/*.dll'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
