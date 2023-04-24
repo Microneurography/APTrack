@@ -43,7 +43,7 @@ LfpLatencySpectrogramControlPanel::LfpLatencySpectrogramControlPanel(LfpLatencyP
     imageThreshold = new LfpLatencyLabelHorizontalSlider("Image Threshold");
     if (content->getExtendedColorScale())
     {
-        imageThreshold->setSliderRange(0, 0.1, 0);
+        imageThreshold->setSliderRange(0, 10, 0);
     }
     else
     {

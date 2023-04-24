@@ -866,7 +866,7 @@ void LfpLatencyProcessorVisualizerContentComponent::buttonClicked(Button *button
         if (buttonThatWasClicked->getToggleState() == true)
         {
             // If using extended scale (eg when using file reader)
-            spectrogramControlPanel->setImageThresholdRange(0, 1000, 0);
+            spectrogramControlPanel->setImageThresholdRange(0, 10, 0);
             (*valuesMap)["extendedColorScale"] = "1";
         }
         else
