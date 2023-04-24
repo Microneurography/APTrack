@@ -41,7 +41,7 @@ std::mutex savingAndLoadingLock;
 
 LfpLatencyProcessor::LfpLatencyProcessor()
     : GenericProcessor("APTrack"), fifoIndex(0), eventReceived(false), samplesPerSubsampleWindow(60), samplesAfterStimulusStart(0), messages(),
-      spikeGroups(0)
+      spikeGroups(0), dataCache((DATA_CACHE_SIZE_TRACKS + 1) * DATA_CACHE_SIZE_SAMPLES)
 
 {
     pulsePalController = new ppController(this);
@@ -354,7 +354,7 @@ void LfpLatencyProcessor::trackSpikes()
         }
         auto curTrackBufferLoc = (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES; // /TODO: this should take the current read buffer
         auto windowStartInBuffer = curTrackBufferLoc + templateSpike.spikeSampleLatency - templateSpike.windowSize;
-        auto startPtr = dataCache + windowStartInBuffer;
+        auto startPtr = dataCache.data() + windowStartInBuffer;
         bool spikeDetected = false;
         auto maxValInWindow = std::max_element(startPtr, startPtr + (2 * templateSpike.windowSize));
         if (*maxValInWindow < templateSpike.threshold) // if there is a value > threshold
@@ -367,7 +367,7 @@ void LfpLatencyProcessor::trackSpikes()
         {
             // spike detected
             SpikeInfo newSpike = {};
-            newSpike.spikeSampleLatency = (maxValInWindow - (dataCache + curTrackBufferLoc)); // scary pointer arithmetic. find the position in array of the max - start of current track
+            newSpike.spikeSampleLatency = (maxValInWindow - (dataCache.data() + curTrackBufferLoc)); // scary pointer arithmetic. find the position in array of the max - start of current track
             newSpike.windowSize = templateSpike.windowSize;
             newSpike.threshold = templateSpike.threshold;
             newSpike.stimulusVoltage = this->pulsePalController->getStimulusVoltage();
@@ -443,7 +443,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
     auto ts = this->getFirstSampleNumberForBlock(getDataStreams()[0]->getStreamId());
     // get num of samples in buffer
 
-    int nSamples = buffer.getNumSamples(); // getNumSamples(dataChannel_idx);
+    int nSamples = this->getNumSamplesInBlock(getDataStreams()[0]->getStreamId()); // buffer.getNumSamples(); // getNumSamples(dataChannel_idx);
 
     // Data channel
     const float *bufPtr = buffer.getReadPointer(dataChannel_idx);
@@ -453,7 +453,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
 
     // Debug channel, used to explore scalings
     // const float* bufPtr_test = buffer.getReadPointer(23);
-    bool is_adc = getDataStreams()[0]->getContinuousChannels()[dataChannel_idx]->getType() == ContinuousChannel::Type::ADC;
+    // float bitvolts = getDataStreams()[0]->getContinuousChannels()[dataChannel_idx]->getGlobalIndex();
 
     // For each sample in buffer
     for (auto n = 0; n < nSamples; ++n)
@@ -461,12 +461,7 @@ void LfpLatencyProcessor::process(AudioSampleBuffer &buffer)
         // Read sample from DATA buffer
         float data = *(bufPtr + n) * 1.0f;
 
-        // if current channel is ADC multiply by 1000 as the value is stored in V (https://open-ephys.github.io/gui-docs/Developer-Guide/Open-Ephys-Plugin-API/Processor-Plugins.html)
-
-        if (is_adc)
-        {
-            data = data * 1000000.0f;
-        }
+        // the value is stored in V for ADC channels (https://open-ephys.github.io/gui-docs/Developer-Guide/Open-Ephys-Plugin-API/Processor-Plugins.html)
 
         // Read sample from TRIGGER (ADC) buffer
         float data_pulses = *(bufPtr_pulses + n);
@@ -682,7 +677,7 @@ void LfpLatencyProcessor::resetEventFlag()
 
 float *LfpLatencyProcessor::getdataCacheLastRow()
 {
-    float *rowPtr = (dataCache + (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES);
+    float *rowPtr = (dataCache.data() + (currentTrack % DATA_CACHE_SIZE_TRACKS) * DATA_CACHE_SIZE_SAMPLES);
     return rowPtr;
 }
 
@@ -690,7 +685,7 @@ float *LfpLatencyProcessor::getdataCacheRow(int track)
 {
     uint32_t colIndex = (((currentTrack - track) % DATA_CACHE_SIZE_TRACKS) + DATA_CACHE_SIZE_TRACKS) % DATA_CACHE_SIZE_TRACKS;
 
-    float *rowPtr = (dataCache + colIndex * DATA_CACHE_SIZE_SAMPLES);
+    float *rowPtr = (dataCache.data() + colIndex * DATA_CACHE_SIZE_SAMPLES);
 
     return rowPtr;
 }
@@ -709,7 +704,7 @@ void LfpLatencyProcessor::pushLatencyData(int latency)
 float *LfpLatencyProcessor::getdataCache()
 {
     // float* rowPtr = (dataCache+currentTrack*DATA_CACHE_SIZE_SAMPLES);
-    return dataCache;
+    return dataCache.data();
 }
 int LfpLatencyProcessor::getSamplesPerSubsampleWindow()
 {

@@ -268,7 +268,7 @@ private:
     std::vector<SpikeGroup> spikeGroups; // The groups of spikes that have been traced
     std::mutex spikeGroups_mutex;
 
-    float dataCache[(DATA_CACHE_SIZE_TRACKS + 1) * DATA_CACHE_SIZE_SAMPLES]; // TODO convert to vector.
+    std::vector<float> dataCache; // TODO convert to vector.
     std::vector<int> dataCacheTimestamps;
     int spikeLocation[DATA_CACHE_SIZE_TRACKS];
 
