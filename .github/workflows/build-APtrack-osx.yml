@@ -1,15 +1,13 @@
 name: Build LfpLatency on osx
 on: 
-  workflow_dispatch:
-    inputs:
-      release_name: 
-        description: The name of the release to attach the build artefacts
-
+  push:
+    tags:
+      - v*
 jobs:
 
   build:
     name: Compile action
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -53,7 +51,7 @@ jobs:
         uses: softprops/action-gh-release@v1
 #         if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ github.event.inputs.release_name }}
+          tag_name: ${{github.ref_name}}
           files: 'OEPlugins/OE-plugin-latency-tracker/Build/OE-plugin-latency-tracker.bundle.tar.gz'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
